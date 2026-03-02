@@ -1,136 +1,92 @@
-/**
- * TaxTools Tools API - v1 stubs
- * Endpoints:
- * - GET  /v1/checkout/status?session_id=
- * - POST /v1/checkout/sessions
- * - POST /v1/support/tickets
- * - POST /v1/webhooks/stripe
- */
-
-const JSON_HEADERS = {
-  "content-type": "application/json; charset=utf-8",
-};
-
-function withCors(headers, request) {
-  const origin = request.headers.get("origin") || "*";
-  return {
-    ...headers,
-    "access-control-allow-origin": origin,
-    "access-control-allow-headers": "content-type",
-    "access-control-allow-methods": "GET,OPTIONS,POST",
-    "access-control-max-age": "86400",
-    "vary": "origin",
-  };
-}
-
-function json(status, body, request) {
-  return new Response(JSON.stringify(body, null, 2), {
-    status,
-    headers: withCors(JSON_HEADERS, request),
-  });
-}
-
-function methodNotAllowed(request) {
-  return json(405, { error: "method_not_allowed" }, request);
-}
-
-function notFound(request) {
-  return json(404, { error: "not_found" }, request);
-}
-
-async function readJson(request) {
-  const ct = request.headers.get("content-type") || "";
-  if (!ct.includes("application/json")) return null;
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-}
-
-function requireQueryParam(url, key) {
-  const value = url.searchParams.get(key);
-  if (!value) return null;
-  return value;
-}
-
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Preflight
+    // CORS (minimal)
     if (request.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers: withCors({}, request) });
+      return new Response(null, {
+        status: 204,
+        headers: corsHeaders(request),
+      });
     }
 
-    // Health (optional but useful)
-    if (url.pathname === "/health") {
-      return json(200, { ok: true }, request);
-    }
-
-    // v1 routes
-    if (url.pathname === "/v1/checkout/sessions") {
-      if (request.method !== "POST") return methodNotAllowed(request);
-
-      const payload = await readJson(request);
-      if (!payload) return json(400, { error: "invalid_json" }, request);
-
-      // Stub response per README contract
+    // Health
+    if (request.method === "GET" && url.pathname === "/health") {
       return json(
+        { ok: true, service: "tools-api", version: "v1-skeleton" },
         200,
-        {
-          checkoutUrl: "https://example.com/checkout/stub",
-          sessionId: "sess_stub_0001",
-        },
-        request
+        corsHeaders(request)
       );
     }
 
-    if (url.pathname === "/v1/checkout/status") {
-      if (request.method !== "GET") return methodNotAllowed(request);
-
-      const sessionId = requireQueryParam(url, "session_id");
-      if (!sessionId) return json(400, { error: "missing_session_id" }, request);
-
-      // Stub status per README contract
+    // --- v1 contract stubs ---
+    if (url.pathname === "/v1/checkout/status" && request.method === "GET") {
+      const sessionId = url.searchParams.get("session_id") || "";
       return json(
-        200,
         {
+          ok: true,
           sessionId,
-          status: "pending",
-          updatedAt: new Date().toISOString(),
+          status: "stub",
         },
-        request
-      );
-    }
-
-    if (url.pathname === "/v1/support/tickets") {
-      if (request.method !== "POST") return methodNotAllowed(request);
-
-      const payload = await readJson(request);
-      if (!payload) return json(400, { error: "invalid_json" }, request);
-
-      // Minimal validation (no fancy stuff yet)
-      if (!payload.email || !payload.message) {
-        return json(400, { error: "missing_email_or_message" }, request);
-      }
-
-      return json(
         200,
-        {
-          ticketId: "tkt_stub_0001",
-        },
-        request
+        corsHeaders(request)
       );
     }
 
-    if (url.pathname === "/v1/webhooks/stripe") {
-      if (request.method !== "POST") return methodNotAllowed(request);
-
-      // Stub: accept anything for now, real signature validation comes in Step 4.
-      return json(200, { ok: true }, request);
+    if (url.pathname === "/v1/checkout/sessions" && request.method === "POST") {
+      // Stub response, real Stripe comes later
+      return json(
+        {
+          checkoutUrl: null,
+          sessionId: "stub_session",
+        },
+        200,
+        corsHeaders(request)
+      );
     }
 
-    return notFound(request);
+    if (url.pathname === "/v1/support/tickets" && request.method === "POST") {
+      return json(
+        {
+          ok: true,
+          ticketId: "stub_ticket",
+        },
+        200,
+        corsHeaders(request)
+      );
+    }
+
+    if (url.pathname === "/v1/webhooks/stripe" && request.method === "POST") {
+      // Stripe signature verification comes later
+      return json({ ok: true }, 200, corsHeaders(request));
+    }
+
+    // Default 404
+    return json(
+      { ok: false, error: "Not found", path: url.pathname },
+      404,
+      corsHeaders(request)
+    );
   },
 };
+
+function corsHeaders(request) {
+  const origin = request.headers.get("Origin") || "*";
+  return {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Max-Age": "86400",
+    "Vary": "Origin",
+  };
+}
+
+function json(body, status = 200, headers = {}) {
+  return new Response(JSON.stringify(body, null, 2), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      ...headers,
+    },
+  });
+}
