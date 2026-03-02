@@ -1,61 +1,70 @@
 <!-- partials/footer.html -->
-<footer class="bg-navy text-white py-12">
-  <div class="max-w-6xl mx-auto px-4">
-    <div class="grid md:grid-cols-4 gap-8 mb-8">
+<footer class="border-t border-blue-900/40 bg-navy text-white">
+  <div class="mx-auto max-w-7xl px-6 py-12">
+    <div class="grid gap-10 md:grid-cols-4 md:items-start">
 
       <!-- Brand -->
-      <div>
-        <div class="flex items-center gap-2 mb-4">
-          <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
+      <div class="flex flex-col gap-4 md:col-span-1">
+        <a href="/index.html" class="flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-navy font-bold">
+            TT
+          </span>
+          <div class="flex flex-col leading-tight">
+            <span class="font-semibold tracking-tight text-white">TaxTools.Tax Monitor Pro</span>
+            <span class="text-xs text-blue-300">Simple taxpayer tools</span>
           </div>
-          <span class="font-bold text-xl">TaxTools</span>
-        </div>
+        </a>
 
-        <p class="text-blue-200 text-sm">
-          Simple taxpayer tools. If you need representation or monitoring, go to
-          <a class="underline hover:text-white" href="https://taxmonitor.pro">taxmonitor.pro</a>.
+        <p class="text-sm text-blue-200">
+          Practical tools for taxpayers. For representation or ongoing IRS monitoring, visit
+          <a class="underline hover:text-white" href="https://taxmonitor.pro">Tax Monitor Pro</a>.
         </p>
+
+        <!-- Business Address -->
+        <div class="mt-2 text-sm text-blue-300 not-italic">
+          <div class="font-semibold text-white">Business Address</div>
+          <div>Tax Monitor Pro</div>
+          <div>1175 Avocado Avenue Suite 101 PMB 1010</div>
+          <div>El Cajon, CA 92020</div>
+        </div>
       </div>
 
       <!-- Links -->
-      <div>
-        <h4 class="font-semibold mb-4">Links</h4>
-        <ul class="space-y-2 text-blue-200 text-sm">
-          <li><a href="/about.html" class="hover:text-white transition-colors">About</a></li>
-          <li><a href="/support.html" class="hover:text-white transition-colors">Contact</a></li>
-          <li><a href="/faq.html" class="hover:text-white transition-colors">FAQ</a></li>
-          <li><a href="/help-center.html" class="hover:text-white transition-colors">Help Center</a></li>
-          <li><a href="/index.html" class="hover:text-white transition-colors">Home</a></li>
-          <li><a href="/tools.html" class="hover:text-white transition-colors">Tools</a></li>
-        </ul>
+      <div class="flex flex-col gap-4">
+        <h3 class="text-sm font-semibold text-white">Links</h3>
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
+          <a href="/about.html" class="text-blue-200 hover:text-white transition">About</a>
+          <a href="/faq.html" class="text-blue-200 hover:text-white transition">FAQ</a>
+          <a href="/help-center.html" class="text-blue-200 hover:text-white transition">Help Center</a>
+          <a href="/index.html" class="text-blue-200 hover:text-white transition">Home</a>
+          <a href="/support.html" class="text-blue-200 hover:text-white transition">Support</a>
+          <a href="/tools.html" class="text-blue-200 hover:text-white transition">Tools</a>
+        </nav>
       </div>
 
       <!-- Legal -->
-      <div>
-        <h4 class="font-semibold mb-4">Legal</h4>
-        <ul class="space-y-2 text-blue-200 text-sm">
-          <li><a href="/legal/privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
-          <li><a href="/legal/refund.html" class="hover:text-white transition-colors">Refund Policy</a></li>
-          <li><a href="/legal/terms.html" class="hover:text-white transition-colors">Terms of Service</a></li>
-        </ul>
+      <div class="flex flex-col gap-4">
+        <h3 class="text-sm font-semibold text-white">Legal</h3>
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
+          <a href="/legal/privacy.html" class="text-blue-200 hover:text-white transition">Privacy</a>
+          <a href="/legal/refund.html" class="text-blue-200 hover:text-white transition">Refund</a>
+          <a href="/legal/terms.html" class="text-blue-200 hover:text-white transition">Terms</a>
+        </nav>
       </div>
 
-      <!-- Support -->
-      <div>
-        <h4 class="font-semibold mb-4">Support</h4>
-        <ul class="space-y-2 text-blue-200 text-sm">
-          <li><a href="/help-center.html" class="hover:text-white transition-colors">Help Center</a></li>
-          <li><a href="/support.html" class="hover:text-white transition-colors">Support</a></li>
-        </ul>
+      <!-- External -->
+      <div class="flex flex-col gap-4">
+        <h3 class="text-sm font-semibold text-white">External</h3>
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
+          <a href="https://taxmonitor.pro" class="text-blue-200 hover:text-white transition">Tax Monitor Pro</a>
+        </nav>
+
+        <p class="mt-4 text-sm text-blue-400">© <span id="footer-year"></span> TaxTools</p>
       </div>
 
-    </div>
-
-    <div class="border-t border-white/20 pt-8 text-center text-blue-200 text-sm">
-      <p>© <span id="footer-year"></span> TaxTools. Not tax advice.</p>
     </div>
   </div>
 </footer>
