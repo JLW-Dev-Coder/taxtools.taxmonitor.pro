@@ -159,4 +159,120 @@ async function handleCheckoutStatus(request) {
   if (!sessionId) return badRequest(request, "Missing session_id");
 
   // Step 2: Stub status.
-  // Step 3: Look up Stripe session and retur
+  // Step 3: Look up Stripe session and return real status.
+  return json(
+    {
+      email: "payer@example.com",
+      payment_status: "unpaid",
+      product_id: "irs-transcript-download",
+      session_id: sessionId,
+      status: "open",
+    },
+    200,
+    withCors(request)
+  );
+}
+
+async function handleHealth(request) {
+  if (request.method !== "GET") return methodNotAllowed(request);
+  return json({ ok: true }, 200, withCors(request));
+}
+
+async function handleStripeWebhook(request, env) {
+  // Contract: POST /v1/webhooks/stripe
+  // Security: In Step 4, verify signature using Stripe webhook secret BEFORE parsing JSON.
+  if (request.method !== "POST") return methodNotAllowed(request);
+
+  const signature = request.headers.get("Stripe-Signature") || "";
+  if (!signature) {
+    return json({ error: "unauthorized", message: "Missing Stripe-Signature" }, 401, withCors(request));
+  }
+
+  // Step 2: Accept raw body and stash a receipt stub.
+  const raw = await request.text();
+  const eventId = "evt_" + crypto.randomUUID().replace(/-/g, "").slice(0, 18);
+
+  await appendReceiptToR2(env, `receipts/stripe/${eventId}.json`, {
+    event_id: eventId,
+    raw,
+    received_at: new Date().toISOString(),
+    stripe_signature_present: true,
+    type: "stripe_webhook_received",
+  });
+
+  // Do not project on unverified webhook.
+  return json({ received: true }, 200, withCors(request));
+}
+
+async function handleSupportTickets(request, env) {
+  // Contract: POST /v1/support/tickets
+  if (request.method !== "POST") return methodNotAllowed(request);
+
+  const body = await request.json().catch(() => null);
+  if (!body || typeof body !== "object") return badRequest(request, "Invalid JSON");
+
+  const email = typeof body.email === "string" ? body.email.trim() : "";
+  const message = typeof body.message === "string" ? body.message.trim() : "";
+  const sessionId = typeof body.session_id === "string" ? body.session_id.trim() : "";
+  const subject = typeof body.subject === "string" ? body.subject.trim() : "";
+
+  if (!email) return badRequest(request, "Missing email");
+  if (!subject) return badRequest(request, "Missing subject");
+  if (!message) return badRequest(request, "Missing message");
+
+  const ticketId = "sup_" + crypto.randomUUID().replace(/-/g, "").slice(0, 18);
+
+  await appendReceiptToR2(env, `receipts/support_ticket_created/${ticketId}.json`, {
+    created_at: new Date().toISOString(),
+    email,
+    message,
+    session_id: sessionId || null,
+    subject,
+    ticket_id: ticketId,
+    type: "support_ticket_created",
+  });
+
+  await projectToClickUp(env, {
+    email,
+    session_id: sessionId || null,
+    subject,
+    ticket_id: ticketId,
+    type: "support_ticket_created",
+  });
+
+  return json(
+    {
+      status: "received",
+      ticket_id: ticketId,
+    },
+    201,
+    withCors(request)
+  );
+}
+
+/* ------------------------------------------
+ * Router
+ * ------------------------------------------ */
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    // CORS preflight
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: withCors(request) });
+    }
+
+    // Health
+    if (url.pathname === "/health") return handleHealth(request);
+
+    // v1 routes
+    if (url.pathname === "/v1/checkout/sessions") return handleCheckoutSessions(request, env);
+    if (url.pathname === "/v1/checkout/status") return handleCheckoutStatus(request);
+    if (url.pathname === "/v1/support/tickets") return handleSupportTickets(request, env);
+    if (url.pathname === "/v1/webhooks/stripe") return handleStripeWebhook(request, env);
+
+    return notFound(request);
+  },
+};
+
