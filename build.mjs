@@ -4,6 +4,7 @@ import path from "node:path";
 
 const ROOT = process.cwd();
 const DIST = path.join(ROOT, "dist");
+const WRANGLER_TOML = path.join(ROOT, "workers", "api", "wrangler.toml");
 
 function exists(p) {
   try { fs.accessSync(p); return true; } catch { return false; }
@@ -63,13 +64,13 @@ function walkFiles(dir, predicate) {
 }
 
 function injectPartialsIntoHtml(distRoot) {
-  const headerPath = path.join(ROOT, "partials", "header.html");
   const footerPath = path.join(ROOT, "partials", "footer.html");
+  const headerPath = path.join(ROOT, "partials", "header.html");
 
-  const hasHeader = exists(headerPath);
   const hasFooter = exists(footerPath);
+  const hasHeader = exists(headerPath);
 
-  if (!hasHeader || !hasFooter) {
+  if (!hasFooter || !hasHeader) {
     const missing = [
       !hasFooter ? "partials/footer.html" : null,
       !hasHeader ? "partials/header.html" : null,
@@ -77,8 +78,8 @@ function injectPartialsIntoHtml(distRoot) {
     throw new Error(`Missing partial(s): ${missing.join(", ")}`);
   }
 
-  const headerHtml = readText(headerPath);
   const footerHtml = readText(footerPath);
+  const headerHtml = readText(headerPath);
 
   const htmlFiles = walkFiles(distRoot, (p) => {
     const rel = path.relative(distRoot, p).replace(/\\/g, "/");
@@ -92,9 +93,9 @@ function injectPartialsIntoHtml(distRoot) {
   for (const file of htmlFiles) {
     const original = readText(file);
 
-    const needsHeader = original.includes("<!-- PARTIAL:header -->");
     const needsFooter = original.includes("<!-- PARTIAL:footer -->");
-    if (!needsHeader && !needsFooter) continue;
+    const needsHeader = original.includes("<!-- PARTIAL:header -->");
+    if (!needsFooter && !needsHeader) continue;
 
     let updated = original;
     if (needsHeader) updated = updated.replace("<!-- PARTIAL:header -->", headerHtml);
@@ -107,6 +108,66 @@ function injectPartialsIntoHtml(distRoot) {
   }
 
   console.log(`\n✅ Partials injected into HTML files: ${changedCount}`);
+}
+
+function parseWranglerOrganizationVars(wranglerTomlPath) {
+  if (!exists(wranglerTomlPath)) {
+    throw new Error(`wrangler.toml not found at: ${wranglerTomlPath}`);
+  }
+
+  const raw = readText(wranglerTomlPath);
+
+  // Only parse simple string assignments:
+  // MY_ORGANIZATION_FOO = "bar"
+  // (We intentionally ignore arrays/tables/etc.)
+  const vars = {};
+
+  for (const line of raw.split(/\r?\n/)) {
+    const m = line.match(/^\s*(MY_ORGANIZATION_[A-Z0-9_]+)\s*=\s*"(.*)"\s*$/);
+    if (!m) continue;
+
+    const key = m[1];
+    const value = m[2].replace(/\\"/g, "\"");
+    vars[key] = value;
+  }
+
+  return vars;
+}
+
+function replaceTokensInHtml(html, vars) {
+  return html.replace(/\{\{([A-Z0-9_]+)\}\}/g, (full, key) => {
+    if (Object.prototype.hasOwnProperty.call(vars, key)) return String(vars[key]);
+    return full; // leave unknown tokens intact
+  });
+}
+
+function injectWranglerVarsIntoDistHtml(distRoot, wranglerTomlPath) {
+  const vars = parseWranglerOrganizationVars(wranglerTomlPath);
+
+  const keys = Object.keys(vars).sort((a, b) => a.localeCompare(b));
+  if (keys.length === 0) {
+    console.log(`\nℹ️ No MY_ORGANIZATION_* vars found in ${path.relative(ROOT, wranglerTomlPath)}`);
+    return;
+  }
+
+  logList("Injecting build tokens from wrangler.toml", keys);
+
+  const htmlFiles = walkFiles(distRoot, (p) => p.toLowerCase().endsWith(".html"))
+    .sort((a, b) => a.localeCompare(b));
+
+  let changedCount = 0;
+
+  for (const file of htmlFiles) {
+    const original = readText(file);
+    const updated = replaceTokensInHtml(original, vars);
+
+    if (updated !== original) {
+      writeText(file, updated);
+      changedCount++;
+    }
+  }
+
+  console.log(`\n✅ Build tokens injected into HTML files: ${changedCount}`);
 }
 
 function build() {
@@ -158,6 +219,9 @@ function build() {
 
   // Inject partials (header/footer markers)
   injectPartialsIntoHtml(DIST);
+
+  // Inject MY_ORGANIZATION_* tokens into dist HTML from workers/api/wrangler.toml
+  injectWranglerVarsIntoDistHtml(DIST, WRANGLER_TOML);
 
   console.log("\n✅ Build complete: dist/ created.");
 }
