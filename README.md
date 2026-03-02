@@ -1,162 +1,122 @@
 # TaxTools.Tax Monitor Pro
 
-$1 taxpayer tools store that generates revenue and routes taxpayers to https://taxmonitor.pro for representation/monitoring.
+A small, conversion-focused $1 taxpayer tools store that routes users to `taxmonitor.pro` for representation/monitoring.
 
-## Repo Structure (Minimal)
+## Answers to dependency questions
 
+* Worker code location: **Yes**. `workers/api/` (in this repo).
+* Worker name (Wrangler `name`): **taxtools-taxmonitor-pro-api**.
+* Worker route: **Yes**. `tools-api.taxmonitor.pro/*`.
+
+## Domains
+
+* Site: `https://taxtools.taxmonitor.pro` (static site)
+* Tools API: `https://tools-api.taxmonitor.pro` (Cloudflare Worker)
+
+## Repo structure
+
+```text
 /
 ├─ _redirects
 ├─ README.md
-├─ MARKET.md
 ├─ build.mjs
 ├─ index.html
 ├─ support.html
-├─ tools.html
-├─ about.html
-├─ faq.html
-├─ help-center.html
+├─ assets/
+│  ├─ favicon.ico
+│  └─ logo.svg
 ├─ legal/
 │  ├─ privacy.html
 │  ├─ refund.html
 │  └─ terms.html
-├─ assets/
-│  ├─ favicon.ico
-│  └─ logo.svg
 ├─ partials/
 │  ├─ footer.html
 │  └─ header.html
-├─ robots.txt
-├─ sitemap.xml
 ├─ scripts/
 │  └─ site.js
 ├─ styles/
 │  └─ site.css
-└─ _sdk/
-   ├─ data_sdk.js
-   └─ element_sdk.js
+├─ _sdk/
+│  ├─ data_sdk.js
+│  └─ element_sdk.js
+└─ workers/
+   └─ api/
+      ├─ wrangler.toml
+      └─ src/
+         └─ index.js
+```
 
-## Progress (Pro-Way)
+## Pages
 
-### Step 1 — Lock API Contract (Blocker until complete)
+* About: `/about.html`
+* Contact: `/support.html`
+* FAQ: `/faq.html`
+* Help Center: `/help-center.html`
+* Home: `/index.html`
+* Tools: `/tools.html`
 
-Endpoints (canonical):
-- GET  https://tools-api.taxmonitor.pro/v1/checkout/status?session_id=
-- POST https://tools-api.taxmonitor.pro/v1/checkout/sessions
-- POST https://tools-api.taxmonitor.pro/v1/support/tickets
-- POST https://tools-api.taxmonitor.pro/v1/webhooks/stripe
+### Legal pages
 
-Status:
-- [ ] Contracts written (request/response, errors)
-- [ ] Frontend matches contracts (index.html + tools.html)
-- [ ] Versioning decided (v1 frozen once Stripe is live)
+* Privacy Policy: `/legal/privacy.html`
+* Refund Policy: `/legal/refund.html`
+* Terms of Service: `/legal/terms.html`
 
-#### Contract: POST /v1/checkout/sessions
+## API contract
 
-Request (application/json):
-{
-  "cancelUrl": "string",
-  "items": [
-    { "id": "string", "name": "string", "price": 1, "quantity": 1 }
-  ],
-  "successUrl": "string",
-  "total": 1
-}
+Base: `https://tools-api.taxmonitor.pro`
 
-Response (200 application/json):
-{
-  "checkoutUrl": "string",
-  "sessionId": "string"
-}
+### Endpoints
 
-Errors:
-- 400 { "error": "string" }
-- 500 { "error": "string" }
+* `GET  /v1/checkout/status?session_id=`
+* `POST /v1/checkout/sessions`
+* `POST /v1/support/tickets`
+* `POST /v1/webhooks/stripe`
 
-#### Contract: GET /v1/checkout/status?session_id=
+### Status endpoint rule
 
-Response (200 application/json):
-{
-  "sessionId": "string",
-  "status": "paid|pending|failed",
-  "updatedAt": "ISO-8601 string"
-}
+* Status endpoint must be the exact URL form: `https://tools-api.taxmonitor.pro/...`
 
-Errors:
-- 404 { "error": "string" }
-- 500 { "error": "string" }
+### UI references
 
-#### Contract: POST /v1/webhooks/stripe
+`index.html` currently references:
 
-Headers:
-- Stripe-Signature: string (required)
+* `POST https://tools-api.taxmonitor.pro/v1/checkout/sessions`
+* `GET  https://tools-api.taxmonitor.pro/v1/checkout/status?session_id=` (planned)
+* `POST https://tools-api.taxmonitor.pro/v1/support/tickets` (planned)
 
-Response:
-- 200 { "ok": true }
+## Build plan
 
-Notes:
-- Must be idempotent per Stripe event id.
+### Step 1 — Lock API contract
 
-#### Contract: POST /v1/support/tickets
+Define exact request/response shapes for all v1 endpoints (no ambiguity).
 
-Request (application/json):
-{
-  "email": "string",
-  "message": "string",
-  "name": "string (optional)",
-  "subject": "string (optional)"
-}
+### Step 2 — Build Worker skeleton
 
-Response (200 application/json):
-{
-  "ticketId": "string"
-}
+* Routes exist
+* Stub JSON responses
+* CORS + OPTIONS
 
-Errors:
-- 400 { "error": "string" }
-- 500 { "error": "string" }
+### Step 3 — Wire Stripe checkout
 
-### Step 2 — Worker Skeleton (Stubs)
+Return real `checkoutUrl`.
 
-Status:
-- [ ] Worker created
-- [ ] Routes exist
-- [ ] Contracts return stub responses
+### Step 4 — Wire webhook → R2 → Gmail receipt
 
-### Step 3 — Stripe Checkout (Real)
+Money + email loop works.
 
-Status:
-- [ ] Stripe product/price strategy decided (or hard-coded $1 items)
-- [ ] /v1/checkout/sessions returns real checkoutUrl
-- [ ] Success + cancel URLs behave
+### Step 5 — Build UI around it
 
-### Step 4 — Webhook → R2 → Email Receipt (Real)
+UI is already ahead of backend; proceed in vertical slices.
 
-Status:
-- [ ] Webhook signature validation
-- [ ] Receipt storage (R2)
-- [ ] Download link email (Google Workspace)
-- [ ] Idempotency implemented
+## Progress tracker
 
-### Step 5 — UI Hardening
+* [ ] Add missing pages: `about.html`, `faq.html`, `help-center.html`, `tools.html`
+* [ ] Add legal pages: `legal/privacy.html`, `legal/refund.html`, `legal/terms.html`
+* [ ] Add Worker skeleton: `workers/api/wrangler.toml`, `workers/api/src/index.js`
+* [ ] Deploy Worker on `tools-api.taxmonitor.pro/*`
+* [ ] Confirm UI checkout calls return stub JSON
+* [ ] Replace stub checkout with real Stripe session
 
-Status:
-- [ ] tools.html catalog page live
-- [ ] support.html posts to /v1/support/tickets
-- [ ] Legal pages live
-- [ ] sitemap.xml + robots.txt verified
-- [ ] 404 behavior verified
+## Operating rule
 
-## Build & Deploy
-
-Build:
-- npm run build (or node build.mjs)
-
-Deploy:
-- Cloudflare Pages (static)
-- Cloudflare Worker (tools-api)
-
-## Non-Goals (Launch)
-
-- Multiple payment processors
-- User accounts
-- Complex licensing DRM
+When a dependency question comes up (routes, folders, contract rules), check this README first. If the answer isn’t here yet, add it here before proceeding.
