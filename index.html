@@ -66,6 +66,8 @@
       position: relative;
       z-index: 1;
     }
+
+    
   </style>
 
   <script>
@@ -91,23 +93,23 @@
 
 
     <!-- Hero Section -->
-    <section class="hero-grid hero-glow py-20 md:py-28 text-white">
+    <section id="hero" class="hero-grid hero-glow py-20 md:py-28 text-white">
       <div class="max-w-4xl mx-auto px-4 text-center hero-content">
-        <div class="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-8 backdrop-blur">
+        <div class="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-8 backdrop-blur ">
           <svg class="w-4 h-4 text-warm" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
           </svg>
           Structured. Simple. $1.
         </div>
 
-        <h1 id="hero-headline" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-          TT-Core Tools for <span class="text-warm">Smart</span> Filers
+        <h1 id="hero-headline" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight ">
+          Smart tax tools for real clarity
         </h1>
-        <p id="hero-subheadline" class="text-lg md:text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+        <p id="hero-subheadline" class="text-lg md:text-xl text-blue-100 mb-10 max-w-2xl mx-auto ">
           Focused taxpayer utilities designed to reduce confusion fast — without replacing real representation.
         </p>
 
-        <div class="flex flex-wrap justify-center gap-4">
+        <div class="flex flex-wrap justify-center gap-4 ">
           <a href="/tools.html" class="bg-action hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:shadow-xl hover:-translate-y-0.5">Browse Tools</a>
           <a href="https://taxmonitor.pro" class="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-semibold text-lg border border-white/20 transition-all">Need personal help?</a>
         </div>
@@ -548,6 +550,8 @@
     document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
       document.getElementById('mobile-menu')?.classList.toggle('hidden');
     });
+
+    
 
     // Cart
     function addBundle() {
