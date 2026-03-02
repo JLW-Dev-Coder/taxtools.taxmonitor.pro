@@ -42,6 +42,73 @@ function logList(title, items) {
   for (const i of sorted) console.log(`- ${i}`);
 }
 
+function readText(p) {
+  return fs.readFileSync(p, "utf8");
+}
+
+function writeText(p, content) {
+  fs.writeFileSync(p, content, "utf8");
+}
+
+function walkFiles(dir, predicate) {
+  const out = [];
+  if (!exists(dir)) return out;
+
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...walkFiles(full, predicate));
+    if (entry.isFile() && predicate(full)) out.push(full);
+  }
+  return out;
+}
+
+function injectPartialsIntoHtml(distRoot) {
+  const headerPath = path.join(ROOT, "partials", "header.html");
+  const footerPath = path.join(ROOT, "partials", "footer.html");
+
+  const hasHeader = exists(headerPath);
+  const hasFooter = exists(footerPath);
+
+  if (!hasHeader || !hasFooter) {
+    const missing = [
+      !hasFooter ? "partials/footer.html" : null,
+      !hasHeader ? "partials/header.html" : null,
+    ].filter(Boolean);
+    throw new Error(`Missing partial(s): ${missing.join(", ")}`);
+  }
+
+  const headerHtml = readText(headerPath);
+  const footerHtml = readText(footerPath);
+
+  const htmlFiles = walkFiles(distRoot, (p) => {
+    const rel = path.relative(distRoot, p).replace(/\\/g, "/");
+    if (!rel.endsWith(".html")) return false;
+    if (rel.startsWith("partials/")) return false;
+    return true;
+  }).sort((a, b) => a.localeCompare(b));
+
+  let changedCount = 0;
+
+  for (const file of htmlFiles) {
+    const original = readText(file);
+
+    const needsHeader = original.includes("<!-- PARTIAL:header -->");
+    const needsFooter = original.includes("<!-- PARTIAL:footer -->");
+    if (!needsHeader && !needsFooter) continue;
+
+    let updated = original;
+    if (needsHeader) updated = updated.replace("<!-- PARTIAL:header -->", headerHtml);
+    if (needsFooter) updated = updated.replace("<!-- PARTIAL:footer -->", footerHtml);
+
+    if (updated !== original) {
+      writeText(file, updated);
+      changedCount++;
+    }
+  }
+
+  console.log(`\n✅ Partials injected into HTML files: ${changedCount}`);
+}
+
 function build() {
   // Clean
   emptyDir(DIST);
@@ -70,8 +137,8 @@ function build() {
     "styles",
   ];
 
-  logList("Copying files", rootFiles.filter(f => exists(path.join(ROOT, f))));
-  logList("Copying folders", rootDirs.filter(d => exists(path.join(ROOT, d))));
+  logList("Copying files", rootFiles.filter((f) => exists(path.join(ROOT, f))));
+  logList("Copying folders", rootDirs.filter((d) => exists(path.join(ROOT, d))));
 
   for (const file of rootFiles) {
     const src = path.join(ROOT, file);
@@ -88,6 +155,9 @@ function build() {
   if (!exists(distIndex)) {
     throw new Error("dist/index.html missing after build. Check index.html exists at repo root.");
   }
+
+  // Inject partials (header/footer markers)
+  injectPartialsIntoHtml(DIST);
 
   console.log("\n✅ Build complete: dist/ created.");
 }
