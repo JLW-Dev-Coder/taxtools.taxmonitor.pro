@@ -30,6 +30,10 @@
     .drop-zone { transition: all 0.2s; }
     .drop-zone.drag-over { background: #dbeafe; border-color: #3b82f6; }
 
+    /* Card system (canonical) */
+    .tool-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .tool-card:hover { transform: translateY(-4px); }
+
     /* Hero grid + glow system */
     .hero-grid {
       background-color: #0f2747;
@@ -79,56 +83,8 @@
 <body class="h-full bg-white text-charcoal overflow-auto">
   <div id="app" class="w-full min-h-full">
 
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-100 sticky top-0 z-40">
-      <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <!-- PARTIAL:header -->
 
-        <!-- Logo -->
-        <a href="/" class="flex items-center gap-2">
-          <div class="w-10 h-10 bg-navy rounded-full flex items-center justify-center">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-          </div>
-          <span class="font-bold text-xl text-navy">TaxTools</span>
-        </a>
-
-        <!-- Navigation -->
-        <nav class="hidden md:flex items-center gap-6">
-          <a href="/" class="text-charcoal hover:text-navy transition-colors font-medium">Home</a>
-          <a href="/tools.html" class="text-charcoal hover:text-navy transition-colors font-medium">Tools</a>
-          <a href="/about.html" class="text-charcoal hover:text-navy transition-colors font-medium">About</a>
-          <a href="/faq.html" class="text-charcoal hover:text-navy transition-colors font-medium">FAQ</a>
-          <a href="/support.html" class="text-charcoal hover:text-navy transition-colors font-medium">Contact</a>
-
-          <button id="cart-btn" class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Cart">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            <span id="cart-count" class="absolute -top-1 -right-1 bg-warm text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
-          </button>
-        </nav>
-
-        <!-- Mobile menu button -->
-        <button id="mobile-menu-btn" class="md:hidden p-2 hover:bg-gray-100 rounded-lg" aria-label="Open menu">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </div>
-
-      <!-- Mobile menu -->
-      <div id="mobile-menu" class="md:hidden hidden border-t border-gray-100 bg-white">
-        <div class="px-4 py-3 space-y-2">
-          <a href="/" class="block py-2 text-charcoal hover:text-navy font-medium">Home</a>
-          <a href="/tools.html" class="block py-2 text-charcoal hover:text-navy font-medium">Tools</a>
-          <a href="/about.html" class="block py-2 text-charcoal hover:text-navy font-medium">About</a>
-          <a href="/faq.html" class="block py-2 text-charcoal hover:text-navy font-medium">FAQ</a>
-          <a href="/support.html" class="block py-2 text-charcoal hover:text-navy font-medium">Contact</a>
-          <button type="button" onclick="openCart()" class="block w-full text-left py-2 text-charcoal hover:text-navy font-medium">Cart (<span class="mobile-cart-count">0</span>)</button>
-        </div>
-      </div>
-    </header>
 
     <!-- Hero Section -->
     <section class="hero-grid hero-glow py-20 md:py-28 text-white">
@@ -182,7 +138,7 @@
     </section>
 
     <!-- Tools Grid (homepage preview) -->
-    <section id="tools-preview" class="py-16 md:py-24">
+    <section id="tools" class="py-16 md:py-24">
       <div class="max-w-7xl mx-auto px-4">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold text-navy mb-4">Featured $1 Tools</h2>
@@ -190,38 +146,84 @@
         </div>
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="tools-grid">
-          <!-- (Existing cards kept as-is for now) -->
-
-          <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col">
-            <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-              <svg class="w-7 h-7 text-action" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <!-- 1) Deduction -->
+          <div class="tool-card bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-blue-100 flex flex-col">
+            <div class="w-14 h-14 bg-action rounded-xl flex items-center justify-center mb-4 shadow-md">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
               </svg>
             </div>
             <h3 class="text-xl font-bold text-navy mb-2">Tax Deduction Checklist</h3>
-            <p class="text-gray-600 mb-6 flex-grow">Find every deduction you deserve in minutes.</p>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">Find every deduction you deserve in minutes.</p>
             <div class="flex gap-3">
-              <button type="button" onclick="openDemo('deduction')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors">Try Demo</button>
-              <button type="button" onclick="addToCart('deduction')" class="flex-1 bg-action hover:bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy for $1</button>
+              <button type="button" onclick="openDemo('deduction')" class="flex-1 bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-blue-100">Try Demo</button>
+              <button type="button" onclick="addToCart('deduction')" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy for $1</button>
             </div>
           </div>
 
-          <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col">
-            <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-4">
-              <svg class="w-7 h-7 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <!-- 2) Calendar -->
+          <div class="tool-card bg-gradient-to-br from-amber-50 to-amber-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-amber-100 flex flex-col">
+            <div class="w-14 h-14 bg-warm rounded-xl flex items-center justify-center mb-4 shadow-md">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
             <h3 class="text-xl font-bold text-navy mb-2">Tax Deadline Reminder Calendar</h3>
-            <p class="text-gray-600 mb-6 flex-grow">Never miss a tax deadline again.</p>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">Never miss a tax deadline again.</p>
             <div class="flex gap-3">
-              <button type="button" onclick="openDemo('calendar')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors">Try Demo</button>
-              <button type="button" onclick="addToCart('calendar')" class="flex-1 bg-action hover:bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy for $1</button>
+              <button type="button" onclick="openDemo('calendar')" class="flex-1 bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-amber-100">Try Demo</button>
+              <button type="button" onclick="addToCart('calendar')" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy for $1</button>
             </div>
           </div>
 
-          <div class="bg-gradient-to-br from-navy to-blue-800 rounded-2xl p-6 text-white flex flex-col">
-            <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+          <!-- 3) Organizer -->
+          <div class="tool-card bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-purple-100 flex flex-col">
+            <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mb-4 shadow-md">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Tax Document Organizer Template</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">Keep W-2s, 1099s, and receipts in one clean system.</p>
+            <div class="flex gap-3">
+              <button type="button" onclick="openDemo('organizer')" class="flex-1 bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-purple-100">Try Demo</button>
+              <button type="button" onclick="addToCart('organizer')" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy for $1</button>
+            </div>
+          </div>
+
+          <!-- 4) Estimator -->
+          <div class="tool-card bg-gradient-to-br from-green-50 to-green-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-green-100 flex flex-col">
+            <div class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center mb-4 shadow-md">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Tax Refund Estimator Tool</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">Get a fast, rough estimate before you file.</p>
+            <div class="flex gap-3">
+              <button type="button" onclick="openDemo('estimator')" class="flex-1 bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-green-100">Try Demo</button>
+              <button type="button" onclick="addToCart('estimator')" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy for $1</button>
+            </div>
+          </div>
+
+          <!-- 5) E-Book -->
+          <div class="tool-card bg-gradient-to-br from-rose-50 to-rose-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-rose-100 flex flex-col">
+            <div class="w-14 h-14 bg-rose-500 rounded-xl flex items-center justify-center mb-4 shadow-md">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Tax Tips Mini E-Book</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">Quick, practical tips to reduce surprises and save time.</p>
+            <div class="flex gap-3">
+              <button type="button" onclick="openDemo('ebook')" class="flex-1 bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-rose-100">Try Demo</button>
+              <button type="button" onclick="addToCart('ebook')" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy for $1</button>
+            </div>
+          </div>
+
+          <!-- 6) Bundle -->
+          <div class="tool-card bg-gradient-to-br from-navy to-slate-800 rounded-2xl p-6 shadow-xl text-white flex flex-col">
+            <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mb-4 shadow-md">
               <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
@@ -235,65 +237,11 @@
           </div>
         </div>
 
-        <div class="mt-10 text-center">
-          <a href="/tools.html" class="inline-flex items-center gap-2 font-semibold text-action hover:text-blue-600">
-            View all tools
-            <span aria-hidden="true">→</span>
-          </a>
-        </div>
+        
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-navy text-white py-12">
-      <div class="max-w-6xl mx-auto px-4">
-        <div class="grid md:grid-cols-4 gap-8 mb-8">
-          <div>
-            <div class="flex items-center gap-2 mb-4">
-              <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <span class="font-bold text-xl">TaxTools</span>
-            </div>
-            <p class="text-blue-200 text-sm">Simple taxpayer tools. If you need representation or monitoring, go to <a class="underline hover:text-white" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
-          </div>
-
-          <div>
-            <h4 class="font-semibold mb-4">Quick Links</h4>
-            <ul class="space-y-2 text-blue-200">
-              <li><a href="/" class="hover:text-white transition-colors">Home</a></li>
-              <li><a href="/tools.html" class="hover:text-white transition-colors">Tools</a></li>
-              <li><a href="/about.html" class="hover:text-white transition-colors">About</a></li>
-              <li><a href="/faq.html" class="hover:text-white transition-colors">FAQ</a></li>
-              <li><a href="/support.html" class="hover:text-white transition-colors">Contact</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 class="font-semibold mb-4">Legal</h4>
-            <ul class="space-y-2 text-blue-200">
-              <li><a href="/legal/privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="/legal/terms.html" class="hover:text-white transition-colors">Terms of Service</a></li>
-              <li><a href="/legal/refund.html" class="hover:text-white transition-colors">Refund Policy</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 class="font-semibold mb-4">Support</h4>
-            <ul class="space-y-2 text-blue-200">
-              <li><a href="/support.html" class="hover:text-white transition-colors">Contact</a></li>
-              <li><a href="/help-center.html" class="hover:text-white transition-colors">Help Center</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="border-t border-white/20 pt-8 text-center text-blue-200 text-sm">
-          <p>© 2026 TaxTools. Not tax advice.</p>
-        </div>
-      </div>
-    </footer>
+    <!-- PARTIAL:footer -->
   </div>
 
   <!-- Modal Container -->
