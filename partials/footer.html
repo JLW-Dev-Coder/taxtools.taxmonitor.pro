@@ -1,74 +1,98 @@
-<!-- partials/footer.html -->
-<footer class="border-t border-blue-900/40 bg-navy text-white">
-  <div class="mx-auto max-w-7xl px-6 py-12">
-    <div class="grid gap-y-10 md:gap-x-6 md:grid-cols-4 md:items-start">
+<!-- partials/header.html -->
+<header class="sticky top-0 z-50 border-b border-blue-900/40 bg-navy/80 backdrop-blur text-white">
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
 
-      <!-- Brand -->
-      <div class="flex flex-col gap-4 md:col-span-1">
-        <a href="/index.html" class="flex items-center gap-3">
-          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-navy font-bold">TM</span>
-          <div class="flex flex-col leading-tight">
-            <span class="font-semibold tracking-tight text-white">TaxTools.Tax Monitor Pro</span>
-            <span class="text-xs text-blue-300">Simple taxpayer tools</span>
-          </div>
-        </a>
-
-        <p class="text-sm text-blue-200">
-          Practical tools for taxpayers. For representation or ongoing IRS monitoring, visit
-          <a class="underline hover:text-white" href="https://taxmonitor.pro">Tax Monitor Pro</a>.
-        </p>
-
-        <!-- Business Address -->
-        <div class="mt-2 text-sm text-blue-300 not-italic">
-          <div class="font-semibold text-white">Business Address</div>
-          <div>{{MY_ORGANIZATION_NAME}}</div>
-          <div>{{MY_ORGANIZATION_ADDRESS}}</div>
-          <div>{{MY_ORGANIZATION_CITY}}, {{MY_ORGANIZATION_STATE_PROVINCE}} {{MY_ORGANIZATION_ZIP}}</div>
-        </div>
+    <!-- Logo -->
+    <a href="/index.html" class="flex items-center gap-3">
+      <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-navy font-bold">
+               TM
+            </span>
+      <div class="flex flex-col leading-tight">
+        <span class="font-semibold tracking-tight text-white">TaxTools.Tax Monitor Pro</span>
+        <span class="text-xs text-blue-300">Simple taxpayer tools</span>
       </div>
+    </a>
 
-      <!-- Links -->
-      <div class="flex flex-col gap-4">
-        <h3 class="text-sm font-semibold text-white">Links</h3>
-        <nav class="grid gap-2 text-sm">
-          <!-- Alphabetical -->
-          <a href="/about.html" class="text-blue-200 hover:text-white transition">About</a>
-          <a href="/faq.html" class="text-blue-200 hover:text-white transition">FAQ</a>
-          <a href="/help-center.html" class="text-blue-200 hover:text-white transition">Help Center</a>
-          <a href="/index.html" class="text-blue-200 hover:text-white transition">Home</a>
-          <a href="/support.html" class="text-blue-200 hover:text-white transition">Support</a>
-          <a href="/index.html#tools" class="text-blue-200 hover:text-white transition">Tools</a>
-        </nav>
+    <!-- Desktop Navigation -->
+    <div class="hidden items-center gap-10 md:flex">
+      <nav class="flex items-center gap-8">
+        <!-- Alphabetical -->
+        <a href="/about.html" class="text-sm text-blue-200 hover:text-white transition">About</a>
+        <a href="/faq.html" class="text-sm text-blue-200 hover:text-white transition">FAQ</a>
+        <a href="/help-center.html" class="text-sm text-blue-200 hover:text-white transition">Help Center</a>
+        <a href="/index.html" class="text-sm text-blue-200 hover:text-white transition">Home</a>
+        <a href="/support.html" class="text-sm text-blue-200 hover:text-white transition">Contact</a>
+        <a href="/index.html#tools" class="text-sm text-blue-200 hover:text-white transition">Tools</a>
+      </nav>
+
+      <div class="h-6 w-px bg-blue-300/60"></div>
+
+      <div class="flex items-center">
+        <!-- Cart -->
+        <button id="cart-btn" class="relative inline-flex items-center justify-center rounded-lg p-2 text-blue-200 hover:text-white hover:bg-blue-950/40 transition" aria-label="Cart" type="button">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span id="cart-count" class="absolute -top-1 -right-1 hidden h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs font-bold text-white">0</span>
+        </button>
       </div>
+    </div>
 
-      <!-- Resources -->
-      <div class="flex flex-col gap-4">
-        <h3 class="text-sm font-semibold text-white">Resources</h3>
-        <nav class="grid gap-2 text-sm">
-          <!-- Alphabetical -->
-          <a href="https://taxmonitor.pro" class="text-blue-200 hover:text-white transition">Tax Monitor Pro</a>
-        </nav>
+    <!-- Mobile Toggle -->
+    <button id="mobile-menu-btn" class="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-blue-200 hover:text-white hover:bg-blue-950/40" aria-label="Open menu" aria-expanded="false" type="button">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden border-t border-blue-900/40 bg-navy md:hidden">
+    <div class="flex flex-col gap-4 px-6 py-6 text-sm">
+      <!-- Alphabetical -->
+      <a href="/about.html" class="text-blue-200 hover:text-white transition">About</a>
+      <a href="/faq.html" class="text-blue-200 hover:text-white transition">FAQ</a>
+      <a href="/help-center.html" class="text-blue-200 hover:text-white transition">Help Center</a>
+      <a href="/index.html" class="text-blue-200 hover:text-white transition">Home</a>
+      <a href="/support.html" class="text-blue-200 hover:text-white transition">Contact</a>
+      <a href="/index.html#tools" class="text-blue-200 hover:text-white transition">Tools</a>
+
+      <div class="border-t border-blue-900/40 pt-4 mt-2">
+        <button type="button" onclick="openCart()" class="inline-flex w-full items-center justify-center rounded-lg border border-blue-900/60 bg-blue-950/20 px-4 py-3 font-semibold text-blue-100 hover:bg-blue-950/35 transition">
+          Cart (<span class="mobile-cart-count">0</span>)
+        </button>
       </div>
-
-      <!-- Legal -->
-      <div class="flex flex-col gap-4">
-        <h3 class="text-sm font-semibold text-white">Legal</h3>
-        <nav class="grid gap-2 text-sm">
-          <!-- Alphabetical -->
-          <a href="/legal/privacy.html" class="text-blue-200 hover:text-white transition">Privacy</a>
-          <a href="/legal/terms.html" class="text-blue-200 hover:text-white transition">Terms</a>
-        </nav>
-
-        <p class="mt-4 text-sm text-blue-400">© <span id="footer-year"></span> TaxTools.Tax Monitor Pro</p>
-      </div>
-
     </div>
   </div>
-</footer>
 
-<script>
-  (function () {
-    var el = document.getElementById('footer-year');
-    if (el) el.textContent = String(new Date().getFullYear());
-  })();
-</script>
+  <script>
+    (function () {
+      var toggle = document.getElementById('mobile-menu-btn');
+      var mobileMenu = document.getElementById('mobile-menu');
+
+      function closeMenu() {
+        if (!mobileMenu || !toggle) return;
+        mobileMenu.classList.add('hidden');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+
+      toggle && toggle.addEventListener('click', function () {
+        if (!mobileMenu) return;
+        var isHidden = mobileMenu.classList.toggle('hidden');
+        toggle.setAttribute('aria-expanded', String(!isHidden));
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!mobileMenu || !toggle) return;
+        var clickedInside = mobileMenu.contains(e.target) || toggle.contains(e.target);
+        if (!clickedInside) closeMenu();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        closeMenu();
+      });
+    })();
+  </script>
+</header>
