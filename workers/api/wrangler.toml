@@ -1,0 +1,7 @@
+name = "tools-api"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# Route will be attached in Cloudflare dashboard or via `wrangler deploy --route`.
+# Recommended:
+# route = "tools-api.taxmonitor.pro/*"
