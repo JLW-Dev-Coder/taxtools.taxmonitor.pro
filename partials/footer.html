@@ -22,12 +22,13 @@
 
         <!-- Business Address -->
         <div class="mt-2 text-sm text-blue-300 not-italic">
-          <div class="font-semibold text-white">Business Address</div>
-          <div>Tax Monitor Pro</div>
-          <div>1175 Avocado Avenue Suite 101 PMB 1010</div>
-          <div>El Cajon, CA 92020</div>
+          <div class="font-semibold text-white">Mailing Address</div>
+          <div>{{MY_ORGANIZATION_NAME}}</div>
+          <div>{{MY_ORGANIZATION_ADDRESS}}</div>
+          <div>{{MY_ORGANIZATION_CITY}}, {{MY_ORGANIZATION_STATE_PROVINCE}} {{MY_ORGANIZATION_ZIP}}</div>
         </div>
       </div>
+    </div>
 
       <!-- Links -->
       <div class="flex flex-col gap-4">
@@ -39,7 +40,16 @@
           <a href="/help-center.html" class="text-blue-200 hover:text-white transition">Help Center</a>
           <a href="/index.html" class="text-blue-200 hover:text-white transition">Home</a>
           <a href="/support.html" class="text-blue-200 hover:text-white transition">Support</a>
-          <a href="/tools.html" class="text-blue-200 hover:text-white transition">Tools</a>
+          <a href="/index.html#tools" class="text-blue-200 hover:text-white transition">Tools</a>
+        </nav>
+      </div>
+
+      <!-- Resources -->
+      <div class="flex flex-col gap-4">
+        <h3 class="text-sm font-semibold text-white">Resources</h3>
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
+          <a href="https://taxmonitor.pro" class="text-blue-200 hover:text-white transition">Tax Monitor Pro</a>
         </nav>
       </div>
 
@@ -49,20 +59,12 @@
         <nav class="grid gap-2 text-sm">
           <!-- Alphabetical -->
           <a href="/legal/privacy.html" class="text-blue-200 hover:text-white transition">Privacy</a>
-          <a href="/legal/refund.html" class="text-blue-200 hover:text-white transition">Refund</a>
           <a href="/legal/terms.html" class="text-blue-200 hover:text-white transition">Terms</a>
         </nav>
-      </div>
 
-      <!-- External -->
-      <div class="flex flex-col gap-4">
-        <h3 class="text-sm font-semibold text-white">External</h3>
-        <nav class="grid gap-2 text-sm">
-          <!-- Alphabetical -->
-          <a href="https://taxmonitor.pro" class="text-blue-200 hover:text-white transition">Tax Monitor Pro</a>
-        </nav>
+        <div class="mt-2 h-px w-full bg-slate-800/80"></div>
 
-        <p class="mt-4 text-sm text-blue-400">© <span id="footer-year"></span> TaxTools</p>
+        <p class="mt-4 text-sm text-blue-400">© <span id="footer-year"></span> TaxTools.Tax Monitor Pro</p>
       </div>
 
     </div>
