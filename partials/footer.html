@@ -1,0 +1,68 @@
+<!-- partials/footer.html -->
+<footer class="bg-navy text-white py-12">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="grid md:grid-cols-4 gap-8 mb-8">
+
+      <!-- Brand -->
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <span class="font-bold text-xl">TaxTools</span>
+        </div>
+
+        <p class="text-blue-200 text-sm">
+          Simple taxpayer tools. If you need representation or monitoring, go to
+          <a class="underline hover:text-white" href="https://taxmonitor.pro">taxmonitor.pro</a>.
+        </p>
+      </div>
+
+      <!-- Links -->
+      <div>
+        <h4 class="font-semibold mb-4">Links</h4>
+        <ul class="space-y-2 text-blue-200 text-sm">
+          <li><a href="/about.html" class="hover:text-white transition-colors">About</a></li>
+          <li><a href="/support.html" class="hover:text-white transition-colors">Contact</a></li>
+          <li><a href="/faq.html" class="hover:text-white transition-colors">FAQ</a></li>
+          <li><a href="/help-center.html" class="hover:text-white transition-colors">Help Center</a></li>
+          <li><a href="/index.html" class="hover:text-white transition-colors">Home</a></li>
+          <li><a href="/tools.html" class="hover:text-white transition-colors">Tools</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <h4 class="font-semibold mb-4">Legal</h4>
+        <ul class="space-y-2 text-blue-200 text-sm">
+          <li><a href="/legal/privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
+          <li><a href="/legal/refund.html" class="hover:text-white transition-colors">Refund Policy</a></li>
+          <li><a href="/legal/terms.html" class="hover:text-white transition-colors">Terms of Service</a></li>
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div>
+        <h4 class="font-semibold mb-4">Support</h4>
+        <ul class="space-y-2 text-blue-200 text-sm">
+          <li><a href="/help-center.html" class="hover:text-white transition-colors">Help Center</a></li>
+          <li><a href="/support.html" class="hover:text-white transition-colors">Support</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="border-t border-white/20 pt-8 text-center text-blue-200 text-sm">
+      <p>© <span id="footer-year"></span> TaxTools. Not tax advice.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var el = document.getElementById('footer-year');
+    if (el) el.textContent = String(new Date().getFullYear());
+  })();
+</script>
