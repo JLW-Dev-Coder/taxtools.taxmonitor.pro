@@ -416,7 +416,7 @@ Catalog (alphabetical):
 
 # Game Naming Contract
 
-* **Canonical game name = the HTML filename (including **``**).**
+* **Canonical game name = the HTML filename (including ************``************).**
 * Marketing titles can be “prettified” in the UI, but:
 
   * Stripe product name
@@ -826,7 +826,7 @@ Checkout behavior:
 
 ---
 
-# Repository
+# Repository Structure
 
 ```text
 /
