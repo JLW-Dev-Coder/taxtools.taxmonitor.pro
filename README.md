@@ -6,28 +6,28 @@ A conversion-focused interactive taxpayer games arcade that routes serious users
 
 # Table of Contents (alphabetical)
 
-* About-Games Page Standard
-* API Contract (v1)
-* Auth + Cookies
-* Auth + Tokens
-* Checkout Model (Cartless)
-* ClickUp Projection Layer
-* Core System Rules
-* Domains
-* Game Catalog (Stripe Marketing)
-* Game Naming Contract
-* Games Page Standard
-* Help Flow
-* Index Page Behavior
-* Operating Rule
-* Page Architecture (Standalone Self-Gating)
-* Pricing
-* Repository Structure
-* Stripe Flow
-* Stripe IDs
-* Stripe Product + Price Mapping
-* Stripe Webhook Destination
-* Worker
+* [About-Games Page Standard](#about-games-page-standard)
+* [API Contract (v1)](#api-contract-v1)
+* [Auth + Cookies](#auth--cookies)
+* [Auth + Tokens](#auth--tokens)
+* [Checkout Model (Cartless)](#checkout-model-cartless)
+* [ClickUp Projection Layer](#clickup-projection-layer)
+* [Core System Rules](#core-system-rules)
+* [Domains](#domains)
+* [Game Catalog (Stripe Marketing)](#game-catalog-stripe-marketing)
+* [Game Naming Contract](#game-naming-contract)
+* [Games Page Standard](#games-page-standard)
+* [Help Flow](#help-flow)
+* [Index Page Behavior](#index-page-behavior)
+* [Operating Rule](#operating-rule)
+* [Page Architecture (Standalone Self-Gating)](#page-architecture-standalone-self-gating)
+* [Pricing](#pricing)
+* [Repository Structure](#repository-structure)
+* [Stripe Flow](#stripe-flow)
+* [Stripe IDs](#stripe-ids)
+* [Stripe Product + Price Mapping](#stripe-product--price-mapping)
+* [Stripe Webhook Destination](#stripe-webhook-destination)
+* [Worker](#worker)
 
 ---
 
@@ -168,7 +168,8 @@ Allowed SKUs (alphabetical):
 
 Validation:
 
-* Worker must reject unknown `item` values.* Worker must reject `quantity > 1` unless explicitly allowed.
+* Worker must reject unknown `item` values.
+* Worker must reject `quantity > 1` unless explicitly allowed.
 * Worker must not trust client pricing.
 
 Security principle:
