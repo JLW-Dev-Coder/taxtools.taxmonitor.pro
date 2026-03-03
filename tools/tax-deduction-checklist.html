@@ -553,7 +553,7 @@
       if (!modal || !title || !content || !buyBtn) return;
 
       buyBtn.onclick = () => {
-        // TODO: wire to real checkout flow
+        addToCartAndOpenCart('deduction');
         closeDemo();
       };
 
@@ -632,23 +632,76 @@
 
     let buttonsWired = false;
 
+    const PRODUCT_ID = 'deduction';
+    const STORAGE_CART_KEY = 'taxToolsCart.v1';
+
+    function getStoredCart() {
+      try {
+        const raw = localStorage.getItem(STORAGE_CART_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function setStoredCart(next) {
+      try {
+        localStorage.setItem(STORAGE_CART_KEY, JSON.stringify(next));
+      } catch {}
+    }
+
+    function addToCart(productId) {
+      if (typeof window.addToCart === 'function' && window.addToCart !== addToCart) {
+        window.addToCart(productId);
+        return;
+      }
+
+      const cart = getStoredCart();
+      if (!cart.includes(productId)) {
+        cart.push(productId);
+        setStoredCart(cart);
+      }
+
+      try {
+        window.dispatchEvent(new CustomEvent('taxTools:cartUpdated', { detail: { cart } }));
+      } catch {}
+    }
+
+    function openCart() {
+      if (typeof window.openCart === 'function') {
+        window.openCart();
+        return;
+      }
+
+      const sidebar = document.getElementById('cart-sidebar');
+      const overlay = document.getElementById('cart-overlay');
+      if (sidebar) sidebar.classList.remove('translate-x-full');
+      if (overlay) overlay.classList.remove('hidden');
+    }
+
+    function addToCartAndOpenCart(productId) {
+      addToCart(productId);
+      openCart();
+    }
+
     function wireButtons() {
       if (buttonsWired) return;
       buttonsWired = true;
 
-      const buyButtons = ['primary-btn', 'cta-buy'].map(id => document.getElementById(id)).filter(Boolean);
+      const buyButtons = ['cta-buy', 'primary-btn'].map(id => document.getElementById(id)).filter(Boolean);
       const demoButtons = ['cta-demo', 'preview-try-demo-btn', 'secondary-btn'].map(id => document.getElementById(id)).filter(Boolean);
 
       buyButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-          // TODO: wire to real checkout flow
+          addToCartAndOpenCart(PRODUCT_ID);
           btn.blur();
         });
       });
 
       demoButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-          openDemo('deduction');
+          openDemo(PRODUCT_ID);
           btn.blur();
         });
       });
