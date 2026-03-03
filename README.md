@@ -90,7 +90,7 @@ Required gating flow (Unlock & Play button):
 * Step 2: `GET /v1/tokens/balance`
 
   * If balance < cost → route user to token purchase flow
-* Step 3: `POST /v1/tokens/spend
+* Step 3: `POST /v1/tokens/spend`
 
 Purpose:
 
@@ -98,11 +98,18 @@ Purpose:
 
 Request:
 
+```json
 { "amount": 8, "idempotencyKey": "string", "reason": "string", "slug": "string" }
+````
 
 Response:
 
-{ "balance": 0, "grant": { "expiresAt": "string", "grantId": "string", "slug": "string", "spent": 8 } }
+```json
+{
+  "balance": 0,
+  "grant": { "expiresAt": "string", "grantId": "string", "slug": "string", "spent": 8 }
+}
+```
 
 Rules:
 
@@ -110,7 +117,9 @@ Rules:
 * Must validate sufficient balance.
 * Spend creates a **play grant** (see Games Page Standard) so leaving/reloading the page does not “lose” the spend within the grant window.
 
-GET /v1/games/access?slug=
+---
+
+## GET /v1/games/access?slug=
 
 Purpose:
 
@@ -118,7 +127,9 @@ Purpose:
 
 Response:
 
+```json
 { "allowed": true, "expiresAt": "string", "slug": "string" }
+```
 
 Rules:
 
@@ -416,7 +427,7 @@ Catalog (alphabetical):
 
 # Game Naming Contract
 
-* **Canonical game name = the HTML filename (including ************``************).**
+* **Canonical game name = the HTML filename (including `.html`).**
 * Marketing titles can be “prettified” in the UI, but:
 
   * Stripe product name
@@ -502,11 +513,13 @@ Redirect rules:
 
 # Help Flow
 
-POST /v1/help/tickets
+## POST /v1/help/tickets
 
 Request:
 
+```json
 { "email": "string", "message": "string", "subject": "string" }
+```
 
 Behavior:
 
@@ -514,7 +527,7 @@ Behavior:
 * Create ClickUp task
 * Return ticket_id
 
-GET /v1/help/status
+## GET /v1/help/status
 
 * Returns ticket status
 * Returns last update timestamp
@@ -897,7 +910,7 @@ Removed:
 
 # Stripe Flow
 
-POST /v1/checkout/sessions
+## POST /v1/checkout/sessions
 
 Contract rules:
 
@@ -907,11 +920,15 @@ Contract rules:
 
 Request:
 
+```json
 { "email": "string", "item": "token_pack_small_30 | token_pack_medium_80 | token_pack_large_200", "quantity": 1 }
+```
 
 Response:
 
+```json
 { "checkoutUrl": "string" }
+```
 
 Frontend behavior (required):
 
@@ -953,19 +970,19 @@ Post-return frontend flow:
 
 Token crediting behavior (server-side):
 
-POST /v1/webhooks/stripe
+## POST /v1/webhooks/stripe
 
 * Verify Stripe signature
 * Read `metadata.tokens` from the Stripe Price
 * Increment token balance by `metadata.tokens` (server-side only)
 * Project purchase to ClickUp
 
-GET /v1/checkout/status
+## GET /v1/checkout/status
 
 * Returns payment status
 * Returns updated token balance
 
-GET /v1/arcade/tokens
+## GET /v1/arcade/tokens
 
 * Returns current token balance
 
@@ -1088,3 +1105,13 @@ taxtools-taxmonitor-pro-api
 Route:
 
 tools-api.taxmonitor.pro/*
+
+```
+
+If you want the README to be **100% internally consistent**, the one remaining inconsistency is that it defines both:
+
+- `GET /v1/tokens/balance` (used everywhere)
+- `GET /v1/arcade/tokens` (only appears in Stripe Flow section)
+
+Pick one and delete the other, or declare one as an alias explicitly. Otherwise your audit and your Worker will keep disagreeing for sport.
+```
