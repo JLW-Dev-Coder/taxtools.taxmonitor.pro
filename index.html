@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TaxTools.Tax Monitor Pro - $1 Taxpayer Tools Store</title>
+  <title>TaxTools.Tax Monitor Pro - Games Arcade</title>
 
   <!-- Favicon -->
   <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
@@ -22,17 +22,6 @@
     * { font-family: 'DM Sans', sans-serif; }
     body { box-sizing: border-box; }
     .modal-overlay { backdrop-filter: blur(4px); }
-    .flip-card { perspective: 1000px; }
-    .flip-card-inner { transition: transform 0.6s; transform-style: preserve-3d; }
-    .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
-    .flip-card-front, .flip-card-back { backface-visibility: hidden; }
-    .flip-card-back { transform: rotateY(180deg); }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
-    .drag-item { cursor: grab; }
-    .drag-item:active { cursor: grabbing; }
-    .drop-zone { transition: all 0.2s; }
-    .drop-zone.drag-over { background: #dbeafe; border-color: #3b82f6; }
 
     /* Card system (canonical) */
     .tool-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
@@ -66,8 +55,6 @@
       position: relative;
       z-index: 1;
     }
-
-    
   </style>
 
   <script>
@@ -75,9 +62,9 @@
       theme: {
         extend: {
           colors: {
-            navy: '#0f2747',
-            charcoal: '#2d3748',
             action: '#1d4ed8',
+            charcoal: '#2d3748',
+            navy: '#0f2747',
             warm: '#f97316'
           }
         }
@@ -91,26 +78,25 @@
 
     <!-- PARTIAL:header -->
 
-
     <!-- Hero Section -->
     <section id="hero" class="hero-grid hero-glow py-20 md:py-28 text-white">
       <div class="max-w-4xl mx-auto px-4 text-center hero-content">
-        <div class="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-8 backdrop-blur ">
-          <svg class="w-4 h-4 text-warm" fill="currentColor" viewBox="0 0 20 20">
+        <div class="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-8 backdrop-blur">
+          <svg class="w-4 h-4 text-warm" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
           </svg>
-          Structured. Simple. $1.
+          TaxTools Arcade • Instant Access
         </div>
 
-        <h1 id="hero-headline" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight ">
-          Smart tax tools for real clarity
+        <h1 id="hero-headline" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+          Mini tax games for real clarity
         </h1>
-        <p id="hero-subheadline" class="text-lg md:text-xl text-blue-100 mb-10 max-w-2xl mx-auto ">
-          Focused taxpayer utilities designed to reduce confusion fast — without replacing real representation.
+        <p id="hero-subheadline" class="text-lg md:text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+          Short, focused games for taxpayers and tax pros. Sign in, buy token packs, then unlock games from their detail pages.
         </p>
 
-        <div class="flex flex-wrap justify-center gap-4 ">
-          <a href="#tools" class="bg-action hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:shadow-xl hover:-translate-y-0.5">Browse Tools</a>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="#featured" class="bg-action hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:shadow-xl hover:-translate-y-0.5">Browse Games</a>
           <a href="https://taxmonitor.pro" class="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-semibold text-lg border border-white/20 transition-all">Need personal help?</a>
         </div>
       </div>
@@ -121,214 +107,272 @@
       <div class="max-w-6xl mx-auto px-4">
         <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 text-gray-500">
           <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-warm" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-5 h-5 text-warm" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
               <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
-            <span class="font-medium">Secure Payment</span>
+            <span class="font-medium">Cookie session auth</span>
           </div>
           <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-warm" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
+            <svg class="w-5 h-5 text-warm" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v1H8a1 1 0 000 2h1v1H8a1 1 0 000 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1v-1h1a1 1 0 100-2h-1V7z" clip-rule="evenodd" />
             </svg>
-            <span class="font-medium">Only $1 Each</span>
+            <span class="font-medium">Tokens unlock games</span>
           </div>
           <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-warm" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-5 h-5 text-warm" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
               <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
             </svg>
-            <span class="font-medium">Instant Download</span>
+            <span class="font-medium">Instant in-browser play</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Tools Grid (homepage preview) -->
-    <section id="tools" class="py-16 md:py-24">
+    <!-- Featured Games (route to /about-games/*, not /games/*) -->
+    <section id="featured" class="py-16 md:py-24">
       <div class="max-w-7xl mx-auto px-4">
         <div class="text-center mb-12">
-          <h2 class="text-3xl md:text-4xl font-bold text-navy mb-4">Featured $1 Tools</h2>
-          <p class="text-gray-600 text-lg max-w-2xl mx-auto">Browse the full catalog on the Tools page.</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-navy mb-4">Featured Games</h2>
+          <p class="text-gray-600 text-lg max-w-2xl mx-auto">Explore each game’s detail page, then unlock and play.</p>
         </div>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="tools-grid">
-          <!-- 1) Deduction -->
-          <div class="tool-card bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-blue-100 flex flex-col">
-            <div class="w-14 h-14 bg-action rounded-xl flex items-center justify-center mb-4 shadow-md">
-              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-              </svg>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="games-grid">
+
+          <!-- Circular 230 Quest -->
+          <div class="tool-card bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-blue-100 flex flex-col" data-game-file="circular-230-quest.html" data-game-cost="8">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 bg-action rounded-xl flex items-center justify-center shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+              </div>
+              <span class="text-xs font-semibold text-navy/70 bg-white/70 border border-blue-100 px-2 py-1 rounded-lg">8 tokens</span>
             </div>
-            <h3 class="text-xl font-bold text-navy mb-2">Tax Deduction Checklist</h3>
-            <p class="text-charcoal/70 text-sm mb-6 flex-grow">Find every deduction you deserve in minutes.</p>
-            <div class="flex gap-3">
-              <a href="/tools/tax-deduction-checklist.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-blue-100">Try Demo</a>
-              <button type="button" onclick="addToCart('deduction')" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy for $1</button>
+            <h3 class="text-xl font-bold text-navy mb-2">Circular 230 Quest</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">A guided challenge through Circular 230 concepts with zones, quizzes, and progression.</p>
+            <div class="flex gap-3" data-cta-row>
+              <a href="/about-games/circular-230-quest.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-blue-100">View details</a>
+              <button type="button" onclick="openCart()" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy tokens</button>
             </div>
           </div>
 
-          <!-- 2) Calendar -->
-          <div class="tool-card bg-gradient-to-br from-amber-50 to-amber-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-amber-100 flex flex-col">
-            <div class="w-14 h-14 bg-warm rounded-xl flex items-center justify-center mb-4 shadow-md">
-              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
+          <!-- IRS Tax Detective -->
+          <div class="tool-card bg-gradient-to-br from-emerald-50 to-emerald-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-emerald-100 flex flex-col" data-game-file="irs-tax-detective.html" data-game-cost="8">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 bg-emerald-600 rounded-xl flex items-center justify-center shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              </div>
+              <span class="text-xs font-semibold text-navy/70 bg-white/70 border border-emerald-100 px-2 py-1 rounded-lg">8 tokens</span>
             </div>
-            <h3 class="text-xl font-bold text-navy mb-2">Tax Deadline Reminder Calendar</h3>
-            <p class="text-charcoal/70 text-sm mb-6 flex-grow">Never miss a tax deadline again.</p>
-            <div class="flex gap-3">
-              <a href="/tools/tax-deadline-reminder-calendar.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-amber-100">Try Demo</a>
-              <button type="button" onclick="addToCart('calendar')" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy for $1</button>
-            </div>
-          </div>
-
-          <!-- 3) Organizer -->
-          <div class="tool-card bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-purple-100 flex flex-col">
-            <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mb-4 shadow-md">
-              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold text-navy mb-2">Tax Document Organizer Template</h3>
-            <p class="text-charcoal/70 text-sm mb-6 flex-grow">Keep W-2s, 1099s, and receipts in one clean system.</p>
-            <div class="flex gap-3">
-              <a href="/tools/tax-document-organizer-template.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-purple-100">Try Demo</a>
-              <button type="button" onclick="addToCart('organizer')" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy for $1</button>
+            <h3 class="text-xl font-bold text-navy mb-2">IRS Tax Detective</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">A detective-style game focused on solving tax “cases” using clues and IRS-style terminology.</p>
+            <div class="flex gap-3" data-cta-row>
+              <a href="/about-games/irs-tax-detective.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-emerald-100">View details</a>
+              <button type="button" onclick="openCart()" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy tokens</button>
             </div>
           </div>
 
-          <!-- 4) Estimator -->
-          <div class="tool-card bg-gradient-to-br from-green-50 to-green-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-green-100 flex flex-col">
-            <div class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center mb-4 shadow-md">
-              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+          <!-- IRS Notice Jackpot -->
+          <div class="tool-card bg-gradient-to-br from-amber-50 to-amber-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-amber-100 flex flex-col" data-game-file="irs-notice-jackpot.html" data-game-cost="8">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 bg-warm rounded-xl flex items-center justify-center shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" /></svg>
+              </div>
+              <span class="text-xs font-semibold text-navy/70 bg-white/70 border border-amber-100 px-2 py-1 rounded-lg">8 tokens</span>
             </div>
-            <h3 class="text-xl font-bold text-navy mb-2">Tax Refund Estimator Tool</h3>
-            <p class="text-charcoal/70 text-sm mb-6 flex-grow">Get a fast, rough estimate before you file.</p>
-            <div class="flex gap-3">
-              <a href="/tools/tax-refund-estimator-tool.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-green-100">Try Demo</a>
-              <button type="button" onclick="addToCart('estimator')" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy for $1</button>
-            </div>
-          </div>
-
-          <!-- 5) E-Book -->
-          <div class="tool-card bg-gradient-to-br from-rose-50 to-rose-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-rose-100 flex flex-col">
-            <div class="w-14 h-14 bg-rose-500 rounded-xl flex items-center justify-center mb-4 shadow-md">
-              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold text-navy mb-2">Tax Tips Mini E-Book</h3>
-            <p class="text-charcoal/70 text-sm mb-6 flex-grow">Quick, practical tips to reduce surprises and save time.</p>
-            <div class="flex gap-3">
-              <a href="/tools/tax-tips-mini-e-book.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-rose-100">Try Demo</a>
-              <button type="button" onclick="addToCart('ebook')" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy for $1</button>
+            <h3 class="text-xl font-bold text-navy mb-2">IRS Notice Jackpot</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">A slot-machine style notice matcher. Hit 7 out of 10 to land the jackpot.</p>
+            <div class="flex gap-3" data-cta-row>
+              <a href="/about-games/irs-notice-jackpot.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-amber-100">View details</a>
+              <button type="button" onclick="openCart()" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy tokens</button>
             </div>
           </div>
 
-          <!-- 6) Bundle -->
-          <div class="tool-card bg-gradient-to-br from-navy to-slate-800 rounded-2xl p-6 shadow-xl text-white flex flex-col">
-            <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mb-4 shadow-md">
-              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-              </svg>
+          <!-- IRS Notice Showdown -->
+          <div class="tool-card bg-gradient-to-br from-rose-50 to-rose-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-rose-100 flex flex-col" data-game-file="irs-notice-showdown.html" data-game-cost="8">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 bg-rose-500 rounded-xl flex items-center justify-center shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2" /></svg>
+              </div>
+              <span class="text-xs font-semibold text-navy/70 bg-white/70 border border-rose-100 px-2 py-1 rounded-lg">8 tokens</span>
             </div>
-            <div class="flex items-center gap-2 mb-2">
-              <h3 class="text-xl font-bold">Complete Bundle</h3>
-              <span class="bg-warm px-2 py-0.5 rounded text-xs font-bold">SAVE $1</span>
+            <h3 class="text-xl font-bold text-navy mb-2">IRS Notice Showdown</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">A casino-style notice challenge. Win by getting at least 3 out of 10 correct.</p>
+            <div class="flex gap-3" data-cta-row>
+              <a href="/about-games/irs-notice-showdown.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-rose-100">View details</a>
+              <button type="button" onclick="openCart()" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy tokens</button>
             </div>
-            <p class="text-blue-100 mb-6 flex-grow">Get all tools for just $4.</p>
-            <button type="button" onclick="addBundle()" class="w-full bg-white hover:bg-gray-100 text-navy px-4 py-3 rounded-xl font-semibold transition-colors"><a href="/tools/tax-tools-complete-bundle.html" class="block w-full text-center bg-brand-600 hover:bg-brand-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy Bundle</a>
           </div>
+
+          <!-- Match the Tax Notice -->
+          <div class="tool-card bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-slate-200 flex flex-col" data-game-file="match-the-tax-notice.html" data-game-cost="8">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 bg-slate-900 rounded-xl flex items-center justify-center shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              </div>
+              <span class="text-xs font-semibold text-navy/70 bg-white/70 border border-slate-200 px-2 py-1 rounded-lg">8 tokens</span>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Match the Tax Notice</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">A quick matching game. Get 3 out of 10 correct to win.</p>
+            <div class="flex gap-3" data-cta-row>
+              <a href="/about-games/match-the-tax-notice.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-slate-200">View details</a>
+              <button type="button" onclick="openCart()" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy tokens</button>
+            </div>
+          </div>
+
+          <!-- Tax Deadline Master -->
+          <div class="tool-card bg-gradient-to-br from-indigo-50 to-indigo-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-indigo-100 flex flex-col" data-game-file="tax-deadline-master.html" data-game-cost="8">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              </div>
+              <span class="text-xs font-semibold text-navy/70 bg-white/70 border border-indigo-100 px-2 py-1 rounded-lg">8 tokens</span>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Tax Deadline Master</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">A deadline mastery game that helps dates actually stick.</p>
+            <div class="flex gap-3" data-cta-row>
+              <a href="/about-games/tax-deadline-master.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-indigo-100">View details</a>
+              <button type="button" onclick="openCart()" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy tokens</button>
+            </div>
+          </div>
+
+          <!-- Tax Deduction Quest -->
+          <div class="tool-card bg-gradient-to-br from-green-50 to-green-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-green-100 flex flex-col" data-game-file="tax-deduction-quest.html" data-game-cost="8">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 bg-green-600 rounded-xl flex items-center justify-center shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2" /></svg>
+              </div>
+              <span class="text-xs font-semibold text-navy/70 bg-white/70 border border-green-100 px-2 py-1 rounded-lg">8 tokens</span>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Tax Deduction Quest</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">A deduction matching game designed for repetition and recall.</p>
+            <div class="flex gap-3" data-cta-row>
+              <a href="/about-games/tax-deduction-quest.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-green-100">View details</a>
+              <button type="button" onclick="openCart()" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy tokens</button>
+            </div>
+          </div>
+
+          <!-- Tax Document Hunter -->
+          <div class="tool-card bg-gradient-to-br from-cyan-50 to-cyan-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-cyan-100 flex flex-col" data-game-file="tax-document-hunter.html" data-game-cost="8">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 bg-cyan-600 rounded-xl flex items-center justify-center shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
+              </div>
+              <span class="text-xs font-semibold text-navy/70 bg-white/70 border border-cyan-100 px-2 py-1 rounded-lg">8 tokens</span>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Tax Document Hunter</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">Collect documents, earn points, and build a trophy case. Paperwork, but fun.</p>
+            <div class="flex gap-3" data-cta-row>
+              <a href="/about-games/tax-document-hunter.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-cyan-100">View details</a>
+              <button type="button" onclick="openCart()" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy tokens</button>
+            </div>
+          </div>
+
+          <!-- Tax Jargon Game -->
+          <div class="tool-card bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-purple-100 flex flex-col" data-game-file="tax-jargon-game.html" data-game-cost="8">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 bg-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+              </div>
+              <span class="text-xs font-semibold text-navy/70 bg-white/70 border border-purple-100 px-2 py-1 rounded-lg">8 tokens</span>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Tax Jargon Game</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">A vocabulary trainer with quizzes, flashcards, and lightning rounds.</p>
+            <div class="flex gap-3" data-cta-row>
+              <a href="/about-games/tax-jargon-game.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-purple-100">View details</a>
+              <button type="button" onclick="openCart()" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy tokens</button>
+            </div>
+          </div>
+
+          <!-- Tax Strategy Adventures -->
+          <div class="tool-card bg-gradient-to-br from-orange-50 to-orange-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-orange-100 flex flex-col" data-game-file="tax-strategy-adventures.html" data-game-cost="8">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 bg-orange-500 rounded-xl flex items-center justify-center shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+              </div>
+              <span class="text-xs font-semibold text-navy/70 bg-white/70 border border-orange-100 px-2 py-1 rounded-lg">8 tokens</span>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Tax Strategy Adventures</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">A strategy quest game where players collect “cards” across zones and level up.</p>
+            <div class="flex gap-3" data-cta-row>
+              <a href="/about-games/tax-strategy-adventures.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-orange-100">View details</a>
+              <button type="button" onclick="openCart()" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy tokens</button>
+            </div>
+          </div>
+
+          <!-- Tax Tips Refund Boost -->
+          <div class="tool-card bg-gradient-to-br from-fuchsia-50 to-fuchsia-100/50 rounded-2xl p-6 shadow-md hover:shadow-xl border border-fuchsia-100 flex flex-col" data-game-file="tax-tips-refund-boost.html" data-game-cost="8">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 bg-fuchsia-600 rounded-xl flex items-center justify-center shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+              </div>
+              <span class="text-xs font-semibold text-navy/70 bg-white/70 border border-fuchsia-100 px-2 py-1 rounded-lg">8 tokens</span>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Tax Tips Refund Boost</h3>
+            <p class="text-charcoal/70 text-sm mb-6 flex-grow">A fast quiz game built around practical tips and refund boosters.</p>
+            <div class="flex gap-3" data-cta-row>
+              <a href="/about-games/tax-tips-refund-boost.html" class="flex-1 text-center bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold transition-colors border border-fuchsia-100">View details</a>
+              <button type="button" onclick="openCart()" class="flex-1 bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors">Buy tokens</button>
+            </div>
+          </div>
+
         </div>
-
-        
       </div>
     </section>
 
-    <!-- Why Choose -->
-    <section class="py-16 md:py-24 bg-slate-50">
+    <!-- Token Packs (cartless: single SKU per checkout) -->
+    <section id="token-packs" class="py-16 md:py-20 bg-white border-t border-gray-100">
       <div class="max-w-7xl mx-auto px-4">
         <div class="text-center mb-12">
-          <h2 class="text-3xl md:text-4xl font-bold text-navy mb-4">Why Choose TaxTools?</h2>
-          <p class="text-lg text-gray-600 max-w-2xl mx-auto">Simple $1 tools that help you organize, estimate, and avoid preventable mistakes.</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-navy mb-4">Token Packs</h2>
+          <p class="text-gray-600 text-lg max-w-2xl mx-auto">Buy tokens, then unlock games from each game’s detail page.</p>
         </div>
 
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow text-center border border-gray-100">
-            <div class="w-16 h-16 bg-warm/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-warm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-              </svg>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xl font-bold text-navy">Small Pack</h3>
+              <span class="text-sm font-semibold text-navy/70">$9</span>
             </div>
-            <h3 class="text-lg font-bold text-navy mb-2">Clear value</h3>
-            <p class="text-gray-600 text-sm">$1 tools that do one job well, fast.</p>
+            <p class="text-sm text-gray-600 mb-6">30 tokens (about 4–6 plays).</p>
+            <button type="button" class="w-full bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors" onclick="addToCart('token_pack_small_30'); openCart();">Buy</button>
           </div>
 
-          <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow text-center border border-gray-100">
-            <div class="w-16 h-16 bg-action/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-action" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+          <div class="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xl font-bold text-navy">Medium Pack</h3>
+              <span class="text-sm font-semibold text-navy/70">$19</span>
             </div>
-            <h3 class="text-lg font-bold text-navy mb-2">Instant access</h3>
-            <p class="text-gray-600 text-sm">Buy, download, and use in minutes.</p>
+            <p class="text-sm text-gray-600 mb-6">80 tokens (about 10–16 plays).</p>
+            <button type="button" class="w-full bg-warm hover:bg-orange-500 text-white px-4 py-3 rounded-xl font-semibold transition-colors" onclick="addToCart('token_pack_medium_80'); openCart();">Buy</button>
           </div>
 
-          <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow text-center border border-gray-100">
-            <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
+          <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xl font-bold text-navy">Large Pack</h3>
+              <span class="text-sm font-semibold text-navy/70">$39</span>
             </div>
-            <h3 class="text-lg font-bold text-navy mb-2">Practical guidance</h3>
-            <p class="text-gray-600 text-sm">Structured checklists, templates, and calculators.</p>
-          </div>
-
-          <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow text-center border border-gray-100">
-            <div class="w-16 h-16 bg-slate-900/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-slate-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a7.975 7.975 0 000-6M4.6 9a7.975 7.975 0 000 6" />
-              </svg>
-            </div>
-            <h3 class="text-lg font-bold text-navy mb-2">Real help available</h3>
-            <p class="text-gray-600 text-sm">Need representation? Route to Tax Monitor Pro.</p>
+            <p class="text-sm text-gray-600 mb-6">200 tokens (about 25–40 plays).</p>
+            <button type="button" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors" onclick="addToCart('token_pack_large_200'); openCart();">Buy</button>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- How It Works -->
-    <section class="py-16 md:py-24 bg-white">
-      <div class="max-w-7xl mx-auto px-4">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl md:text-4xl font-bold text-navy mb-4">How It Works</h2>
-          <p class="text-lg text-gray-600">Three simple steps from purchase to progress.</p>
-        </div>
-
-        <div class="relative grid md:grid-cols-3 gap-8">
-          <div class="hidden md:block absolute top-8 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-action via-warm to-action opacity-40"></div>
-
-          <div class="text-center relative">
-            <div class="w-16 h-16 bg-action text-white rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold shadow-lg relative z-10">1</div>
-            <h3 class="text-xl font-bold text-navy mb-3">Add to cart</h3>
-            <p class="text-gray-600">Pick what you need, or grab the bundle.</p>
-          </div>
-
-          <div class="text-center relative">
-            <div class="w-16 h-16 bg-warm text-white rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold shadow-lg relative z-10">2</div>
-            <h3 class="text-xl font-bold text-navy mb-3">Secure checkout</h3>
-            <p class="text-gray-600">Fast payment and immediate access.</p>
-          </div>
-
-          <div class="text-center relative">
-            <div class="w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold shadow-lg relative z-10">3</div>
-            <h3 class="text-xl font-bold text-navy mb-3">Use in minutes</h3>
-            <p class="text-gray-600">Download and apply the tool right away.</p>
+        <div class="mt-10 max-w-3xl mx-auto">
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <p class="font-semibold text-navy">Current balance</p>
+                <p class="text-sm text-gray-600">Sign in to see your token balance.</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 py-3">
+                  <span class="text-sm text-gray-600">Tokens</span>
+                  <span class="text-lg font-bold text-navy" id="token-balance-inline">0</span>
+                </span>
+                <button type="button" class="bg-action hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold" onclick="openCart()">Buy tokens</button>
+              </div>
+            </div>
           </div>
         </div>
+
       </div>
     </section>
 
@@ -343,122 +387,99 @@
         <div class="space-y-4">
           <div class="bg-slate-50 rounded-2xl overflow-hidden border border-slate-100">
             <button type="button" class="faq-btn w-full text-left px-6 py-5 flex items-center justify-between" onclick="toggleFaq(this)">
-              <span class="font-semibold text-navy pr-4">How do downloads work?</span>
+              <span class="font-semibold text-navy pr-4">Do I spend tokens on this page?</span>
               <svg class="faq-icon w-5 h-5 text-action transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             <div class="faq-content hidden px-6 pb-5">
-              <p class="text-gray-600">After purchase, you get instant access to your files. Keep them for your records and reuse as needed.</p>
+              <p class="text-gray-600">No. This page only routes you to a game’s detail page. Token spend happens only when you confirm unlock on the game detail page.</p>
             </div>
           </div>
 
           <div class="bg-slate-50 rounded-2xl overflow-hidden border border-slate-100">
             <button type="button" class="faq-btn w-full text-left px-6 py-5 flex items-center justify-between" onclick="toggleFaq(this)">
-              <span class="font-semibold text-navy pr-4">What file formats are included?</span>
+              <span class="font-semibold text-navy pr-4">Are tokens refundable?</span>
               <svg class="faq-icon w-5 h-5 text-action transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             <div class="faq-content hidden px-6 pb-5">
-              <p class="text-gray-600">Tools ship as PDF, XLS/XLSX, or calendar files depending on the product. Each product page lists the format clearly.</p>
+              <p class="text-gray-600">Tokens do not expire. Refund policy is defined in <code>/legal/refund.html</code>.</p>
             </div>
           </div>
 
           <div class="bg-slate-50 rounded-2xl overflow-hidden border border-slate-100">
             <button type="button" class="faq-btn w-full text-left px-6 py-5 flex items-center justify-between" onclick="toggleFaq(this)">
-              <span class="font-semibold text-navy pr-4">Do you offer refunds?</span>
+              <span class="font-semibold text-navy pr-4">Is this tax advice or representation?</span>
               <svg class="faq-icon w-5 h-5 text-action transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             <div class="faq-content hidden px-6 pb-5">
-              <p class="text-gray-600">Yes. See our Refund Policy for the exact terms and process.</p>
+              <p class="text-gray-600">Educational only. Not tax advice. Not representation. For monitoring or representation, go to Tax Monitor Pro.</p>
             </div>
           </div>
 
           <div class="bg-slate-50 rounded-2xl overflow-hidden border border-slate-100">
             <button type="button" class="faq-btn w-full text-left px-6 py-5 flex items-center justify-between" onclick="toggleFaq(this)">
-              <span class="font-semibold text-navy pr-4">Can you help with representation?</span>
+              <span class="font-semibold text-navy pr-4">Where do I unlock and play?</span>
               <svg class="faq-icon w-5 h-5 text-action transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             <div class="faq-content hidden px-6 pb-5">
-              <p class="text-gray-600">TaxTools is a $1 tools store. For monitoring or representation, we route to Tax Monitor Pro.</p>
+              <p class="text-gray-600">Open a game’s detail page (<code>/about-games/&lt;slug&gt;.html</code>) to unlock, then it routes you to the playable page (<code>/games/&lt;slug&gt;.html</code>).</p>
             </div>
           </div>
+
         </div>
       </div>
     </section>
 
-    <!-- Final CTA -->
+    <!-- CTA -->
     <section class="py-16 md:py-24 bg-gradient-to-br from-navy via-slate-800 to-navy text-white">
       <div class="max-w-4xl mx-auto px-4 text-center">
         <div class="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-6 backdrop-blur">
           <svg class="w-4 h-4 text-warm" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
           </svg>
-          $1 tools, real clarity
+          Play • Learn • Repeat
         </div>
-        <h2 class="text-3xl md:text-5xl font-bold mb-6">Ready to get organized?</h2>
-        <p class="text-lg md:text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Start with a single tool or grab the bundle and save $1.</p>
+        <h2 class="text-3xl md:text-5xl font-bold mb-6">Ready to level up tax knowledge?</h2>
+        <p class="text-lg md:text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Start with a game detail page. Need real monitoring or representation? Route to Tax Monitor Pro.</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#tools" class="bg-warm hover:bg-orange-500 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all shadow-lg hover:shadow-xl">Browse Tools</a>
+          <a href="#featured" class="bg-warm hover:bg-orange-500 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all shadow-lg hover:shadow-xl">Browse Games</a>
           <a href="https://taxmonitor.pro" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl text-lg border border-white/20 transition-all">Need personal help?</a>
         </div>
-        <p class="text-white/60 text-sm mt-8">Secure payment • Instant download • Bundle savings</p>
+        <p class="text-white/60 text-sm mt-8">Educational only • In-browser play • Clear next steps</p>
       </div>
     </section>
 
     <!-- PARTIAL:footer -->
   </div>
 
-  <!-- Modal Container -->
-  <div id="modal-container" class="fixed inset-0 z-50 hidden">
-    <div class="modal-overlay absolute inset-0 bg-black/50" onclick="closeDemo()"></div>
-    <div class="absolute inset-4 md:inset-8 lg:inset-16 bg-white rounded-2xl overflow-hidden flex flex-col animate-slide-up">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-        <h3 id="modal-title" class="text-xl font-bold text-navy">Demo</h3>
-        <button onclick="closeDemo()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Close demo">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      <div id="modal-content" class="flex-1 overflow-auto p-6"></div>
-      <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
-        <p class="text-sm text-gray-500">
-          <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-          </svg>
-          Demo mode
-        </p>
-        <button id="modal-buy-btn" class="bg-action hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors">Buy Full Version for $1</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Cart Sidebar -->
+  <!-- Cart Sidebar (single SKU per checkout) -->
   <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300">
     <div class="h-full flex flex-col">
       <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-        <h3 class="text-xl font-bold text-navy">Your Cart</h3>
-        <button onclick="closeCart()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Close cart">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <h3 class="text-xl font-bold text-navy">Token Checkout</h3>
+        <button type="button" onclick="closeCart()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Close cart">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
       <div id="cart-items" class="flex-1 overflow-auto p-6">
-        <p class="text-gray-500 text-center py-8">Your cart is empty</p>
+        <p class="text-gray-500 text-center py-8">No token pack selected.</p>
       </div>
       <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
         <div class="flex items-center justify-between mb-4">
           <span class="font-semibold text-navy">Total:</span>
           <span id="cart-total" class="text-2xl font-bold text-navy">$0</span>
         </div>
-        <button id="checkout-btn" onclick="checkout()" class="w-full bg-warm hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>Proceed to Checkout</button>
+        <button id="checkout-btn" type="button" onclick="checkout()" class="w-full bg-warm hover:bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>Proceed to Checkout</button>
+        <p class="text-xs text-gray-500 mt-3">Cartless checkout: one token pack per session.</p>
       </div>
     </div>
   </div>
@@ -466,108 +487,58 @@
 
   <!-- Toast -->
   <div id="toast" class="fixed bottom-4 right-4 bg-navy text-white px-6 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-    <span id="toast-message">Item added to cart!</span>
+    <span id="toast-message">Done.</span>
   </div>
 
   <script>
-    // API (we are committing to these exact endpoints)
+    // API (v1)
     const TOOLS_API_BASE = 'https://tools-api.taxmonitor.pro';
 
     // Alphabetical endpoints list
     const TOOLS_API_ENDPOINTS = {
+      authMe: `${TOOLS_API_BASE}/v1/auth/me`,
       checkoutCreate: `${TOOLS_API_BASE}/v1/checkout/sessions`,
       checkoutStatus: `${TOOLS_API_BASE}/v1/checkout/status`,
-      supportCreate: `${TOOLS_API_BASE}/v1/support/tickets`
+      tokensBalance: `${TOOLS_API_BASE}/v1/tokens/balance`
     };
 
-    // Config and state
-    const defaultConfig = {
-      hero_headline: 'Unlock Tax Season Superpowers for $1 Each',
-      hero_subheadline: 'Instant, interactive tools to save you time, money, and stress.',
-      background_color: '#ffffff',
-      accent_color: '#1e3a5f',
-      action_color: '#1d4ed8',
-      text_color: '#2d3748',
-      trust_color: '#f97316',
-      font_family: 'DM Sans'
-    };
-
+    // State
     let cart = [];
+    let isSignedIn = false;
+    let tokenBalance = 0;
+    let userEmail = null;
 
+    // Products (token packs) - alphabetical by SKU
     const products = {
-      calendar: { name: 'Tax Deadline Reminder Calendar', price: 1 },
-      deduction: { name: 'Tax Deduction Checklist', price: 1 },
-      ebook: { name: 'Tax Tips Mini E-Book', price: 1 },
-      estimator: { name: 'Tax Refund Estimator Tool', price: 1 },
-      organizer: { name: 'Tax Document Organizer Template', price: 1 }
+      token_pack_large_200: { name: 'Large Pack', price: 39, tokens: 200 },
+      token_pack_medium_80: { name: 'Medium Pack', price: 19, tokens: 80 },
+      token_pack_small_30: { name: 'Small Pack', price: 9, tokens: 30 }
     };
 
-    // Initialize Element SDK
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange: async (config) => {
-          const headline = document.getElementById('hero-headline');
-          const subheadline = document.getElementById('hero-subheadline');
-
-          if (headline) headline.textContent = config.hero_headline || defaultConfig.hero_headline;
-          if (subheadline) subheadline.textContent = config.hero_subheadline || defaultConfig.hero_subheadline;
-
-          const font = config.font_family || defaultConfig.font_family;
-          document.body.style.fontFamily = `${font}, sans-serif`;
-        },
-        mapToCapabilities: (config) => ({
-          recolorables: [
-            { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-            { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); } },
-            { get: () => config.action_color || defaultConfig.action_color, set: (v) => { config.action_color = v; window.elementSdk.setConfig({ action_color: v }); } },
-            { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-            { get: () => config.trust_color || defaultConfig.trust_color, set: (v) => { config.trust_color = v; window.elementSdk.setConfig({ trust_color: v }); } }
-          ],
-          borderables: [],
-          fontEditable: {
-            get: () => config.font_family || defaultConfig.font_family,
-            set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-          },
-          fontSizeable: undefined
-        }),
-        mapToEditPanelValues: (config) => new Map([
-          ['hero_headline', config.hero_headline || defaultConfig.hero_headline],
-          ['hero_subheadline', config.hero_subheadline || defaultConfig.hero_subheadline]
-        ])
-      });
-    }
     function toggleFaq(button) {
       const content = button?.nextElementSibling;
       const icon = button?.querySelector('.faq-icon');
       if (!content) return;
-
       content.classList.toggle('hidden');
       icon && icon.classList.toggle('rotate-180');
     }
 
-    // Mobile menu toggle
+    // Mobile menu toggle (requires your header partial to provide these IDs)
     document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
       document.getElementById('mobile-menu')?.classList.toggle('hidden');
     });
 
-    
-
     // Cart
-    function addBundle() {
-      cart = ['deduction', 'calendar', 'organizer', 'estimator', 'ebook'];
-      updateCartUI();
-      showToast('Complete Bundle added to cart!');
-    }
-
-    function addToCart(productId) {
-      if (!cart.includes(productId)) {
-        cart.push(productId);
-        updateCartUI();
-        showToast(`${products[productId].name} added to cart!`);
-      } else {
-        showToast('Item already in cart');
+    function addToCart(sku) {
+      if (!products[sku]) {
+        showToast('That item is not available.');
+        return;
       }
+
+      // Cartless: one item only
+      cart = [sku];
+      updateCartUI();
+      showToast(`${products[sku].name} selected.`);
     }
 
     function closeCart() {
@@ -580,16 +551,19 @@
       document.getElementById('cart-overlay')?.classList.remove('hidden');
     }
 
+    // Header partial should provide #cart-btn.
     document.getElementById('cart-btn')?.addEventListener('click', openCart);
 
-    function removeFromCart(productId) {
-      cart = cart.filter(id => id !== productId);
+    function removeFromCart(sku) {
+      cart = cart.filter(id => id !== sku);
       updateCartUI();
     }
 
     function updateCartUI() {
       const count = cart.length;
-      const total = cart.length === 5 ? 4 : cart.length;
+      const sku = cart[0];
+      const p = sku ? products[sku] : null;
+      const total = p ? p.price : 0;
 
       const cartCount = document.getElementById('cart-count');
       if (cartCount) {
@@ -602,77 +576,124 @@
       const cartItems = document.getElementById('cart-items');
       if (!cartItems) return;
 
-      if (count === 0) {
-        cartItems.innerHTML = '<p class="text-gray-500 text-center py-8">Your cart is empty</p>';
+      if (count === 0 || !p) {
+        cartItems.innerHTML = '<p class="text-gray-500 text-center py-8">No token pack selected.</p>';
       } else {
-        cartItems.innerHTML = cart.map(id => `
+        cartItems.innerHTML = `
           <div class="flex items-center justify-between py-3 border-b border-gray-100">
             <div>
-              <p class="font-medium text-navy">${products[id].name}</p>
-              <p class="text-sm text-gray-500">$${products[id].price}</p>
+              <p class="font-medium text-navy">${p.name}</p>
+              <p class="text-sm text-gray-500">$${p.price} • ${p.tokens} tokens</p>
             </div>
-            <button type="button" onclick="removeFromCart('${id}')" class="p-1 text-gray-400 hover:text-red-500 transition-colors" aria-label="Remove">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button type="button" onclick="removeFromCart('${sku}')" class="p-1 text-gray-400 hover:text-red-500 transition-colors" aria-label="Remove">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
               </svg>
             </button>
           </div>
-        `).join('');
-
-        if (count === 5) {
-          cartItems.innerHTML += `
-            <div class="mt-4 p-3 bg-blue-50 rounded-lg text-sm text-blue-700">
-              <strong>Bundle discount applied!</strong> You're saving $1.
-            </div>
-          `;
-        }
+        `;
       }
 
       document.getElementById('cart-total').textContent = `$${total}`;
       document.getElementById('checkout-btn').disabled = count === 0;
     }
 
-    function checkout() {
-      const total = cart.length === 5 ? 4 : cart.length;
+    async function checkout() {
+      const sku = cart[0];
+      const p = sku ? products[sku] : null;
+      if (!p) return;
 
-      // Create a checkout session (real endpoint names we are now committing to).
-      // POST https://tools-api.taxmonitor.pro/v1/checkout/sessions
+      if (!isSignedIn || !userEmail) {
+        showToast('Sign in to buy tokens.');
+        return;
+      }
+
+      // Contract: POST /v1/checkout/sessions { email, item, quantity }
+      // Frontend must never send Stripe price_ IDs.
       const payload = {
-        cancelUrl: `${location.origin}/tools.html`,
-        items: cart.map((id) => ({
-          id,
-          name: products[id]?.name || id,
-          price: 1,
-          quantity: 1
-        })),
-        successUrl: `${location.origin}/?paid=1`,
-        total
+        email: userEmail,
+        item: sku,
+        quantity: 1
       };
 
       closeCart();
 
-      fetch(TOOLS_API_ENDPOINTS.checkoutCreate, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-        .then(async (res) => {
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok) throw new Error(data?.error || `Checkout session failed (${res.status})`);
-          return data;
-        })
-        .then((data) => {
-          // Expected response: { sessionId, checkoutUrl }
-          if (data?.checkoutUrl) {
-            location.href = data.checkoutUrl;
-            return;
-          }
-          showToast('Checkout session created (missing checkoutUrl).');
-        })
-        .catch((err) => {
-          showToast(`Checkout error: ${err.message || 'Unknown error'}`);
+      try {
+        const res = await fetch(TOOLS_API_ENDPOINTS.checkoutCreate, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          credentials: 'include'
         });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data?.error || `Checkout session failed (${res.status})`);
+
+        if (data?.checkoutUrl) {
+          location.href = data.checkoutUrl;
+          return;
+        }
+
+        showToast('Checkout session created (missing checkoutUrl).');
+      } catch (err) {
+        showToast(`Checkout error: ${err.message || 'Unknown error'}`);
+      }
     }
+
+    // Token + auth
+    function setTokenBalance(balance) {
+      tokenBalance = Number.isFinite(balance) ? balance : 0;
+
+      // Header partial should include #token-balance.
+      const headerEl = document.getElementById('token-balance');
+      if (headerEl) headerEl.textContent = String(tokenBalance);
+
+      const inlineEl = document.getElementById('token-balance-inline');
+      if (inlineEl) inlineEl.textContent = String(tokenBalance);
+    }
+
+    async function refreshAuthAndBalance() {
+      try {
+        const meRes = await fetch(TOOLS_API_ENDPOINTS.authMe, { credentials: 'include' });
+        const meData = await meRes.json().catch(() => ({}));
+
+        isSignedIn = !!meData?.isAuthenticated;
+        userEmail = meData?.email || null;
+
+        // Header partial can optionally show email in #user-email.
+        const emailEl = document.getElementById('user-email');
+        if (emailEl) emailEl.textContent = userEmail || '';
+
+        if (!isSignedIn) {
+          setTokenBalance(0);
+          return;
+        }
+
+        const balRes = await fetch(TOOLS_API_ENDPOINTS.tokensBalance, { credentials: 'include' });
+        const balData = await balRes.json().catch(() => ({}));
+        setTokenBalance(Number(balData?.balance || 0));
+      } catch {
+        isSignedIn = false;
+        userEmail = null;
+        setTokenBalance(0);
+      }
+    }
+
+    // Header partial hook-ups (optional)
+    document.getElementById('signin-btn')?.addEventListener('click', () => {
+      showToast('Sign-in is required to buy tokens or unlock games.');
+    });
+
+    document.getElementById('signout-btn')?.addEventListener('click', () => {
+      isSignedIn = false;
+      userEmail = null;
+      setTokenBalance(0);
+      showToast('Signed out.');
+    });
+
+    // Init
+    refreshAuthAndBalance();
+    updateCartUI();
 
     // Toast
     function showToast(message) {
@@ -684,218 +705,6 @@
       toast.classList.remove('translate-y-20', 'opacity-0');
       setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
     }
-
-    // Demo modal
-    let currentDemo = null;
-
-    function openDemo(type) {
-      currentDemo = type;
-      const modal = document.getElementById('modal-container');
-      const title = document.getElementById('modal-title');
-      const content = document.getElementById('modal-content');
-      const buyBtn = document.getElementById('modal-buy-btn');
-
-      buyBtn.onclick = () => { addToCart(type); closeDemo(); };
-
-      switch(type) {
-        case 'deduction':
-          title.textContent = 'Tax Deduction Checklist - Demo';
-          content.innerHTML = getDeductionDemo();
-          break;
-        case 'calendar':
-          title.textContent = 'Tax Deadline Reminder Calendar - Demo';
-          content.innerHTML = getCalendarDemo();
-          initCalendarDemo();
-          break;
-        case 'organizer':
-          title.textContent = 'Tax Document Organizer Template - Demo';
-          content.innerHTML = getOrganizerDemo();
-          initOrganizerDemo();
-          break;
-        case 'estimator':
-          title.textContent = 'Tax Refund Estimator Tool - Demo';
-          content.innerHTML = getEstimatorDemo();
-          break;
-        case 'ebook':
-          title.textContent = 'Tax Tips Mini E-Book - Demo';
-          content.innerHTML = getEbookDemo();
-          break;
-      }
-
-      modal.classList.remove('hidden');
-    }
-
-    function closeDemo() {
-      document.getElementById('modal-container')?.classList.add('hidden');
-      currentDemo = null;
-    }
-
-    // Demo 1: Deduction Checklist
-    function getDeductionDemo() {
-      const deductions = [
-        { name: 'Charitable Donations', value: 800, category: 'Giving' },
-        { name: 'Educator Expenses', value: 300, category: 'Education' },
-        { name: 'Energy Efficient Home Improvements', value: 1500, category: 'Home' },
-        { name: 'Home Office Expenses', value: 1500, category: 'Work' },
-        { name: 'Job Search Expenses', value: 200, category: 'Work' },
-        { name: 'Medical Expenses', value: 1200, category: 'Health' },
-        { name: 'Mortgage Interest', value: 8000, category: 'Home' },
-        { name: 'Professional Development', value: 500, category: 'Work' },
-        { name: 'Retirement Contributions', value: 6000, category: 'Savings' },
-        { name: 'State & Local Taxes', value: 3000, category: 'Taxes' },
-        { name: 'Student Loan Interest', value: 2500, category: 'Education' },
-        { name: 'Vehicle Registration Fees', value: 250, category: 'Transportation' }
-      ];
-
-      return `
-        <div class="max-w-2xl mx-auto">
-          <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-            <p class="text-blue-800 text-sm"><strong>Demo Mode:</strong> Check deductions that apply to you.</p>
-          </div>
-
-          <div class="space-y-3" id="deduction-list">
-            ${deductions.map((d) => `
-              <label class="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-xl hover:border-action cursor-pointer transition-colors">
-                <input type="checkbox" class="deduction-check w-5 h-5 text-action rounded focus:ring-action" data-value="${d.value}" onchange="updateDeductionTotal()" />
-                <div class="flex-1">
-                  <p class="font-medium text-navy">${d.name}</p>
-                  <p class="text-sm text-gray-500">${d.category}</p>
-                </div>
-                <span class="text-warm font-semibold">$${d.value.toLocaleString()}</span>
-              </label>
-            `).join('')}
-          </div>
-
-          <div class="sticky bottom-0 bg-white border-t border-gray-200 mt-6 pt-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-gray-600">Potential Deductions Found:</p>
-                <p class="text-3xl font-bold text-warm" id="deduction-total">$0</p>
-              </div>
-              <button class="bg-gray-200 text-gray-500 px-6 py-3 rounded-xl font-semibold cursor-not-allowed" disabled title="Available in full version">Export PDF</button>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    function updateDeductionTotal() {
-      const checkboxes = document.querySelectorAll('.deduction-check:checked');
-      let total = 0;
-      checkboxes.forEach(cb => total += parseInt(cb.dataset.value, 10));
-      document.getElementById('deduction-total').textContent = `$${total.toLocaleString()}`;
-    }
-
-    // Demo 2: Calendar
-    let calendarMonth = 3; // April (0-indexed)
-    let calendarYear = 2024;
-
-    const taxDeadlines = {
-      '2024-4-15': { title: 'Federal Filing Deadline', type: 'federal', desc: 'Last day to file or extend your federal return' },
-      '2024-6-17': { title: 'Q2 Estimated Payment Due', type: 'estimated', desc: 'Second quarterly estimated tax payment' },
-      '2024-9-16': { title: 'Q3 Estimated Payment Due', type: 'estimated', desc: 'Third quarterly estimated tax payment' },
-      '2024-10-15': { title: 'Extended Filing Deadline', type: 'federal', desc: 'Last day to file if you requested an extension' },
-      '2025-1-15': { title: 'Q4 Estimated Payment Due', type: 'estimated', desc: 'Fourth quarterly estimated tax payment' }
-    };
-
-    function getCalendarDemo() {
-      return `
-        <div class="max-w-3xl mx-auto">
-          <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-            <p class="text-blue-800 text-sm"><strong>Demo Mode:</strong> Navigate months to see key tax deadlines.</p>
-          </div>
-
-          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-            <div class="flex items-center justify-between px-6 py-4 bg-gray-50 border-b border-gray-200">
-              <button onclick="prevMonth()" class="p-2 hover:bg-gray-200 rounded-lg transition-colors" aria-label="Previous month">◀</button>
-              <h4 id="calendar-month-title" class="text-xl font-bold text-navy">April 2024</h4>
-              <button onclick="nextMonth()" class="p-2 hover:bg-gray-200 rounded-lg transition-colors" aria-label="Next month">▶</button>
-            </div>
-
-            <div class="grid grid-cols-7 border-b border-gray-200">
-              ${['Fri','Mon','Sat','Sun','Thu','Tue','Wed'].sort().map(d => `
-                <div class="px-2 py-3 text-center text-sm font-medium text-gray-500 border-r border-gray-100 last:border-r-0">${d}</div>
-              `).join('')}
-            </div>
-
-            <div id="calendar-grid" class="grid grid-cols-7"></div>
-          </div>
-
-          <div id="calendar-events" class="mt-6 space-y-3"></div>
-        </div>
-      `;
-    }
-
-    function initCalendarDemo() { renderCalendar(); }
-
-    function renderCalendar() {
-      const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-      document.getElementById('calendar-month-title').textContent = `${monthNames[calendarMonth]} ${calendarYear}`;
-
-      const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
-      const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
-
-      let html = '';
-      for (let i = 0; i < firstDay; i++) html += '<div class="h-12 border-r border-b border-gray-100"></div>';
-
-      for (let day = 1; day <= daysInMonth; day++) {
-        const dateKey = `${calendarYear}-${calendarMonth + 1}-${day}`;
-        const hasDeadline = taxDeadlines[dateKey];
-
-        html += `
-          <div class="h-12 border-r border-b border-gray-100 p-1 relative ${hasDeadline ? 'bg-red-50' : ''}">
-            <span class="text-sm ${hasDeadline ? 'font-bold text-red-600' : 'text-gray-700'}">${day}</span>
-            ${hasDeadline ? '<div class="absolute bottom-1 left-1 right-1 h-1 bg-red-500 rounded"></div>' : ''}
-          </div>
-        `;
-      }
-
-      document.getElementById('calendar-grid').innerHTML = html;
-
-      let eventsHtml = '';
-      Object.keys(taxDeadlines).sort().forEach(dateKey => {
-        const [year, month, day] = dateKey.split('-').map(Number);
-        if (year === calendarYear && month === calendarMonth + 1) {
-          const deadline = taxDeadlines[dateKey];
-          eventsHtml += `
-            <div class="flex items-start gap-4 p-4 bg-white border border-gray-200 rounded-xl">
-              <div class="w-12 h-12 bg-red-100 rounded-lg flex flex-col items-center justify-center">
-                <span class="text-xs text-red-600 font-medium">${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][month-1]}</span>
-                <span class="text-lg font-bold text-red-600">${day}</span>
-              </div>
-              <div>
-                <p class="font-semibold text-navy">${deadline.title}</p>
-                <p class="text-sm text-gray-600">${deadline.desc}</p>
-              </div>
-            </div>
-          `;
-        }
-      });
-
-      document.getElementById('calendar-events').innerHTML = eventsHtml || '<p class="text-gray-500 text-center py-4">No tax deadlines this month</p>';
-    }
-
-    function prevMonth() {
-      calendarMonth--;
-      if (calendarMonth < 0) { calendarMonth = 11; calendarYear--; }
-      renderCalendar();
-    }
-
-    function nextMonth() {
-      calendarMonth++;
-      if (calendarMonth > 11) { calendarMonth = 0; calendarYear++; }
-      renderCalendar();
-    }
-
-    // Demo 3: Organizer (kept from your original, minimal)
-    function getOrganizerDemo() { return '<div class="text-gray-600">Organizer demo placeholder (kept minimal for launch).</div>'; }
-    function initOrganizerDemo() {}
-
-    // Demo 4: Estimator (kept minimal)
-    function getEstimatorDemo() { return '<div class="text-gray-600">Estimator demo placeholder (kept minimal for launch).</div>'; }
-
-    // Demo 5: Ebook (kept minimal)
-    function getEbookDemo() { return '<div class="text-gray-600">E-book demo placeholder (kept minimal for launch).</div>'; }
   </script>
 </body>
 </html>
