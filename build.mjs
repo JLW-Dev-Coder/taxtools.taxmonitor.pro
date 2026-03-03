@@ -116,10 +116,6 @@ function parseWranglerOrganizationVars(wranglerTomlPath) {
   }
 
   const raw = readText(wranglerTomlPath);
-
-  // Only parse simple string assignments:
-  // MY_ORGANIZATION_FOO = "bar"
-  // (We intentionally ignore arrays/tables/etc.)
   const vars = {};
 
   for (const line of raw.split(/\r?\n/)) {
@@ -137,7 +133,7 @@ function parseWranglerOrganizationVars(wranglerTomlPath) {
 function replaceTokensInHtml(html, vars) {
   return html.replace(/\{\{([A-Z0-9_]+)\}\}/g, (full, key) => {
     if (Object.prototype.hasOwnProperty.call(vars, key)) return String(vars[key]);
-    return full; // leave unknown tokens intact
+    return full;
   });
 }
 
@@ -171,14 +167,13 @@ function injectWranglerVarsIntoDistHtml(distRoot, wranglerTomlPath) {
 }
 
 function build() {
-  // Clean
   emptyDir(DIST);
   ensureDir(DIST);
 
-  // Files (root)
   const rootFiles = [
     "_redirects",
     "about.html",
+    "contact.html",
     "faq.html",
     "help-center.html",
     "index.html",
@@ -188,7 +183,6 @@ function build() {
     "tools.html",
   ];
 
-  // Folders (root)
   const rootDirs = [
     "_sdk",
     "assets",
@@ -212,16 +206,12 @@ function build() {
     if (exists(src)) copyDir(src, path.join(DIST, dir));
   }
 
-  // Sanity check
   const distIndex = path.join(DIST, "index.html");
   if (!exists(distIndex)) {
     throw new Error("dist/index.html missing after build. Check index.html exists at repo root.");
   }
 
-  // Inject partials (header/footer markers)
   injectPartialsIntoHtml(DIST);
-
-  // Inject MY_ORGANIZATION_* tokens into dist HTML from workers/api/wrangler.toml
   injectWranglerVarsIntoDistHtml(DIST, WRANGLER_TOML);
 
   console.log("\n✅ Build complete: dist/ created.");
