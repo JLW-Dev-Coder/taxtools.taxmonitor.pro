@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Tips Mini E-Book | TaxTools</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#1a2744',
+            'navy-light': '#243352',
+            yellow: '#fbbf24',
+            'yellow-dark': '#f59e0b',
+            green: '#22c55e',
+            'green-dark': '#16a34a'
+          },
+          fontFamily: {
+            sans: ['DM Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .gradient-bg { background: linear-gradient(135deg, #1a2744 0%, #243352 50%, #1a2744 100%); }
+    .book-shadow { box-shadow: 8px 8px 0 rgba(251, 191, 36, 0.3); }
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
+    .pulse-glow { animation: pulse-glow 2s infinite; }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+      50% { box-shadow: 0 0 20px 8px rgba(251, 191, 36, 0.2); }
+    }
+    .float { animation: float 3s ease-in-out infinite; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .step-line { background: linear-gradient(90deg, #fbbf24 0%, #22c55e 100%); }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full font-sans bg-gray-50 overflow-auto"><!-- Header -->
+  <header class="bg-navy sticky top-0 z-50 shadow-lg">
+   <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+     <div class="w-10 h-10 bg-yellow rounded-xl flex items-center justify-center">
+      <svg class="w-6 h-6 text-navy" fill="currentColor" viewbox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+      </svg>
+     </div><span class="text-white font-bold text-xl">TaxTools</span>
+    </div>
+    <nav class="hidden md:flex items-center gap-6"><a href="#features" class="text-gray-300 hover:text-yellow transition-colors text-sm font-medium">Features</a> <a href="#preview" class="text-gray-300 hover:text-yellow transition-colors text-sm font-medium">Preview</a> <a href="#how-it-works" class="text-gray-300 hover:text-yellow transition-colors text-sm font-medium">How It Works</a> <a href="#faq" class="text-gray-300 hover:text-yellow transition-colors text-sm font-medium">FAQ</a>
+    </nav>
+    <div class="flex items-center gap-3"><button class="relative p-2 text-gray-300 hover:text-yellow transition-colors">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg><span class="absolute -top-1 -right-1 w-5 h-5 bg-yellow text-navy text-xs font-bold rounded-full flex items-center justify-center">0</span> </button> <button class="md:hidden p-2 text-gray-300">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg></button>
+    </div>
+   </div>
+  </header><!-- Hero Section -->
+  <section class="gradient-bg py-16 md:py-24">
+   <div class="max-w-6xl mx-auto px-4">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+     <div class="text-center md:text-left">
+      <div class="inline-flex items-center gap-2 bg-yellow/20 text-yellow px-4 py-2 rounded-full text-sm font-medium mb-6">
+       <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 4l7.53 13H4.47L12 6z" />
+       </svg> Digital Download
+      </div>
+      <h1 id="hero-title" class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">Tax Tips Mini E-Book</h1>
+      <p id="hero-tagline" class="text-xl md:text-2xl text-gray-300 mb-8">Quick wins for a bigger refund.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"><button class="group bg-yellow hover:bg-yellow-dark text-navy font-bold py-4 px-8 rounded-2xl text-lg transition-all pulse-glow flex items-center justify-center gap-2">
+        <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+        </svg><span>Buy for </span><span id="hero-price">$1</span> </button> <button class="bg-transparent border-2 border-white/30 hover:border-yellow text-white hover:text-yellow font-bold py-4 px-8 rounded-2xl text-lg transition-all flex items-center justify-center gap-2">
+        <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+        </svg> Try Demo </button>
+      </div>
+     </div>
+     <div class="flex justify-center">
+      <div class="relative"><!-- E-book Cover -->
+       <div class="w-64 md:w-80 bg-white rounded-2xl book-shadow float p-6 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-yellow/20 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-24 h-24 bg-green/20 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+        <div class="relative z-10">
+         <div class="w-full h-3 bg-navy rounded-full mb-4"></div>
+         <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 bg-yellow rounded-xl flex items-center justify-center">
+           <svg class="w-7 h-7 text-navy" fill="currentColor" viewbox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z" />
+           </svg>
+          </div>
+          <div>
+           <div class="text-navy font-bold text-lg">
+            Tax Tips
+           </div>
+           <div class="text-gray-500 text-sm">
+            Mini E-Book
+           </div>
+          </div>
+         </div>
+         <div class="space-y-2 mb-6">
+          <div class="h-2 bg-gray-200 rounded-full w-full"></div>
+          <div class="h-2 bg-gray-200 rounded-full w-4/5"></div>
+          <div class="h-2 bg-gray-200 rounded-full w-3/4"></div>
+         </div>
+         <div class="grid grid-cols-3 gap-2 mb-4">
+          <div class="h-16 bg-navy/10 rounded-lg"></div>
+          <div class="h-16 bg-yellow/20 rounded-lg"></div>
+          <div class="h-16 bg-green/20 rounded-lg"></div>
+         </div>
+         <div class="flex items-center justify-between"><span class="text-navy font-bold">TaxTools</span> <span class="text-green font-bold text-xl">$1</span>
+         </div>
+        </div>
+       </div><!-- Decorative Elements -->
+       <div class="absolute -top-6 -right-6 w-16 h-16 bg-yellow rounded-2xl flex items-center justify-center rotate-12">
+        <svg class="w-8 h-8 text-navy" fill="currentColor" viewbox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+        </svg>
+       </div>
+       <div class="absolute -bottom-4 -left-4 w-12 h-12 bg-green rounded-xl flex items-center justify-center -rotate-12">
+        <svg class="w-6 h-6 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+        </svg>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </section><!-- Product Features -->
+  <section id="features" class="py-16 md:py-24 bg-white">
+   <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-12">
+     <h2 id="features-title" class="text-3xl md:text-4xl font-bold text-navy mb-4">What's Inside</h2>
+     <p class="text-gray-600 text-lg max-w-2xl mx-auto">Everything you need to maximize your tax refund in one compact guide</p>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+     <div class="bg-gradient-to-br from-yellow/10 to-yellow/5 p-6 rounded-2xl card-hover border border-yellow/20">
+      <div class="w-14 h-14 bg-yellow rounded-xl flex items-center justify-center mb-4">
+       <svg class="w-7 h-7 text-navy" fill="currentColor" viewbox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+       </svg>
+      </div>
+      <h3 class="text-navy font-bold text-lg mb-2">20 Pages of Tips</h3>
+      <p class="text-gray-600 text-sm">Expert advice condensed into easy-to-digest pages</p>
+     </div>
+     <div class="bg-gradient-to-br from-green/10 to-green/5 p-6 rounded-2xl card-hover border border-green/20">
+      <div class="w-14 h-14 bg-green rounded-xl flex items-center justify-center mb-4">
+       <svg class="w-7 h-7 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+       </svg>
+      </div>
+      <h3 class="text-navy font-bold text-lg mb-2">Instant Download</h3>
+      <p class="text-gray-600 text-sm">PDF format ready immediately after purchase</p>
+     </div>
+     <div class="bg-gradient-to-br from-navy/10 to-navy/5 p-6 rounded-2xl card-hover border border-navy/20">
+      <div class="w-14 h-14 bg-navy rounded-xl flex items-center justify-center mb-4">
+       <svg class="w-7 h-7 text-yellow" fill="currentColor" viewbox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z" />
+       </svg>
+      </div>
+      <h3 class="text-navy font-bold text-lg mb-2">Actionable Advice</h3>
+      <p class="text-gray-600 text-sm">Real tips you can apply immediately</p>
+     </div>
+     <div class="bg-gradient-to-br from-purple-500/10 to-purple-500/5 p-6 rounded-2xl card-hover border border-purple-500/20">
+      <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mb-4">
+       <svg class="w-7 h-7 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z" />
+       </svg>
+      </div>
+      <h3 class="text-navy font-bold text-lg mb-2">Any Device</h3>
+      <p class="text-gray-600 text-sm">Read on mobile, tablet, or desktop</p>
+     </div>
+    </div>
+   </div>
+  </section><!-- Demo Preview -->
+  <section id="preview" class="py-16 md:py-24 bg-gray-100">
+   <div class="max-w-6xl mx-auto px-4">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+     <div>
+      <h2 id="demo-title" class="text-3xl md:text-4xl font-bold text-navy mb-4">Sneak Peek</h2>
+      <p class="text-gray-600 text-lg mb-6">Take a look inside before you buy. Our demo shows you exactly what you're getting.</p>
+      <ul class="space-y-4 mb-8">
+       <li class="flex items-start gap-3">
+        <div class="w-6 h-6 bg-green rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+         <svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+         </svg>
+        </div><span class="text-gray-700">Sample pages from each chapter</span></li>
+       <li class="flex items-start gap-3">
+        <div class="w-6 h-6 bg-green rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+         <svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+         </svg>
+        </div><span class="text-gray-700">Full table of contents included</span></li>
+       <li class="flex items-start gap-3">
+        <div class="w-6 h-6 bg-green rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+         <svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+         </svg>
+        </div><span class="text-gray-700">No signup required</span></li>
+      </ul><button class="bg-navy hover:bg-navy-light text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all flex items-center gap-2">
+       <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" />
+       </svg> Try Demo Now </button>
+     </div>
+     <div class="relative">
+      <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8"><!-- Preview Pages -->
+       <div class="space-y-4">
+        <div class="flex items-center gap-3 pb-4 border-b border-gray-200">
+         <div class="w-10 h-10 bg-yellow rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-navy" fill="currentColor" viewbox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+          </svg>
+         </div>
+         <div>
+          <div class="font-bold text-navy">
+           Tax Tips E-Book
+          </div>
+          <div class="text-gray-500 text-sm">
+           Preview Mode
+          </div>
+         </div>
+        </div>
+        <div class="text-navy font-bold text-lg">
+         Table of Contents
+        </div>
+        <div class="space-y-2 text-sm">
+         <div class="flex justify-between text-gray-600 py-1 border-b border-gray-100"><span>1. Maximize Deductions</span> <span class="text-yellow font-medium">Page 3</span>
+         </div>
+         <div class="flex justify-between text-gray-600 py-1 border-b border-gray-100"><span>2. Credit vs Deduction</span> <span class="text-yellow font-medium">Page 6</span>
+         </div>
+         <div class="flex justify-between text-gray-600 py-1 border-b border-gray-100"><span>3. Common Mistakes</span> <span class="text-yellow font-medium">Page 9</span>
+         </div>
+         <div class="flex justify-between text-gray-600 py-1 border-b border-gray-100"><span>4. Filing Status Tips</span> <span class="text-yellow font-medium">Page 12</span>
+         </div>
+         <div class="flex justify-between text-gray-400 py-1 italic"><span>+ 6 more chapters...</span> <span></span>
+         </div>
+        </div>
+        <div class="bg-yellow/10 rounded-xl p-4 mt-4">
+         <div class="flex items-center gap-2 text-navy font-medium text-sm">
+          <svg class="w-5 h-5 text-yellow" fill="currentColor" viewbox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+          </svg><span>Full content unlocks after purchase</span>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="absolute -bottom-4 -right-4 w-20 h-20 bg-green/20 rounded-full blur-xl"></div>
+      <div class="absolute -top-4 -left-4 w-16 h-16 bg-yellow/20 rounded-full blur-xl"></div>
+     </div>
+    </div>
+   </div>
+  </section><!-- How It Works -->
+  <section id="how-it-works" class="py-16 md:py-24 bg-white">
+   <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-12">
+     <h2 class="text-3xl md:text-4xl font-bold text-navy mb-4">How It Works</h2>
+     <p class="text-gray-600 text-lg">Three simple steps to start saving</p>
+    </div>
+    <div class="relative">
+     <div class="hidden md:block absolute top-1/2 left-1/4 right-1/4 h-1 step-line -translate-y-1/2 rounded-full"></div>
+     <div class="grid md:grid-cols-3 gap-8">
+      <div class="text-center relative">
+       <div class="w-20 h-20 bg-yellow rounded-2xl flex items-center justify-center mx-auto mb-6 relative z-10"><span class="text-navy font-bold text-3xl">1</span>
+       </div>
+       <h3 class="text-navy font-bold text-xl mb-2">Buy</h3>
+       <p class="text-gray-600">Quick checkout for just $1. No account needed.</p>
+      </div>
+      <div class="text-center relative">
+       <div class="w-20 h-20 bg-green rounded-2xl flex items-center justify-center mx-auto mb-6 relative z-10"><span class="text-white font-bold text-3xl">2</span>
+       </div>
+       <h3 class="text-navy font-bold text-xl mb-2">Download</h3>
+       <p class="text-gray-600">Instant PDF delivery to your device.</p>
+      </div>
+      <div class="text-center relative">
+       <div class="w-20 h-20 bg-navy rounded-2xl flex items-center justify-center mx-auto mb-6 relative z-10"><span class="text-yellow font-bold text-3xl">3</span>
+       </div>
+       <h3 class="text-navy font-bold text-xl mb-2">Read &amp; Save</h3>
+       <p class="text-gray-600">Apply the tips and maximize your refund.</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </section><!-- Trust Badges -->
+  <section class="py-12 bg-navy">
+   <div class="max-w-6xl mx-auto px-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+     <div class="text-center">
+      <div class="w-14 h-14 bg-yellow/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+       <svg class="w-7 h-7 text-yellow" fill="currentColor" viewbox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
+       </svg>
+      </div>
+      <div class="text-white font-medium text-sm">
+       Secure Payment
+      </div>
+     </div>
+     <div class="text-center">
+      <div class="w-14 h-14 bg-green/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+       <svg class="w-7 h-7 text-green" fill="currentColor" viewbox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
+       </svg>
+      </div>
+      <div class="text-white font-medium text-sm">
+       Instant Download
+      </div>
+     </div>
+     <div class="text-center">
+      <div class="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+       <svg class="w-7 h-7 text-purple-400" fill="currentColor" viewbox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" />
+       </svg>
+      </div>
+      <div class="text-white font-medium text-sm">
+       Try Before You Buy
+      </div>
+     </div>
+     <div class="text-center">
+      <div class="w-14 h-14 bg-yellow/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+       <svg class="w-7 h-7 text-yellow" fill="currentColor" viewbox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
+       </svg>
+      </div>
+      <div class="text-white font-medium text-sm">
+       Only $1 Each
+      </div>
+     </div>
+    </div>
+   </div>
+  </section><!-- FAQ -->
+  <section id="faq" class="py-16 md:py-24 bg-gray-100">
+   <div class="max-w-3xl mx-auto px-4">
+    <div class="text-center mb-12">
+     <h2 class="text-3xl md:text-4xl font-bold text-navy mb-4">Frequently Asked Questions</h2>
+    </div>
+    <div class="space-y-4" id="faq-container">
+     <div class="bg-white rounded-2xl shadow-sm overflow-hidden"><button class="faq-toggle w-full p-6 text-left flex items-center justify-between" onclick="toggleFaq(this)"> <span class="font-bold text-navy text-lg">What topics are covered?</span>
+       <svg class="w-6 h-6 text-yellow transform transition-transform faq-icon" fill="currentColor" viewbox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+       </svg></button>
+      <div class="faq-content hidden px-6 pb-6">
+       <p class="text-gray-600">Our e-book covers deductions, tax credits, filing strategies, common mistakes to avoid, timing tips, and much more. Every topic is written in plain language with practical examples you can use immediately.</p>
+      </div>
+     </div>
+     <div class="bg-white rounded-2xl shadow-sm overflow-hidden"><button class="faq-toggle w-full p-6 text-left flex items-center justify-between" onclick="toggleFaq(this)"> <span class="font-bold text-navy text-lg">Can I print the e-book?</span>
+       <svg class="w-6 h-6 text-yellow transform transition-transform faq-icon" fill="currentColor" viewbox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+       </svg></button>
+      <div class="faq-content hidden px-6 pb-6">
+       <p class="text-gray-600">Yes! The PDF is printer-friendly and formatted for easy reading on paper. Print as many copies as you need for personal use.</p>
+      </div>
+     </div>
+     <div class="bg-white rounded-2xl shadow-sm overflow-hidden"><button class="faq-toggle w-full p-6 text-left flex items-center justify-between" onclick="toggleFaq(this)"> <span class="font-bold text-navy text-lg">Is this for beginners?</span>
+       <svg class="w-6 h-6 text-yellow transform transition-transform faq-icon" fill="currentColor" viewbox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+       </svg></button>
+      <div class="faq-content hidden px-6 pb-6">
+       <p class="text-gray-600">Absolutely! We wrote this guide for everyday people, not accountants. No jargon, no complicated formulas—just simple tips anyone can understand and apply.</p>
+      </div>
+     </div>
+     <div class="bg-white rounded-2xl shadow-sm overflow-hidden"><button class="faq-toggle w-full p-6 text-left flex items-center justify-between" onclick="toggleFaq(this)"> <span class="font-bold text-navy text-lg">Do I need special software?</span>
+       <svg class="w-6 h-6 text-yellow transform transition-transform faq-icon" fill="currentColor" viewbox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+       </svg></button>
+      <div class="faq-content hidden px-6 pb-6">
+       <p class="text-gray-600">No! The e-book is a standard PDF that works on any device with a PDF reader. That includes phones, tablets, computers—even e-readers.</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </section><!-- Call to Action -->
+  <section class="py-16 md:py-24 gradient-bg">
+   <div class="max-w-4xl mx-auto px-4 text-center">
+    <div class="inline-flex items-center gap-2 bg-green/20 text-green px-4 py-2 rounded-full text-sm font-medium mb-6">
+     <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+     </svg> Limited Time Offer
+    </div>
+    <h2 id="cta-heading" class="text-3xl md:text-5xl font-bold text-white mb-4">Ready to Save on Taxes?</h2>
+    <p class="text-gray-300 text-xl mb-8 max-w-2xl mx-auto">Get instant access to 20 pages of expert tips that could save you hundreds on your next tax return.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-6"><button class="group bg-yellow hover:bg-yellow-dark text-navy font-bold py-4 px-10 rounded-2xl text-xl transition-all flex items-center justify-center gap-3">
+      <svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+      </svg> Buy for $1 </button> <button class="bg-white/10 hover:bg-white/20 text-white font-bold py-4 px-10 rounded-2xl text-xl transition-all border border-white/20"> Try Demo First </button>
+    </div>
+    <p id="bundle-note" class="text-yellow font-medium">💡 Bundle &amp; Save – Get all 5 products for $3.99!</p>
+   </div>
+  </section><!-- Footer -->
+  <footer class="bg-navy-light py-12">
+   <div class="max-w-6xl mx-auto px-4">
+    <div class="grid md:grid-cols-4 gap-8 mb-8">
+     <div>
+      <div class="flex items-center gap-2 mb-4">
+       <div class="w-10 h-10 bg-yellow rounded-xl flex items-center justify-center">
+        <svg class="w-6 h-6 text-navy" fill="currentColor" viewbox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+        </svg>
+       </div><span class="text-white font-bold text-xl">TaxTools</span>
+      </div>
+      <p class="text-gray-400 text-sm">Making taxes simple, one tool at a time.</p>
+     </div>
+     <div>
+      <h4 class="text-white font-bold mb-4">Products</h4>
+      <ul class="space-y-2">
+       <li><a href="#" class="text-gray-400 hover:text-yellow text-sm transition-colors">Tax Calculator</a></li>
+       <li><a href="#" class="text-gray-400 hover:text-yellow text-sm transition-colors">Tax Tips E-Book</a></li>
+       <li><a href="#" class="text-gray-400 hover:text-yellow text-sm transition-colors">Checklist Template</a></li>
+       <li><a href="#" class="text-gray-400 hover:text-yellow text-sm transition-colors">All Products</a></li>
+      </ul>
+     </div>
+     <div>
+      <h4 class="text-white font-bold mb-4">Support</h4>
+      <ul class="space-y-2">
+       <li><a href="#" class="text-gray-400 hover:text-yellow text-sm transition-colors">Help Center</a></li>
+       <li><a href="#" class="text-gray-400 hover:text-yellow text-sm transition-colors">Contact Us</a></li>
+       <li><a href="#faq" class="text-gray-400 hover:text-yellow text-sm transition-colors">FAQ</a></li>
+       <li><a href="#" class="text-gray-400 hover:text-yellow text-sm transition-colors">Refund Policy</a></li>
+      </ul>
+     </div>
+     <div>
+      <h4 class="text-white font-bold mb-4">Legal</h4>
+      <ul class="space-y-2">
+       <li><a href="#" class="text-gray-400 hover:text-yellow text-sm transition-colors">Privacy Policy</a></li>
+       <li><a href="#" class="text-gray-400 hover:text-yellow text-sm transition-colors">Terms of Service</a></li>
+       <li><a href="#" class="text-gray-400 hover:text-yellow text-sm transition-colors">Disclaimer</a></li>
+      </ul>
+     </div>
+    </div>
+    <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+     <p class="text-gray-400 text-sm">© 2025 TaxTools. All rights reserved.</p>
+     <div class="flex items-center gap-4"><a href="#" class="text-gray-400 hover:text-yellow transition-colors">
+       <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+        <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+       </svg></a> <a href="#" class="text-gray-400 hover:text-yellow transition-colors">
+       <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+       </svg></a> <a href="#" class="text-gray-400 hover:text-yellow transition-colors">
+       <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+       </svg></a>
+     </div>
+    </div>
+   </div>
+  </footer>
+  <script>
+    const defaultConfig = {
+      product_name: "Tax Tips Mini E-Book",
+      tagline: "Quick wins for a bigger refund.",
+      price_text: "$1",
+      features_title: "What's Inside",
+      demo_title: "Sneak Peek",
+      cta_heading: "Ready to Save on Taxes?",
+      bundle_note: "💡 Bundle & Save – Get all 5 products for $3.99!",
+      background_color: "#1a2744",
+      surface_color: "#ffffff",
+      text_color: "#1a2744",
+      primary_action_color: "#fbbf24",
+      secondary_action_color: "#22c55e"
+    };
+
+    let config = { ...defaultConfig };
+
+    function toggleFaq(button) {
+      const content = button.nextElementSibling;
+      const icon = button.querySelector('.faq-icon');
+      const isOpen = !content.classList.contains('hidden');
+      
+      // Close all other FAQs
+      document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = 'rotate(0deg)');
+      
+      if (!isOpen) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(45deg)';
+      }
+    }
+
+    async function onConfigChange(newConfig) {
+      // Update hero section
+      document.getElementById('hero-title').textContent = newConfig.product_name || defaultConfig.product_name;
+      document.getElementById('hero-tagline').textContent = newConfig.tagline || defaultConfig.tagline;
+      document.getElementById('hero-price').textContent = newConfig.price_text || defaultConfig.price_text;
+      
+      // Update section titles
+      document.getElementById('features-title').textContent = newConfig.features_title || defaultConfig.features_title;
+      document.getElementById('demo-title').textContent = newConfig.demo_title || defaultConfig.demo_title;
+      
+      // Update CTA section
+      document.getElementById('cta-heading').textContent = newConfig.cta_heading || defaultConfig.cta_heading;
+      document.getElementById('bundle-note').textContent = newConfig.bundle_note || defaultConfig.bundle_note;
+      
+      // Apply colors
+      const bgColor = newConfig.background_color || defaultConfig.background_color;
+      const surfaceColor = newConfig.surface_color || defaultConfig.surface_color;
+      const textColor = newConfig.text_color || defaultConfig.text_color;
+      const primaryColor = newConfig.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryColor = newConfig.secondary_action_color || defaultConfig.secondary_action_color;
+      
+      document.documentElement.style.setProperty('--bg-color', bgColor);
+      document.documentElement.style.setProperty('--surface-color', surfaceColor);
+      document.documentElement.style.setProperty('--text-color', textColor);
+      document.documentElement.style.setProperty('--primary-color', primaryColor);
+      document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => { config.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => { config.primary_action_color = value; window.elementSdk.setConfig({ primary_action_color: value }); }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => { config.secondary_action_color = value; window.elementSdk.setConfig({ secondary_action_color: value }); }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || 'DM Sans',
+          set: (value) => { config.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
+        },
+        fontSizeable: {
+          get: () => config.font_size || 16,
+          set: (value) => { config.font_size = value; window.elementSdk.setConfig({ font_size: value }); }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["product_name", config.product_name || defaultConfig.product_name],
+        ["tagline", config.tagline || defaultConfig.tagline],
+        ["price_text", config.price_text || defaultConfig.price_text],
+        ["features_title", config.features_title || defaultConfig.features_title],
+        ["demo_title", config.demo_title || defaultConfig.demo_title],
+        ["cta_heading", config.cta_heading || defaultConfig.cta_heading],
+        ["bundle_note", config.bundle_note || defaultConfig.bundle_note]
+      ]);
+    }
+
+    // Initialize SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    // Smooth scroll for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d63754c732227c7',t:'MTc3MjQ4NjU2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

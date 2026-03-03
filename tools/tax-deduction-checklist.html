@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Deduction Checklist - TaxTools</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'DM Sans', sans-serif; }
+    html, body { height: 100%; margin: 0; }
+    .gradient-hero { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdf4 100%); }
+    .card-shadow { box-shadow: 0 4px 20px rgba(30, 58, 95, 0.08); }
+    .btn-primary { transition: all 0.2s ease; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
+    .btn-secondary { transition: all 0.2s ease; }
+    .btn-secondary:hover { background: #e2e8f0; }
+    .feature-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(30, 58, 95, 0.12); }
+    .checklist-item { animation: fadeInUp 0.4s ease forwards; opacity: 0; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .checklist-item:nth-child(1) { animation-delay: 0.1s; }
+    .checklist-item:nth-child(2) { animation-delay: 0.2s; }
+    .checklist-item:nth-child(3) { animation-delay: 0.3s; }
+    .checklist-item:nth-child(4) { animation-delay: 0.4s; }
+    .checklist-item:nth-child(5) { animation-delay: 0.5s; }
+    .pulse-badge { animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#1e3a5f',
+            'action-blue': '#3b82f6',
+            'trust-green': '#10b981',
+            charcoal: '#2d3748',
+          }
+        }
+      }
+    }
+  </script>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-white">
+  <div id="app-wrapper" class="w-full h-full overflow-auto"><!-- Header -->
+   <header id="header" class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4">
+     <div class="flex items-center justify-between"><!-- Logo --> <a href="#" class="flex items-center gap-3">
+       <div class="w-10 h-10 bg-navy rounded-full flex items-center justify-center">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+        </svg>
+       </div><span class="text-xl font-bold text-navy">TaxTools</span> </a> <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8"><a href="#" class="text-charcoal hover:text-action-blue transition-colors">Home</a> <a href="#" class="text-action-blue font-medium">Tools</a> <a href="#" class="text-charcoal hover:text-action-blue transition-colors">About</a> <a href="#" class="text-charcoal hover:text-action-blue transition-colors">FAQ</a> <a href="#" class="text-charcoal hover:text-action-blue transition-colors">Contact</a>
+      </nav><!-- Cart --> <button class="relative p-2 text-charcoal hover:text-action-blue transition-colors">
+       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+       </svg><span class="absolute -top-1 -right-1 w-5 h-5 bg-action-blue text-white text-xs rounded-full flex items-center justify-center">0</span> </button>
+     </div>
+    </div>
+   </header><!-- Hero Section -->
+   <section class="gradient-hero py-16 sm:py-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+     <div class="grid lg:grid-cols-2 gap-12 items-center"><!-- Left Content -->
+      <div class="text-center lg:text-left"><span class="inline-flex items-center gap-2 px-4 py-2 bg-trust-green/10 text-trust-green rounded-full text-sm font-medium mb-6">
+        <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg> Most Popular Tool </span>
+       <h1 id="product-name" class="text-4xl sm:text-5xl font-bold text-navy leading-tight mb-4">Tax Deduction Checklist</h1>
+       <p id="tagline" class="text-xl text-charcoal/80 mb-8 max-w-lg mx-auto lg:mx-0">Find every deduction you deserve in minutes. Stop leaving money on the table.</p>
+       <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"><button id="buy-btn" class="btn-primary px-8 py-4 bg-action-blue text-white font-semibold rounded-xl text-lg"> Buy for $1 </button> <button id="demo-btn" class="btn-secondary px-8 py-4 bg-gray-100 text-charcoal font-semibold rounded-xl text-lg"> Try Demo </button>
+       </div><!-- Quick Trust Indicators -->
+       <div class="flex flex-wrap gap-6 mt-8 justify-center lg:justify-start text-sm text-charcoal/70"><span class="flex items-center gap-2">
+         <svg class="w-5 h-5 text-trust-green" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg> Secure Payment </span> <span class="flex items-center gap-2">
+         <svg class="w-5 h-5 text-action-blue" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+         </svg> Instant Download </span> <span class="flex items-center gap-2">
+         <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewbox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+         </svg> 4.9/5 Rating </span>
+       </div>
+      </div><!-- Right - Product Preview -->
+      <div class="relative">
+       <div class="bg-white rounded-2xl card-shadow p-6 sm:p-8 max-w-md mx-auto"><!-- Preview Header -->
+        <div class="flex items-center justify-between mb-6">
+         <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-action-blue/10 rounded-xl flex items-center justify-center">
+           <svg class="w-6 h-6 text-action-blue" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+           </svg>
+          </div>
+          <div>
+           <h3 class="font-semibold text-navy">Deduction Preview</h3>
+           <p class="text-sm text-charcoal/60">Sample categories</p>
+          </div>
+         </div><span class="px-3 py-1 bg-trust-green/10 text-trust-green text-xs font-medium rounded-full pulse-badge">LIVE</span>
+        </div><!-- Sample Checklist Items -->
+        <div class="space-y-3">
+         <div class="checklist-item flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+          <div class="w-6 h-6 bg-trust-green rounded-md flex items-center justify-center flex-shrink-0">
+           <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+           </svg>
+          </div><span class="text-charcoal">Home Office Expenses</span> <span class="ml-auto text-sm text-trust-green font-medium">$1,500+</span>
+         </div>
+         <div class="checklist-item flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+          <div class="w-6 h-6 bg-trust-green rounded-md flex items-center justify-center flex-shrink-0">
+           <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+           </svg>
+          </div><span class="text-charcoal">Vehicle &amp; Mileage</span> <span class="ml-auto text-sm text-trust-green font-medium">$800+</span>
+         </div>
+         <div class="checklist-item flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+          <div class="w-6 h-6 border-2 border-gray-300 rounded-md flex-shrink-0"></div><span class="text-charcoal">Health Insurance Premiums</span> <span class="ml-auto text-sm text-charcoal/50 font-medium">—</span>
+         </div>
+         <div class="checklist-item flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+          <div class="w-6 h-6 border-2 border-gray-300 rounded-md flex-shrink-0"></div><span class="text-charcoal">Education &amp; Training</span> <span class="ml-auto text-sm text-charcoal/50 font-medium">—</span>
+         </div>
+         <div class="checklist-item flex items-center gap-3 p-3 bg-action-blue/5 rounded-xl border-2 border-dashed border-action-blue/30"><span class="text-action-blue font-medium">+ 46 more deductions...</span>
+         </div>
+        </div><!-- Total Savings -->
+        <div class="mt-6 pt-6 border-t border-gray-100">
+         <div class="flex items-center justify-between"><span class="text-charcoal/70">Potential Savings</span> <span class="text-2xl font-bold text-trust-green">$2,300+</span>
+         </div>
+        </div>
+       </div><!-- Decorative Elements -->
+       <div class="absolute -top-4 -right-4 w-24 h-24 bg-action-blue/10 rounded-full blur-2xl"></div>
+       <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-trust-green/10 rounded-full blur-2xl"></div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Features Section -->
+   <section class="py-16 sm:py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+     <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-navy mb-4">Everything You Need to Maximize Deductions</h2>
+      <p class="text-charcoal/70 max-w-2xl mx-auto">Our checklist is designed by tax professionals to help you find every legitimate deduction.</p>
+     </div>
+     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"><!-- Feature 1 -->
+      <div class="feature-card bg-gradient-to-br from-blue-50 to-white p-6 rounded-2xl card-shadow">
+       <div class="w-14 h-14 bg-action-blue/10 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-7 h-7 text-action-blue" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+        </svg>
+       </div>
+       <h3 id="feature-1-text" class="font-semibold text-navy mb-2">50+ Deductions</h3>
+       <p class="text-sm text-charcoal/70">Across 15 categories covering every common tax situation.</p>
+      </div><!-- Feature 2 -->
+      <div class="feature-card bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl card-shadow">
+       <div class="w-14 h-14 bg-trust-green/10 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-7 h-7 text-trust-green" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+       </div>
+       <h3 id="feature-2-text" class="font-semibold text-navy mb-2">Easy PDF Export</h3>
+       <p class="text-sm text-charcoal/70">Download and print your personalized checklist instantly.</p>
+      </div><!-- Feature 3 -->
+      <div class="feature-card bg-gradient-to-br from-amber-50 to-white p-6 rounded-2xl card-shadow">
+       <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+        </svg>
+       </div>
+       <h3 id="feature-3-text" class="font-semibold text-navy mb-2">Expert-Backed</h3>
+       <p class="text-sm text-charcoal/70">Created and reviewed by licensed tax professionals.</p>
+      </div><!-- Feature 4 -->
+      <div class="feature-card bg-gradient-to-br from-purple-50 to-white p-6 rounded-2xl card-shadow">
+       <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+       </div>
+       <h3 id="feature-4-text" class="font-semibold text-navy mb-2">Mobile Friendly</h3>
+       <p class="text-sm text-charcoal/70">Works perfectly on any device, anywhere you need it.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- How It Works -->
+   <section class="py-16 sm:py-20 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+     <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-navy mb-4">How It Works</h2>
+      <p class="text-charcoal/70">Three simple steps to maximize your tax savings</p>
+     </div>
+     <div class="grid md:grid-cols-3 gap-8"><!-- Step 1 -->
+      <div class="text-center">
+       <div class="w-16 h-16 bg-action-blue text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-6">
+        1
+       </div>
+       <h3 class="font-semibold text-navy text-lg mb-2">Select Your Deductions</h3>
+       <p class="text-charcoal/70">Browse through 50+ deductions organized by category and check off the ones that apply to you.</p>
+      </div><!-- Step 2 -->
+      <div class="text-center">
+       <div class="w-16 h-16 bg-trust-green text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-6">
+        2
+       </div>
+       <h3 class="font-semibold text-navy text-lg mb-2">Export Your PDF</h3>
+       <p class="text-charcoal/70">Generate a clean, organized PDF of your selected deductions to reference during tax filing.</p>
+      </div><!-- Step 3 -->
+      <div class="text-center">
+       <div class="w-16 h-16 bg-amber-500 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-6">
+        3
+       </div>
+       <h3 class="font-semibold text-navy text-lg mb-2">Save on Taxes</h3>
+       <p class="text-charcoal/70">Use your checklist when filing to ensure you claim every deduction you deserve.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Trust Badges Section -->
+   <section class="py-12 bg-white border-y border-gray-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+      <div class="flex flex-col items-center text-center p-4">
+       <div class="w-12 h-12 bg-trust-green/10 rounded-xl flex items-center justify-center mb-3">
+        <svg class="w-6 h-6 text-trust-green" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+       </div><span class="font-medium text-navy">Secure Payment</span> <span class="text-sm text-charcoal/60">256-bit encryption</span>
+      </div>
+      <div class="flex flex-col items-center text-center p-4">
+       <div class="w-12 h-12 bg-action-blue/10 rounded-xl flex items-center justify-center mb-3">
+        <svg class="w-6 h-6 text-action-blue" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+       </div><span class="font-medium text-navy">Instant Download</span> <span class="text-sm text-charcoal/60">No waiting required</span>
+      </div>
+      <div class="flex flex-col items-center text-center p-4">
+       <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-3">
+        <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewbox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /> <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+        </svg>
+       </div><span class="font-medium text-navy">Try Before Buy</span> <span class="text-sm text-charcoal/60">Free demo available</span>
+      </div>
+      <div class="flex flex-col items-center text-center p-4">
+       <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-3">
+        <svg class="w-6 h-6 text-amber-600" fill="currentColor" viewbox="0 0 20 20"><path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" /> <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
+        </svg>
+       </div><span class="font-medium text-navy">Only $1 Each</span> <span class="text-sm text-charcoal/60">Incredible value</span>
+      </div>
+     </div>
+    </div>
+   </section><!-- FAQ Section -->
+   <section class="py-16 sm:py-20 bg-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+     <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-navy mb-4">Frequently Asked Questions</h2>
+     </div>
+     <div class="space-y-4" id="faq-container"><!-- FAQ 1 -->
+      <div class="faq-item bg-gray-50 rounded-xl overflow-hidden"><button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between" onclick="toggleFaq(this)"> <span class="font-medium text-navy">How do I use the checklist?</span>
+        <svg class="faq-icon w-5 h-5 text-charcoal/50 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg></button>
+       <div class="faq-content hidden px-6 pb-4">
+        <p class="text-charcoal/70">Simply go through each category and check off the deductions that apply to your situation. The interactive checklist lets you select items, and you can export a PDF summary of your selected deductions to reference when filing your taxes.</p>
+       </div>
+      </div><!-- FAQ 2 -->
+      <div class="faq-item bg-gray-50 rounded-xl overflow-hidden"><button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between" onclick="toggleFaq(this)"> <span class="font-medium text-navy">What format is the checklist in?</span>
+        <svg class="faq-icon w-5 h-5 text-charcoal/50 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg></button>
+       <div class="faq-content hidden px-6 pb-4">
+        <p class="text-charcoal/70">The checklist is an interactive web-based tool that works directly in your browser. You can also export your selections as a PDF document that you can save, print, or share with your tax professional.</p>
+       </div>
+      </div><!-- FAQ 3 -->
+      <div class="faq-item bg-gray-50 rounded-xl overflow-hidden"><button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between" onclick="toggleFaq(this)"> <span class="font-medium text-navy">Is this checklist updated for 2024 taxes?</span>
+        <svg class="faq-icon w-5 h-5 text-charcoal/50 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg></button>
+       <div class="faq-content hidden px-6 pb-4">
+        <p class="text-charcoal/70">Yes! Our checklist is regularly updated to reflect the latest IRS guidelines and tax law changes. The current version includes all deductions relevant to the 2024 tax year.</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Final CTA Section -->
+   <section class="py-16 sm:py-20 bg-gradient-to-br from-navy to-blue-900">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+     <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Find Your Hidden Deductions?</h2>
+     <p class="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">Join thousands of taxpayers who've saved money using our checklist. For just $1, you could save hundreds.</p>
+     <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8"><button id="buy-btn-2" class="btn-primary px-10 py-4 bg-action-blue text-white font-semibold rounded-xl text-lg"> Buy for $1 </button> <button id="demo-btn-2" class="btn-secondary px-10 py-4 bg-white/10 text-white font-semibold rounded-xl text-lg hover:bg-white/20"> Try Demo First </button>
+     </div>
+     <div class="inline-flex items-center gap-2 px-6 py-3 bg-white/10 rounded-full">
+      <svg class="w-5 h-5 text-trust-green" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+      </svg><span class="text-white text-sm">Bundle &amp; Save: Get all 5 tools for just $4</span>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="bg-charcoal py-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+     <div class="grid md:grid-cols-4 gap-8 mb-8"><!-- Brand -->
+      <div><a href="#" class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 bg-navy rounded-full flex items-center justify-center">
+         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+         </svg>
+        </div><span class="text-xl font-bold text-white">TaxTools</span> </a>
+       <p class="text-gray-400 text-sm">Simple, affordable tools to help you save on taxes.</p>
+      </div><!-- Quick Links -->
+      <div>
+       <h4 class="font-semibold text-white mb-4">Tools</h4>
+       <ul class="space-y-2 text-sm">
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Deduction Checklist</a></li>
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Expense Tracker</a></li>
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Tax Calculator</a></li>
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Document Organizer</a></li>
+       </ul>
+      </div><!-- Support -->
+      <div>
+       <h4 class="font-semibold text-white mb-4">Support</h4>
+       <ul class="space-y-2 text-sm">
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+       </ul>
+      </div><!-- Legal -->
+      <div>
+       <h4 class="font-semibold text-white mb-4">Legal</h4>
+       <ul class="space-y-2 text-sm">
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Refund Policy</a></li>
+       </ul>
+      </div>
+     </div>
+     <div class="pt-8 border-t border-gray-700 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-gray-500 text-sm">© 2024 TaxTools. All rights reserved.</p>
+      <p class="text-gray-500 text-sm">Made with ❤️ for taxpayers everywhere</p>
+     </div>
+    </div>
+   </footer>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      product_name: 'Tax Deduction Checklist',
+      tagline: 'Find every deduction you deserve in minutes. Stop leaving money on the table.',
+      price: '$1',
+      feature_1: '50+ Deductions',
+      feature_2: 'Easy PDF Export',
+      feature_3: 'Expert-Backed',
+      feature_4: 'Mobile Friendly',
+      buy_button_text: 'Buy for $1',
+      demo_button_text: 'Try Demo',
+      background_color: '#ffffff',
+      accent_color: '#3b82f6',
+      text_color: '#2d3748',
+      highlight_color: '#10b981',
+      secondary_color: '#1e3a5f'
+    };
+
+    // Initialize Element SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          // Update product name
+          const productNameEl = document.getElementById('product-name');
+          if (productNameEl) {
+            productNameEl.textContent = config.product_name || defaultConfig.product_name;
+          }
+          
+          // Update tagline
+          const taglineEl = document.getElementById('tagline');
+          if (taglineEl) {
+            taglineEl.textContent = config.tagline || defaultConfig.tagline;
+          }
+          
+          // Update buy buttons
+          const buyBtn = document.getElementById('buy-btn');
+          const buyBtn2 = document.getElementById('buy-btn-2');
+          const buyText = config.buy_button_text || defaultConfig.buy_button_text;
+          if (buyBtn) buyBtn.textContent = buyText;
+          if (buyBtn2) buyBtn2.textContent = buyText;
+          
+          // Update demo buttons
+          const demoBtn = document.getElementById('demo-btn');
+          const demoBtn2 = document.getElementById('demo-btn-2');
+          const demoText = config.demo_button_text || defaultConfig.demo_button_text;
+          if (demoBtn) demoBtn.textContent = demoText;
+          if (demoBtn2) demoBtn2.textContent = demoText;
+          
+          // Update features
+          const feature1 = document.getElementById('feature-1-text');
+          const feature2 = document.getElementById('feature-2-text');
+          const feature3 = document.getElementById('feature-3-text');
+          const feature4 = document.getElementById('feature-4-text');
+          if (feature1) feature1.textContent = config.feature_1 || defaultConfig.feature_1;
+          if (feature2) feature2.textContent = config.feature_2 || defaultConfig.feature_2;
+          if (feature3) feature3.textContent = config.feature_3 || defaultConfig.feature_3;
+          if (feature4) feature4.textContent = config.feature_4 || defaultConfig.feature_4;
+          
+          // Apply colors
+          const accentColor = config.accent_color || defaultConfig.accent_color;
+          const textColor = config.text_color || defaultConfig.text_color;
+          const highlightColor = config.highlight_color || defaultConfig.highlight_color;
+          const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+          const bgColor = config.background_color || defaultConfig.background_color;
+          
+          // Update button colors
+          document.querySelectorAll('.btn-primary').forEach(btn => {
+            btn.style.backgroundColor = accentColor;
+          });
+          
+          // Update text colors
+          document.body.style.color = textColor;
+        },
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_color || defaultConfig.secondary_color,
+              set: (value) => {
+                config.secondary_color = value;
+                window.elementSdk.setConfig({ secondary_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.accent_color || defaultConfig.accent_color,
+              set: (value) => {
+                config.accent_color = value;
+                window.elementSdk.setConfig({ accent_color: value });
+              }
+            },
+            {
+              get: () => config.highlight_color || defaultConfig.highlight_color,
+              set: (value) => {
+                config.highlight_color = value;
+                window.elementSdk.setConfig({ highlight_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['product_name', config.product_name || defaultConfig.product_name],
+          ['tagline', config.tagline || defaultConfig.tagline],
+          ['price', config.price || defaultConfig.price],
+          ['feature_1', config.feature_1 || defaultConfig.feature_1],
+          ['feature_2', config.feature_2 || defaultConfig.feature_2],
+          ['feature_3', config.feature_3 || defaultConfig.feature_3],
+          ['feature_4', config.feature_4 || defaultConfig.feature_4],
+          ['buy_button_text', config.buy_button_text || defaultConfig.buy_button_text],
+          ['demo_button_text', config.demo_button_text || defaultConfig.demo_button_text]
+        ])
+      });
+    }
+
+    // FAQ Toggle Function
+    function toggleFaq(button) {
+      const content = button.nextElementSibling;
+      const icon = button.querySelector('.faq-icon');
+      
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      } else {
+        content.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    // Smooth scroll for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Button click handlers
+    document.querySelectorAll('#buy-btn, #buy-btn-2').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // In a real implementation, this would redirect to checkout
+        btn.textContent = 'Adding to cart...';
+        setTimeout(() => {
+          btn.textContent = window.elementSdk?.config?.buy_button_text || defaultConfig.buy_button_text;
+        }, 1500);
+      });
+    });
+
+    document.querySelectorAll('#demo-btn, #demo-btn-2').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // In a real implementation, this would open the demo
+        btn.textContent = 'Loading demo...';
+        setTimeout(() => {
+          btn.textContent = window.elementSdk?.config?.demo_button_text || defaultConfig.demo_button_text;
+        }, 1500);
+      });
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d634de894f827c7',t:'MTc3MjQ4NDk0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
