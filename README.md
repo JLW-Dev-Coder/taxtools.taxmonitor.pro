@@ -1042,6 +1042,7 @@ Worker environment variables (alphabetical):
 * STRIPE_PRICE_TOKEN_PACK_LARGE_200
 * STRIPE_PRICE_TOKEN_PACK_MEDIUM_80
 * STRIPE_PRICE_TOKEN_PACK_SMALL_30
+* STRIPE_WEBHOOK_SECRET
 
 Internal SKU → Stripe Price ID mapping (server-side only):
 
