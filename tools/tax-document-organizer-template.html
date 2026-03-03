@@ -4,579 +4,875 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tax Document Organizer Template | TaxTools</title>
+  <title>Tax Document Organizer Template - TaxTools</title>
+
+  <link rel="icon" href="/assets/favicon.ico" sizes="any">
+  <link rel="shortcut icon" href="/assets/favicon.ico">
+
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;display=swap" rel="stylesheet">
-  <style>
-    * { font-family: 'DM Sans', sans-serif; }
-    .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%); }
-    .card-gradient { background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%); }
-    .glow { box-shadow: 0 0 60px rgba(139, 92, 246, 0.3); }
-    .feature-card:hover { transform: translateY(-4px); }
-    .btn-primary { transition: all 0.2s ease; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4); }
-    .folder-animation { animation: float 3s ease-in-out infinite; }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-    .stagger-1 { animation-delay: 0s; }
-    .stagger-2 { animation-delay: 0.3s; }
-    .stagger-3 { animation-delay: 0.6s; }
-  </style>
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            dm: ['"DM Sans"', 'system-ui', 'sans-serif']
+          },
           colors: {
-            navy: { 900: '#0f172a', 800: '#1e293b', 700: '#334155' },
-            purple: { 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' },
-            blue: { 400: '#60a5fa', 500: '#3b82f6' }
+            action: '#1d4ed8',
+            charcoal: '#2d3748',
+            muted: '#64748b',
+            navy: '#0f2747',
+            'navy-light': '#17365f',
+            primary: '#1d4ed8',
+            'primary-dark': '#1e40af',
+            accent: '#f97316',
+            'accent-dark': '#ea580c',
+            surface: '#f8fafc',
+            warm: '#f97316'
           }
         }
       }
-    }
+    };
   </script>
+  <style>
+    * { font-family: 'DM Sans', system-ui, sans-serif; }
+    html { scroll-behavior: smooth; }
+    .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
+    .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+    .btn-shadow { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); }
+    .float-animation { animation: float 3s ease-in-out infinite; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
- <body class="h-full w-full bg-slate-50 overflow-auto"><!-- Header -->
-  <header class="fixed top-0 left-0 right-0 z-50 bg-navy-900/95 backdrop-blur-sm border-b border-white/10">
-   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16"><!-- Logo -->
-     <div class="flex items-center gap-2">
-      <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-       <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-       </svg>
-      </div><span class="text-white font-bold text-xl">TaxTools</span>
-     </div><!-- Navigation -->
-     <nav class="hidden md:flex items-center gap-8"><a href="#features" class="text-gray-300 hover:text-white transition-colors text-sm font-medium">Features</a> <a href="#demo" class="text-gray-300 hover:text-white transition-colors text-sm font-medium">Demo</a> <a href="#how-it-works" class="text-gray-300 hover:text-white transition-colors text-sm font-medium">How It Works</a> <a href="#faq" class="text-gray-300 hover:text-white transition-colors text-sm font-medium">FAQ</a>
-     </nav><!-- Cart -->
-     <div class="flex items-center gap-4"><button class="relative text-gray-300 hover:text-white transition-colors">
-       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-       </svg><span class="absolute -top-1 -right-1 w-4 h-4 bg-purple-500 text-white text-xs rounded-full flex items-center justify-center">0</span> </button> <button class="md:hidden text-white">
-       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-       </svg></button>
-     </div>
-    </div>
-   </div>
-  </header><!-- Hero Section -->
-  <section class="gradient-hero pt-24 pb-20 relative overflow-hidden"><!-- Background decoration -->
-   <div class="absolute inset-0 overflow-hidden">
-    <div class="absolute top-20 left-10 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
-   </div>
-   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-    <div class="grid lg:grid-cols-2 gap-12 items-center"><!-- Left Content -->
-     <div class="text-center lg:text-left">
-      <div class="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-2 mb-6"><span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span> <span class="text-white/80 text-sm">New Product</span>
-      </div>
-      <h1 id="product-name" class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">Tax Document Organizer Template</h1>
-      <p id="tagline" class="text-xl text-gray-300 mb-8 max-w-lg mx-auto lg:mx-0">Organize your tax docs like a pro.</p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"><button id="buy-btn" class="btn-primary bg-gradient-to-r from-purple-500 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg> Buy for $1 </button> <button id="demo-btn" class="btn-primary bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-semibold text-lg border border-white/20 flex items-center justify-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg> Try Demo </button>
-      </div>
-      <div class="mt-8 flex items-center gap-6 justify-center lg:justify-start text-sm text-gray-400">
-       <div class="flex items-center gap-2">
-        <svg class="w-4 h-4 text-green-400" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-        </svg> Instant Download
+ <body class="h-full bg-white text-charcoal overflow-auto">
+  <div id="app" class="w-full min-h-full">
+   <!-- PARTIAL:header -->
+
+   <section class="gradient-hero text-white py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="text-center lg:text-left">
+       <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+        <span class="w-2 h-2 bg-accent rounded-full pulse-ring"></span>
+        <span class="text-sm font-medium">Digital Template • Instant Download</span>
        </div>
-       <div class="flex items-center gap-2">
-        <svg class="w-4 h-4 text-green-400" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-        </svg> Free Updates
+       <h1 id="product-name" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Tax Document Organizer Template</h1>
+       <p id="tagline" class="text-xl md:text-2xl text-blue-100 mb-8">Organize your tax docs like a pro.</p>
+       <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+        <button id="primary-btn" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105">Buy for $1</button>
+        <button id="secondary-btn" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-xl border border-white/20 transition-all">Try Demo</button>
        </div>
+       <p class="mt-6 text-blue-200 text-sm">✓ Simple categories • ✓ Spreadsheet-ready • ✓ Lifetime updates</p>
       </div>
-     </div><!-- Right Illustration -->
-     <div class="relative">
-      <div class="bg-white/5 rounded-3xl p-8 glow border border-white/10"><!-- Animated Folders Illustration -->
-       <div class="relative h-80 flex items-center justify-center"><!-- Main folder -->
-        <div class="folder-animation stagger-1 absolute">
-         <svg class="w-48 h-48 text-purple-400" viewbox="0 0 100 100" fill="none"><path d="M10 30 L10 80 L90 80 L90 30 L50 30 L45 20 L10 20 Z" fill="currentColor" opacity="0.3" /> <path d="M10 35 L10 80 L90 80 L90 35 Z" fill="currentColor" opacity="0.6" /> <rect x="20" y="45" width="30" height="4" rx="2" fill="white" opacity="0.5" /> <rect x="20" y="55" width="50" height="3" rx="1.5" fill="white" opacity="0.3" /> <rect x="20" y="63" width="40" height="3" rx="1.5" fill="white" opacity="0.3" />
-         </svg>
-        </div><!-- Secondary folder -->
-        <div class="folder-animation stagger-2 absolute -left-4 top-8">
-         <svg class="w-32 h-32 text-blue-400" viewbox="0 0 100 100" fill="none"><path d="M10 30 L10 80 L90 80 L90 30 L50 30 L45 20 L10 20 Z" fill="currentColor" opacity="0.3" /> <path d="M10 35 L10 80 L90 80 L90 35 Z" fill="currentColor" opacity="0.6" />
-         </svg>
-        </div><!-- Document icons floating -->
-        <div class="folder-animation stagger-3 absolute right-0 top-4">
-         <div class="bg-white rounded-lg p-3 shadow-lg">
-          <svg class="w-8 h-8 text-navy-900" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-         </div>
-        </div><!-- Checkmark badge -->
-        <div class="absolute right-8 bottom-8 bg-green-500 rounded-full p-2">
-         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-         </svg>
-        </div>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div>
-  </section><!-- Product Features -->
-  <section id="features" class="py-20 bg-white">
-   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-16">
-     <h2 class="text-3xl md:text-4xl font-bold text-navy-900 mb-4">Everything You Need</h2>
-     <p class="text-gray-600 text-lg max-w-2xl mx-auto">Powerful features to keep your tax documents organized and accessible all year round.</p>
-    </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"><!-- Feature 1 -->
-     <div class="feature-card bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 border border-purple-100 transition-all duration-300">
-      <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mb-4">
-       <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
-       </svg>
-      </div>
-      <h3 class="text-xl font-bold text-navy-900 mb-2">20+ Document Categories</h3>
-      <p class="text-gray-600 text-sm">Pre-built categories for W-2s, 1099s, receipts, deductions, and more.</p>
-     </div><!-- Feature 2 -->
-     <div class="feature-card bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-100 transition-all duration-300">
-      <div class="w-14 h-14 bg-blue-500 rounded-xl flex items-center justify-center mb-4">
-       <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-       </svg>
-      </div>
-      <h3 class="text-xl font-bold text-navy-900 mb-2">Drag-and-Drop Interface</h3>
-      <p class="text-gray-600 text-sm">Easily organize documents with intuitive drag-and-drop functionality.</p>
-     </div><!-- Feature 3 -->
-     <div class="feature-card bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-100 transition-all duration-300">
-      <div class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center mb-4">
-       <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-       </svg>
-      </div>
-      <h3 class="text-xl font-bold text-navy-900 mb-2">Export to Spreadsheet</h3>
-      <p class="text-gray-600 text-sm">Export your organized data to Excel or Google Sheets with one click.</p>
-     </div><!-- Feature 4 -->
-     <div class="feature-card bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6 border border-orange-100 transition-all duration-300">
-      <div class="w-14 h-14 bg-orange-500 rounded-xl flex items-center justify-center mb-4">
-       <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-       </svg>
-      </div>
-      <h3 class="text-xl font-bold text-navy-900 mb-2">Works on Mobile &amp; Desktop</h3>
-      <p class="text-gray-600 text-sm">Access and organize your documents from any device, anywhere.</p>
-     </div>
-    </div>
-   </div>
-  </section><!-- Demo Preview -->
-  <section id="demo" class="py-20 bg-slate-100">
-   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-12">
-     <h2 class="text-3xl md:text-4xl font-bold text-navy-900 mb-4">See It In Action</h2>
-     <p class="text-gray-600 text-lg">Experience the intuitive drag-and-drop interface yourself.</p>
-    </div><!-- Demo Interface Preview -->
-    <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200 max-w-5xl mx-auto"><!-- Browser Chrome -->
-     <div class="bg-gray-100 px-4 py-3 flex items-center gap-2 border-b border-gray-200">
-      <div class="flex gap-2">
-       <div class="w-3 h-3 rounded-full bg-red-400"></div>
-       <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
-       <div class="w-3 h-3 rounded-full bg-green-400"></div>
-      </div>
-      <div class="flex-1 flex justify-center">
-       <div class="bg-white rounded-lg px-4 py-1 text-sm text-gray-500 flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-        </svg> taxtools.app/organizer
-       </div>
-      </div>
-     </div><!-- App Interface -->
-     <div class="p-6">
-      <div class="grid md:grid-cols-3 gap-6"><!-- Sidebar -->
-       <div class="bg-navy-900 rounded-2xl p-4">
-        <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Categories</h4>
-        <div class="space-y-2">
-         <div class="bg-purple-500/20 border border-purple-500/30 rounded-lg px-3 py-2 text-purple-300 text-sm flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
-          </svg> W-2 Forms <span class="ml-auto bg-purple-500 text-white text-xs px-2 py-0.5 rounded-full">3</span>
-         </div>
-         <div class="bg-white/5 hover:bg-white/10 rounded-lg px-3 py-2 text-gray-400 text-sm flex items-center gap-2 cursor-pointer transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
-          </svg> 1099 Forms <span class="ml-auto text-xs">5</span>
-         </div>
-         <div class="bg-white/5 hover:bg-white/10 rounded-lg px-3 py-2 text-gray-400 text-sm flex items-center gap-2 cursor-pointer transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
-          </svg> Receipts <span class="ml-auto text-xs">12</span>
-         </div>
-         <div class="bg-white/5 hover:bg-white/10 rounded-lg px-3 py-2 text-gray-400 text-sm flex items-center gap-2 cursor-pointer transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
-          </svg> Deductions <span class="ml-auto text-xs">8</span>
-         </div>
-        </div>
-       </div><!-- Main Content -->
-       <div class="md:col-span-2 space-y-4"><!-- Upload Area -->
-        <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-purple-400 hover:bg-purple-50/50 transition-colors cursor-pointer">
-         <svg class="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-         </svg>
-         <p class="text-gray-600 font-medium">Drag &amp; drop files here</p>
-         <p class="text-gray-400 text-sm mt-1">or click to browse</p>
-        </div><!-- Document Cards -->
-        <div class="grid grid-cols-2 gap-3">
-         <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 hover:shadow-md transition-shadow cursor-move">
-          <div class="flex items-start gap-3">
-           <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-           </div>
-           <div class="min-w-0">
-            <p class="text-sm font-semibold text-navy-900 truncate">W2_2024_Employer.pdf</p>
-            <p class="text-xs text-gray-500">Added Jan 15, 2024</p>
-           </div>
+      <div class="relative flex justify-center lg:justify-end">
+       <div class="relative float-animation">
+        <div class="bg-white rounded-3xl p-6 card-shadow w-80 md:w-96">
+         <div class="flex items-center justify-between mb-6">
+          <div>
+           <h3 class="text-navy font-bold text-lg">Organizer Preview</h3>
+           <p class="text-muted text-sm">Categories + checklist</p>
+          </div>
+          <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+           <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
           </div>
          </div>
-         <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 hover:shadow-md transition-shadow cursor-move">
-          <div class="flex items-start gap-3">
-           <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
+         <div class="space-y-3">
+          <div class="flex items-center justify-between p-3 bg-surface rounded-xl border border-gray-100">
+           <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-accent/15 rounded-lg flex items-center justify-center">
+             <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1" /></svg>
+            </div>
+            <div>
+             <p class="text-navy font-semibold text-sm">W-2 / 1099</p>
+             <p class="text-muted text-xs">Income documents</p>
+            </div>
            </div>
-           <div class="min-w-0">
-            <p class="text-sm font-semibold text-navy-900 truncate">1099_Freelance.pdf</p>
-            <p class="text-xs text-gray-500">Added Jan 18, 2024</p>
+           <span class="text-xs font-semibold text-muted">Ready</span>
+          </div>
+          <div class="flex items-center justify-between p-3 bg-surface rounded-xl border border-gray-100">
+           <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-primary/15 rounded-lg flex items-center justify-center">
+             <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" /></svg>
+            </div>
+            <div>
+             <p class="text-navy font-semibold text-sm">Deductions</p>
+             <p class="text-muted text-xs">Receipts checklist</p>
+            </div>
+           </div>
+           <span class="text-xs font-semibold text-muted">In progress</span>
+          </div>
+          <div class="flex items-center justify-between p-3 bg-surface rounded-xl border border-gray-100">
+           <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-accent/15 rounded-lg flex items-center justify-center">
+             <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3" /></svg>
+            </div>
+            <div>
+             <p class="text-navy font-semibold text-sm">Export</p>
+             <p class="text-muted text-xs">Spreadsheet-ready</p>
+            </div>
+           </div>
+           <span class="text-xs font-semibold text-muted">Locked</span>
+          </div>
+         </div>
+        </div>
+        <div class="absolute -top-4 -right-4 bg-accent text-white rounded-2xl p-4 card-shadow">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+        </div>
+        <div class="absolute -bottom-4 -left-4 bg-primary text-white rounded-2xl px-4 py-3 card-shadow flex items-center gap-2">
+         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+         <span class="font-medium text-sm">Fast Setup</span>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+
+   <section id="tools" class="py-16 lg:py-24 bg-surface">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-16">
+      <span class="text-primary font-semibold text-sm uppercase tracking-wide">Features</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Everything you need to stay organized</h2>
+      <p class="text-muted text-lg max-w-2xl mx-auto">A simple, structured template to gather everything your tax pro will ask for.</p>
+     </div>
+     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+       <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v10a2 2 0 01-2 2H5z" /></svg>
+       </div>
+       <h3 class="text-navy font-bold text-lg mb-2">Category checklist</h3>
+       <p class="text-muted text-sm">Clear sections for income, deductions, credits, and payments.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+       <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" /></svg>
+       </div>
+       <h3 class="text-navy font-bold text-lg mb-2">Simple prompts</h3>
+       <p class="text-muted text-sm">Know what to collect without guessing or Googling.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+       <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-7 h-7 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3" /></svg>
+       </div>
+       <h3 class="text-navy font-bold text-lg mb-2">Export-ready</h3>
+       <p class="text-muted text-sm">Works great alongside your spreadsheet or folder system.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+       <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-7 h-7 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+       </div>
+       <h3 class="text-navy font-bold text-lg mb-2">Mobile &amp; desktop</h3>
+       <p class="text-muted text-sm">Open and update from anywhere, whenever you get documents.</p>
+      </div>
+     </div>
+    </div>
+   </section>
+
+   <section class="py-16 lg:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="order-2 lg:order-1">
+       <div class="bg-gray-50 rounded-3xl p-6 md:p-8">
+        <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+         <div class="bg-navy px-4 py-3 flex items-center gap-3">
+          <div class="flex gap-1.5">
+           <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+           <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+           <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+          </div>
+          <div class="flex-1 text-center"><span class="text-white/60 text-sm">Organizer Preview</span></div>
+         </div>
+         <div class="p-4">
+          <div class="space-y-2">
+           <div class="flex items-center justify-between p-3 bg-blue-50 rounded-xl border-l-4 border-primary">
+            <div class="flex-1">
+             <p class="text-navy font-semibold text-sm">Income</p>
+             <p class="text-muted text-xs">W-2, 1099, other income</p>
+            </div>
+            <span class="text-xs font-semibold text-muted">3 items</span>
+           </div>
+           <div class="flex items-center justify-between p-3 bg-amber-50 rounded-xl border-l-4 border-amber-500">
+            <div class="flex-1">
+             <p class="text-navy font-semibold text-sm">Deductions</p>
+             <p class="text-muted text-xs">Receipts and mileage</p>
+            </div>
+            <span class="text-xs font-semibold text-muted">8 items</span>
+           </div>
+           <div class="flex items-center justify-between p-3 bg-green-50 rounded-xl border-l-4 border-accent">
+            <div class="flex-1">
+             <p class="text-navy font-semibold text-sm">Credits</p>
+             <p class="text-muted text-xs">Eligible credits checklist</p>
+            </div>
+            <span class="text-xs font-semibold text-muted">2 items</span>
            </div>
           </div>
          </div>
         </div>
        </div>
       </div>
+      <div class="order-1 lg:order-2 text-center lg:text-left">
+       <span class="text-primary font-semibold text-sm uppercase tracking-wide">Preview</span>
+       <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">See it in action</h2>
+       <p class="text-muted text-lg mb-6">Try the demo view before buying. Demo mode keeps export disabled.</p>
+       <ul class="space-y-4 mb-8">
+        <li class="flex items-center gap-3 justify-center lg:justify-start">
+         <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center"><svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg></div>
+         <span class="text-navy">Clear categories</span>
+        </li>
+        <li class="flex items-center gap-3 justify-center lg:justify-start">
+         <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center"><svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg></div>
+         <span class="text-navy">Practical prompts</span>
+        </li>
+        <li class="flex items-center gap-3 justify-center lg:justify-start">
+         <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center"><svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg></div>
+         <span class="text-navy">Export locked until purchase</span>
+        </li>
+       </ul>
+       <button id="preview-try-demo-btn" class="bg-navy hover:bg-navy-light text-white font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        Try Demo
+       </button>
+      </div>
      </div>
-    </div><!-- Try Demo Button -->
-    <div class="text-center mt-10"><button class="btn-primary bg-gradient-to-r from-purple-500 to-purple-600 text-white px-10 py-4 rounded-xl font-semibold text-lg inline-flex items-center gap-2">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg> Try Interactive Demo </button>
     </div>
-   </div>
-  </section><!-- How It Works -->
-  <section id="how-it-works" class="py-20 bg-white">
-   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-16">
-     <h2 class="text-3xl md:text-4xl font-bold text-navy-900 mb-4">How It Works</h2>
-     <p class="text-gray-600 text-lg">Three simple steps to organized tax documents.</p>
-    </div>
-    <div class="grid md:grid-cols-3 gap-8"><!-- Step 1 -->
-     <div class="relative">
-      <div class="text-center">
-       <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-500/30">
-        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-        </svg>
+   </section>
+
+   <section class="py-16 lg:py-24 bg-surface">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-12">
+      <span class="text-primary font-semibold text-sm uppercase tracking-wide">Why Choose</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2">Simple, practical, and fast</h2>
+      <p class="text-muted text-lg max-w-2xl mx-auto mt-4">You get a clear structure you can reuse every year.</p>
+     </div>
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="flex items-center gap-3 justify-center">
+       <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+        <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
        </div>
-       <div class="absolute top-10 left-1/2 w-full h-0.5 bg-gradient-to-r from-purple-200 to-blue-200 hidden md:block" style="transform: translateX(50%);"></div><span class="inline-block bg-purple-100 text-purple-600 text-sm font-bold px-3 py-1 rounded-full mb-3">Step 1</span>
-       <h3 class="text-xl font-bold text-navy-900 mb-2">Upload Documents</h3>
-       <p class="text-gray-600">Drag and drop your tax documents or upload them from your device.</p>
-      </div>
-     </div><!-- Step 2 -->
-     <div class="relative">
-      <div class="text-center">
-       <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/30">
-        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
+       <div>
+        <p class="text-navy font-semibold text-sm">Secure Payment</p>
+        <p class="text-muted text-xs">256-bit encryption</p>
        </div>
-       <div class="absolute top-10 left-1/2 w-full h-0.5 bg-gradient-to-r from-blue-200 to-green-200 hidden md:block" style="transform: translateX(50%);"></div><span class="inline-block bg-blue-100 text-blue-600 text-sm font-bold px-3 py-1 rounded-full mb-3">Step 2</span>
-       <h3 class="text-xl font-bold text-navy-900 mb-2">Categorize</h3>
-       <p class="text-gray-600">Organize documents into pre-built categories or create custom ones.</p>
       </div>
-     </div><!-- Step 3 -->
-     <div class="relative">
-      <div class="text-center">
-       <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30">
-        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-       </div><span class="inline-block bg-green-100 text-green-600 text-sm font-bold px-3 py-1 rounded-full mb-3">Step 3</span>
-       <h3 class="text-xl font-bold text-navy-900 mb-2">Export &amp; Save</h3>
-       <p class="text-gray-600">Export your organized data to spreadsheet or save for later.</p>
+      <div class="flex items-center gap-3 justify-center">
+       <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+       </div>
+       <div>
+        <p class="text-navy font-semibold text-sm">Instant Download</p>
+        <p class="text-muted text-xs">No waiting required</p>
+       </div>
+      </div>
+      <div class="flex items-center gap-3 justify-center">
+       <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+        <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+       </div>
+       <div>
+        <p class="text-navy font-semibold text-sm">Try Before You Buy</p>
+        <p class="text-muted text-xs">Free demo available</p>
+       </div>
+      </div>
+      <div class="flex items-center gap-3 justify-center">
+       <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+        <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+       </div>
+       <div>
+        <p class="text-navy font-semibold text-sm">Only $1 Each</p>
+        <p class="text-muted text-xs">Affordable for everyone</p>
+       </div>
       </div>
      </div>
+    </div>
+   </section>
+
+   <section id="faq" class="py-16 lg:py-24 bg-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-12">
+      <span class="text-primary font-semibold text-sm uppercase tracking-wide">FAQ</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2">Frequently Asked Questions</h2>
+     </div>
+     <div class="space-y-4" id="faq-container">
+      <div class="bg-surface rounded-2xl overflow-hidden">
+       <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+        <span class="text-navy font-semibold">What is included?</span>
+        <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+       </button>
+       <div class="faq-content hidden px-6 pb-6">
+        <p class="text-muted">A categorized organizer template you can use to track documents, notes, and what to request before filing.</p>
+       </div>
+      </div>
+      <div class="bg-surface rounded-2xl overflow-hidden">
+       <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+        <span class="text-navy font-semibold">Is it a spreadsheet?</span>
+        <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+       </button>
+       <div class="faq-content hidden px-6 pb-6">
+        <p class="text-muted">It is a simple, reusable template designed to pair with your folder system and any spreadsheet workflow you already use.</p>
+       </div>
+      </div>
+      <div class="bg-surface rounded-2xl overflow-hidden">
+       <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+        <span class="text-navy font-semibold">Do I get updates?</span>
+        <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+       </button>
+       <div class="faq-content hidden px-6 pb-6">
+        <p class="text-muted">Yes. You get lifetime updates to this template.</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+
+   <section class="py-16 lg:py-24 gradient-hero text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+     <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to get organized?</h2>
+     <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Grab the organizer, add your docs as they come in, and stop scrambling at filing time.</p>
+     <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+      <button data-buy="1" class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+       Buy for $1
+      </button>
+      <a href="/" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl border border-white/20 transition-all inline-flex items-center justify-center gap-2">View All Products</a>
+     </div>
+     <div class="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm rounded-full px-6 py-3">
+      <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+      <span class="text-sm font-medium">Bundle &amp; Save: Get all 5 products for $3.99</span>
+     </div>
+    </div>
+   </section>
+
+   <!-- PARTIAL:footer -->
+  </div>
+
+  <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300" aria-hidden="true">
+   <div class="h-full flex flex-col">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+     <h3 class="text-xl font-bold text-navy">Your Cart</h3>
+     <button type="button" id="cart-close" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Close cart">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+     </button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-auto p-6">
+     <p class="text-gray-500 text-center py-8">Your cart is empty</p>
+    </div>
+    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+     <div class="flex items-center justify-between mb-4">
+      <span class="font-semibold text-navy">Total:</span>
+      <span id="cart-total" class="text-2xl font-bold text-navy">$0</span>
+     </div>
+     <button id="checkout-btn" type="button" class="w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>Proceed to Checkout</button>
     </div>
    </div>
-  </section><!-- Trust Badges -->
-  <section class="py-16 bg-gradient-to-r from-navy-900 to-purple-900">
-   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-8"><!-- Badge 1 -->
-     <div class="text-center">
-      <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-       <svg class="w-7 h-7 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-       </svg>
+  </div>
+  <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" aria-hidden="true"></div>
+
+  <div id="toast" class="fixed bottom-4 right-4 bg-navy text-white px-6 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50" aria-hidden="true">
+   <span id="toast-message">Item added to cart!</span>
+  </div>
+
+  <!-- Demo Modal -->
+  <div id="demo-overlay" class="fixed inset-0 bg-black/60 z-50 hidden" aria-hidden="true"></div>
+  <div id="demo-modal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="min-h-full flex items-center justify-center px-4 py-8">
+      <div class="w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <div>
+            <p class="text-xs font-semibold text-muted uppercase tracking-wide">Demo Mode</p>
+            <h3 id="demo-title" class="text-lg font-bold text-navy">Demo</h3>
+          </div>
+          <button type="button" id="demo-close" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Close demo">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+        <div id="demo-body" class="p-6"></div>
+        <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+          <p class="text-sm text-gray-600">Export is locked in demo mode.</p>
+          <div class="flex gap-3">
+            <button type="button" id="demo-add" class="bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-xl font-semibold transition-colors">Add to cart</button>
+            <button type="button" id="demo-export" class="bg-white text-navy px-5 py-2.5 rounded-xl font-semibold border border-gray-200" disabled>Export (Locked)</button>
+          </div>
+        </div>
       </div>
-      <h4 class="text-white font-semibold mb-1">Secure Payment</h4>
-      <p class="text-gray-400 text-sm">256-bit SSL encryption</p>
-     </div><!-- Badge 2 -->
-     <div class="text-center">
-      <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-       <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-       </svg>
-      </div>
-      <h4 class="text-white font-semibold mb-1">Instant Download</h4>
-      <p class="text-gray-400 text-sm">Access immediately</p>
-     </div><!-- Badge 3 -->
-     <div class="text-center">
-      <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-       <svg class="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-       </svg>
-      </div>
-      <h4 class="text-white font-semibold mb-1">Try Before You Buy</h4>
-      <p class="text-gray-400 text-sm">Free interactive demo</p>
-     </div><!-- Badge 4 -->
-     <div class="text-center">
-      <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-       <svg class="w-7 h-7 text-yellow-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-       </svg>
-      </div>
-      <h4 class="text-white font-semibold mb-1">Only $1 Each</h4>
-      <p class="text-gray-400 text-sm">Affordable tools</p>
-     </div>
     </div>
-   </div>
-  </section><!-- FAQ Section -->
-  <section id="faq" class="py-20 bg-slate-50">
-   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-12">
-     <h2 class="text-3xl md:text-4xl font-bold text-navy-900 mb-4">Frequently Asked Questions</h2>
-     <p class="text-gray-600 text-lg">Got questions? We've got answers.</p>
-    </div>
-    <div class="space-y-4" id="faq-container"><!-- FAQ 1 -->
-     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden"><button class="faq-toggle w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors" data-faq="1"> <span class="font-semibold text-navy-900">What file types are supported?</span>
-       <svg class="w-5 h-5 text-gray-500 transform transition-transform faq-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-       </svg></button>
-      <div class="faq-content hidden px-6 pb-5">
-       <p class="text-gray-600">The Tax Document Organizer supports all common file types including PDF, JPG, PNG, DOC, DOCX, XLS, XLSX, and more. You can upload any document format typically used for tax documents.</p>
-      </div>
-     </div><!-- FAQ 2 -->
-     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden"><button class="faq-toggle w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors" data-faq="2"> <span class="font-semibold text-navy-900">Can I customize categories?</span>
-       <svg class="w-5 h-5 text-gray-500 transform transition-transform faq-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-       </svg></button>
-      <div class="faq-content hidden px-6 pb-5">
-       <p class="text-gray-600">Absolutely! While we provide 20+ pre-built categories, you can create unlimited custom categories to match your specific needs. Rename, merge, or delete categories as needed.</p>
-      </div>
-     </div><!-- FAQ 3 -->
-     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden"><button class="faq-toggle w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors" data-faq="3"> <span class="font-semibold text-navy-900">Is my data secure?</span>
-       <svg class="w-5 h-5 text-gray-500 transform transition-transform faq-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-       </svg></button>
-      <div class="faq-content hidden px-6 pb-5">
-       <p class="text-gray-600">Yes! Your documents are stored locally in your browser. We never upload or store your sensitive tax documents on our servers. Everything stays on your device.</p>
-      </div>
-     </div><!-- FAQ 4 -->
-     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden"><button class="faq-toggle w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors" data-faq="4"> <span class="font-semibold text-navy-900">Do I get free updates?</span>
-       <svg class="w-5 h-5 text-gray-500 transform transition-transform faq-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-       </svg></button>
-      <div class="faq-content hidden px-6 pb-5">
-       <p class="text-gray-600">Yes! All purchases include lifetime access to updates. We continuously improve our tools based on user feedback and tax law changes.</p>
-      </div>
-     </div>
-    </div>
-   </div>
-  </section><!-- Final CTA -->
-  <section class="py-20 bg-white">
-   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <div class="bg-gradient-to-br from-navy-900 via-purple-900 to-navy-900 rounded-3xl p-12 relative overflow-hidden"><!-- Background decoration -->
-     <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute -top-20 -right-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
-      <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl"></div>
-     </div>
-     <div class="relative">
-      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Get Organized?</h2>
-      <p class="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">Join thousands of people who've simplified their tax season with our Document Organizer.</p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center"><button class="btn-primary bg-gradient-to-r from-purple-500 to-purple-600 text-white px-10 py-4 rounded-xl font-semibold text-lg inline-flex items-center justify-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg> Buy for $1 </button>
-      </div>
-      <p class="text-gray-400 text-sm mt-6">💡 <span class="text-purple-300 font-medium">Bundle &amp; Save:</span> Get all TaxTools templates for just $5</p>
-     </div>
-    </div>
-   </div>
-  </section><!-- Footer -->
-  <footer class="bg-navy-900 pt-16 pb-8">
-   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid md:grid-cols-4 gap-8 pb-12 border-b border-white/10"><!-- Brand -->
-     <div class="md:col-span-1">
-      <div class="flex items-center gap-2 mb-4">
-       <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-       </div><span class="text-white font-bold text-xl">TaxTools</span>
-      </div>
-      <p class="text-gray-400 text-sm">Simple, affordable tools to make tax season less stressful.</p>
-     </div><!-- Quick Links -->
-     <div>
-      <h4 class="text-white font-semibold mb-4">Products</h4>
-      <ul class="space-y-2">
-       <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Document Organizer</a></li>
-       <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Expense Tracker</a></li>
-       <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Mileage Logger</a></li>
-       <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">All Templates Bundle</a></li>
-      </ul>
-     </div><!-- Support -->
-     <div>
-      <h4 class="text-white font-semibold mb-4">Support</h4>
-      <ul class="space-y-2">
-       <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Help Center</a></li>
-       <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Contact Us</a></li>
-       <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Video Tutorials</a></li>
-       <li><a href="#faq" class="text-gray-400 hover:text-white text-sm transition-colors">FAQ</a></li>
-      </ul>
-     </div><!-- Legal -->
-     <div>
-      <h4 class="text-white font-semibold mb-4">Legal</h4>
-      <ul class="space-y-2">
-       <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a></li>
-       <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a></li>
-       <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Refund Policy</a></li>
-      </ul>
-     </div>
-    </div><!-- Copyright -->
-    <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-     <p class="text-gray-500 text-sm">© 2024 TaxTools. All rights reserved.</p>
-     <div class="flex items-center gap-4"><a href="#" class="text-gray-400 hover:text-white transition-colors">
-       <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
-        <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-       </svg></a> <a href="#" class="text-gray-400 hover:text-white transition-colors">
-       <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
-        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-       </svg></a>
-     </div>
-    </div>
-   </div>
-  </footer>
+  </div>
+
   <script>
-    // Default configuration
     const defaultConfig = {
       product_name: 'Tax Document Organizer Template',
       tagline: 'Organize your tax docs like a pro.',
       price_text: '$1',
-      buy_button_text: 'Buy for $1',
-      demo_button_text: 'Try Demo',
+      primary_cta: 'Buy for $1',
+      secondary_cta: 'Try Demo',
       background_color: '#0f172a',
       surface_color: '#ffffff',
-      text_color: '#1e293b',
-      primary_action_color: '#8b5cf6',
-      secondary_action_color: '#3b82f6'
+      text_color: '#0f172a',
+      primary_color: '#2563eb',
+      accent_color: '#f97316'
     };
 
-    // Initialize Element SDK
+    function toggleFaq(button) {
+      const content = button.nextElementSibling;
+      const icon = button.querySelector('.faq-icon');
+      const isOpen = !content.classList.contains('hidden');
+
+      document.querySelectorAll('.faq-content').forEach((c) => c.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach((i) => (i.style.transform = 'rotate(0deg)'));
+
+      if (!isOpen) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
     if (window.elementSdk) {
       window.elementSdk.init({
         defaultConfig,
-        onConfigChange: async (config) => {
-          // Update product name
-          const productNameEl = document.getElementById('product-name');
-          if (productNameEl) {
-            productNameEl.textContent = config.product_name || defaultConfig.product_name;
+        async onConfigChange(config) {
+          const productName = document.getElementById('product-name');
+          if (productName) productName.textContent = config.product_name || defaultConfig.product_name;
+
+          const tagline = document.getElementById('tagline');
+          if (tagline) tagline.textContent = config.tagline || defaultConfig.tagline;
+
+          const primaryBtn = document.getElementById('primary-btn');
+          if (primaryBtn) {
+            primaryBtn.textContent = config.primary_cta || defaultConfig.primary_cta;
+            primaryBtn.style.backgroundColor = config.primary_color || defaultConfig.primary_color;
           }
 
-          // Update tagline
-          const taglineEl = document.getElementById('tagline');
-          if (taglineEl) {
-            taglineEl.textContent = config.tagline || defaultConfig.tagline;
-          }
+          const secondaryBtn = document.getElementById('secondary-btn');
+          if (secondaryBtn) secondaryBtn.textContent = config.secondary_cta || defaultConfig.secondary_cta;
 
-          // Update buy button
-          const buyBtn = document.getElementById('buy-btn');
-          if (buyBtn) {
-            const btnText = config.buy_button_text || defaultConfig.buy_button_text;
-            buyBtn.innerHTML = `
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-              </svg>
-              ${btnText}
-            `;
-          }
+          document.querySelectorAll('.bg-primary').forEach((el) => {
+            el.style.backgroundColor = config.primary_color || defaultConfig.primary_color;
+          });
 
-          // Update demo button
-          const demoBtn = document.getElementById('demo-btn');
-          if (demoBtn) {
-            const btnText = config.demo_button_text || defaultConfig.demo_button_text;
-            demoBtn.innerHTML = `
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              ${btnText}
-            `;
-          }
-
-          // Apply colors
-          const bgColor = config.background_color || defaultConfig.background_color;
-          const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
-          const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
-          const textColor = config.text_color || defaultConfig.text_color;
-          const surfaceColor = config.surface_color || defaultConfig.surface_color;
-
-          document.documentElement.style.setProperty('--bg-color', bgColor);
-          document.documentElement.style.setProperty('--primary-color', primaryColor);
-          document.documentElement.style.setProperty('--secondary-color', secondaryColor);
-          document.documentElement.style.setProperty('--text-color', textColor);
-          document.documentElement.style.setProperty('--surface-color', surfaceColor);
+          document.querySelectorAll('.bg-accent').forEach((el) => {
+            el.style.backgroundColor = config.accent_color || defaultConfig.accent_color;
+          });
         },
-        mapToCapabilities: (config) => ({
-          recolorables: [
-            {
-              get: () => config.background_color || defaultConfig.background_color,
-              set: (value) => window.elementSdk.setConfig({ background_color: value })
-            },
-            {
-              get: () => config.surface_color || defaultConfig.surface_color,
-              set: (value) => window.elementSdk.setConfig({ surface_color: value })
-            },
-            {
-              get: () => config.text_color || defaultConfig.text_color,
-              set: (value) => window.elementSdk.setConfig({ text_color: value })
-            },
-            {
-              get: () => config.primary_action_color || defaultConfig.primary_action_color,
-              set: (value) => window.elementSdk.setConfig({ primary_action_color: value })
-            },
-            {
-              get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
-              set: (value) => window.elementSdk.setConfig({ secondary_action_color: value })
-            }
-          ],
-          borderables: [],
-          fontEditable: undefined,
-          fontSizeable: undefined
-        }),
-        mapToEditPanelValues: (config) => new Map([
-          ['product_name', config.product_name || defaultConfig.product_name],
-          ['tagline', config.tagline || defaultConfig.tagline],
-          ['price_text', config.price_text || defaultConfig.price_text],
-          ['buy_button_text', config.buy_button_text || defaultConfig.buy_button_text],
-          ['demo_button_text', config.demo_button_text || defaultConfig.demo_button_text]
-        ])
+        mapToCapabilities(config) {
+          return {
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (value) => window.elementSdk.setConfig({ background_color: value })
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => window.elementSdk.setConfig({ surface_color: value })
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => window.elementSdk.setConfig({ text_color: value })
+              },
+              {
+                get: () => config.primary_color || defaultConfig.primary_color,
+                set: (value) => window.elementSdk.setConfig({ primary_color: value })
+              },
+              {
+                get: () => config.accent_color || defaultConfig.accent_color,
+                set: (value) => window.elementSdk.setConfig({ accent_color: value })
+              }
+            ],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          };
+        },
+        mapToEditPanelValues(config) {
+          return new Map([
+            ['primary_cta', config.primary_cta || defaultConfig.primary_cta],
+            ['product_name', config.product_name || defaultConfig.product_name],
+            ['secondary_cta', config.secondary_cta || defaultConfig.secondary_cta],
+            ['tagline', config.tagline || defaultConfig.tagline]
+          ]);
+        }
       });
     }
 
-    // FAQ Toggle functionality
-    document.querySelectorAll('.faq-toggle').forEach(button => {
-      button.addEventListener('click', () => {
-        const content = button.nextElementSibling;
-        const icon = button.querySelector('.faq-icon');
-        const isOpen = !content.classList.contains('hidden');
+    const TOOLS_API_BASE = 'https://tools-api.taxmonitor.pro';
 
-        // Close all other FAQs
-        document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
-        document.querySelectorAll('.faq-icon').forEach(i => i.classList.remove('rotate-180'));
+    const TOOLS_API_ENDPOINTS = {
+      checkoutCreate: `${TOOLS_API_BASE}/v1/checkout/sessions`,
+      checkoutStatus: `${TOOLS_API_BASE}/v1/checkout/status`,
+      supportCreate: `${TOOLS_API_BASE}/v1/support/tickets`
+    };
 
-        // Toggle current FAQ
-        if (!isOpen) {
-          content.classList.remove('hidden');
-          icon.classList.add('rotate-180');
-        }
+    const products = {
+      organizer: { name: 'Tax Document Organizer Template', price: 1 }
+    };
+
+    let cart = [];
+
+    function closeCart() {
+      const overlay = document.getElementById('cart-overlay');
+      const sidebar = document.getElementById('cart-sidebar');
+
+      if (sidebar) {
+        sidebar.classList.add('translate-x-full');
+        sidebar.setAttribute('aria-hidden', 'true');
+      }
+      if (overlay) {
+        overlay.classList.add('hidden');
+        overlay.setAttribute('aria-hidden', 'true');
+      }
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    function openCart() {
+      const overlay = document.getElementById('cart-overlay');
+      const sidebar = document.getElementById('cart-sidebar');
+
+      if (sidebar) {
+        sidebar.classList.remove('translate-x-full');
+        sidebar.setAttribute('aria-hidden', 'false');
+      }
+      if (overlay) {
+        overlay.classList.remove('hidden');
+        overlay.setAttribute('aria-hidden', 'false');
+      }
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function showToast(message) {
+      const msg = document.getElementById('toast-message');
+      const toast = document.getElementById('toast');
+      if (!toast || !msg) return;
+
+      msg.textContent = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2200);
+    }
+
+    function closeDemo() {
+      const modal = document.getElementById('demo-modal');
+      const overlay = document.getElementById('demo-overlay');
+
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+      if (overlay) {
+        overlay.classList.add('hidden');
+        overlay.setAttribute('aria-hidden', 'true');
+      }
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    function openDemo(productId) {
+      if (productId !== 'organizer') {
+        showToast('Demo not available for this item.');
+        return;
+      }
+
+      const addBtn = document.getElementById('demo-add');
+      const body = document.getElementById('demo-body');
+      const exportBtn = document.getElementById('demo-export');
+      const modal = document.getElementById('demo-modal');
+      const overlay = document.getElementById('demo-overlay');
+      const title = document.getElementById('demo-title');
+
+      if (!modal || !overlay || !title || !body || !addBtn || !exportBtn) return;
+
+      title.textContent = 'Tax Document Organizer Template';
+
+      body.innerHTML = `
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-surface rounded-2xl p-5 border border-gray-200">
+            <h4 class="text-navy font-bold mb-2">Categories</h4>
+            <p class="text-sm text-muted mb-4">Toggle items to see how the organizer flows.</p>
+            <div class="space-y-2" id="demo-checklist">
+              <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-200 cursor-pointer">
+                <input type="checkbox" class="w-4 h-4" data-item="w2" />
+                <span class="text-navy font-medium">W-2 / 1099 collected</span>
+              </label>
+              <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-200 cursor-pointer">
+                <input type="checkbox" class="w-4 h-4" data-item="ded" />
+                <span class="text-navy font-medium">Deductions receipts gathered</span>
+              </label>
+              <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-200 cursor-pointer">
+                <input type="checkbox" class="w-4 h-4" data-item="notes" />
+                <span class="text-navy font-medium">Notes for tax pro added</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 border border-gray-200">
+            <h4 class="text-navy font-bold mb-2">Status Preview</h4>
+            <p class="text-sm text-muted mb-4">This is what you get in the full template.</p>
+            <div class="space-y-3" id="demo-status">
+              <div class="flex items-center justify-between p-3 rounded-xl bg-blue-50 border border-blue-100">
+                <span class="text-navy font-semibold">Income docs</span>
+                <span class="text-xs font-semibold text-muted" data-status="w2">Not started</span>
+              </div>
+              <div class="flex items-center justify-between p-3 rounded-xl bg-amber-50 border border-amber-100">
+                <span class="text-navy font-semibold">Deductions</span>
+                <span class="text-xs font-semibold text-muted" data-status="ded">Not started</span>
+              </div>
+              <div class="flex items-center justify-between p-3 rounded-xl bg-green-50 border border-green-100">
+                <span class="text-navy font-semibold">Notes</span>
+                <span class="text-xs font-semibold text-muted" data-status="notes">Not started</span>
+              </div>
+            </div>
+
+            <div class="mt-4 p-4 rounded-xl bg-surface border border-gray-200">
+              <p class="text-sm text-gray-600">Export is disabled in demo mode. Buy for $1 to unlock downloads.</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Prevent listener stacking if user opens demo multiple times.
+      exportBtn.onclick = () => showToast('Export is locked in demo mode.');
+      addBtn.onclick = () => {
+        addToCart('organizer');
+        closeDemo();
+      };
+
+      body.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+        cb.addEventListener('change', () => {
+          const key = cb.getAttribute('data-item');
+          const statusEl = body.querySelector(`[data-status="${key}"]`);
+          if (!statusEl) return;
+          statusEl.textContent = cb.checked ? 'Complete' : 'Not started';
+        });
       });
-    });
 
-    // Smooth scroll for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      overlay.classList.remove('hidden');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function updateCartUI() {
+      const count = cart.length;
+      const total = cart.reduce((sum, id) => sum + (products[id]?.price || 0), 0);
+
+      const cartCount = document.getElementById('cart-count');
+      if (cartCount) {
+        cartCount.textContent = String(count);
+        cartCount.classList.toggle('hidden', count === 0);
+      }
+
+      const cartItems = document.getElementById('cart-items');
+      if (cartItems) {
+        if (count === 0) {
+          cartItems.innerHTML = '<p class="text-gray-500 text-center py-8">Your cart is empty</p>';
+        } else {
+          cartItems.innerHTML = cart
+            .map((id) => {
+              const p = products[id];
+              return `
+                <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                  <div>
+                    <p class="font-medium text-navy">${p?.name || id}</p>
+                    <p class="text-sm text-gray-500">$${p?.price || 0}</p>
+                  </div>
+                  <button type="button" data-remove="${id}" class="p-1 text-gray-400 hover:text-red-500 transition-colors" aria-label="Remove">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  </button>
+                </div>
+              `;
+            })
+            .join('');
+
+          cartItems.querySelectorAll('[data-remove]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const id = btn.getAttribute('data-remove');
+              cart = cart.filter((x) => x !== id);
+              updateCartUI();
+            });
           });
         }
+      }
+
+      const cartTotal = document.getElementById('cart-total');
+      if (cartTotal) cartTotal.textContent = `$${total}`;
+
+      const checkoutBtn = document.getElementById('checkout-btn');
+      if (checkoutBtn) checkoutBtn.disabled = count === 0;
+    }
+
+    function addToCart(productId) {
+      if (!products[productId]) return;
+
+      if (!cart.includes(productId)) {
+        cart.push(productId);
+        updateCartUI();
+        showToast(`${products[productId].name} added to cart!`);
+      } else {
+        showToast('Item already in cart');
+      }
+
+      openCart();
+    }
+
+    function checkout() {
+      const total = cart.reduce((sum, id) => sum + (products[id]?.price || 0), 0);
+
+      const payload = {
+        cancelUrl: `${location.origin}/`,
+        items: cart.map((id) => ({
+          id,
+          name: products[id]?.name || id,
+          price: products[id]?.price || 0,
+          quantity: 1
+        })),
+        successUrl: `${location.origin}/?paid=1`,
+        total
+      };
+
+      closeCart();
+
+      fetch(TOOLS_API_ENDPOINTS.checkoutCreate, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(async (res) => {
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(data?.error || `Checkout session failed (${res.status})`);
+          return data;
+        })
+        .then((data) => {
+          if (data?.checkoutUrl) {
+            location.href = data.checkoutUrl;
+            return;
+          }
+          showToast('Checkout session created (missing checkoutUrl).');
+        })
+        .catch((err) => {
+          showToast(`Checkout error: ${err.message || 'Unknown error'}`);
+        });
+    }
+
+    function wireCartBehavior() {
+      const cartBtn = document.getElementById('cart-btn');
+      if (cartBtn) {
+        cartBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          openCart();
+        });
+      }
+
+      const checkoutBtn = document.getElementById('checkout-btn');
+      if (checkoutBtn) checkoutBtn.addEventListener('click', checkout);
+
+      const closeBtn = document.getElementById('cart-close');
+      if (closeBtn) closeBtn.addEventListener('click', closeCart);
+
+      const overlay = document.getElementById('cart-overlay');
+      if (overlay) overlay.addEventListener('click', closeCart);
+
+      const primaryBtn = document.getElementById('primary-btn');
+      if (primaryBtn) {
+        primaryBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          addToCart('organizer');
+        });
+      }
+
+      // Expected behavior: Try Demo opens the demo modal (and does NOT add to cart).
+      const secondaryBtn = document.getElementById('secondary-btn');
+      if (secondaryBtn) {
+        secondaryBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          openDemo('organizer');
+        });
+      }
+
+      const previewTryBtn = document.getElementById('preview-try-demo-btn');
+      if (previewTryBtn) {
+        previewTryBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          openDemo('organizer');
+        });
+      }
+
+      document.querySelectorAll('[data-buy="1"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          addToCart('organizer');
+        });
       });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+
+        const demo = document.getElementById('demo-modal');
+        if (demo && !demo.classList.contains('hidden')) {
+          closeDemo();
+          return;
+        }
+
+        const sidebar = document.getElementById('cart-sidebar');
+        if (sidebar && !sidebar.classList.contains('translate-x-full')) closeCart();
+      });
+
+      updateCartUI();
+    }
+
+    function runTests() {
+      // Minimal sanity checks (front-end "tests" because humans love pain).
+      const requiredIds = [
+        'cart-items',
+        'cart-overlay',
+        'cart-sidebar',
+        'checkout-btn',
+        'demo-body',
+        'demo-modal',
+        'demo-overlay',
+        'primary-btn',
+        'secondary-btn'
+      ];
+
+      requiredIds.forEach((id) => {
+        console.assert(!!document.getElementById(id), `Missing required element #${id}`);
+      });
+
+      // Verify demo open/close toggles state without throwing.
+      openDemo('organizer');
+      const demoModal = document.getElementById('demo-modal');
+      console.assert(demoModal && !demoModal.classList.contains('hidden'), 'Demo modal should be visible after openDemo()');
+      closeDemo();
+      console.assert(demoModal && demoModal.classList.contains('hidden'), 'Demo modal should be hidden after closeDemo()');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      wireCartBehavior();
+
+      const demoClose = document.getElementById('demo-close');
+      if (demoClose) demoClose.addEventListener('click', closeDemo);
+
+      const demoOverlay = document.getElementById('demo-overlay');
+      if (demoOverlay) demoOverlay.addEventListener('click', closeDemo);
+
+      const demoModal = document.getElementById('demo-modal');
+      if (demoModal) {
+        demoModal.addEventListener('click', (e) => {
+          if (e.target === demoModal) closeDemo();
+        });
+      }
+
+      // Run tests last so the page is wired first.
+      runTests();
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d637349936827c7',t:'MTc3MjQ4NjQ3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-
+ </body>
 </html>
