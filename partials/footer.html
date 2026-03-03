@@ -30,7 +30,7 @@
       </div>
 
       <!-- Links -->
-      <div class="flex flex-col gap-4 md:justify-self-end md:w-fit">
+      <div class="flex flex-col gap-4">
         <h3 class="text-sm font-semibold text-white">Links</h3>
         <nav class="grid gap-2 text-sm">
           <!-- Alphabetical -->
@@ -42,12 +42,18 @@
       </div>
 
       <!-- Resources -->
-      <div class="flex flex-col gap-4 md:justify-self-start md:w-fit">
+      <div class="flex flex-col gap-4">
         <h3 class="text-sm font-semibold text-white">Resources</h3>
         <nav class="grid gap-2 text-sm">
           <!-- Alphabetical -->
           <a href="/help-center.html" class="text-blue-200 hover:text-white transition">Help Center</a>
           <a href="/support.html" class="text-blue-200 hover:text-white transition">Support</a>
+        </nav>
+
+        <div class="mt-2 h-px w-full bg-slate-800/80"></div>
+
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
           <a href="https://taxmonitor.pro" class="text-blue-200 hover:text-white transition">Tax Monitor Pro</a>
         </nav>
       </div>
@@ -74,4 +80,5 @@
     if (el) el.textContent = String(new Date().getFullYear());
   })();
 </script>
+
 
