@@ -1,14 +1,24 @@
+<!-- tools/tax-refund-estimator-tool.html -->
 <!doctype html>
 <html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tax Refund Estimator Tool - TaxTools</title>
+
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;display=swap"
+    rel="stylesheet" />
+
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;display=swap" rel="stylesheet">
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+
   <script>
     tailwind.config = {
       theme: {
@@ -28,386 +38,673 @@
       }
     }
   </script>
+
   <style>
-    html, body { height: 100%; margin: 0; }
-    * { font-family: 'DM Sans', sans-serif; }
-    .animate-float { animation: float 3s ease-in-out infinite; }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+    html,
+    body {
+      height: 100%;
+      margin: 0;
     }
-    .animate-pulse-slow { animation: pulse-slow 2s ease-in-out infinite; }
+
+    * {
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    body {
+      box-sizing: border-box;
+    }
+
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .animate-pulse-slow {
+      animation: pulse-slow 2s ease-in-out infinite;
+    }
+
     @keyframes pulse-slow {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+      }
+    }
+
+    /* simple modal scroll lock */
+    .no-scroll {
+      overflow: hidden;
     }
   </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full bg-white">
-  <div id="app-wrapper" class="w-full h-full overflow-auto"><!-- Header -->
-   <header id="header" class="bg-navy sticky top-0 z-50 shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-     <div class="flex items-center justify-between h-16"><!-- Logo -->
-      <div class="flex items-center gap-2">
-       <div class="w-10 h-10 bg-orange rounded-xl flex items-center justify-center">
-        <svg class="w-6 h-6 text-navy" fill="currentColor" viewbox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-4H8v-2h4V7h2v4h4v2h-4v4z" />
-        </svg>
-       </div><span class="text-white font-bold text-xl">TaxTools</span>
-      </div><!-- Navigation -->
-      <nav class="hidden md:flex items-center gap-8"><a href="#features" class="text-white/80 hover:text-orange transition-colors">Features</a> <a href="#demo" class="text-white/80 hover:text-orange transition-colors">Demo</a> <a href="#how-it-works" class="text-white/80 hover:text-orange transition-colors">How It Works</a> <a href="#faq" class="text-white/80 hover:text-orange transition-colors">FAQ</a>
-      </nav><!-- Cart -->
-      <div class="flex items-center gap-4"><button class="relative p-2 text-white/80 hover:text-orange transition-colors">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg><span class="absolute -top-1 -right-1 bg-orange text-navy text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span> </button> <button class="md:hidden text-white p-2">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg></button>
+</head>
+
+<body class="h-full bg-white">
+  <div id="app-wrapper" class="w-full h-full overflow-auto">
+    <!-- PARTIAL:header -->
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-navy via-navy-light to-navy relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-20 left-10 w-32 h-32 bg-orange rounded-full blur-3xl"></div>
+        <div class="absolute bottom-20 right-10 w-40 h-40 bg-green rounded-full blur-3xl"></div>
       </div>
-     </div>
-    </div>
-   </header><!-- Hero Section -->
-   <section class="bg-gradient-to-br from-navy via-navy-light to-navy relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-     <div class="absolute top-20 left-10 w-32 h-32 bg-orange rounded-full blur-3xl"></div>
-     <div class="absolute bottom-20 right-10 w-40 h-40 bg-green rounded-full blur-3xl"></div>
-    </div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 relative">
-     <div class="grid lg:grid-cols-2 gap-12 items-center">
-      <div class="text-center lg:text-left"><span class="inline-block bg-orange/20 text-orange px-4 py-1 rounded-full text-sm font-semibold mb-4"> 💰 Most Popular Tool </span>
-       <h1 id="hero-title" class="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 leading-tight">Tax Refund Estimator Tool</h1>
-       <p id="hero-tagline" class="text-xl lg:text-2xl text-white/80 mb-8">Estimate your refund in seconds.</p>
-       <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"><button id="buy-button" class="bg-orange hover:bg-orange-dark text-navy font-bold py-4 px-8 rounded-xl text-lg transition-all transform hover:scale-105 shadow-lg shadow-orange/30"> Buy for $1 </button> <button id="demo-button" class="bg-white/10 hover:bg-white/20 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all border-2 border-white/30 hover:border-white/50"> Try Demo </button>
-       </div>
-       <p class="text-white/60 mt-4 text-sm">✓ Instant Download • ✓ No subscription • ✓ Lifetime access</p>
-      </div><!-- Hero Illustration -->
-      <div class="relative flex justify-center">
-       <div class="animate-float">
-        <div class="bg-white rounded-3xl p-8 shadow-2xl max-w-sm"><!-- Calculator Illustration -->
-         <div class="bg-gradient-to-br from-green to-green-dark rounded-2xl p-6 mb-4">
-          <div class="flex items-center justify-between mb-4"><span class="text-white/80 text-sm">Your Estimated Refund</span>
-           <svg class="w-6 h-6 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z" />
-           </svg>
-          </div>
-          <div class="text-white text-4xl font-bold">
-           $2,847
-          </div>
-         </div><!-- Mini form preview -->
-         <div class="space-y-3">
-          <div class="bg-gray-100 rounded-xl p-3 flex items-center gap-3">
-           <div class="w-8 h-8 bg-navy rounded-lg flex items-center justify-center">
-            <svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-            </svg>
-           </div>
-           <div class="flex-1">
-            <div class="text-xs text-gray-500">
-             Filing Status
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 relative">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div class="text-center lg:text-left">
+            <span
+              class="inline-block bg-orange/20 text-orange px-4 py-1 rounded-full text-sm font-semibold mb-4">💰 Most
+              Popular Tool</span>
+            <h1 id="hero-title" class="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 leading-tight">Tax
+              Refund Estimator Tool</h1>
+            <p id="hero-tagline" class="text-xl lg:text-2xl text-white/80 mb-8">Estimate your refund in seconds.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <button id="buy-button"
+                class="bg-orange hover:bg-orange-dark text-navy font-bold py-4 px-8 rounded-xl text-lg transition-all transform hover:scale-105 shadow-lg shadow-orange/30">
+                Buy for $1
+              </button>
+              <button id="demo-button" data-demo-open
+                class="bg-white/10 hover:bg-white/20 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all border-2 border-white/30 hover:border-white/50">
+                Try Demo
+              </button>
             </div>
-            <div class="text-sm font-semibold text-navy">
-             Single
-            </div>
-           </div>
+            <p class="text-white/60 mt-4 text-sm">✓ Instant Download • ✓ No subscription • ✓ Lifetime access</p>
           </div>
-          <div class="bg-gray-100 rounded-xl p-3 flex items-center gap-3">
-           <div class="w-8 h-8 bg-orange rounded-lg flex items-center justify-center">
-            <svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
-            </svg>
-           </div>
-           <div class="flex-1">
-            <div class="text-xs text-gray-500">
-             Annual Income
+
+          <!-- Hero Illustration -->
+          <div class="relative flex justify-center">
+            <div class="animate-float">
+              <div class="bg-white rounded-3xl p-8 shadow-2xl max-w-sm">
+                <div class="bg-gradient-to-br from-green to-green-dark rounded-2xl p-6 mb-4">
+                  <div class="flex items-center justify-between mb-4">
+                    <span class="text-white/80 text-sm">Your Estimated Refund</span>
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z" />
+                    </svg>
+                  </div>
+                  <div class="text-white text-4xl font-bold">$2,847</div>
+                </div>
+
+                <div class="space-y-3">
+                  <div class="bg-gray-100 rounded-xl p-3 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-navy rounded-lg flex items-center justify-center">
+                      <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                          d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                      </svg>
+                    </div>
+                    <div class="flex-1">
+                      <div class="text-xs text-gray-500">Filing Status</div>
+                      <div class="text-sm font-semibold text-navy">Single</div>
+                    </div>
+                  </div>
+
+                  <div class="bg-gray-100 rounded-xl p-3 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-orange rounded-lg flex items-center justify-center">
+                      <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                          d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
+                      </svg>
+                    </div>
+                    <div class="flex-1">
+                      <div class="text-xs text-gray-500">Annual Income</div>
+                      <div class="text-sm font-semibold text-navy">$65,000</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4 flex items-center justify-center gap-2 text-green font-semibold">
+                  <span class="text-2xl">😊</span>
+                  <span>You're getting money back!</span>
+                </div>
+              </div>
             </div>
-            <div class="text-sm font-semibold text-navy">
-             $65,000
+
+            <div class="absolute -top-4 -left-4 bg-orange rounded-2xl p-3 shadow-lg animate-pulse-slow">
+              <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z" />
+              </svg>
             </div>
-           </div>
+            <div class="absolute -bottom-2 -right-2 bg-green rounded-2xl p-3 shadow-lg animate-pulse-slow"
+              style="animation-delay: 1s;">
+              <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+              </svg>
+            </div>
           </div>
-         </div><!-- Happy person indicator -->
-         <div class="mt-4 flex items-center justify-center gap-2 text-green font-semibold"><span class="text-2xl">😊</span> <span>You're getting money back!</span>
-         </div>
         </div>
-       </div><!-- Floating elements -->
-       <div class="absolute -top-4 -left-4 bg-orange rounded-2xl p-3 shadow-lg animate-pulse-slow">
-        <svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z" />
-        </svg>
-       </div>
-       <div class="absolute -bottom-2 -right-2 bg-green rounded-2xl p-3 shadow-lg animate-pulse-slow" style="animation-delay: 1s;">
-        <svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-        </svg>
-       </div>
       </div>
-     </div>
-    </div>
-   </section><!-- Product Features -->
-   <section id="features" class="py-16 lg:py-24 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-     <div class="text-center mb-12">
-      <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-4">Why You'll Love This Tool</h2>
-      <p class="text-gray-600 text-lg max-w-2xl mx-auto">Get a quick estimate of your tax refund without the complexity of full tax software.</p>
-     </div>
-     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"><!-- Feature 1 -->
-      <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-       <div class="w-14 h-14 bg-orange/10 rounded-xl flex items-center justify-center mb-4">
-        <svg class="w-7 h-7 text-orange" fill="currentColor" viewbox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
-        </svg>
-       </div>
-       <h3 class="text-xl font-bold text-navy mb-2">Instant Estimate</h3>
-       <p class="text-gray-600">Get your refund estimate in under 60 seconds. No waiting, no delays.</p>
-      </div><!-- Feature 2 -->
-      <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-       <div class="w-14 h-14 bg-green/10 rounded-xl flex items-center justify-center mb-4">
-        <svg class="w-7 h-7 text-green" fill="currentColor" viewbox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
-        </svg>
-       </div>
-       <h3 class="text-xl font-bold text-navy mb-2">Simple Questions</h3>
-       <p class="text-gray-600">Easy step-by-step questions anyone can answer. No tax expertise needed.</p>
-      </div><!-- Feature 3 -->
-      <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-       <div class="w-14 h-14 bg-navy/10 rounded-xl flex items-center justify-center mb-4">
-        <svg class="w-7 h-7 text-navy" fill="currentColor" viewbox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
-        </svg>
-       </div>
-       <h3 class="text-xl font-bold text-navy mb-2">No Personal Info</h3>
-       <p class="text-gray-600">We don't collect your SSN, name, or any sensitive personal data.</p>
-      </div><!-- Feature 4 -->
-      <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-       <div class="w-14 h-14 bg-orange/10 rounded-xl flex items-center justify-center mb-4">
-        <svg class="w-7 h-7 text-orange" fill="currentColor" viewbox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z" />
-        </svg>
-       </div>
-       <h3 class="text-xl font-bold text-navy mb-2">Mobile Friendly</h3>
-       <p class="text-gray-600">Works perfectly on your phone, tablet, or desktop computer.</p>
-      </div>
-     </div>
-    </div>
-   </section><!-- Demo Preview -->
-   <section id="demo" class="py-16 lg:py-24 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-     <div class="grid lg:grid-cols-2 gap-12 items-center">
-      <div><span class="inline-block bg-green/10 text-green px-4 py-1 rounded-full text-sm font-semibold mb-4"> 🎮 Interactive Demo </span>
-       <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-6">See It In Action</h2>
-       <p class="text-gray-600 text-lg mb-8">Try our estimator before you buy. Enter some sample numbers and see how quickly you can get an estimate.</p>
-       <ul class="space-y-4 mb-8">
-        <li class="flex items-center gap-3">
-         <div class="w-6 h-6 bg-green rounded-full flex items-center justify-center flex-shrink-0">
-          <svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-          </svg>
-         </div><span class="text-gray-700">Clean, intuitive interface</span></li>
-        <li class="flex items-center gap-3">
-         <div class="w-6 h-6 bg-green rounded-full flex items-center justify-center flex-shrink-0">
-          <svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-          </svg>
-         </div><span class="text-gray-700">Real-time calculations</span></li>
-        <li class="flex items-center gap-3">
-         <div class="w-6 h-6 bg-green rounded-full flex items-center justify-center flex-shrink-0">
-          <svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-          </svg>
-         </div><span class="text-gray-700">Clear breakdown of results</span></li>
-       </ul><button class="bg-orange hover:bg-orange-dark text-navy font-bold py-4 px-8 rounded-xl text-lg transition-all transform hover:scale-105"> Try Demo Now </button>
-      </div><!-- Demo Interface Preview -->
-      <div class="bg-gray-50 rounded-3xl p-6 lg:p-8 shadow-inner">
-       <div class="bg-white rounded-2xl shadow-xl overflow-hidden"><!-- Demo Header -->
-        <div class="bg-navy px-6 py-4">
-         <div class="flex items-center justify-between">
-          <h3 class="text-white font-bold">Tax Refund Estimator</h3><span class="bg-orange/20 text-orange text-xs font-semibold px-2 py-1 rounded">DEMO</span>
-         </div>
-        </div><!-- Demo Form -->
-        <div class="p-6 space-y-4">
-         <div><label class="block text-sm font-medium text-gray-700 mb-1">Filing Status</label> <select class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange focus:border-orange outline-none"> <option>Single</option> <option>Married Filing Jointly</option> <option>Married Filing Separately</option> <option>Head of Household</option> </select>
-         </div>
-         <div><label class="block text-sm font-medium text-gray-700 mb-1">Annual Income</label>
-          <div class="relative"><span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span> <input type="text" value="65,000" class="w-full border border-gray-200 rounded-xl pl-8 pr-4 py-3 focus:ring-2 focus:ring-orange focus:border-orange outline-none">
-          </div>
-         </div>
-         <div><label class="block text-sm font-medium text-gray-700 mb-1">Federal Tax Withheld</label>
-          <div class="relative"><span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span> <input type="text" value="9,750" class="w-full border border-gray-200 rounded-xl pl-8 pr-4 py-3 focus:ring-2 focus:ring-orange focus:border-orange outline-none">
-          </div>
-         </div><button class="w-full bg-green hover:bg-green-dark text-white font-bold py-4 rounded-xl transition-all"> Calculate Estimate </button>
-        </div><!-- Demo Result -->
-        <div class="bg-green/10 px-6 py-4 border-t border-green/20">
-         <div class="flex items-center justify-between"><span class="text-gray-700">Estimated Refund:</span> <span class="text-2xl font-bold text-green">$2,847</span>
-         </div>
+    </section>
+
+    <!-- Product Features -->
+    <section id="features" class="py-16 lg:py-24 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-4">Why You'll Love This Tool</h2>
+          <p class="text-gray-600 text-lg max-w-2xl mx-auto">Get a quick estimate of your tax refund without the
+            complexity of full tax software.</p>
         </div>
-       </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
+            <div class="w-14 h-14 bg-orange/10 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-orange" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Instant Estimate</h3>
+            <p class="text-gray-600">Get your refund estimate in under 60 seconds. No waiting, no delays.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
+            <div class="w-14 h-14 bg-green/10 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-green" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Simple Questions</h3>
+            <p class="text-gray-600">Easy step-by-step questions anyone can answer. No tax expertise needed.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
+            <div class="w-14 h-14 bg-navy/10 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-navy" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">No Personal Info</h3>
+            <p class="text-gray-600">We don't collect your SSN, name, or any sensitive personal data.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
+            <div class="w-14 h-14 bg-orange/10 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-orange" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Mobile Friendly</h3>
+            <p class="text-gray-600">Works perfectly on your phone, tablet, or desktop computer.</p>
+          </div>
+        </div>
       </div>
-     </div>
-    </div>
-   </section><!-- How It Works -->
-   <section id="how-it-works" class="py-16 lg:py-24 bg-navy">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-     <div class="text-center mb-12">
-      <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">How It Works</h2>
-      <p class="text-white/70 text-lg max-w-2xl mx-auto">Three simple steps to estimate your tax refund</p>
-     </div>
-     <div class="grid md:grid-cols-3 gap-8"><!-- Step 1 -->
-      <div class="text-center relative">
-       <div class="w-20 h-20 bg-orange rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-orange/30"><span class="text-3xl font-bold text-navy">1</span>
-       </div>
-       <h3 class="text-xl font-bold text-white mb-3">Enter Your Info</h3>
-       <p class="text-white/70">Answer a few simple questions about your income, filing status, and deductions.</p><!-- Connector -->
-       <div class="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-white/20">
-        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white/20 rotate-45"></div>
-       </div>
-      </div><!-- Step 2 -->
-      <div class="text-center relative">
-       <div class="w-20 h-20 bg-green rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green/30"><span class="text-3xl font-bold text-white">2</span>
-       </div>
-       <h3 class="text-xl font-bold text-white mb-3">We Calculate</h3>
-       <p class="text-white/70">Our tool uses current tax brackets and standard deductions to crunch the numbers.</p><!-- Connector -->
-       <div class="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-white/20">
-        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white/20 rotate-45"></div>
-       </div>
-      </div><!-- Step 3 -->
-      <div class="text-center">
-       <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"><span class="text-3xl font-bold text-navy">3</span>
-       </div>
-       <h3 class="text-xl font-bold text-white mb-3">See Your Estimate</h3>
-       <p class="text-white/70">Get an instant estimate of your refund or amount owed, with a clear breakdown.</p>
+    </section>
+
+    <!-- Demo Preview -->
+    <section id="demo" class="py-16 lg:py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <span class="inline-block bg-green/10 text-green px-4 py-1 rounded-full text-sm font-semibold mb-4">🎮
+              Interactive Demo</span>
+            <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-6">See It In Action</h2>
+            <p class="text-gray-600 text-lg mb-8">Try our estimator before you buy. Enter some sample numbers and see how
+              quickly you can get an estimate.</p>
+
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-center gap-3">
+                <div class="w-6 h-6 bg-green rounded-full flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                  </svg>
+                </div>
+                <span class="text-gray-700">Clean, intuitive interface</span>
+              </li>
+              <li class="flex items-center gap-3">
+                <div class="w-6 h-6 bg-green rounded-full flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                  </svg>
+                </div>
+                <span class="text-gray-700">Real-time calculations</span>
+              </li>
+              <li class="flex items-center gap-3">
+                <div class="w-6 h-6 bg-green rounded-full flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                  </svg>
+                </div>
+                <span class="text-gray-700">Clear breakdown of results</span>
+              </li>
+            </ul>
+
+            <button data-demo-open
+              class="bg-orange hover:bg-orange-dark text-navy font-bold py-4 px-8 rounded-xl text-lg transition-all transform hover:scale-105">
+              Try Demo Now
+            </button>
+          </div>
+
+          <div class="bg-gray-50 rounded-3xl p-6 lg:p-8 shadow-inner">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div class="bg-navy px-6 py-4">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-white font-bold">Tax Refund Estimator</h3>
+                  <span class="bg-orange/20 text-orange text-xs font-semibold px-2 py-1 rounded">DEMO</span>
+                </div>
+              </div>
+
+              <div class="p-6 space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Filing Status</label>
+                  <select
+                    class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange focus:border-orange outline-none">
+                    <option>Single</option>
+                    <option>Married Filing Jointly</option>
+                    <option>Married Filing Separately</option>
+                    <option>Head of Household</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Annual Income</label>
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                    <input type="text" value="65,000"
+                      class="w-full border border-gray-200 rounded-xl pl-8 pr-4 py-3 focus:ring-2 focus:ring-orange focus:border-orange outline-none" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Federal Tax Withheld</label>
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                    <input type="text" value="9,750"
+                      class="w-full border border-gray-200 rounded-xl pl-8 pr-4 py-3 focus:ring-2 focus:ring-orange focus:border-orange outline-none" />
+                  </div>
+                </div>
+
+                <button
+                  class="w-full bg-green hover:bg-green-dark text-white font-bold py-4 rounded-xl transition-all">
+                  Calculate Estimate
+                </button>
+              </div>
+
+              <div class="bg-green/10 px-6 py-4 border-t border-green/20">
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-700">Estimated Refund:</span>
+                  <span class="text-2xl font-bold text-green">$2,847</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
-     </div>
-    </div>
-   </section><!-- Trust Badges -->
-   <section class="py-12 bg-gray-50 border-y border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8"><!-- Badge 1 -->
-      <div class="flex flex-col items-center text-center">
-       <div class="w-12 h-12 bg-green/10 rounded-xl flex items-center justify-center mb-3">
-        <svg class="w-6 h-6 text-green" fill="currentColor" viewbox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
-        </svg>
-       </div>
-       <h4 class="font-bold text-navy text-sm">Secure Payment</h4>
-       <p class="text-gray-500 text-xs">256-bit encryption</p>
-      </div><!-- Badge 2 -->
-      <div class="flex flex-col items-center text-center">
-       <div class="w-12 h-12 bg-orange/10 rounded-xl flex items-center justify-center mb-3">
-        <svg class="w-6 h-6 text-orange" fill="currentColor" viewbox="0 0 24 24"><path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.92 6-4.72 7.28L13 17v5h5l-1.22-1.22C19.91 18.79 22 15.14 22 11c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.94 2.55 2 6.81 2 12c0 4.07 2.03 7.68 5.22 9.78L6 23h5v-5l-2.28 2.28C6.08 18.67 4 15.38 4 12c0-4.08 3.06-7.44 7-7.93V2.05z" />
-        </svg>
-       </div>
-       <h4 class="font-bold text-navy text-sm">Instant Download</h4>
-       <p class="text-gray-500 text-xs">Access immediately</p>
-      </div><!-- Badge 3 -->
-      <div class="flex flex-col items-center text-center">
-       <div class="w-12 h-12 bg-navy/10 rounded-xl flex items-center justify-center mb-3">
-        <svg class="w-6 h-6 text-navy" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-        </svg>
-       </div>
-       <h4 class="font-bold text-navy text-sm">Try Before You Buy</h4>
-       <p class="text-gray-500 text-xs">Free demo available</p>
-      </div><!-- Badge 4 -->
-      <div class="flex flex-col items-center text-center">
-       <div class="w-12 h-12 bg-green/10 rounded-xl flex items-center justify-center mb-3">
-        <svg class="w-6 h-6 text-green" fill="currentColor" viewbox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
-        </svg>
-       </div>
-       <h4 class="font-bold text-navy text-sm">Only $1 Each</h4>
-       <p class="text-gray-500 text-xs">Affordable pricing</p>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-16 lg:py-24 bg-navy">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">How It Works</h2>
+          <p class="text-white/70 text-lg max-w-2xl mx-auto">Three simple steps to estimate your tax refund</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center relative">
+            <div
+              class="w-20 h-20 bg-orange rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-orange/30">
+              <span class="text-3xl font-bold text-navy">1</span>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">Enter Your Info</h3>
+            <p class="text-white/70">Answer a few simple questions about your income, filing status, and deductions.</p>
+            <div class="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-white/20">
+              <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white/20 rotate-45"></div>
+            </div>
+          </div>
+
+          <div class="text-center relative">
+            <div
+              class="w-20 h-20 bg-green rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green/30">
+              <span class="text-3xl font-bold text-white">2</span>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">We Calculate</h3>
+            <p class="text-white/70">Our tool uses current tax brackets and standard deductions to crunch the numbers.
+            </p>
+            <div class="hidden md:block absolute top-10 left-[60%] w-[80%] h-0.5 bg-white/20">
+              <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white/20 rotate-45"></div>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <span class="text-3xl font-bold text-navy">3</span>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">See Your Estimate</h3>
+            <p class="text-white/70">Get an instant estimate of your refund or amount owed, with a clear breakdown.</p>
+          </div>
+        </div>
       </div>
-     </div>
-    </div>
-   </section><!-- FAQ Section -->
-   <section id="faq" class="py-16 lg:py-24 bg-white">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-     <div class="text-center mb-12">
-      <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-4">Frequently Asked Questions</h2>
-      <p class="text-gray-600 text-lg">Got questions? We've got answers.</p>
-     </div>
-     <div class="space-y-4" id="faq-container"><!-- FAQ 1 -->
-      <div class="border border-gray-200 rounded-2xl overflow-hidden"><button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors" onclick="toggleFaq(this)"> <span class="font-semibold text-navy">How accurate is the estimate?</span>
-        <svg class="faq-icon w-5 h-5 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg></button>
-       <div class="faq-content hidden px-6 pb-4 bg-white">
-        <p class="text-gray-600">Our estimator uses current IRS tax brackets and standard deduction amounts, so it's typically within 5-10% of your actual refund for straightforward tax situations. For more complex situations with itemized deductions, rental income, or self-employment, the estimate may vary more. This tool is designed to give you a quick ballpark figure, not replace professional tax preparation.</p>
-       </div>
-      </div><!-- FAQ 2 -->
-      <div class="border border-gray-200 rounded-2xl overflow-hidden"><button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors" onclick="toggleFaq(this)"> <span class="font-semibold text-navy">Is my data private?</span>
-        <svg class="faq-icon w-5 h-5 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg></button>
-       <div class="faq-content hidden px-6 pb-4 bg-white">
-        <p class="text-gray-600">Absolutely! We never ask for your Social Security number, name, address, or any personally identifiable information. The tool only uses anonymous financial data (income amounts, filing status) to calculate your estimate. All calculations happen locally in your browser – nothing is stored or transmitted to our servers.</p>
-       </div>
-      </div><!-- FAQ 3 -->
-      <div class="border border-gray-200 rounded-2xl overflow-hidden"><button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors" onclick="toggleFaq(this)"> <span class="font-semibold text-navy">Can I use this for state taxes?</span>
-        <svg class="faq-icon w-5 h-5 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg></button>
-       <div class="faq-content hidden px-6 pb-4 bg-white">
-        <p class="text-gray-600">This tool is designed specifically for federal tax refund estimates. State taxes vary significantly by location and have different rules, brackets, and deductions. We recommend checking your state's department of revenue website or using state-specific tools for state tax estimates.</p>
-       </div>
-      </div><!-- FAQ 4 -->
-      <div class="border border-gray-200 rounded-2xl overflow-hidden"><button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors" onclick="toggleFaq(this)"> <span class="font-semibold text-navy">Do I get updates when tax laws change?</span>
-        <svg class="faq-icon w-5 h-5 text-gray-400 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg></button>
-       <div class="faq-content hidden px-6 pb-4 bg-white">
-        <p class="text-gray-600">Yes! When you purchase this tool, you get free updates for the current tax year. When tax brackets or standard deductions change for a new year, you'll receive an updated version at no additional cost. Major updates for new tax years may be available at a discounted upgrade price.</p>
-       </div>
+    </section>
+
+    <!-- Trust Badges -->
+    <section class="py-12 bg-gray-50 border-y border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+          <div class="flex flex-col items-center text-center">
+            <div class="w-12 h-12 bg-green/10 rounded-xl flex items-center justify-center mb-3">
+              <svg class="w-6 h-6 text-green" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-navy text-sm">Secure Payment</h4>
+            <p class="text-gray-500 text-xs">256-bit encryption</p>
+          </div>
+
+          <div class="flex flex-col items-center text-center">
+            <div class="w-12 h-12 bg-orange/10 rounded-xl flex items-center justify-center mb-3">
+              <svg class="w-6 h-6 text-orange" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.92 6-4.72 7.28L13 17v5h5l-1.22-1.22C19.91 18.79 22 15.14 22 11c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.94 2.55 2 6.81 2 12c0 4.07 2.03 7.68 5.22 9.78L6 23h5v-5l-2.28 2.28C6.08 18.67 4 15.38 4 12c0-4.08 3.06-7.44 7-7.93V2.05z" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-navy text-sm">Instant Download</h4>
+            <p class="text-gray-500 text-xs">Access immediately</p>
+          </div>
+
+          <div class="flex flex-col items-center text-center">
+            <div class="w-12 h-12 bg-navy/10 rounded-xl flex items-center justify-center mb-3">
+              <svg class="w-6 h-6 text-navy" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-navy text-sm">Try Before You Buy</h4>
+            <p class="text-gray-500 text-xs">Free demo available</p>
+          </div>
+
+          <div class="flex flex-col items-center text-center">
+            <div class="w-12 h-12 bg-green/10 rounded-xl flex items-center justify-center mb-3">
+              <svg class="w-6 h-6 text-green" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-navy text-sm">Only $1 Each</h4>
+            <p class="text-gray-500 text-xs">Affordable pricing</p>
+          </div>
+        </div>
       </div>
-     </div>
-    </div>
-   </section><!-- Final CTA -->
-   <section class="py-16 lg:py-24 bg-gradient-to-br from-orange via-orange to-orange-dark relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-     <div class="absolute top-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
-     <div class="absolute bottom-10 left-10 w-32 h-32 bg-navy rounded-full blur-3xl"></div>
-    </div>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-     <div class="inline-block bg-white/20 text-white px-4 py-1 rounded-full text-sm font-semibold mb-6">
-      💵 Limited Time Offer
-     </div>
-     <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-6">Ready to Estimate Your Refund?</h2>
-     <p class="text-navy/80 text-lg mb-8 max-w-2xl mx-auto">Join thousands of smart taxpayers who use our simple tool to plan ahead. Get your estimate in seconds for just $1.</p>
-     <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8"><button class="bg-navy hover:bg-navy-light text-white font-bold py-4 px-10 rounded-xl text-lg transition-all transform hover:scale-105 shadow-lg"> Buy for $1 </button> <button class="bg-white/20 hover:bg-white/30 text-navy font-bold py-4 px-10 rounded-xl text-lg transition-all border-2 border-navy/20 hover:border-navy/30"> Try Demo First </button>
-     </div>
-     <div class="bg-navy/10 rounded-2xl p-4 inline-block">
-      <p class="text-navy font-semibold">🎁 Bundle &amp; Save: Buy 3+ tools and get <span class="underline">20% off</span> your entire order!</p>
-     </div>
-    </div>
-   </section><!-- Footer -->
-   <footer class="bg-navy py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-     <div class="grid md:grid-cols-4 gap-8 mb-8"><!-- Logo & Description -->
-      <div class="md:col-span-1">
-       <div class="flex items-center gap-2 mb-4">
-        <div class="w-10 h-10 bg-orange rounded-xl flex items-center justify-center">
-         <svg class="w-6 h-6 text-navy" fill="currentColor" viewbox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-4H8v-2h4V7h2v4h4v2h-4v4z" />
-         </svg>
-        </div><span class="text-white font-bold text-xl">TaxTools</span>
-       </div>
-       <p class="text-white/60 text-sm">Simple, affordable tools to help you manage your taxes with confidence.</p>
-      </div><!-- Quick Links -->
-      <div>
-       <h4 class="text-white font-semibold mb-4">Products</h4>
-       <ul class="space-y-2">
-        <li><a href="#" class="text-white/60 hover:text-orange transition-colors text-sm">Tax Refund Estimator</a></li>
-        <li><a href="#" class="text-white/60 hover:text-orange transition-colors text-sm">W-4 Calculator</a></li>
-        <li><a href="#" class="text-white/60 hover:text-orange transition-colors text-sm">Deduction Finder</a></li>
-        <li><a href="#" class="text-white/60 hover:text-orange transition-colors text-sm">All Tools Bundle</a></li>
-       </ul>
-      </div><!-- Support -->
-      <div>
-       <h4 class="text-white font-semibold mb-4">Support</h4>
-       <ul class="space-y-2">
-        <li><a href="#" class="text-white/60 hover:text-orange transition-colors text-sm">Help Center</a></li>
-        <li><a href="#" class="text-white/60 hover:text-orange transition-colors text-sm">Contact Us</a></li>
-        <li><a href="#faq" class="text-white/60 hover:text-orange transition-colors text-sm">FAQ</a></li>
-        <li><a href="#" class="text-white/60 hover:text-orange transition-colors text-sm">Tutorials</a></li>
-       </ul>
-      </div><!-- Legal -->
-      <div>
-       <h4 class="text-white font-semibold mb-4">Legal</h4>
-       <ul class="space-y-2">
-        <li><a href="#" class="text-white/60 hover:text-orange transition-colors text-sm">Privacy Policy</a></li>
-        <li><a href="#" class="text-white/60 hover:text-orange transition-colors text-sm">Terms of Service</a></li>
-        <li><a href="#" class="text-white/60 hover:text-orange transition-colors text-sm">Refund Policy</a></li>
-        <li><a href="#" class="text-white/60 hover:text-orange transition-colors text-sm">Disclaimer</a></li>
-       </ul>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-16 lg:py-24 bg-white">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-4">Frequently Asked Questions</h2>
+          <p class="text-gray-600 text-lg">Got questions? We've got answers.</p>
+        </div>
+
+        <div class="space-y-4" id="faq-container">
+          <div class="border border-gray-200 rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors"
+              onclick="toggleFaq(this)">
+              <span class="font-semibold text-navy">How accurate is the estimate?</span>
+              <svg class="faq-icon w-5 h-5 text-gray-400 transition-transform" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-4 bg-white">
+              <p class="text-gray-600">Our estimator uses current IRS tax brackets and standard deduction amounts, so
+                it's typically within 5-10% of your actual refund for straightforward tax situations. For more complex
+                situations with itemized deductions, rental income, or self-employment, the estimate may vary more.
+                This tool is designed to give you a quick ballpark figure, not replace professional tax preparation.
+              </p>
+            </div>
+          </div>
+
+          <div class="border border-gray-200 rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors"
+              onclick="toggleFaq(this)">
+              <span class="font-semibold text-navy">Is my data private?</span>
+              <svg class="faq-icon w-5 h-5 text-gray-400 transition-transform" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-4 bg-white">
+              <p class="text-gray-600">Absolutely! We never ask for your Social Security number, name, address, or any
+                personally identifiable information. The tool only uses anonymous financial data (income amounts,
+                filing status) to calculate your estimate. All calculations happen locally in your browser – nothing
+                is stored or transmitted to our servers.</p>
+            </div>
+          </div>
+
+          <div class="border border-gray-200 rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors"
+              onclick="toggleFaq(this)">
+              <span class="font-semibold text-navy">Can I use this for state taxes?</span>
+              <svg class="faq-icon w-5 h-5 text-gray-400 transition-transform" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-4 bg-white">
+              <p class="text-gray-600">This tool is designed specifically for federal tax refund estimates. State taxes
+                vary significantly by location and have different rules, brackets, and deductions. We recommend
+                checking your state's department of revenue website or using state-specific tools for state tax
+                estimates.</p>
+            </div>
+          </div>
+
+          <div class="border border-gray-200 rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between bg-white hover:bg-gray-50 transition-colors"
+              onclick="toggleFaq(this)">
+              <span class="font-semibold text-navy">Do I get updates when tax laws change?</span>
+              <svg class="faq-icon w-5 h-5 text-gray-400 transition-transform" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-4 bg-white">
+              <p class="text-gray-600">Yes! When you purchase this tool, you get free updates for the current tax year.
+                When tax brackets or standard deductions change for a new year, you'll receive an updated version at no
+                additional cost. Major updates for new tax years may be available at a discounted upgrade price.</p>
+            </div>
+          </div>
+
+        </div>
       </div>
-     </div>
-     <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-      <p class="text-white/40 text-sm">© 2025 TaxTools. All rights reserved.</p>
-      <p class="text-white/40 text-xs">Not tax advice. Estimates are for informational purposes only.</p>
-     </div>
-    </div>
-   </footer>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-16 lg:py-24 bg-gradient-to-br from-navy via-navy-light to-navy text-white">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Estimate Your Refund?</h2>
+        <p class="text-white/80 text-lg mb-8 max-w-2xl mx-auto">Get a quick refund estimate in seconds. Demo it first, then grab the full downloadable tool for $1.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+          <button data-buy class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Buy for $1
+          </button>
+          <button type="button" data-cart-open class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl border border-white/20 transition-all">View All Products</button>
+        </div>
+        <div class="inline-flex items-center gap-2 bg-orange/20 backdrop-blur-sm rounded-full px-6 py-3">
+          <svg class="w-5 h-5 text-orange" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span class="text-sm font-medium">Bundle &amp; Save: Get all 5 products for $3.99</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARTIAL:footer -->
   </div>
+
+  <!-- Demo Modal (Try Demo opens this. Only “Add to cart” inside adds.) -->
+  <div id="demo-modal" class="fixed inset-0 z-[100] hidden" aria-hidden="true">
+    <div data-demo-close class="absolute inset-0 bg-black/60"></div>
+    <div class="relative w-full h-full flex items-center justify-center p-4">
+      <div class="w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div class="bg-navy px-6 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-orange rounded-xl flex items-center justify-center">
+              <span class="text-navy font-black">TT</span>
+            </div>
+            <div>
+              <div class="text-white font-bold">Tax Refund Estimator Tool</div>
+              <div class="text-white/70 text-sm">Demo mode</div>
+            </div>
+          </div>
+          <button type="button" data-demo-close class="text-white/80 hover:text-white" aria-label="Close demo">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="p-6 sm:p-8">
+          <div class="grid lg:grid-cols-2 gap-8">
+            <div>
+              <h3 class="text-xl font-bold text-navy mb-2">Try the estimator</h3>
+              <p class="text-gray-600 mb-6">This demo is interactive, but it’s a preview. Purchase unlocks the full
+                downloadable tool.</p>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Filing Status</label>
+                  <select id="demo-status"
+                    class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange focus:border-orange outline-none">
+                    <option>Single</option>
+                    <option>Married Filing Jointly</option>
+                    <option>Married Filing Separately</option>
+                    <option>Head of Household</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Annual Income</label>
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                    <input id="demo-income" inputmode="numeric" value="65000"
+                      class="w-full border border-gray-200 rounded-xl pl-8 pr-4 py-3 focus:ring-2 focus:ring-orange focus:border-orange outline-none" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Federal Tax Withheld</label>
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                    <input id="demo-withheld" inputmode="numeric" value="9750"
+                      class="w-full border border-gray-200 rounded-xl pl-8 pr-4 py-3 focus:ring-2 focus:ring-orange focus:border-orange outline-none" />
+                  </div>
+                </div>
+
+                <button id="demo-calc"
+                  class="w-full bg-green hover:bg-green-dark text-white font-bold py-4 rounded-xl transition-all">
+                  Calculate Estimate
+                </button>
+
+                <div class="bg-green/10 px-4 py-3 rounded-2xl border border-green/20">
+                  <div class="flex items-center justify-between">
+                    <span class="text-gray-700">Estimated Refund:</span>
+                    <span id="demo-result" class="text-2xl font-bold text-green">$2,847</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-3xl p-6 border border-gray-200">
+              <h4 class="text-lg font-bold text-navy mb-2">What you get</h4>
+              <ul class="text-gray-700 space-y-2 mb-6">
+                <li>• Downloadable XLS tool</li>
+                <li>• Simple inputs + instant estimate</li>
+                <li>• Lifetime access</li>
+              </ul>
+
+              <div class="bg-white rounded-2xl p-4 border border-gray-200 mb-6">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="font-bold text-navy">Tax Refund Estimator Tool</div>
+                    <div class="text-gray-500 text-sm">$1.00</div>
+                  </div>
+                  <div class="text-navy font-black text-xl">$1</div>
+                </div>
+              </div>
+
+              <button id="demo-add-to-cart"
+                class="w-full bg-orange hover:bg-orange-dark text-navy font-bold py-4 px-8 rounded-xl text-lg transition-all transform hover:scale-[1.02] shadow-lg shadow-orange/30">
+                Add to cart
+              </button>
+
+              <p class="text-gray-500 text-xs mt-3">Nothing is added unless you click “Add to cart” here.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-end gap-3">
+          <button type="button" data-demo-close
+            class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-white">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Sidebar (drawer) -->
+  <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[120] transform translate-x-full transition-transform duration-300" aria-hidden="true">
+    <div class="h-full flex flex-col">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <h3 class="text-xl font-bold text-navy">Your Cart</h3>
+        <button type="button" data-cart-close class="p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Close cart">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="cart-items" class="flex-1 overflow-auto p-6">
+        <p class="text-gray-500 text-center py-8">Your cart is empty</p>
+      </div>
+
+      <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+        <div class="flex items-center justify-between mb-4">
+          <span class="font-semibold text-navy">Total:</span>
+          <span id="cart-total" class="text-2xl font-bold text-navy">$0</span>
+        </div>
+        <button id="checkout-btn" class="w-full bg-green hover:bg-green-dark text-white px-6 py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          Proceed to Checkout
+        </button>
+        <p class="text-gray-500 text-xs mt-3">Demo checkout for now. Yes, we’ll wire real checkout later.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="cart-overlay" data-cart-close class="fixed inset-0 bg-black/50 z-[115] hidden" aria-hidden="true"></div>
+
+  <!-- Floating Cart Button (fallback if header partial has no cart trigger) -->
+  <button type="button" data-cart-open class="fixed bottom-5 right-5 z-[110] bg-navy hover:bg-navy-light text-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3">
+    <span class="font-semibold">Cart</span>
+    <span class="bg-orange text-navy font-black rounded-xl px-2 py-0.5 text-sm" data-cart-count>0</span>
+  </button>
+
+  <!-- Tiny toast -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[130] hidden">
+    <div class="bg-navy text-white px-4 py-3 rounded-2xl shadow-xl text-sm" id="toast-text"></div>
+  </div>
+
   <script>
     // Default configuration
     const defaultConfig = {
@@ -422,11 +719,20 @@
       secondary_action_color: '#2ecc71'
     };
 
+    // Product metadata (used for cart)
+    const PRODUCT = {
+      id: 'tax-refund-estimator-tool',
+      name: 'Tax Refund Estimator Tool',
+      price: 1,
+      type: 'XLS',
+      url: '/tools/tax-refund-estimator-tool'
+    };
+
     // FAQ toggle function
     function toggleFaq(button) {
       const content = button.nextElementSibling;
       const icon = button.querySelector('.faq-icon');
-      
+
       content.classList.toggle('hidden');
       icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
     }
@@ -463,23 +769,38 @@
         recolorables: [
           {
             get: () => config.background_color || defaultConfig.background_color,
-            set: (value) => { config.background_color = value; window.elementSdk?.setConfig({ background_color: value }); }
+            set: (value) => {
+              config.background_color = value;
+              window.elementSdk?.setConfig({ background_color: value });
+            }
           },
           {
             get: () => config.surface_color || defaultConfig.surface_color,
-            set: (value) => { config.surface_color = value; window.elementSdk?.setConfig({ surface_color: value }); }
+            set: (value) => {
+              config.surface_color = value;
+              window.elementSdk?.setConfig({ surface_color: value });
+            }
           },
           {
             get: () => config.text_color || defaultConfig.text_color,
-            set: (value) => { config.text_color = value; window.elementSdk?.setConfig({ text_color: value }); }
+            set: (value) => {
+              config.text_color = value;
+              window.elementSdk?.setConfig({ text_color: value });
+            }
           },
           {
             get: () => config.primary_action_color || defaultConfig.primary_action_color,
-            set: (value) => { config.primary_action_color = value; window.elementSdk?.setConfig({ primary_action_color: value }); }
+            set: (value) => {
+              config.primary_action_color = value;
+              window.elementSdk?.setConfig({ primary_action_color: value });
+            }
           },
           {
             get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
-            set: (value) => { config.secondary_action_color = value; window.elementSdk?.setConfig({ secondary_action_color: value }); }
+            set: (value) => {
+              config.secondary_action_color = value;
+              window.elementSdk?.setConfig({ secondary_action_color: value });
+            }
           }
         ],
         borderables: [],
@@ -510,6 +831,357 @@
 
     // Initial render
     onConfigChange(window.elementSdk?.config || defaultConfig);
+
+    // -----------------------------
+    // Cart (localStorage) + UI bits
+    // -----------------------------
+
+    function getCart() {
+      try {
+        const raw = localStorage.getItem('taxToolsCart');
+        const parsed = raw ? JSON.parse(raw) : { items: [] };
+        if (!parsed || !Array.isArray(parsed.items)) return { items: [] };
+        return parsed;
+      } catch {
+        return { items: [] };
+      }
+    }
+
+    function setCart(cart) {
+      localStorage.setItem('taxToolsCart', JSON.stringify(cart));
+      renderCart();
+      updateCartBadge();
+    }
+
+    function addItemToCart(item) {
+      const cart = getCart();
+      const existing = cart.items.find((x) => x.id === item.id);
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        cart.items.push({ id: item.id, name: item.name, price: item.price, qty: 1, type: item.type, url: item.url });
+      }
+      setCart(cart);
+    }
+
+    function countItems(cart) {
+      return cart.items.reduce((sum, x) => sum + (x.qty || 1), 0);
+    }
+
+    function updateCartBadge() {
+      const cart = getCart();
+      const count = countItems(cart);
+      const badge = document.querySelector('[data-cart-count]');
+      if (badge) badge.textContent = String(count);
+
+      const maybeHeaderBadges = Array.from(document.querySelectorAll('[data-cart-count-all]'));
+      maybeHeaderBadges.forEach((el) => {
+        el.textContent = String(count);
+      });
+    }
+
+    function toast(message) {
+      const el = document.getElementById('toast');
+      const text = document.getElementById('toast-text');
+      if (!el || !text) return;
+      text.textContent = message;
+      el.classList.remove('hidden');
+      window.clearTimeout(window.__toastTimer);
+      window.__toastTimer = window.setTimeout(() => {
+        el.classList.add('hidden');
+      }, 1800);
+    }
+
+    // -----------------------------
+    // Cart drawer behavior
+    // -----------------------------
+
+    function openCart() {
+      const sidebar = document.getElementById('cart-sidebar');
+      const overlay = document.getElementById('cart-overlay');
+      if (!sidebar || !overlay) return;
+      sidebar.classList.remove('translate-x-full');
+      sidebar.setAttribute('aria-hidden', 'false');
+      overlay.classList.remove('hidden');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('no-scroll');
+    }
+
+    function closeCart() {
+      const sidebar = document.getElementById('cart-sidebar');
+      const overlay = document.getElementById('cart-overlay');
+      if (!sidebar || !overlay) return;
+      sidebar.classList.add('translate-x-full');
+      sidebar.setAttribute('aria-hidden', 'true');
+      overlay.classList.add('hidden');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('no-scroll');
+    }
+
+    function removeItemFromCart(id) {
+      const cart = getCart();
+      cart.items = cart.items.filter((x) => x.id !== id);
+      setCart(cart);
+    }
+
+    function cartTotal(cart) {
+      return cart.items.reduce((sum, x) => sum + (Number(x.price || 0) * Number(x.qty || 1)), 0);
+    }
+
+    function renderCart() {
+      const cart = getCart();
+      const itemsEl = document.getElementById('cart-items');
+      const totalEl = document.getElementById('cart-total');
+      const checkoutBtn = document.getElementById('checkout-btn');
+
+      if (!itemsEl || !totalEl || !checkoutBtn) return;
+
+      const items = [...cart.items].sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
+
+      if (!items.length) {
+        itemsEl.innerHTML = '<p class="text-gray-500 text-center py-8">Your cart is empty</p>';
+        totalEl.textContent = '$0';
+        checkoutBtn.disabled = true;
+        return;
+      }
+
+      const rows = items.map((x) => {
+        const qty = Number(x.qty || 1);
+        const line = Number(x.price || 0) * qty;
+        const safeName = String(x.name || x.id);
+        const safeType = String(x.type || '').toUpperCase();
+
+        return `
+          <div class="flex items-start justify-between gap-4 py-4 border-b border-gray-100">
+            <div class="min-w-0">
+              <div class="font-semibold text-navy truncate">${safeName}</div>
+              <div class="text-sm text-gray-500">${safeType} • Qty: ${qty}</div>
+              <div class="text-sm text-gray-700">$${Number(x.price || 0).toFixed(2)} each</div>
+            </div>
+            <div class="flex flex-col items-end gap-2">
+              <div class="font-bold text-navy">$${line.toFixed(2)}</div>
+              <button type="button" data-cart-remove="${x.id}" class="text-sm text-red-600 hover:text-red-700 font-semibold">Remove</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      itemsEl.innerHTML = rows;
+      totalEl.textContent = '$' + cartTotal({ items }).toFixed(2).replace(/\.00$/, '');
+      checkoutBtn.disabled = false;
+
+      Array.from(itemsEl.querySelectorAll('[data-cart-remove]')).forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const id = btn.getAttribute('data-cart-remove');
+          if (id) removeItemFromCart(id);
+          toast('Removed');
+        });
+      });
+    }
+
+    function wireCartOpeners() {
+      const openers = Array.from(document.querySelectorAll('[data-cart-open]'));
+      openers.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderCart();
+          openCart();
+        });
+      });
+
+      const closers = Array.from(document.querySelectorAll('[data-cart-close]'));
+      closers.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeCart();
+        });
+      });
+
+      const checkoutBtn = document.getElementById('checkout-btn');
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const cart = getCart();
+          const total = cartTotal(cart);
+          toast('Checkout: $' + total.toFixed(2).replace(/\.00$/, ''));
+          closeCart();
+        });
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeCart();
+      });
+    }
+
+    // -----------------------------
+    // Demo modal behavior
+    // -----------------------------
+
+    function openDemoModal() {
+      const modal = document.getElementById('demo-modal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('no-scroll');
+    }
+
+    function closeDemoModal() {
+      const modal = document.getElementById('demo-modal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('no-scroll');
+    }
+
+    function parseMoneyInput(value) {
+      const cleaned = String(value || '').replace(/[^0-9.]/g, '');
+      const num = Number(cleaned);
+      return Number.isFinite(num) ? num : 0;
+    }
+
+    function formatUSD(n) {
+      try {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+      } catch {
+        return '$' + Math.round(n);
+      }
+    }
+
+    function estimateRefund(income, withheld) {
+      // Not tax advice. Also not a full tax engine. It’s a demo.
+      // Super-simple heuristic so users see numbers change:
+      const effectiveRate = income <= 40000 ? 0.10 : income <= 90000 ? 0.14 : 0.18;
+      const estimatedTax = Math.max(0, income * effectiveRate - 1500);
+      return Math.max(0, withheld - estimatedTax);
+    }
+
+    function wireDemoCalculator() {
+      const calc = document.getElementById('demo-calc');
+      const income = document.getElementById('demo-income');
+      const withheld = document.getElementById('demo-withheld');
+      const result = document.getElementById('demo-result');
+
+      if (!calc || !income || !withheld || !result) return;
+
+      calc.addEventListener('click', () => {
+        const i = parseMoneyInput(income.value);
+        const w = parseMoneyInput(withheld.value);
+        const r = estimateRefund(i, w);
+        result.textContent = formatUSD(r);
+      });
+    }
+
+    function wireDemoOpeners() {
+      const openers = Array.from(document.querySelectorAll('[data-demo-open]'));
+      openers.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          openDemoModal();
+        });
+      });
+
+      const closers = Array.from(document.querySelectorAll('[data-demo-close]'));
+      closers.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeDemoModal();
+        });
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDemoModal();
+      });
+    }
+
+    function wireBuyButtons() {
+      const buyButtons = [
+        document.getElementById('buy-button'),
+        ...Array.from(document.querySelectorAll('[data-buy]')),
+      ].filter(Boolean);
+
+      buyButtons.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          addItemToCart(PRODUCT);
+          toast('Added to cart');
+        });
+      });
+
+      const demoAdd = document.getElementById('demo-add-to-cart');
+      if (demoAdd) {
+        demoAdd.addEventListener('click', (e) => {
+          e.preventDefault();
+          addItemToCart(PRODUCT);
+          toast('Added to cart');
+          closeDemoModal();
+        });
+      }
+    }
+
+    // -----------------------------
+    // Minimal tests (run in console)
+    // -----------------------------
+
+    function runTests() {
+      const t = [];
+
+      // Cart
+      try {
+        const before = getCart();
+        addItemToCart({ id: 'x', name: 'X', price: 1, qty: 1, type: 'PDF', url: '/tools/x' });
+        const after = getCart();
+        const added = after.items.some((i) => i.id === 'x');
+        t.push({ name: 'cart_add_item', pass: added });
+        setCart(before);
+      } catch (e) {
+        t.push({ name: 'cart_add_item', pass: false, error: String(e) });
+      }
+
+      // Estimator
+      try {
+        const r1 = estimateRefund(65000, 9750);
+        const r2 = estimateRefund(65000, 2000);
+        t.push({ name: 'estimate_refund_monotonic_with_withheld', pass: r1 >= r2 });
+      } catch (e) {
+        t.push({ name: 'estimate_refund_monotonic_with_withheld', pass: false, error: String(e) });
+      }
+
+      // Modal toggles
+      try {
+        openDemoModal();
+        const modal = document.getElementById('demo-modal');
+        const open = modal && !modal.classList.contains('hidden');
+        closeDemoModal();
+        const closed = modal && modal.classList.contains('hidden');
+        t.push({ name: 'demo_modal_open_close', pass: Boolean(open && closed) });
+      } catch (e) {
+        t.push({ name: 'demo_modal_open_close', pass: false, error: String(e) });
+      }
+
+      // Report results
+      const failed = t.filter((x) => !x.pass);
+      if (failed.length) {
+        // eslint-disable-next-line no-console
+        console.warn('Tests failed:', failed);
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('All tests passed:', t);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCart();
+      updateCartBadge();
+      wireBuyButtons();
+      wireCartOpeners();
+      wireDemoCalculator();
+      wireDemoOpeners();
+
+      // Uncomment to run tests:
+      // runTests();
+    });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d637484b41027c7',t:'MTc3MjQ4NjUyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
+
 </html>
