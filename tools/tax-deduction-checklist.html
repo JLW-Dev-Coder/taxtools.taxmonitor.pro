@@ -54,21 +54,8 @@
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body class="h-full bg-white">
-  <div id="app-wrapper" class="w-full h-full overflow-auto"><!-- Header -->
-   <header id="header" class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4">
-     <div class="flex items-center justify-between"><!-- Logo --> <a href="#" class="flex items-center gap-3">
-       <div class="w-10 h-10 bg-navy rounded-full flex items-center justify-center">
-        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-        </svg>
-       </div><span class="text-xl font-bold text-navy">TaxTools</span> </a> <!-- Desktop Nav -->
-      <nav class="hidden md:flex items-center gap-8"><a href="#" class="text-charcoal hover:text-action-blue transition-colors">Home</a> <a href="#" class="text-action-blue font-medium">Tools</a> <a href="#" class="text-charcoal hover:text-action-blue transition-colors">About</a> <a href="#" class="text-charcoal hover:text-action-blue transition-colors">FAQ</a> <a href="#" class="text-charcoal hover:text-action-blue transition-colors">Contact</a>
-      </nav><!-- Cart --> <button class="relative p-2 text-charcoal hover:text-action-blue transition-colors">
-       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-       </svg><span class="absolute -top-1 -right-1 w-5 h-5 bg-action-blue text-white text-xs rounded-full flex items-center justify-center">0</span> </button>
-     </div>
-    </div>
-   </header><!-- Hero Section -->
+  <div id="app-wrapper" class="w-full h-full overflow-auto">
+   <!-- PARTIAL:header --><!-- Hero Section -->
    <section class="gradient-hero py-16 sm:py-20">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
      <div class="grid lg:grid-cols-2 gap-12 items-center"><!-- Left Content -->
@@ -135,7 +122,7 @@
      </div>
     </div>
    </section><!-- Features Section -->
-   <section class="py-16 sm:py-20 bg-white">
+   <section id="tools" class="py-16 sm:py-20 bg-white">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
      <div class="text-center mb-12">
       <h2 class="text-3xl font-bold text-navy mb-4">Everything You Need to Maximize Deductions</h2>
@@ -238,7 +225,7 @@
      </div>
     </div>
    </section><!-- FAQ Section -->
-   <section class="py-16 sm:py-20 bg-white">
+   <section id="faq" class="py-16 sm:py-20 bg-white">
     <div class="max-w-3xl mx-auto px-4 sm:px-6">
      <div class="text-center mb-12">
       <h2 class="text-3xl font-bold text-navy mb-4">Frequently Asked Questions</h2>
@@ -279,49 +266,8 @@
       </svg><span class="text-white text-sm">Bundle &amp; Save: Get all 5 tools for just $4</span>
      </div>
     </div>
-   </section><!-- Footer -->
-   <footer class="bg-charcoal py-12">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6">
-     <div class="grid md:grid-cols-4 gap-8 mb-8"><!-- Brand -->
-      <div><a href="#" class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 bg-navy rounded-full flex items-center justify-center">
-         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-         </svg>
-        </div><span class="text-xl font-bold text-white">TaxTools</span> </a>
-       <p class="text-gray-400 text-sm">Simple, affordable tools to help you save on taxes.</p>
-      </div><!-- Quick Links -->
-      <div>
-       <h4 class="font-semibold text-white mb-4">Tools</h4>
-       <ul class="space-y-2 text-sm">
-        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Deduction Checklist</a></li>
-        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Expense Tracker</a></li>
-        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Tax Calculator</a></li>
-        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Document Organizer</a></li>
-       </ul>
-      </div><!-- Support -->
-      <div>
-       <h4 class="font-semibold text-white mb-4">Support</h4>
-       <ul class="space-y-2 text-sm">
-        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
-        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
-        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
-       </ul>
-      </div><!-- Legal -->
-      <div>
-       <h4 class="font-semibold text-white mb-4">Legal</h4>
-       <ul class="space-y-2 text-sm">
-        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
-        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Refund Policy</a></li>
-       </ul>
-      </div>
-     </div>
-     <div class="pt-8 border-t border-gray-700 flex flex-col md:flex-row items-center justify-between gap-4">
-      <p class="text-gray-500 text-sm">© 2024 TaxTools. All rights reserved.</p>
-      <p class="text-gray-500 text-sm">Made with ❤️ for taxpayers everywhere</p>
-     </div>
-    </div>
-   </footer>
+   </section>
+   <!-- PARTIAL:footer -->
   </div>
   <script>
     // Default configuration
@@ -500,5 +446,5 @@
       });
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d634de894f827c7',t:'MTc3MjQ4NDk0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
