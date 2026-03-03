@@ -640,8 +640,8 @@
       // Prevent listener stacking if user opens demo multiple times.
       exportBtn.onclick = () => showToast('Export is locked in demo mode.');
       addBtn.onclick = () => {
-        addToCart('organizer');
         closeDemo();
+        addToCart('organizer');
       };
 
       body.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
