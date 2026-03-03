@@ -1,4 +1,4 @@
-# TaxTools.Tax Monitor Pro
+# README.md — TaxTools.Tax Monitor Pro
 
 A conversion-focused interactive taxpayer games arcade that routes serious users to [https://taxmonitor.pro](https://taxmonitor.pro) for monitoring and representation.
 
@@ -168,8 +168,7 @@ Allowed SKUs (alphabetical):
 
 Validation:
 
-* Worker must reject unknown `item` values.
-* Worker must reject `quantity > 1` unless explicitly allowed.
+* Worker must reject unknown `item` values.* Worker must reject `quantity > 1` unless explicitly allowed.
 * Worker must not trust client pricing.
 
 Security principle:
