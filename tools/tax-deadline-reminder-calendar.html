@@ -248,13 +248,136 @@
           <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
          </div><span class="text-navy">Detailed descriptions</span></li>
-       </ul><button class="bg-navy hover:bg-navy-light text-white font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center gap-2">
+       </ul><button id="preview-try-demo-btn" class="bg-navy hover:bg-navy-light text-white font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center gap-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg> Try Demo </button>
       </div>
      </div>
     </div>
-   </section><!-- How It Works -->
+   </section>
+
+   <!-- Try Demo (Interactive) -->
+   <section id="try-demo" class="py-16 lg:py-24 bg-surface">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-14">
+      <span class="text-primary font-semibold text-sm uppercase tracking-wide">Try Demo</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Test-drive the calendar</h2>
+      <p class="text-muted text-lg max-w-2xl mx-auto">Open the interactive preview and click through months to see key tax deadlines. Demo mode keeps export disabled because humans can’t have nice things.</p>
+     </div>
+
+     <div class="grid lg:grid-cols-2 gap-10 items-center">
+      <div class="bg-white rounded-3xl card-shadow p-8">
+       <div class="flex items-start gap-4">
+        <div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center">
+         <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+        </div>
+        <div class="flex-1">
+         <h3 class="text-xl font-bold text-navy">Interactive preview</h3>
+         <p class="text-muted mt-2">Navigate months, review deadlines, and see how reminders are organized.</p>
+        </div>
+       </div>
+
+       <div class="mt-6 grid sm:grid-cols-2 gap-4">
+        <div class="flex items-start gap-3">
+         <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center mt-0.5">
+          <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+         </div>
+         <div>
+          <p class="text-navy font-semibold">Federal deadlines</p>
+          <p class="text-muted text-sm">Tax Day, extensions, and estimated payments.</p>
+         </div>
+        </div>
+        <div class="flex items-start gap-3">
+         <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center mt-0.5">
+          <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+         </div>
+         <div>
+          <p class="text-navy font-semibold">Clear event details</p>
+          <p class="text-muted text-sm">Simple descriptions for what’s due.</p>
+         </div>
+        </div>
+        <div class="flex items-start gap-3">
+         <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center mt-0.5">
+          <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+         </div>
+         <div>
+          <p class="text-navy font-semibold">Works everywhere</p>
+          <p class="text-muted text-sm">Import to iCal, Outlook, or Google Calendar.</p>
+         </div>
+        </div>
+        <div class="flex items-start gap-3">
+         <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center mt-0.5">
+          <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+         </div>
+         <div>
+          <p class="text-navy font-semibold">No export in demo</p>
+          <p class="text-muted text-sm">Export is unlocked after purchase.</p>
+         </div>
+        </div>
+       </div>
+
+       <div class="mt-8 flex flex-col sm:flex-row gap-4">
+        <button type="button" data-demo-open="calendar" class="flex-1 bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105 inline-flex items-center justify-center gap-2">
+         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+         Try Demo
+        </button>
+        <a href="#" data-scroll-buy="1" class="flex-1 bg-white hover:bg-gray-50 text-navy font-semibold px-8 py-4 rounded-xl border border-gray-200 transition-all hover:scale-105 inline-flex items-center justify-center gap-2">
+         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+         Buy for $1
+        </a>
+       </div>
+      </div>
+
+      <div class="bg-white rounded-3xl card-shadow p-8">
+       <div class="flex items-center justify-between">
+        <div>
+         <p class="text-muted text-sm">Demo highlights</p>
+         <h3 class="text-2xl font-bold text-navy">April 2024</h3>
+        </div>
+        <div class="w-12 h-12 bg-accent/15 rounded-2xl flex items-center justify-center">
+         <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+        </div>
+       </div>
+
+       <div class="mt-6 bg-surface rounded-2xl p-6">
+        <div class="grid grid-cols-7 gap-2 text-center text-xs text-muted font-semibold mb-3">
+         <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+        </div>
+        <div class="grid grid-cols-7 gap-2 text-center text-sm">
+         <div class="text-gray-300">&nbsp;</div><div class="text-gray-300">&nbsp;</div><div class="text-gray-300">&nbsp;</div><div class="text-gray-300">&nbsp;</div><div class="text-navy">1</div><div class="text-navy">2</div><div class="text-navy">3</div>
+         <div class="text-navy">4</div><div class="text-navy">5</div><div class="text-navy">6</div><div class="text-navy">7</div><div class="text-navy">8</div><div class="text-navy">9</div><div class="text-navy">10</div>
+         <div class="text-navy">11</div><div class="text-navy">12</div><div class="text-navy">13</div><div class="text-navy">14</div><div class="bg-primary text-white rounded-lg py-1 font-bold">15</div><div class="text-navy">16</div><div class="text-navy">17</div>
+         <div class="text-navy">18</div><div class="text-navy">19</div><div class="text-navy">20</div><div class="text-navy">21</div><div class="text-navy">22</div><div class="text-navy">23</div><div class="text-navy">24</div>
+         <div class="text-navy">25</div><div class="text-navy">26</div><div class="text-navy">27</div><div class="text-navy">28</div><div class="text-navy">29</div><div class="text-navy">30</div><div class="text-gray-300">&nbsp;</div>
+        </div>
+       </div>
+
+       <div class="mt-6 space-y-3">
+        <div class="flex items-start gap-3 p-4 bg-white rounded-2xl border border-gray-200">
+         <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+          <span class="text-red-600 font-bold">15</span>
+         </div>
+         <div>
+          <p class="text-navy font-semibold">Federal Filing Deadline</p>
+          <p class="text-muted text-sm">Last day to file or extend your federal return.</p>
+         </div>
+        </div>
+        <div class="flex items-start gap-3 p-4 bg-white rounded-2xl border border-gray-200">
+         <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+          <span class="text-amber-600 font-bold">15</span>
+         </div>
+         <div>
+          <p class="text-navy font-semibold">Q1 Estimated Payment Due</p>
+          <p class="text-muted text-sm">First quarterly estimated tax payment.</p>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+
+   <!-- How It Works -->
    <!-- Why Choose -->
    <section class="py-16 bg-surface">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -400,6 +523,28 @@
    </section><!-- Footer -->
    <!-- PARTIAL:footer -->
   </div>
+
+  <!-- Demo Modal (Calendar only) -->
+  <div id="demo-modal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+   <div class="absolute inset-0 bg-black/60" data-demo-close="1"></div>
+   <div class="absolute inset-4 md:inset-10 lg:inset-16 bg-white rounded-3xl overflow-hidden flex flex-col demo-animate">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+     <h3 id="demo-modal-title" class="text-xl font-bold text-navy">Demo</h3>
+     <button type="button" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" data-demo-close="1" aria-label="Close demo">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+     </button>
+    </div>
+    <div id="demo-modal-content" class="flex-1 overflow-auto p-6"></div>
+    <div class="px-6 py-4 border-t border-gray-200 bg-surface flex items-center justify-between gap-4">
+     <p class="text-sm text-muted flex items-center gap-2">
+      <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+      Demo mode, export disabled
+     </p>
+     <button id="demo-modal-buy" type="button" class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-semibold transition-colors">Buy Full Version for $1</button>
+    </div>
+   </div>
+  </div>
+
   <script>
     // Default configuration
     const defaultConfig = {
@@ -420,11 +565,11 @@
       const content = button.nextElementSibling;
       const icon = button.querySelector('.faq-icon');
       const isOpen = !content.classList.contains('hidden');
-      
+
       // Close all other FAQs
       document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
       document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = 'rotate(0deg)');
-      
+
       if (!isOpen) {
         content.classList.remove('hidden');
         icon.style.transform = 'rotate(180deg)';
@@ -441,31 +586,31 @@
           if (productName) {
             productName.textContent = config.product_name || defaultConfig.product_name;
           }
-          
+
           // Update tagline
           const tagline = document.getElementById('tagline');
           if (tagline) {
             tagline.textContent = config.tagline || defaultConfig.tagline;
           }
-          
+
           // Update primary button
           const primaryBtn = document.getElementById('primary-btn');
           if (primaryBtn) {
             primaryBtn.textContent = config.primary_cta || defaultConfig.primary_cta;
             primaryBtn.style.backgroundColor = config.primary_color || defaultConfig.primary_color;
           }
-          
+
           // Update secondary button
           const secondaryBtn = document.getElementById('secondary-btn');
           if (secondaryBtn) {
             secondaryBtn.textContent = config.secondary_cta || defaultConfig.secondary_cta;
           }
-          
+
           // Update all primary color elements
           document.querySelectorAll('.bg-primary').forEach(el => {
             el.style.backgroundColor = config.primary_color || defaultConfig.primary_color;
           });
-          
+
           // Update accent color elements
           document.querySelectorAll('.bg-accent').forEach(el => {
             el.style.backgroundColor = config.accent_color || defaultConfig.accent_color;
@@ -511,6 +656,255 @@
         }
       });
     }
+
+    // Demo modal animation
+    (function injectDemoStyles() {
+      const style = document.createElement('style');
+      style.textContent = `
+        .demo-animate { animation: demoSlideUp 0.35s ease-out forwards; }
+        @keyframes demoSlideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+      `;
+      document.head.appendChild(style);
+    })();
+
+    // Demo modal (Calendar)
+    let demoCalendarMonth = 3; // April (0-indexed)
+    let demoCalendarYear = 2024;
+
+    const demoTaxDeadlines = {
+      '2024-4-15': { desc: 'Last day to file or extend your federal return', title: 'Federal Filing Deadline', type: 'federal' },
+      '2024-6-17': { desc: 'Second quarterly estimated tax payment', title: 'Q2 Estimated Payment Due', type: 'estimated' },
+      '2024-9-16': { desc: 'Third quarterly estimated tax payment', title: 'Q3 Estimated Payment Due', type: 'estimated' },
+      '2024-10-15': { desc: 'Last day to file if you requested an extension', title: 'Extended Filing Deadline', type: 'federal' },
+      '2025-1-15': { desc: 'Fourth quarterly estimated tax payment', title: 'Q4 Estimated Payment Due', type: 'estimated' }
+    };
+
+    function closeDemo() {
+      const modal = document.getElementById('demo-modal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    function openDemo(type) {
+      if (type !== 'calendar') return;
+
+      const modal = document.getElementById('demo-modal');
+      const title = document.getElementById('demo-modal-title');
+      const content = document.getElementById('demo-modal-content');
+      const buyBtn = document.getElementById('demo-modal-buy');
+
+      if (!modal || !title || !content || !buyBtn) return;
+
+      title.textContent = 'Tax Deadline Reminder Calendar - Demo';
+      content.innerHTML = getCalendarDemoHtml();
+      initCalendarDemo();
+
+      buyBtn.onclick = () => {
+        closeDemo();
+        scrollToBuy();
+      };
+
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function getCalendarDemoHtml() {
+      return `
+        <div class="max-w-4xl mx-auto">
+          <div class="bg-green-50 border border-green-200 rounded-2xl p-4 mb-6">
+            <p class="text-green-900 text-sm">
+              <strong>Demo Mode:</strong> Navigate months to see key tax deadlines. Export is disabled here.
+            </p>
+          </div>
+
+          <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 bg-surface border-b border-gray-200">
+              <button type="button" onclick="prevDemoMonth()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Previous month">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              </button>
+              <h4 id="demo-calendar-month-title" class="text-xl font-bold text-navy">April 2024</h4>
+              <button type="button" onclick="nextDemoMonth()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Next month">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-7 border-b border-gray-200">
+              ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="px-2 py-3 text-center text-sm font-medium text-muted border-r border-gray-100 last:border-r-0">${d}</div>`).join('')}
+            </div>
+
+            <div id="demo-calendar-grid" class="grid grid-cols-7"></div>
+          </div>
+
+          <div id="demo-calendar-events" class="mt-6 space-y-3"></div>
+
+          <div class="mt-6 flex justify-end">
+            <button type="button" class="bg-gray-200 text-gray-500 px-6 py-3 rounded-xl font-semibold cursor-not-allowed" disabled title="Available after purchase">
+              <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              Add to Calendar
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function initCalendarDemo() {
+      renderDemoCalendar();
+    }
+
+    function nextDemoMonth() {
+      demoCalendarMonth += 1;
+      if (demoCalendarMonth > 11) {
+        demoCalendarMonth = 0;
+        demoCalendarYear += 1;
+      }
+      renderDemoCalendar();
+    }
+
+    function prevDemoMonth() {
+      demoCalendarMonth -= 1;
+      if (demoCalendarMonth < 0) {
+        demoCalendarMonth = 11;
+        demoCalendarYear -= 1;
+      }
+      renderDemoCalendar();
+    }
+
+    function renderDemoCalendar() {
+      const title = document.getElementById('demo-calendar-month-title');
+      const grid = document.getElementById('demo-calendar-grid');
+      const events = document.getElementById('demo-calendar-events');
+
+      if (!title || !grid || !events) return;
+
+      const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const monthShort = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+      title.textContent = `${monthNames[demoCalendarMonth]} ${demoCalendarYear}`;
+
+      const firstDay = new Date(demoCalendarYear, demoCalendarMonth, 1).getDay();
+      const daysInMonth = new Date(demoCalendarYear, demoCalendarMonth + 1, 0).getDate();
+
+      let html = '';
+
+      for (let i = 0; i < firstDay; i++) {
+        html += '<div class="h-12 border-r border-b border-gray-100"></div>';
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = `${demoCalendarYear}-${demoCalendarMonth + 1}-${day}`;
+        const deadline = demoTaxDeadlines[dateKey];
+        const hasDeadline = Boolean(deadline);
+        const marker = hasDeadline ? '<div class="absolute bottom-1 left-1 right-1 h-1 bg-accent rounded"></div>' : '';
+        const cellBg = hasDeadline ? 'bg-amber-50' : '';
+        const cellText = hasDeadline ? 'font-bold text-accent' : 'text-gray-700';
+
+        html += `
+          <div class="h-12 border-r border-b border-gray-100 p-1 relative ${cellBg}">
+            <span class="text-sm ${cellText}">${day}</span>
+            ${marker}
+          </div>
+        `;
+      }
+
+      grid.innerHTML = html;
+
+      const eventCards = Object.keys(demoTaxDeadlines).sort().filter(dateKey => {
+        const [year, month] = dateKey.split('-').map(Number);
+        return year === demoCalendarYear && month === demoCalendarMonth + 1;
+      }).map(dateKey => {
+        const [, month, day] = dateKey.split('-').map(Number);
+        const d = demoTaxDeadlines[dateKey];
+
+        return `
+          <div class="flex items-start gap-4 p-4 bg-white border border-gray-200 rounded-2xl">
+            <div class="w-12 h-12 bg-accent/15 rounded-xl flex flex-col items-center justify-center">
+              <span class="text-xs text-accent font-semibold">${monthShort[month - 1]}</span>
+              <span class="text-lg font-bold text-accent">${day}</span>
+            </div>
+            <div>
+              <p class="font-semibold text-navy">${d.title}</p>
+              <p class="text-sm text-muted">${d.desc}</p>
+            </div>
+          </div>
+        `;
+      });
+
+      events.innerHTML = eventCards.length ? eventCards.join('') : '<p class="text-muted text-center py-4">No tax deadlines this month</p>';
+    }
+
+    function scrollToBuy() {
+      const buyBtn = document.getElementById('primary-btn');
+      if (!buyBtn) return;
+
+      buyBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      buyBtn.classList.add('ring-4', 'ring-accent/30');
+      setTimeout(() => buyBtn.classList.remove('ring-4', 'ring-accent/30'), 1400);
+    }
+
+    function runSmokeTests() {
+      const cases = [
+        { name: 'Demo modal exists', ok: () => Boolean(document.getElementById('demo-modal')) },
+        { name: 'Hero Try Demo button exists', ok: () => Boolean(document.getElementById('secondary-btn')) },
+        { name: 'Preview Try Demo button exists', ok: () => Boolean(document.getElementById('preview-try-demo-btn')) },
+        { name: 'Primary Buy button exists', ok: () => Boolean(document.getElementById('primary-btn')) }
+      ];
+
+      const failures = cases.filter(t => {
+        try { return !t.ok(); } catch { return true; }
+      });
+
+      if (failures.length) {
+        console.warn('[TaxTools] Smoke tests failed:', failures.map(f => f.name));
+      }
+    }
+
+    function wireDemoButtons() {
+      const modal = document.getElementById('demo-modal');
+
+      // Close handlers
+      document.querySelectorAll('[data-demo-close="1"]').forEach(el => {
+        el.addEventListener('click', closeDemo);
+      });
+
+      // Open handlers
+      document.querySelectorAll('[data-demo-open="calendar"]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          openDemo('calendar');
+        });
+      });
+
+      // Existing hero button
+      const secondaryBtn = document.getElementById('secondary-btn');
+      if (secondaryBtn) secondaryBtn.addEventListener('click', () => openDemo('calendar'));
+
+      // Existing preview button ("See It In Action" Try Demo)
+      const previewTryBtn = document.getElementById('preview-try-demo-btn');
+      if (previewTryBtn) previewTryBtn.addEventListener('click', () => openDemo('calendar'));
+
+      // Scroll-to-buy links
+      document.querySelectorAll('[data-scroll-buy="1"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          scrollToBuy();
+        });
+      });
+
+      // Escape-to-close
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (modal && !modal.classList.contains('hidden')) closeDemo();
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      runSmokeTests();
+      wireDemoButtons();
+    });
+
   </script>
  </body>
 </html>
