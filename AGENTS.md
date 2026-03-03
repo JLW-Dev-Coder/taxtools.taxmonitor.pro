@@ -1,19 +1,17 @@
 # AGENTS.md
 
-## Audit goal
-- Fail the audit if README.md and repo behavior disagree.
-- Prefer minimal fixes that preserve documented contracts.
+## Authority
+- README.md is the authoritative contract for behavior, routes, build output, and configuration.
+- If README.md and code disagree, treat it as FAIL and propose the minimal contract-safe fix.
 
-## Build
-- Build command: node ./build.mjs
-- Output directory: ./dist
+## Commands
+- Audit: node ./audit/launch-readiness.mjs
+- Build: node ./build.mjs
 
-## Checks
-- Dist completeness: every href/src in dist HTML must resolve to a file in dist.
-- Routes: every frontend call to /v1/* must have a matching Worker handler.
-- Stripe: webhook signature verification required; dedupe by Stripe Checkout Session ID.
-- SKU mapping: frontend must not use Stripe price_ ids; Worker maps SKU -> price id and rejects unknown SKU.
+## Constraints
+- Do not invent endpoints, files, or data models.
+- Do not “paper over” mismatches by changing the README unless the intent is explicitly to update the contract.
 
-## Output
-- Write audit report to: ./audit/launch-readiness.md
-- Include: blockers, non-blockers, and file+line references for every finding.
+## Outputs
+- Write the audit report to: ./audit/launch-readiness.md
+- Include exact file paths and line numbers (or best-effort line ranges) for findings.
