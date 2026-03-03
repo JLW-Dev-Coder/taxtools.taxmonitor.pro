@@ -326,8 +326,8 @@
     <script>
       (function () {
         const API_BASE = 'https://tools-api.taxmonitor.pro';
-        const SUPPORT_POST = API_BASE + '/v1/support/tickets';
-        const SUPPORT_STATUS_GET = API_BASE + '/v1/support/tickets/status?supportId=';
+        const SUPPORT_POST = API_BASE + '/v1/help/tickets';
+        const SUPPORT_STATUS_GET = API_BASE + '/v1/help/status?ticket_id=';
 
         function getParam(name) {
           try { return new URLSearchParams(window.location.search).get(name) || ''; } catch (_) { return ''; }
