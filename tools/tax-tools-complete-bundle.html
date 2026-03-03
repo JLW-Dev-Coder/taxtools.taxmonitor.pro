@@ -204,6 +204,9 @@
         </svg>
         Maximize your refund
        </div>
+       <div class="mt-5">
+        <button type="button" class="w-full bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold border border-white/60 transition-colors" data-demo="deduction">Try Demo</button>
+       </div>
       </div>
 
       <!-- Tool 2 -->
@@ -220,6 +223,9 @@
          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
         </svg>
         Never miss a deadline
+       </div>
+       <div class="mt-5">
+        <button type="button" class="w-full bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold border border-white/60 transition-colors" data-demo="calendar">Try Demo</button>
        </div>
       </div>
 
@@ -238,6 +244,9 @@
         </svg>
         Stay organized
        </div>
+       <div class="mt-5">
+        <button type="button" class="w-full bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold border border-white/60 transition-colors" data-demo="organizer">Try Demo</button>
+       </div>
       </div>
 
       <!-- Tool 4 -->
@@ -255,6 +264,9 @@
         </svg>
         Know your refund
        </div>
+       <div class="mt-5">
+        <button type="button" class="w-full bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold border border-white/60 transition-colors" data-demo="estimator">Try Demo</button>
+       </div>
       </div>
 
       <!-- Tool 5 -->
@@ -271,6 +283,9 @@
          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
         </svg>
         Learn expert tips
+       </div>
+       <div class="mt-5">
+        <button type="button" class="w-full bg-white/70 hover:bg-white text-charcoal px-4 py-3 rounded-xl font-semibold border border-white/60 transition-colors" data-demo="ebook">Try Demo</button>
        </div>
       </div>
 
@@ -512,6 +527,30 @@
     </div>
    </section>
 
+   <!-- Demo Modal -->
+  <div id="modal-container" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+   <div class="absolute inset-0 bg-black/50" data-modal-overlay></div>
+   <div class="absolute inset-4 md:inset-8 lg:inset-16 bg-white rounded-2xl overflow-hidden flex flex-col">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+     <h3 id="modal-title" class="text-xl font-bold text-navy">Demo</h3>
+     <button type="button" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" data-modal-close aria-label="Close demo">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+     </button>
+    </div>
+
+    <div id="modal-content" class="flex-1 overflow-auto p-6">
+     <!-- Demo content loads here -->
+    </div>
+
+    <div class="px-6 py-4 border-t border-gray-200 bg-slate-50 flex items-center justify-between">
+     <p class="text-sm text-charcoal/70">Demo mode. Some features are disabled.</p>
+     <button id="modal-buy-btn" type="button" class="bg-action-blue hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-semibold transition-colors">Buy Bundle for $4</button>
+    </div>
+   </div>
+  </div>
+
    <!-- PARTIAL:footer -->
   </div>
 
@@ -658,6 +697,562 @@
       });
     }
 
+    // Demo modal
+    const demoMeta = {
+      calendar: { title: 'Tax Deadline Reminder Calendar - Demo' },
+      deduction: { title: 'Tax Deduction Checklist - Demo' },
+      ebook: { title: 'Tax Tips Mini E-Book - Demo' },
+      estimator: { title: 'Tax Refund Estimator Tool - Demo' },
+      organizer: { title: 'Tax Document Organizer - Demo' }
+    };
+
+    function closeDemo() {
+      const modal = getEl('modal-container');
+      const content = getEl('modal-content');
+      if (content) content.innerHTML = '';
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function openDemo(type) {
+      const modal = getEl('modal-container');
+      const title = getEl('modal-title');
+      const content = getEl('modal-content');
+      const buyBtn = getEl('modal-buy-btn');
+
+      if (!modal || !title || !content) return;
+
+      title.textContent = demoMeta[type]?.title || 'Demo';
+      content.innerHTML = getDemoHtml(type);
+
+      if (buyBtn) {
+        buyBtn.onclick = () => {
+          closeDemo();
+          const cta = getEl('primary-cta') || getEl('final-cta');
+          if (cta) cta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        };
+      }
+
+      modal.classList.remove('hidden');
+
+      // Per-demo init hooks
+      if (type === 'calendar') initCalendarDemo();
+      if (type === 'organizer') initOrganizerDemo();
+    }
+
+    function wireDemos() {
+      document.querySelectorAll('[data-demo]').forEach((btn) => {
+        btn.addEventListener('click', () => openDemo(btn.getAttribute('data-demo')));
+      });
+
+      const overlay = document.querySelector('[data-modal-overlay]');
+      const closeBtn = document.querySelector('[data-modal-close]');
+      safeAddListener(overlay, 'click', closeDemo);
+      safeAddListener(closeBtn, 'click', closeDemo);
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDemo();
+      });
+    }
+
+    // Demo content
+    function getDemoHtml(type) {
+      const html = {
+        calendar: getCalendarDemo(),
+        deduction: getDeductionDemo(),
+        ebook: getEbookDemo(),
+        estimator: getEstimatorDemo(),
+        organizer: getOrganizerDemo()
+      };
+      return html[type] || '<div class="text-center text-charcoal/70">Demo not available.</div>';
+    }
+
+    // Demo 1: Deduction Checklist
+    function getDeductionDemo() {
+      const deductions = [
+        { name: 'Charitable Donations', value: 800, category: 'Giving' },
+        { name: 'Educator Expenses', value: 300, category: 'Education' },
+        { name: 'Energy Efficient Home Improvements', value: 1500, category: 'Home' },
+        { name: 'Home Office Expenses', value: 1500, category: 'Work' },
+        { name: 'Medical Expenses', value: 1200, category: 'Health' },
+        { name: 'Mortgage Interest', value: 8000, category: 'Home' },
+        { name: 'Retirement Contributions', value: 6000, category: 'Savings' },
+        { name: 'State & Local Taxes', value: 3000, category: 'Taxes' },
+        { name: 'Student Loan Interest', value: 2500, category: 'Education' }
+      ].sort((a, b) => a.name.localeCompare(b.name));
+
+      return `
+        <div class="max-w-2xl mx-auto">
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+            <p class="text-blue-800 text-sm"><strong>Demo Mode:</strong> Check a few sample deductions. Full version includes 100+ items.</p>
+          </div>
+
+          <div class="space-y-3" id="deduction-list">
+            ${deductions.map((d) => `
+              <label class="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-xl hover:border-action cursor-pointer transition-colors">
+                <input type="checkbox" class="deduction-check w-5 h-5 text-action rounded focus:ring-action" data-value="${d.value}">
+                <div class="flex-1">
+                  <p class="font-medium text-navy">${d.name}</p>
+                  <p class="text-sm text-gray-500">${d.category}</p>
+                </div>
+                <span class="text-trust font-semibold">$${d.value.toLocaleString()}</span>
+              </label>
+            `).join('')}
+          </div>
+
+          <div class="sticky bottom-0 bg-white border-t border-gray-200 mt-6 pt-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-charcoal/70">Potential Deductions Found:</p>
+                <p class="text-3xl font-bold text-trust" id="deduction-total">$0</p>
+              </div>
+              <button class="bg-gray-200 text-gray-500 px-6 py-3 rounded-xl font-semibold cursor-not-allowed" disabled>Export PDF</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateDeductionTotal() {
+      const checkboxes = document.querySelectorAll('.deduction-check:checked');
+      let total = 0;
+      checkboxes.forEach((cb) => { total += Number(cb.dataset.value || 0); });
+      const totalEl = getEl('deduction-total');
+      if (totalEl) totalEl.textContent = `$${total.toLocaleString()}`;
+    }
+
+    function wireDeductionDemo() {
+      document.querySelectorAll('.deduction-check').forEach((cb) => {
+        cb.addEventListener('change', updateDeductionTotal);
+      });
+      updateDeductionTotal();
+    }
+
+    // Demo 2: Calendar
+    let calendarMonth = 3; // April (0-indexed)
+    let calendarYear = 2024;
+
+    const taxDeadlines = {
+      '2024-4-15': [
+        { title: 'Federal Filing Deadline', desc: 'Last day to file or extend your federal return' },
+        { title: 'Q1 Estimated Payment Due', desc: 'First quarterly estimated tax payment' }
+      ],
+      '2024-6-17': [
+        { title: 'Q2 Estimated Payment Due', desc: 'Second quarterly estimated tax payment' }
+      ],
+      '2024-9-16': [
+        { title: 'Q3 Estimated Payment Due', desc: 'Third quarterly estimated tax payment' }
+      ],
+      '2024-10-15': [
+        { title: 'Extended Filing Deadline', desc: 'Last day to file if you requested an extension' }
+      ],
+      '2025-1-15': [
+        { title: 'Q4 Estimated Payment Due', desc: 'Fourth quarterly estimated tax payment' }
+      ]
+    };
+
+    function getCalendarDemo() {
+      return `
+        <div class="max-w-3xl mx-auto">
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+            <p class="text-amber-800 text-sm"><strong>Demo Mode:</strong> Preview key deadlines. Full version includes exports.</p>
+          </div>
+
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 bg-slate-50 border-b border-gray-200">
+              <button type="button" class="p-2 hover:bg-gray-200 rounded-lg transition-colors" data-cal-prev aria-label="Previous month">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              </button>
+              <h4 id="calendar-month-title" class="text-xl font-bold text-navy">April 2024</h4>
+              <button type="button" class="p-2 hover:bg-gray-200 rounded-lg transition-colors" data-cal-next aria-label="Next month">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-7 border-b border-gray-200">
+              ${['Fri','Mon','Sat','Sun','Thu','Tue','Wed'].sort((a,b)=>a.localeCompare(b)).map((d) => `
+                <div class="px-2 py-3 text-center text-sm font-medium text-charcoal/60 border-r border-gray-100 last:border-r-0">${d}</div>
+              `).join('')}
+            </div>
+
+            <div id="calendar-grid" class="grid grid-cols-7"></div>
+          </div>
+
+          <div id="calendar-events" class="mt-6 space-y-3"></div>
+        </div>
+      `;
+    }
+
+    function initCalendarDemo() {
+      const prev = document.querySelector('[data-cal-prev]');
+      const next = document.querySelector('[data-cal-next]');
+      safeAddListener(prev, 'click', prevMonth);
+      safeAddListener(next, 'click', nextMonth);
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const title = getEl('calendar-month-title');
+      if (title) title.textContent = `${monthNames[calendarMonth]} ${calendarYear}`;
+
+      const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
+      const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+
+      let html = '';
+      for (let i = 0; i < firstDay; i++) html += '<div class="h-12 border-r border-b border-gray-100"></div>';
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = `${calendarYear}-${calendarMonth + 1}-${day}`;
+        const deadlines = taxDeadlines[dateKey] || [];
+        const hasDeadline = deadlines.length > 0;
+
+        html += `
+          <div class="h-12 border-r border-b border-gray-100 p-1 relative ${hasDeadline ? 'bg-rose-50' : ''}">
+            <span class="text-sm ${hasDeadline ? 'font-bold text-rose-600' : 'text-gray-700'}">${day}</span>
+            ${hasDeadline ? '<div class="absolute bottom-1 left-1 right-1 h-1 bg-rose-500 rounded"></div>' : ''}
+          </div>
+        `;
+      }
+
+      const grid = getEl('calendar-grid');
+      if (grid) grid.innerHTML = html;
+
+      let eventsHtml = '';
+      Object.keys(taxDeadlines).forEach((dateKey) => {
+        const [year, month, day] = dateKey.split('-').map(Number);
+        if (year === calendarYear && month === calendarMonth + 1) {
+          taxDeadlines[dateKey].forEach((deadline) => {
+            eventsHtml += `
+              <div class="flex items-start gap-4 p-4 bg-white border border-gray-200 rounded-xl">
+                <div class="w-12 h-12 bg-rose-100 rounded-lg flex flex-col items-center justify-center">
+                  <span class="text-xs text-rose-600 font-medium">${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][month-1]}</span>
+                  <span class="text-lg font-bold text-rose-600">${day}</span>
+                </div>
+                <div>
+                  <p class="font-semibold text-navy">${deadline.title}</p>
+                  <p class="text-sm text-charcoal/70">${deadline.desc}</p>
+                </div>
+              </div>
+            `;
+          });
+        }
+      });
+
+      const events = getEl('calendar-events');
+      if (events) events.innerHTML = eventsHtml || '<p class="text-charcoal/60 text-center py-4">No tax deadlines this month</p>';
+    }
+
+    function prevMonth() {
+      calendarMonth -= 1;
+      if (calendarMonth < 0) {
+        calendarMonth = 11;
+        calendarYear -= 1;
+      }
+      renderCalendar();
+    }
+
+    function nextMonth() {
+      calendarMonth += 1;
+      if (calendarMonth > 11) {
+        calendarMonth = 0;
+        calendarYear += 1;
+      }
+      renderCalendar();
+    }
+
+    // Demo 3: Document Organizer
+    function getOrganizerDemo() {
+      return `
+        <div class="max-w-4xl mx-auto">
+          <div class="bg-purple-50 border border-purple-200 rounded-xl p-4 mb-6">
+            <p class="text-purple-800 text-sm"><strong>Demo Mode:</strong> Drag docs to categories. Full version includes exports.</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-semibold text-navy mb-3">Sample Documents</h4>
+              <div id="document-source" class="space-y-2 min-h-32 p-4 bg-slate-50 rounded-xl border-2 border-dashed border-slate-300">
+                <div class="drag-item bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-3" draggable="true" data-doc="w2-employer">
+                  <span class="text-2xl">📋</span>
+                  <span class="font-medium">W-2 from Employer</span>
+                </div>
+                <div class="drag-item bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-3" draggable="true" data-doc="1099-freelance">
+                  <span class="text-2xl">📋</span>
+                  <span class="font-medium">1099-NEC Freelance</span>
+                </div>
+                <div class="drag-item bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-3" draggable="true" data-doc="charity-receipt">
+                  <span class="text-2xl">🧾</span>
+                  <span class="font-medium">Charity Receipt</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <h4 class="font-semibold text-navy mb-2">W-2 Forms</h4>
+                <div class="drop-zone min-h-20 p-3 bg-blue-50 rounded-xl border-2 border-dashed border-blue-300" data-category="w2">
+                  <p class="text-blue-400 text-sm text-center">Drop W-2 forms here</p>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="font-semibold text-navy mb-2">1099 Forms</h4>
+                <div class="drop-zone min-h-20 p-3 bg-green-50 rounded-xl border-2 border-dashed border-green-300" data-category="1099">
+                  <p class="text-green-400 text-sm text-center">Drop 1099 forms here</p>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="font-semibold text-navy mb-2">Charitable Donations</h4>
+                <div class="drop-zone min-h-20 p-3 bg-purple-50 rounded-xl border-2 border-dashed border-purple-300" data-category="charity">
+                  <p class="text-purple-400 text-sm text-center">Drop receipts here</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function initOrganizerDemo() {
+      const dragItems = document.querySelectorAll('.drag-item');
+      const dropZones = document.querySelectorAll('.drop-zone');
+
+      dragItems.forEach((item) => {
+        item.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', item.dataset.doc);
+          item.classList.add('opacity-50');
+        });
+
+        item.addEventListener('dragend', () => {
+          item.classList.remove('opacity-50');
+        });
+      });
+
+      dropZones.forEach((zone) => {
+        zone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          zone.classList.add('bg-white');
+        });
+
+        zone.addEventListener('dragleave', () => {
+          zone.classList.remove('bg-white');
+        });
+
+        zone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          zone.classList.remove('bg-white');
+          const docId = e.dataTransfer.getData('text/plain');
+          const draggedItem = document.querySelector(`[data-doc="${docId}"]`);
+
+          if (!draggedItem) return;
+
+          const placeholder = zone.querySelector('p');
+          if (placeholder) placeholder.remove();
+
+          const clone = draggedItem.cloneNode(true);
+          clone.draggable = false;
+          zone.appendChild(clone);
+
+          draggedItem.remove();
+        });
+      });
+    }
+
+    // Demo 4: Refund Estimator
+    function getEstimatorDemo() {
+      return `
+        <div class="max-w-xl mx-auto">
+          <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
+            <p class="text-green-800 text-sm"><strong>Demo Mode:</strong> Basic estimate only. Full version adds credits and details.</p>
+          </div>
+
+          <div class="bg-white border border-gray-200 rounded-xl p-6">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-navy mb-2">Annual Income</label>
+                <input type="number" id="est-income" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-action focus:border-action" value="55000">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-navy mb-2">Federal Tax Withheld</label>
+                <input type="number" id="est-withheld" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-action focus:border-action" value="6500">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-navy mb-2">Dependents</label>
+                <select id="est-dependents" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-action focus:border-action">
+                  ${['0','1','2','3','4'].sort((a,b)=>a.localeCompare(b)).map((v) => `<option value="${v}" ${v === '2' ? 'selected' : ''}>${v}</option>`).join('')}
+                </select>
+              </div>
+
+              <button type="button" class="w-full bg-action-blue hover:bg-primary-dark text-white px-6 py-3 rounded-xl font-semibold transition-colors" data-est-calc>Calculate Estimate</button>
+            </div>
+
+            <div id="estimate-result" class="hidden mt-6 p-6 bg-gradient-to-br from-trust/10 to-green-50 rounded-xl border border-trust/30">
+              <p class="text-charcoal/70 mb-2">Estimated Federal Refund:</p>
+              <p class="text-4xl font-bold text-trust" id="refund-amount">$0</p>
+              <p class="text-sm text-charcoal/60 mt-2">Simplified estimate. Actual results vary.</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function wireEstimatorDemo() {
+      const calcBtn = document.querySelector('[data-est-calc]');
+      safeAddListener(calcBtn, 'click', calculateEstimate);
+    }
+
+    function calculateEstimate() {
+      const income = Number(getEl('est-income')?.value || 0);
+      const withheld = Number(getEl('est-withheld')?.value || 0);
+      const dependents = Number(getEl('est-dependents')?.value || 0);
+
+      let taxableIncome = income - 14600;
+      taxableIncome -= dependents * 2000;
+
+      let taxOwed = 0;
+      if (taxableIncome > 0) {
+        if (taxableIncome <= 11600) taxOwed = taxableIncome * 0.10;
+        else if (taxableIncome <= 47150) taxOwed = 1160 + (taxableIncome - 11600) * 0.12;
+        else if (taxableIncome <= 100525) taxOwed = 5426 + (taxableIncome - 47150) * 0.22;
+        else taxOwed = 17168.5 + (taxableIncome - 100525) * 0.24;
+      }
+
+      const childCredit = Math.min(dependents * 2000, taxOwed);
+      taxOwed -= childCredit;
+
+      const refund = withheld - taxOwed;
+
+      const result = getEl('estimate-result');
+      const amount = getEl('refund-amount');
+      if (!result || !amount) return;
+
+      result.classList.remove('hidden');
+      amount.textContent = refund >= 0
+        ? `$${Math.round(refund).toLocaleString()}`
+        : `-$${Math.abs(Math.round(refund)).toLocaleString()} owed`;
+
+      amount.className = refund >= 0
+        ? 'text-4xl font-bold text-trust'
+        : 'text-4xl font-bold text-rose-600';
+    }
+
+    // Demo 5: E-Book
+    let ebookPage = 0;
+    const ebookPreviewPages = 3;
+    const ebookTotalPages = 20;
+    const ebookLockedPage = ebookPreviewPages + 1;
+
+    const ebookPreview = [
+      { title: 'Cover', content: '<div class="h-full flex flex-col items-center justify-center text-center p-8 bg-gradient-to-br from-navy to-primary-dark text-white rounded-lg"><div class="text-6xl mb-4">📘</div><h2 class="text-3xl font-bold mb-2">20 Actionable Tax Tips</h2><p class="text-lg opacity-90">DEMO PREVIEW</p></div>' },
+      { title: 'Tip #1', content: '<div class="p-6"><h3 class="text-2xl font-bold text-navy mb-3">Standard vs. itemize</h3><p class="text-charcoal/70">Quick checklist to choose the right path.</p></div>' },
+      { title: 'Tip #2', content: '<div class="p-6"><h3 class="text-2xl font-bold text-navy mb-3">Deadline moves</h3><p class="text-charcoal/70">A few legal last-minute actions that still count.</p></div>' }
+    ];
+
+    function getEbookLockedContent() {
+      const topics = [
+        'Audit-proof habits',
+        'Business write-offs',
+        'Credits vs. deductions',
+        'Estimated taxes',
+        'Withholding tune-up'
+      ].sort((a, b) => a.localeCompare(b));
+
+      return `
+        <div class="h-full flex flex-col items-center justify-center text-center p-8 bg-slate-50 rounded-lg">
+          <div class="text-5xl mb-4">🔒</div>
+          <h3 class="text-xl font-bold text-navy mb-2">Pages ${ebookLockedPage}–${ebookTotalPages} are locked</h3>
+          <p class="text-charcoal/70 mb-6">Preview is limited to the first ${ebookPreviewPages} pages.</p>
+          <div class="w-full max-w-md text-left">
+            <p class="text-sm font-semibold text-navy mb-2">Inside the full e-book:</p>
+            <ul class="space-y-2 text-charcoal/70">
+              ${topics.map((t) => `<li class="flex gap-2"><span class="w-2 h-2 mt-2 bg-action-blue rounded-full"></span><span>${t}</span></li>`).join('')}
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+
+    function getEbookDemo() {
+      ebookPage = 0;
+
+      return `
+        <div class="max-w-2xl mx-auto">
+          <div class="bg-rose-50 border border-rose-200 rounded-xl p-4 mb-6">
+            <p class="text-rose-800 text-sm"><strong>Demo Mode:</strong> Preview pages 1–${ebookPreviewPages} of ${ebookTotalPages}.</p>
+          </div>
+
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-lg">
+            <div id="ebook-content" class="aspect-[3/4] bg-white">${ebookPreview[0].content}</div>
+
+            <div class="flex items-center justify-between px-4 py-3 bg-slate-50 border-t border-gray-200">
+              <button type="button" class="p-2 hover:bg-gray-200 rounded-lg transition-colors" data-ebook-prev aria-label="Previous page" disabled>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              </button>
+
+              <span id="ebook-page-num" class="text-sm text-charcoal/70">Page 1 of ${ebookTotalPages}</span>
+
+              <button type="button" class="p-2 hover:bg-gray-200 rounded-lg transition-colors" data-ebook-next aria-label="Next page">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function wireEbookDemo() {
+      const prev = document.querySelector('[data-ebook-prev]');
+      const next = document.querySelector('[data-ebook-next]');
+      safeAddListener(prev, 'click', prevEbookPage);
+      safeAddListener(next, 'click', nextEbookPage);
+      updateEbookUI();
+    }
+
+    function updateEbookUI() {
+      const contentEl = getEl('ebook-content');
+      const pageNumEl = getEl('ebook-page-num');
+      const prevBtn = document.querySelector('[data-ebook-prev]');
+      const nextBtn = document.querySelector('[data-ebook-next]');
+
+      if (pageNumEl) pageNumEl.textContent = `Page ${ebookPage + 1} of ${ebookTotalPages}`;
+
+      if (contentEl) {
+        contentEl.innerHTML = ebookPage < ebookPreviewPages
+          ? ebookPreview[ebookPage].content
+          : getEbookLockedContent();
+      }
+
+      if (prevBtn) prevBtn.disabled = ebookPage === 0;
+      if (nextBtn) nextBtn.disabled = ebookPage >= (ebookLockedPage - 1);
+    }
+
+    function prevEbookPage() {
+      if (ebookPage <= 0) return;
+      ebookPage -= 1;
+      updateEbookUI();
+    }
+
+    function nextEbookPage() {
+      if (ebookPage >= (ebookLockedPage - 1)) return;
+      ebookPage += 1;
+      updateEbookUI();
+    }
+
+    function wireDemoInternals(type) {
+      if (type === 'deduction') wireDeductionDemo();
+      if (type === 'ebook') wireEbookDemo();
+      if (type === 'estimator') wireEstimatorDemo();
+    }
+
+    const _openDemoOriginal = openDemo;
+    openDemo = function (type) {
+      _openDemoOriginal(type);
+      wireDemoInternals(type);
+    };
+
     // Lightweight tests (run with ?test=1)
     function runTests() {
       const results = [];
@@ -671,6 +1266,7 @@
       assert('mobile-menu missing does not crash', getEl('mobile-menu') === null);
 
       // Test cases: FAQ wiring finds at least one button.
+      assert('demo buttons exist', document.querySelectorAll('[data-demo]').length === 5);
       assert('faq buttons exist', document.querySelectorAll('[data-faq]').length > 0);
 
       window.__TAXTOOLS_TESTS__ = results;
@@ -679,6 +1275,7 @@
     }
 
     function init() {
+      wireDemos();
       wireFaq();
       wireMobileMenu();
       wireSmoothScroll();
