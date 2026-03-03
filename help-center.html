@@ -1,0 +1,438 @@
+<!-- help-center.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help Center - TaxTools</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon" />
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            action: '#1d4ed8',
+            charcoal: '#2d3748',
+            muted: '#64748b',
+            navy: '#0f2747',
+            'navy-light': '#17365f',
+            warm: '#f97316'
+          },
+          fontFamily: {
+            dm: ['"DM Sans"', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * { font-family: 'DM Sans', system-ui, sans-serif; }
+    html, body { height: 100%; margin: 0; }
+    body { box-sizing: border-box; }
+
+    .category-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(15, 39, 71, 0.15); }
+    .article-card:hover { border-color: #1d4ed8; }
+    .search-input:focus { outline: none; box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.28); }
+  </style>
+</head>
+
+<body class="h-full bg-white text-charcoal overflow-auto">
+  <div id="app" class="w-full min-h-full bg-gradient-to-b from-slate-50 to-white">
+
+    <!-- PARTIAL:header -->
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-navy via-navy to-slate-800 py-16 lg:py-24">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-10 left-10 w-64 h-64 bg-action rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 right-10 w-96 h-96 bg-warm rounded-full blur-3xl"></div>
+      </div>
+
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row items-center gap-12">
+          <div class="flex-1 text-center lg:text-left">
+            <h1 id="heroTitle" class="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6">Help Center</h1>
+            <p id="heroSubtitle" class="text-xl text-slate-300 mb-8 max-w-xl mx-auto lg:mx-0">Find answers, guides, and support for all your TaxTools questions.</p>
+
+            <!-- Search -->
+            <div class="relative max-w-xl mx-auto lg:mx-0">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search help articles..."
+                class="search-input w-full px-6 py-4 pl-14 text-lg rounded-2xl border-2 border-transparent bg-white shadow-xl transition-all"
+              />
+              <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <button class="absolute right-3 top-1/2 -translate-y-1/2 px-4 py-2 bg-action text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors">Search</button>
+            </div>
+          </div>
+
+          <!-- Hero card -->
+          <div class="flex-shrink-0">
+            <div class="relative w-64 h-64 lg:w-80 lg:h-80">
+              <div class="absolute inset-0 bg-gradient-to-br from-action to-warm rounded-3xl rotate-6 opacity-20"></div>
+              <div class="absolute inset-0 bg-white rounded-3xl shadow-2xl flex items-center justify-center">
+                <div class="text-center p-6">
+                  <div class="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-action to-warm rounded-2xl flex items-center justify-center">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <p class="text-navy font-bold text-lg">Help, minus chaos</p>
+                  <p class="text-slate-500 text-sm">Find it fast</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Topics -->
+    <section class="py-16 lg:py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-4">Browse by topic</h2>
+          <p class="text-lg text-slate-600">Pick a category and get unstuck.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="category-card bg-white border-2 border-slate-100 rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:border-action">
+            <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-action" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Getting started</h3>
+            <p class="text-slate-600">Quick setup guides and first steps.</p>
+            <div class="mt-4 flex items-center text-action font-medium">
+              <span>12 articles</span>
+              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="category-card bg-white border-2 border-slate-100 rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:border-action">
+            <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Purchasing &amp; downloading</h3>
+            <p class="text-slate-600">Buy, download, and access your tools.</p>
+            <div class="mt-4 flex items-center text-action font-medium">
+              <span>8 articles</span>
+              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="category-card bg-white border-2 border-slate-100 rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:border-action">
+            <div class="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Using your tools</h3>
+            <p class="text-slate-600">Walkthroughs for each product.</p>
+            <div class="mt-4 flex items-center text-action font-medium">
+              <span>24 articles</span>
+              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="category-card bg-white border-2 border-slate-100 rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:border-action">
+            <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-action" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Troubleshooting</h3>
+            <p class="text-slate-600">Fix common issues fast.</p>
+            <div class="mt-4 flex items-center text-action font-medium">
+              <span>15 articles</span>
+              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="category-card bg-white border-2 border-slate-100 rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:border-action">
+            <div class="w-14 h-14 bg-emerald-50 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Account &amp; payment</h3>
+            <p class="text-slate-600">Billing, checkout, and receipts.</p>
+            <div class="mt-4 flex items-center text-action font-medium">
+              <span>10 articles</span>
+              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="category-card bg-white border-2 border-slate-100 rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:border-action">
+            <div class="w-14 h-14 bg-rose-50 rounded-xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-navy mb-2">Refunds &amp; policies</h3>
+            <p class="text-slate-600">Refunds, privacy, and terms.</p>
+            <div class="mt-4 flex items-center text-action font-medium">
+              <span>6 articles</span>
+              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Articles -->
+    <section class="py-16 lg:py-20 bg-slate-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-4">Featured articles</h2>
+          <p class="text-lg text-slate-600">The stuff people actually click.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <article class="article-card bg-white rounded-2xl p-6 border-2 border-transparent hover:border-action transition-all duration-300 cursor-pointer shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-action" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-bold text-navy mb-2">How to download your purchased tools</h3>
+                <p class="text-slate-600 text-sm mb-3">Step-by-step guide to accessing and downloading after purchase.</p>
+                <div class="flex items-center gap-4 text-xs text-slate-500">
+                  <span class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    2,341 views
+                  </span>
+                  <span>5 min read</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="article-card bg-white rounded-2xl p-6 border-2 border-transparent hover:border-action transition-all duration-300 cursor-pointer shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-bold text-navy mb-2">Try before you buy: using free previews</h3>
+                <p class="text-slate-600 text-sm mb-3">Preview any product before you commit $1 to the cause.</p>
+                <div class="flex items-center gap-4 text-xs text-slate-500">
+                  <span class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    1,892 views
+                  </span>
+                  <span>3 min read</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="article-card bg-white rounded-2xl p-6 border-2 border-transparent hover:border-action transition-all duration-300 cursor-pointer shadow-sm">
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-bold text-navy mb-2">Importing data into your spreadsheet</h3>
+                <p class="text-slate-600 text-sm mb-3">Bring your data in without breaking formulas.</p>
+                <div class="flex items-center gap-4 text-xs text-slate-500">
+                  <span class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    1,567 views
+                  </span>
+                  <span>7 min read</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="text-center mt-10">
+          <button class="px-8 py-3 bg-navy text-white font-semibold rounded-xl hover:bg-navy-light transition-colors">View all articles</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact support -->
+    <section class="py-16 lg:py-20 bg-gradient-to-br from-action to-navy">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+          <div class="flex flex-col lg:flex-row">
+            <div class="flex-1 p-8 lg:p-12">
+              <div class="w-16 h-16 bg-gradient-to-br from-action to-warm rounded-2xl flex items-center justify-center mb-6">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+
+              <h2 class="text-3xl font-bold text-navy mb-4">Still need help?</h2>
+              <p id="supportMessage" class="text-lg text-slate-600 mb-8">Still need help? Our support team is here for you.</p>
+
+              <div class="flex flex-col sm:flex-row gap-4">
+                <button id="supportButton" class="px-8 py-4 bg-action text-white font-bold rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Contact us
+                </button>
+
+                <a href="mailto:support@taxtools.taxmonitor.pro" class="px-8 py-4 border-2 border-slate-200 text-navy font-semibold rounded-xl hover:border-action hover:text-action transition-colors text-center">support@taxtools.taxmonitor.pro</a>
+              </div>
+            </div>
+
+            <div class="lg:w-80 bg-gradient-to-br from-slate-50 to-slate-100 p-8 lg:p-12 flex items-center justify-center">
+              <div class="text-center">
+                <div class="relative w-32 h-32 mx-auto mb-4">
+                  <div class="absolute inset-0 bg-warm rounded-full opacity-15 animate-pulse"></div>
+                  <div class="absolute inset-2 bg-white rounded-full shadow-lg flex items-center justify-center">
+                    <svg class="w-12 h-12 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                </div>
+                <p class="text-navy font-bold">Typical response</p>
+                <p class="text-3xl font-bold text-warm">Same day</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARTIAL:footer -->
+  </div>
+
+  <script>
+    const defaultConfig = {
+      hero_title: 'Help Center',
+      hero_subtitle: 'Find answers, guides, and support for all your TaxTools questions.',
+      search_placeholder: 'Search help articles...',
+      support_message: 'Still need help? Our support team is here for you.',
+      support_button: 'Contact us',
+      background_color: '#f8fafc',
+      surface_color: '#ffffff',
+      text_color: '#2d3748',
+      primary_action_color: '#1d4ed8',
+      secondary_action_color: '#f97316',
+      font_family: 'DM Sans',
+      font_size: 16
+    };
+
+    function onConfigChange(config) {
+      const heroTitle = document.getElementById('heroTitle');
+      const heroSubtitle = document.getElementById('heroSubtitle');
+      const searchInput = document.getElementById('searchInput');
+      const supportMessage = document.getElementById('supportMessage');
+      const supportButton = document.getElementById('supportButton');
+
+      if (heroTitle) heroTitle.textContent = config.hero_title || defaultConfig.hero_title;
+      if (heroSubtitle) heroSubtitle.textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
+      if (searchInput) searchInput.placeholder = config.search_placeholder || defaultConfig.search_placeholder;
+      if (supportMessage) supportMessage.textContent = config.support_message || defaultConfig.support_message;
+
+      if (supportButton) {
+        const label = config.support_button || defaultConfig.support_button;
+        supportButton.innerHTML = `
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          ${label}
+        `;
+      }
+
+      const font = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      document.body.style.fontFamily = `${font}, system-ui, sans-serif`;
+      document.body.style.fontSize = `${fontSize}px`;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          { get: () => config.background_color || defaultConfig.background_color, set: (v) => window.elementSdk.setConfig({ background_color: v }) },
+          { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => window.elementSdk.setConfig({ surface_color: v }) },
+          { get: () => config.text_color || defaultConfig.text_color, set: (v) => window.elementSdk.setConfig({ text_color: v }) },
+          { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => window.elementSdk.setConfig({ primary_action_color: v }) },
+          { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => window.elementSdk.setConfig({ secondary_action_color: v }) }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (v) => window.elementSdk.setConfig({ font_family: v })
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (v) => window.elementSdk.setConfig({ font_size: v })
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['hero_title', config.hero_title || defaultConfig.hero_title],
+        ['hero_subtitle', config.hero_subtitle || defaultConfig.hero_subtitle],
+        ['search_placeholder', config.search_placeholder || defaultConfig.search_placeholder],
+        ['support_message', config.support_message || defaultConfig.support_message],
+        ['support_button', config.support_button || defaultConfig.support_button]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+</body>
+</html>
