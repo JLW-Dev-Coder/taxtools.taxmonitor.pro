@@ -196,6 +196,7 @@ function build() {
     "partials",
     "scripts",
     "styles",
+    "tools",
   ];
 
   logList("Copying files", rootFiles.filter((f) => exists(path.join(ROOT, f))));
