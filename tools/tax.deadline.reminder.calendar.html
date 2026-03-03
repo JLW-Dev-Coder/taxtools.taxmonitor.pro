@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Deadline Reminder Calendar - TaxTools</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'dm': ['"DM Sans"', 'system-ui', 'sans-serif']
+          },
+          colors: {
+            action: '#1d4ed8',
+            charcoal: '#2d3748',
+            muted: '#64748b',
+            navy: '#0f2747',
+            'navy-light': '#17365f',
+            primary: '#1d4ed8',
+            'primary-dark': '#1e40af',
+            accent: '#f97316',
+            'accent-dark': '#ea580c',
+            surface: '#f8fafc',
+            warm: '#f97316'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'DM Sans', system-ui, sans-serif; }
+    html { scroll-behavior: smooth; }
+    .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
+    .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+    .btn-shadow { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); }
+    .float-animation { animation: float 3s ease-in-out infinite; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-white text-charcoal overflow-auto">
+  <div id="app" class="w-full min-h-full"><!-- Header -->
+   <!-- PARTIAL:header --><!-- Hero Section -->
+   <section class="gradient-hero text-white py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="grid lg:grid-cols-2 gap-12 items-center"><!-- Content -->
+      <div class="text-center lg:text-left">
+       <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6"><span class="w-2 h-2 bg-accent rounded-full pulse-ring"></span> <span class="text-sm font-medium">Digital Product • Instant Download</span>
+       </div>
+       <h1 id="product-name" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Tax Deadline Reminder Calendar</h1>
+       <p id="tagline" class="text-xl md:text-2xl text-blue-100 mb-8">Never miss a tax deadline again.</p>
+       <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"><button id="primary-btn" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105"> Buy for $1 </button> <button id="secondary-btn" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-xl border border-white/20 transition-all"> Try Demo </button>
+       </div>
+       <p class="mt-6 text-blue-200 text-sm">✓ Instant download • ✓ All major platforms • ✓ Lifetime updates</p>
+      </div><!-- Illustration -->
+      <div class="relative flex justify-center lg:justify-end">
+       <div class="relative float-animation"><!-- Calendar Card -->
+        <div class="bg-white rounded-3xl p-6 card-shadow w-80 md:w-96"><!-- Calendar Header -->
+         <div class="flex items-center justify-between mb-6">
+          <div>
+           <h3 class="text-navy font-bold text-lg">April 2025</h3>
+           <p class="text-muted text-sm">Tax Season</p>
+          </div>
+          <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+           <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+           </svg>
+          </div>
+         </div><!-- Calendar Grid -->
+         <div class="grid grid-cols-7 gap-1 text-center text-sm mb-4"><span class="text-muted font-medium py-2">S</span> <span class="text-muted font-medium py-2">M</span> <span class="text-muted font-medium py-2">T</span> <span class="text-muted font-medium py-2">W</span> <span class="text-muted font-medium py-2">T</span> <span class="text-muted font-medium py-2">F</span> <span class="text-muted font-medium py-2">S</span> <span class="text-gray-400 py-2">30</span> <span class="text-gray-400 py-2">31</span> <span class="text-navy py-2">1</span> <span class="text-navy py-2">2</span> <span class="text-navy py-2">3</span> <span class="text-navy py-2">4</span> <span class="text-navy py-2">5</span> <span class="text-navy py-2">6</span> <span class="text-navy py-2">7</span> <span class="text-navy py-2">8</span> <span class="text-navy py-2">9</span> <span class="text-navy py-2">10</span> <span class="text-navy py-2">11</span> <span class="text-navy py-2">12</span> <span class="text-navy py-2">13</span> <span class="text-navy py-2">14</span> <span class="bg-primary text-white rounded-lg py-2 font-bold relative"> 15 <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span> </span> <span class="text-navy py-2">16</span> <span class="text-navy py-2">17</span> <span class="bg-accent/20 text-accent rounded-lg py-2 font-semibold">18</span> <span class="text-navy py-2">19</span> <span class="text-navy py-2">20</span> <span class="text-navy py-2">21</span> <span class="text-navy py-2">22</span> <span class="text-navy py-2">23</span> <span class="text-navy py-2">24</span> <span class="text-navy py-2">25</span> <span class="text-navy py-2">26</span>
+         </div><!-- Upcoming Deadlines -->
+         <div class="border-t border-gray-100 pt-4 space-y-3">
+          <div class="flex items-center gap-3 p-3 bg-red-50 rounded-xl">
+           <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+            15
+           </div>
+           <div class="flex-1">
+            <p class="text-navy font-semibold text-sm">Tax Day Deadline</p>
+            <p class="text-muted text-xs">Federal returns due</p>
+           </div><span class="text-red-500 text-xs font-medium">2 days</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-green-50 rounded-xl">
+           <div class="w-10 h-10 bg-accent rounded-lg flex items-center justify-center text-white font-bold text-sm">
+            18
+           </div>
+           <div class="flex-1">
+            <p class="text-navy font-semibold text-sm">Extension Deadline</p>
+            <p class="text-muted text-xs">If Tax Day falls on weekend</p>
+           </div><span class="text-accent text-xs font-medium">5 days</span>
+          </div>
+         </div>
+        </div><!-- Floating Elements -->
+        <div class="absolute -top-4 -right-4 bg-accent text-white rounded-2xl p-4 card-shadow">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+         </svg>
+        </div>
+        <div class="absolute -bottom-4 -left-4 bg-primary text-white rounded-2xl px-4 py-3 card-shadow flex items-center gap-2">
+         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+         </svg><span class="font-medium text-sm">Auto Reminders</span>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Product Features -->
+   <section id="tools" class="py-16 lg:py-24 bg-surface">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-16"><span class="text-primary font-semibold text-sm uppercase tracking-wide">Features</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Everything You Need to Stay on Track</h2>
+      <p class="text-muted text-lg max-w-2xl mx-auto">Our calendar covers all the important dates so you can focus on your taxes, not remembering when they're due.</p>
+     </div>
+     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6"><!-- Feature 1 -->
+      <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+       <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+       </div>
+       <h3 class="text-navy font-bold text-lg mb-2">All Federal Deadlines</h3>
+       <p class="text-muted text-sm">Covers every major federal tax deadline including extensions, estimated payments, and more.</p>
+      </div><!-- Feature 2 -->
+      <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+       <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+       </div>
+       <h3 class="text-navy font-bold text-lg mb-2">Universal Compatibility</h3>
+       <p class="text-muted text-sm">Works with iCal, Google Calendar, Outlook, and any app that supports .ics files.</p>
+      </div><!-- Feature 3 -->
+      <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+       <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-7 h-7 text-amber-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+       </div>
+       <h3 class="text-navy font-bold text-lg mb-2">Automatic Reminders</h3>
+       <p class="text-muted text-sm">Built-in alerts notify you days before each deadline so you're always prepared.</p>
+      </div><!-- Feature 4 -->
+      <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+       <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-4">
+        <svg class="w-7 h-7 text-purple-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+       </div>
+       <h3 class="text-navy font-bold text-lg mb-2">Mobile &amp; Desktop</h3>
+       <p class="text-muted text-sm">Access your tax calendar from any device. Syncs automatically across all platforms.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Demo Preview -->
+   <section class="py-16 lg:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="grid lg:grid-cols-2 gap-12 items-center"><!-- Calendar Mockup -->
+      <div class="order-2 lg:order-1">
+       <div class="bg-gray-50 rounded-3xl p-6 md:p-8"><!-- Device Frame -->
+        <div class="bg-white rounded-2xl card-shadow overflow-hidden"><!-- App Header -->
+         <div class="bg-navy px-4 py-3 flex items-center gap-3">
+          <div class="flex gap-1.5">
+           <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+           <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+           <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+          </div>
+          <div class="flex-1 text-center"><span class="text-white/60 text-sm">Tax Deadlines 2025</span>
+          </div>
+         </div><!-- Calendar View -->
+         <div class="p-4">
+          <div class="flex items-center justify-between mb-4"><button class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <svg class="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg></button>
+           <h3 class="text-navy font-bold">2025</h3><button class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <svg class="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg></button>
+          </div><!-- Deadline List -->
+          <div class="space-y-2">
+           <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-xl border-l-4 border-primary">
+            <div class="text-center">
+             <p class="text-xs text-muted uppercase">Jan</p>
+             <p class="text-lg font-bold text-navy">15</p>
+            </div>
+            <div class="flex-1">
+             <p class="text-navy font-semibold text-sm">Q4 Estimated Tax Payment</p>
+             <p class="text-muted text-xs">2024 Tax Year</p>
+            </div>
+           </div>
+           <div class="flex items-center gap-3 p-3 bg-red-50 rounded-xl border-l-4 border-red-500">
+            <div class="text-center">
+             <p class="text-xs text-muted uppercase">Apr</p>
+             <p class="text-lg font-bold text-navy">15</p>
+            </div>
+            <div class="flex-1">
+             <p class="text-navy font-semibold text-sm">Tax Day - Federal Returns Due</p>
+             <p class="text-muted text-xs">Individual &amp; Business</p>
+            </div>
+           </div>
+           <div class="flex items-center gap-3 p-3 bg-green-50 rounded-xl border-l-4 border-accent">
+            <div class="text-center">
+             <p class="text-xs text-muted uppercase">Jun</p>
+             <p class="text-lg font-bold text-navy">15</p>
+            </div>
+            <div class="flex-1">
+             <p class="text-navy font-semibold text-sm">Q2 Estimated Tax Payment</p>
+             <p class="text-muted text-xs">2025 Tax Year</p>
+            </div>
+           </div>
+           <div class="flex items-center gap-3 p-3 bg-amber-50 rounded-xl border-l-4 border-amber-500">
+            <div class="text-center">
+             <p class="text-xs text-muted uppercase">Oct</p>
+             <p class="text-lg font-bold text-navy">15</p>
+            </div>
+            <div class="flex-1">
+             <p class="text-navy font-semibold text-sm">Extension Deadline</p>
+             <p class="text-muted text-xs">Extended Returns Due</p>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Content -->
+      <div class="order-1 lg:order-2 text-center lg:text-left"><span class="text-primary font-semibold text-sm uppercase tracking-wide">Preview</span>
+       <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">See It In Action</h2>
+       <p class="text-muted text-lg mb-6">Get a feel for how the calendar works before you buy. Our demo shows you exactly what you'll get.</p>
+       <ul class="space-y-4 mb-8">
+        <li class="flex items-center gap-3 justify-center lg:justify-start">
+         <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+          <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+         </div><span class="text-navy">Full year of deadlines</span></li>
+        <li class="flex items-center gap-3 justify-center lg:justify-start">
+         <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+          <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+         </div><span class="text-navy">Color-coded by category</span></li>
+        <li class="flex items-center gap-3 justify-center lg:justify-start">
+         <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+          <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+         </div><span class="text-navy">Detailed descriptions</span></li>
+       </ul><button class="bg-navy hover:bg-navy-light text-white font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg> Try Demo </button>
+      </div>
+     </div>
+    </div>
+   </section><!-- How It Works -->
+   <!-- Why Choose -->
+   <section class="py-16 bg-surface">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-12">
+      <span class="text-primary font-semibold text-sm uppercase tracking-wide">Why Choose</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2">Simple, practical, and fast</h2>
+      <p class="text-muted text-lg max-w-2xl mx-auto mt-4">You get a clear calendar file you can import once and rely on all year.</p>
+     </div>
+
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="flex items-center gap-3 justify-center">
+       <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+        <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+       </div>
+       <div>
+        <p class="text-navy font-semibold text-sm">Secure Payment</p>
+        <p class="text-muted text-xs">256-bit encryption</p>
+       </div>
+      </div>
+
+      <div class="flex items-center gap-3 justify-center">
+       <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+       </div>
+       <div>
+        <p class="text-navy font-semibold text-sm">Instant Download</p>
+        <p class="text-muted text-xs">No waiting required</p>
+       </div>
+      </div>
+
+      <div class="flex items-center gap-3 justify-center">
+       <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+        <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+       </div>
+       <div>
+        <p class="text-navy font-semibold text-sm">Try Before You Buy</p>
+        <p class="text-muted text-xs">Free demo available</p>
+       </div>
+      </div>
+
+      <div class="flex items-center gap-3 justify-center">
+       <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+        <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+       </div>
+       <div>
+        <p class="text-navy font-semibold text-sm">Only $1 Each</p>
+        <p class="text-muted text-xs">Affordable for everyone</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+
+   <!-- How It Works -->
+   <section class="py-16 lg:py-24 bg-navy text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-16"><span class="text-primary font-semibold text-sm uppercase tracking-wide">Simple Setup</span>
+      <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">How It Works</h2>
+      <p class="text-blue-200 text-lg max-w-2xl mx-auto">Get started in under a minute. No technical skills required.</p>
+     </div>
+     <div class="grid md:grid-cols-3 gap-8"><!-- Step 1 -->
+      <div class="text-center">
+       <div class="w-20 h-20 bg-primary/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative"><span class="absolute -top-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center font-bold text-sm">1</span>
+        <svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+       </div>
+       <h3 class="text-xl font-bold mb-3">Download</h3>
+       <p class="text-blue-200">After purchase, instantly download the .ics calendar file to your device.</p>
+      </div><!-- Step 2 -->
+      <div class="text-center">
+       <div class="w-20 h-20 bg-accent/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative"><span class="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center font-bold text-sm">2</span>
+        <svg class="w-10 h-10 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+       </div>
+       <h3 class="text-xl font-bold mb-3">Import</h3>
+       <p class="text-blue-200">Open the file and add it to your preferred calendar app with one click.</p>
+      </div><!-- Step 3 -->
+      <div class="text-center">
+       <div class="w-20 h-20 bg-amber-500/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative"><span class="absolute -top-2 -right-2 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center font-bold text-sm">3</span>
+        <svg class="w-10 h-10 text-amber-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+       </div>
+       <h3 class="text-xl font-bold mb-3">Get Reminders</h3>
+       <p class="text-blue-200">Automatic notifications alert you before each deadline. Never miss a date!</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- FAQ -->
+   <section id="faq" class="py-16 lg:py-24 bg-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-12"><span class="text-primary font-semibold text-sm uppercase tracking-wide">FAQ</span>
+      <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2">Frequently Asked Questions</h2>
+     </div>
+     <div class="space-y-4" id="faq-container"><!-- FAQ 1 -->
+      <div class="bg-surface rounded-2xl overflow-hidden"><button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)"> <span class="text-navy font-semibold">How do I add the calendar to my app?</span>
+        <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg></button>
+       <div class="faq-content hidden px-6 pb-6">
+        <p class="text-muted">After downloading the .ics file, simply double-click it to open your default calendar app. Most apps will prompt you to import the events. Alternatively, you can drag and drop the file into your calendar app or use the "Import" feature in your calendar settings.</p>
+       </div>
+      </div><!-- FAQ 2 -->
+      <div class="bg-surface rounded-2xl overflow-hidden"><button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)"> <span class="text-navy font-semibold">What deadlines are included?</span>
+        <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg></button>
+       <div class="faq-content hidden px-6 pb-6">
+        <p class="text-muted">The calendar includes all major federal tax deadlines: Tax Day (April 15), quarterly estimated tax payments, extension deadlines, IRA contribution deadlines, and more. Each event includes a description explaining what's due and who it applies to.</p>
+       </div>
+      </div><!-- FAQ 3 -->
+      <div class="bg-surface rounded-2xl overflow-hidden"><button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)"> <span class="text-navy font-semibold">Will reminders work on my phone?</span>
+        <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg></button>
+       <div class="faq-content hidden px-6 pb-6">
+        <p class="text-muted">Yes! Once imported, the calendar syncs across all your devices automatically. Reminders will appear on your phone, tablet, and computer according to your calendar app's notification settings.</p>
+       </div>
+      </div><!-- FAQ 4 -->
+      <div class="bg-surface rounded-2xl overflow-hidden"><button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)"> <span class="text-navy font-semibold">Do I get updates for future years?</span>
+        <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg></button>
+       <div class="faq-content hidden px-6 pb-6">
+        <p class="text-muted">Your purchase includes the current tax year calendar. We offer discounted updates for returning customers each year. You'll receive an email when the new year's calendar is available.</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Final CTA -->
+   <section class="py-16 lg:py-24 gradient-hero text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+     <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Never Miss a Deadline?</h2>
+     <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Join thousands of taxpayers who stay organized with our deadline calendar. Set it up once and forget about it.</p>
+     <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8"><button class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+       </svg> Buy for $1 </button> <button class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl border border-white/20 transition-all"> View All Products </button>
+     </div>
+     <div class="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm rounded-full px-6 py-3">
+      <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg><span class="text-sm font-medium">Bundle &amp; Save: Get all 5 products for $3.99</span>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <!-- PARTIAL:footer -->
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      product_name: 'Tax Deadline Reminder Calendar',
+      tagline: 'Never miss a tax deadline again.',
+      price_text: '$1',
+      primary_cta: 'Buy for $1',
+      secondary_cta: 'Try Demo',
+      background_color: '#0f172a',
+      surface_color: '#ffffff',
+      text_color: '#0f172a',
+      primary_color: '#2563eb',
+      accent_color: '#10b981'
+    };
+
+    // FAQ toggle function
+    function toggleFaq(button) {
+      const content = button.nextElementSibling;
+      const icon = button.querySelector('.faq-icon');
+      const isOpen = !content.classList.contains('hidden');
+      
+      // Close all other FAQs
+      document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = 'rotate(0deg)');
+      
+      if (!isOpen) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    // Initialize Element SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        async onConfigChange(config) {
+          // Update product name
+          const productName = document.getElementById('product-name');
+          if (productName) {
+            productName.textContent = config.product_name || defaultConfig.product_name;
+          }
+          
+          // Update tagline
+          const tagline = document.getElementById('tagline');
+          if (tagline) {
+            tagline.textContent = config.tagline || defaultConfig.tagline;
+          }
+          
+          // Update primary button
+          const primaryBtn = document.getElementById('primary-btn');
+          if (primaryBtn) {
+            primaryBtn.textContent = config.primary_cta || defaultConfig.primary_cta;
+            primaryBtn.style.backgroundColor = config.primary_color || defaultConfig.primary_color;
+          }
+          
+          // Update secondary button
+          const secondaryBtn = document.getElementById('secondary-btn');
+          if (secondaryBtn) {
+            secondaryBtn.textContent = config.secondary_cta || defaultConfig.secondary_cta;
+          }
+          
+          // Update all primary color elements
+          document.querySelectorAll('.bg-primary').forEach(el => {
+            el.style.backgroundColor = config.primary_color || defaultConfig.primary_color;
+          });
+          
+          // Update accent color elements
+          document.querySelectorAll('.bg-accent').forEach(el => {
+            el.style.backgroundColor = config.accent_color || defaultConfig.accent_color;
+          });
+        },
+        mapToCapabilities(config) {
+          return {
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (value) => window.elementSdk.setConfig({ background_color: value })
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => window.elementSdk.setConfig({ surface_color: value })
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => window.elementSdk.setConfig({ text_color: value })
+              },
+              {
+                get: () => config.primary_color || defaultConfig.primary_color,
+                set: (value) => window.elementSdk.setConfig({ primary_color: value })
+              },
+              {
+                get: () => config.accent_color || defaultConfig.accent_color,
+                set: (value) => window.elementSdk.setConfig({ accent_color: value })
+              }
+            ],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          };
+        },
+        mapToEditPanelValues(config) {
+          return new Map([
+            ['product_name', config.product_name || defaultConfig.product_name],
+            ['tagline', config.tagline || defaultConfig.tagline],
+            ['price_text', config.price_text || defaultConfig.price_text],
+            ['primary_cta', config.primary_cta || defaultConfig.primary_cta],
+            ['secondary_cta', config.secondary_cta || defaultConfig.secondary_cta]
+          ]);
+        }
+      });
+    }
+  </script>
+ </body>
+</html>
