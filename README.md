@@ -1,4 +1,4 @@
-# README.md — TaxTools.Tax Monitor Pro
+# README.md - TaxTools.Tax Monitor Pro
 
 A conversion-focused interactive taxpayer games arcade that routes serious users to [https://taxmonitor.pro](https://taxmonitor.pro) for monitoring and representation.
 
@@ -98,24 +98,11 @@ Purpose:
 
 Request:
 
-{
-"amount": 8,
-"idempotencyKey": "string",
-"reason": "string",
-"slug": "string"
-}
+{ "amount": 8, "idempotencyKey": "string", "reason": "string", "slug": "string" }
 
 Response:
 
-{
-"balance": 0,
-"grant": {
-"expiresAt": "string",
-"grantId": "string",
-"slug": "string",
-"spent": 8
-}
-}
+{ "balance": 0, "grant": { "expiresAt": "string", "grantId": "string", "slug": "string", "spent": 8 } }
 
 Rules:
 
@@ -131,11 +118,7 @@ Purpose:
 
 Response:
 
-{
-"allowed": true,
-"expiresAt": "string",
-"slug": "string"
-}
+{ "allowed": true, "expiresAt": "string", "slug": "string" }
 
 Rules:
 
@@ -433,13 +416,12 @@ Catalog (alphabetical):
 
 # Game Naming Contract
 
-* **Canonical game name = the HTML filename (including `.html`).**
+* **Canonical game name = the HTML filename (including **``**).**
 * Marketing titles can be “prettified” in the UI, but:
 
   * Stripe product name
   * Stripe price nickname
-  * Internal catalog references
-    must use the **exact filename**.
+  * Internal catalog references must use the **exact filename**.
 
 Canonical filenames (alphabetical):
 
@@ -524,11 +506,7 @@ POST /v1/help/tickets
 
 Request:
 
-{
-"email": "string",
-"message": "string",
-"subject": "string"
-}
+{ "email": "string", "message": "string", "subject": "string" }
 
 Behavior:
 
@@ -667,7 +645,188 @@ Policy:
 
 ---
 
-# Repository Structure
+# File & Page Standards
+
+This section defines the required behavioral and structural standards for every top-level file and folder in this repository.
+
+All pages must:
+
+* Use Tailwind CDN `https://cdn.tailwindcss.com/3.4.17`
+* Use DM Sans (Google Font)
+* Include header and footer partials
+* Never mutate token balance client-side
+* Call Worker endpoints using `credentials: "include"`
+
+---
+
+## Root Pages (alphabetical)
+
+### about.html
+
+Purpose:
+
+* Brand credibility page.
+* Explain mission, arcade purpose, and escalation path to [https://taxmonitor.pro](https://taxmonitor.pro).
+
+Rules:
+
+* Publicly accessible.
+* May call `GET /v1/auth/me` for header personalization only.
+* Must not spend tokens.
+
+---
+
+### contact.html
+
+Purpose:
+
+* Public contact entry point.
+
+Rules:
+
+* Must POST to `POST /v1/help/tickets`.
+* Must validate email + message client-side before submit.
+* Must not directly write to ClickUp.
+
+---
+
+### faq.html
+
+Purpose:
+
+* Answer token, gameplay, and escalation questions.
+
+Rules:
+
+* Public page.
+* Must include clarification that tokens are required per play.
+* Must link to pricing section and help-center.
+
+---
+
+### help-center.html
+
+Purpose:
+
+* Structured support documentation.
+
+Rules:
+
+* Publicly accessible.
+* Must link to contact flow.
+* May call `GET /v1/auth/me` for personalization.
+
+---
+
+### index.html
+
+Purpose:
+
+* Primary marketing + token conversion page.
+
+Rules:
+
+* Must route games to `/about-games/<slug>.html`.
+* Must not unlock gameplay.
+* May display token balance using `GET /v1/tokens/balance`.
+* Must initiate token purchase via `POST /v1/checkout/sessions`.
+
+Checkout behavior:
+
+* Immediately redirect browser to returned Stripe `checkoutUrl`.
+* On return with `?session_id=` call:
+
+  * `GET /v1/checkout/status`
+  * `GET /v1/tokens/balance`
+
+---
+
+## Legal Pages (alphabetical)
+
+### legal/privacy.html
+
+* Must describe cookie usage for auth.
+* Must reference Stripe processing.
+
+### legal/refund.html
+
+* Must define token refund policy.
+
+### legal/terms.html
+
+* Must include educational disclaimer.
+* Must clarify tokens are non-transferable.
+
+---
+
+## Partials
+
+### partials/header.html
+
+* Must render token balance when authenticated.
+* Must include sign-in state UI.
+* Must not contain business logic beyond UI rendering.
+
+### partials/footer.html
+
+* Must include legal links.
+* Must include escalation link to [https://taxmonitor.pro](https://taxmonitor.pro).
+
+### partials/sidebar.html / topbar.html
+
+* Optional layout components.
+* Must not contain auth or token logic.
+
+---
+
+## Scripts
+
+### scripts/site.js
+
+* Handles shared UI behavior.
+* Must not implement token spend logic.
+* Must call Worker endpoints only.
+
+---
+
+## Styles
+
+### styles/site.css
+
+* Design layer only.
+* Must not encode business logic assumptions.
+
+---
+
+## _redirects
+
+* Must map clean URLs if needed.
+* Must not expose Worker routes.
+
+---
+
+## Build Script
+
+### build.mjs
+
+* Must copy all static assets.
+* Must inject header/footer partials.
+* Must not alter business logic.
+
+---
+
+## Worker Directory
+
+### workers/api/src/index.js
+
+* Sole mutation authority.
+* Must validate all input.
+* Must verify Stripe signatures.
+* Must enforce idempotency.
+
+---
+
+# Repository
 
 ```text
 /
@@ -748,17 +907,11 @@ Contract rules:
 
 Request:
 
-{
-"email": "string",
-"item": "token_pack_small_30 | token_pack_medium_80 | token_pack_large_200",
-"quantity": 1
-}
+{ "email": "string", "item": "token_pack_small_30 | token_pack_medium_80 | token_pack_large_200", "quantity": 1 }
 
 Response:
 
-{
-"checkoutUrl": "string"
-}
+{ "checkoutUrl": "string" }
 
 Frontend behavior (required):
 
