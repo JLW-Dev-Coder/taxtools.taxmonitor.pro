@@ -6,8 +6,17 @@ const ROOT = process.cwd();
 const DIST = path.join(ROOT, "dist");
 const WRANGLER_TOML = path.join(ROOT, "workers", "api", "wrangler.toml");
 
+/* ------------------------------------------
+ * Shared Utilities
+ * ------------------------------------------ */
+
 function exists(p) {
-  try { fs.accessSync(p); return true; } catch { return false; }
+  try {
+    fs.accessSync(p);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function ensureDir(dir) {
@@ -32,8 +41,14 @@ function copyDir(srcDir, destDir) {
     const src = path.join(srcDir, entry.name);
     const dest = path.join(destDir, entry.name);
 
-    if (entry.isDirectory()) copyDir(src, dest);
-    if (entry.isFile()) copyFile(src, dest);
+    if (entry.isDirectory()) {
+      copyDir(src, dest);
+      continue;
+    }
+
+    if (entry.isFile()) {
+      copyFile(src, dest);
+    }
   }
 }
 
@@ -57,11 +72,21 @@ function walkFiles(dir, predicate) {
 
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...walkFiles(full, predicate));
+
+    if (entry.isDirectory()) {
+      out.push(...walkFiles(full, predicate));
+      continue;
+    }
+
     if (entry.isFile() && predicate(full)) out.push(full);
   }
+
   return out;
 }
+
+/* ------------------------------------------
+ * Partials Injection
+ * ------------------------------------------ */
 
 function injectPartialsIntoHtml(distRoot) {
   const footerPath = path.join(ROOT, "partials", "footer.html");
@@ -75,6 +100,7 @@ function injectPartialsIntoHtml(distRoot) {
       !hasFooter ? "partials/footer.html" : null,
       !hasHeader ? "partials/header.html" : null,
     ].filter(Boolean);
+
     throw new Error(`Missing partial(s): ${missing.join(", ")}`);
   }
 
@@ -110,9 +136,15 @@ function injectPartialsIntoHtml(distRoot) {
   console.log(`\n✅ Partials injected into HTML files: ${changedCount}`);
 }
 
+/* ------------------------------------------
+ * Build Token Injection (wrangler.toml)
+ * ------------------------------------------ */
+
 function parseWranglerOrganizationVars(wranglerTomlPath) {
   if (!exists(wranglerTomlPath)) {
-    throw new Error(`wrangler.toml not found at: ${wranglerTomlPath}`);
+    // Not fatal for a static build, but keep behavior explicit.
+    console.log(`\nℹ️ wrangler.toml not found at: ${wranglerTomlPath}`);
+    return {};
   }
 
   const raw = readText(wranglerTomlPath);
@@ -166,10 +198,16 @@ function injectWranglerVarsIntoDistHtml(distRoot, wranglerTomlPath) {
   console.log(`\n✅ Build tokens injected into HTML files: ${changedCount}`);
 }
 
+/* ------------------------------------------
+ * Build
+ * ------------------------------------------ */
+
 function build() {
   emptyDir(DIST);
   ensureDir(DIST);
 
+  // Root files to publish (based on your current tree).
+  // Excludes README/MARKET/AGENTS by default since those are not site assets.
   const rootFiles = [
     "_redirects",
     "about.html",
@@ -179,31 +217,33 @@ function build() {
     "index.html",
     "robots.txt",
     "sitemap.xml",
-    "support.html",
-    "tools.html",
   ];
 
+  // Root folders to publish (based on your current tree).
+  // Excludes audit/ and workers/ (not site output).
   const rootDirs = [
     "_sdk",
+    "about-games",
     "assets",
+    "games",
     "legal",
     "partials",
     "scripts",
     "styles",
-    "tools",
   ];
 
-  logList("Copying files", rootFiles.filter((f) => exists(path.join(ROOT, f))));
-  logList("Copying folders", rootDirs.filter((d) => exists(path.join(ROOT, d))));
+  const existingFiles = rootFiles.filter((f) => exists(path.join(ROOT, f)));
+  const existingDirs = rootDirs.filter((d) => exists(path.join(ROOT, d)));
 
-  for (const file of rootFiles) {
-    const src = path.join(ROOT, file);
-    if (exists(src)) copyFile(src, path.join(DIST, file));
+  logList("Copying files", existingFiles);
+  logList("Copying folders", existingDirs);
+
+  for (const file of existingFiles) {
+    copyFile(path.join(ROOT, file), path.join(DIST, file));
   }
 
-  for (const dir of rootDirs) {
-    const src = path.join(ROOT, dir);
-    if (exists(src)) copyDir(src, path.join(DIST, dir));
+  for (const dir of existingDirs) {
+    copyDir(path.join(ROOT, dir), path.join(DIST, dir));
   }
 
   const distIndex = path.join(DIST, "index.html");
