@@ -1,0 +1,88 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tax Jargon Game • Play • TaxTools Arcade</title>
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles/site.css" />
+
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+
+  <style>
+    body { font-family: "DM Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+  <!-- PARTIAL:header -->
+
+  <main class="mx-auto max-w-5xl px-6 py-12">
+    <section class="space-y-3">
+      <h1 class="text-3xl font-bold tracking-tight">Tax Jargon Game</h1>
+      <p class="text-slate-300">Access is verified server-side with an active play grant.</p>
+      <div id="status" class="text-sm text-slate-400"></div>
+    </section>
+
+    <section class="mt-10 rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
+      <div class="font-semibold">Game Area</div>
+      <p class="mt-2 text-slate-300">
+        This is the placeholder game container. The important part is the access gate. Replace this section with the actual game UI.
+      </p>
+      <div class="mt-4 rounded-xl border border-slate-800 bg-slate-950/40 p-6 text-slate-300">
+        <span class="font-semibold">Status:</span> <span id="grant"></span>
+      </div>
+    </section>
+  </main>
+
+  <!-- PARTIAL:footer -->
+
+  <script>
+    const API_BASE = "https://tools-api.taxmonitor.pro";
+    const slug = "tax-jargon-game.html";
+
+    function setStatus(msg) {
+      const el = document.getElementById("status");
+      if (el) el.textContent = msg || "";
+    }
+
+    async function apiGet(path) {
+      const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
+      return { res, json: await res.json().catch(() => ({})) };
+    }
+
+    async function boot() {
+      setStatus("Checking session…");
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
+        window.location.href = "/about-games/" + slug;
+        return;
+      }
+
+      setStatus("Loading token balance…");
+      await apiGet("/v1/tokens/balance"); // UI-only; header can display balance
+
+      setStatus("Verifying access grant…");
+      const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(slug));
+      if (!access.res.ok || !access.json || access.json.allowed !== true) {
+        window.location.href = "/about-games/" + slug;
+        return;
+      }
+
+      const expiresAt = access.json.expiresAt || "";
+      document.getElementById("grant").textContent = expiresAt ? ("Allowed until " + expiresAt) : "Allowed";
+      setStatus("Access granted.");
+    }
+
+    boot().catch(() => {
+      setStatus("Error loading game. Redirecting…");
+      window.location.href = "/about-games/" + slug;
+    });
+  </script>
+</body>
+</html>
