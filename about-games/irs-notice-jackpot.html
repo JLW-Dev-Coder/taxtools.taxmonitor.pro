@@ -753,12 +753,21 @@
 
     // Game access API
     const API_BASE = "https://tools-api.taxmonitor.pro";
-    const slug = "irs-notice-jackpot.html";
+
+    // README: spend slug is the game slug (no .html). The file is the page filename.
+    const gameFile = "irs-notice-jackpot.html";
+    const gameSlug = "irs-notice-jackpot";
+
     const tokenCost = 8;
 
     function setStatus(msg) {
       const el = document.getElementById("status");
       if (el) el.textContent = msg || "";
+    }
+
+    function setStatusHtml(html) {
+      const el = document.getElementById("status");
+      if (el) el.innerHTML = html || "";
     }
 
     async function apiGet(path) {
@@ -776,13 +785,109 @@
       return { res, json: await res.json().catch(() => ({})) };
     }
 
+    function cleanQueryParam(name) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete(name);
+      window.history.replaceState({}, "", url.toString());
+    }
+
+    function getSessionIdFromUrl() {
+      const url = new URL(window.location.href);
+      return url.searchParams.get("session_id") || "";
+    }
+
+    async function beginLogin() {
+      setStatus("Starting sign-in…");
+      const started = await apiPost("/v1/auth/start", { returnTo: window.location.href });
+      const redirectUrl = started?.json?.redirectUrl || started?.json?.url || "";
+      if (started.res.ok && redirectUrl) {
+        window.location.href = redirectUrl;
+        return;
+      }
+      // Fallback
+      window.location.href = "/index.html";
+    }
+
+    async function beginCheckout(item) {
+      setStatus("Opening secure checkout…");
+
+      const payload = {
+        item,
+        quantity: 1,
+        cancelUrl: window.location.href,
+        successUrl: window.location.href
+      };
+
+      const created = await apiPost("/v1/checkout/sessions", payload);
+      const checkoutUrl = created?.json?.checkoutUrl || created?.json?.url || "";
+
+      if (!created.res.ok || !checkoutUrl) {
+        setStatus("Could not start checkout. Please try again.");
+        return;
+      }
+
+      window.location.href = checkoutUrl;
+    }
+
+    function wireBuyButtons() {
+      document.querySelectorAll('[data-buy-item]')?.forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const item = btn.getAttribute('data-buy-item');
+          if (!item) return;
+          await beginCheckout(item);
+        });
+      });
+    }
+
+    function showBuyOptions() {
+      // README SKUs
+      setStatusHtml(
+        `Not enough tokens. ` +
+        `<span class="inline-flex flex-wrap items-center gap-2">` +
+          `<button type="button" class="underline" data-buy-item="token_pack_small_30">Buy 30 tokens</button>` +
+          `<button type="button" class="underline" data-buy-item="token_pack_medium_80">Buy 80 tokens</button>` +
+          `<button type="button" class="underline" data-buy-item="token_pack_large_200">Buy 200 tokens</button>` +
+        `</span>`
+      );
+      wireBuyButtons();
+    }
+
+    async function handleCheckoutReturn() {
+      const sessionId = getSessionIdFromUrl();
+      if (!sessionId) return;
+
+      setStatus("Confirming purchase…");
+
+      const statusRes = await apiGet(`/v1/checkout/status?session_id=${encodeURIComponent(sessionId)}`);
+      cleanQueryParam("session_id");
+
+      if (!statusRes.res.ok) {
+        setStatus("Purchase confirmation failed. Please refresh.");
+        return;
+      }
+
+      const bal = await apiGet("/v1/tokens/balance");
+      const balance = Number(bal.json && bal.json.balance);
+
+      if (!Number.isFinite(balance)) {
+        setStatus("Purchase confirmed, but balance did not load.");
+        return;
+      }
+
+      if (balance >= tokenCost) {
+        setStatus("Purchase confirmed. You can unlock now.");
+        return;
+      }
+
+      setStatus("Purchase confirmed. Add more tokens to play.");
+    }
+
     async function unlockAndPlay() {
       setStatus("Checking session…");
 
       const me = await apiGet("/v1/auth/me");
       if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-        setStatus("Please sign in to continue.");
-        window.location.href = "/index.html";
+        await beginLogin();
         return;
       }
 
@@ -795,8 +900,7 @@
       }
 
       if (balance < tokenCost) {
-        setStatus("Not enough tokens. Purchase a pack to continue.");
-        window.location.href = "/index.html#pricing";
+        showBuyOptions();
         return;
       }
 
@@ -805,7 +909,7 @@
         amount: tokenCost,
         idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
         reason: "arcade_play",
-        slug: slug
+        slug: gameSlug
       });
 
       if (!spend.res.ok) {
@@ -814,7 +918,7 @@
       }
 
       setStatus("Unlocked. Redirecting…");
-      window.location.href = "/games/" + slug;
+      window.location.href = "/games/" + gameFile;
     }
 
     document.getElementById("btnUnlock")?.addEventListener("click", unlockAndPlay);
@@ -1079,6 +1183,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      // README: on return from Stripe Checkout with ?session_id=..., confirm then refresh balance
+      handleCheckoutReturn();
       wireDemoButtons();
     });
   </script>
