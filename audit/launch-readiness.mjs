@@ -206,8 +206,8 @@ function findHeuristicStripeSignals(workerText) {
     ["Mentions Stripe signature header", /stripe-signature/i.test(workerText)],
     ["Mentions constructEvent (Stripe SDK pattern)", /constructEvent/i.test(workerText)],
     ["Mentions checkout.session", /checkout\.session/i.test(workerText)],
-    ["Mentions session\.id", /\bsession\.id\b/i.test(workerText)],
     ["Mentions idempotency/dedupe", /\b(idempot|dedup|dedupe)\b/i.test(workerText)],
+    ["Mentions session.id", /\bsession\.id\b/i.test(workerText)],
   ];
 
   for (const [label, ok] of checks) signals.push({ label, ok });
@@ -362,7 +362,19 @@ async function main() {
     }
   }
 
-  const allSourceText = [...sourceTextByFile.values()].join("\n");
+  // Build two aggregates:
+  // - allSourceText: everything (for general scans)
+  // - allSourceTextNoWorkers: excludes workers/* (for "client-side" heuristics)
+  let allSourceText = "";
+  let allSourceTextNoWorkers = "";
+
+  for (const [f, text] of sourceTextByFile) {
+    const rel = safeRel(REPO_ROOT, f);
+    allSourceText += `${text}\n`;
+    if (!normalizeSlashes(rel).startsWith("workers/")) {
+      allSourceTextNoWorkers += `${text}\n`;
+    }
+  }
 
   // 3a) Price ID leakage (frontend)
   // We flag any price_ usage anywhere outside worker, because it usually ends up in pages.
@@ -493,8 +505,7 @@ async function main() {
     notes: stripeOk ? "Signals present" : "Not confidently detected",
   });
 
-  // 7) Token mutation heuristics
-  const allSourceTextNoWorkers = hasWorkerIndex ? allSourceText.replace(workerText, "") : allSourceText;
+  // 7) Token mutation heuristics (client-side)
   const tokenSignals = findHeuristicTokenMutationSignals(allSourceTextNoWorkers);
   const hasSpendEndpointRef = tokenSignals.find((s) => s.label.includes("/v1/tokens/spend"))?.ok ?? false;
   const hasLocalDecrement = tokenSignals.find((s) => s.label.includes("local decrement"))?.ok ?? false;
@@ -584,4 +595,3 @@ main().catch((err) => {
   console.error("Audit crashed:", err);
   process.exit(2);
 });
-
