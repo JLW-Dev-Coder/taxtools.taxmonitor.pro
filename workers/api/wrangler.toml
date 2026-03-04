@@ -12,15 +12,16 @@ bucket_name = "taxtools-taxmonitor-pro"
 
 [vars]
 
+# Auth
+TAXTOOLS_AUTH_BASE_URL = "https://tools-api.taxmonitor.pro"
+
 # ClickUp
 CLICKUP_ACCOUNTS_LIST_ID = "901710909567"
-CLICKUP_ORDERS_LIST_ID = "901710818340"
 CLICKUP_SUPPORT_LIST_ID = "901710818377"
 
 # Google Workspace
 GOOGLE_CLIENT_EMAIL = "tax-monitor-worker@tax-monitor-pro.iam.gserviceaccount.com"
 GOOGLE_TOKEN_URI = "https://oauth2.googleapis.com/token"
-
 GOOGLE_WORKSPACE_USER_INFO = "info@taxmonitor.pro"
 GOOGLE_WORKSPACE_USER_NO_REPLY = "no-reply@taxmonitor.pro"
 GOOGLE_WORKSPACE_USER_SUPPORT = "support@taxmonitor.pro"
@@ -32,9 +33,6 @@ MY_ORGANIZATION_CITY = "El Cajon"
 MY_ORGANIZATION_NAME = "Tax Monitor Pro"
 MY_ORGANIZATION_STATE_PROVINCE = "CA"
 MY_ORGANIZATION_ZIP = "92020"
-
-# Auth
-TAXTOOLS_AUTH_BASE_URL = "https://tools-api.taxmonitor.pro"
 
 # Stripe Price IDs (SKU mapping)
 STRIPE_PRICE_TOKEN_PACK_LARGE_200 = "price_1T6y2OCMpIgwe61Zze4NyfMX"
