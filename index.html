@@ -319,7 +319,9 @@
       </div>
     </section>
 
-    <!-- Token Packs (cartless checkout: single SKU per checkout) -->
+    $1
+    <!-- NOTE: Do NOT hard-code Stripe Checkout URLs (checkout.stripe.com/c/pay/...). Those are single-use/short-lived.
+         Always create a fresh Checkout Session via the Worker (POST /v1/checkout/sessions) and redirect to the returned checkoutUrl. -->
     <section id="token-packs" class="py-16 md:py-20 bg-white border-t border-gray-100">
       <div class="max-w-7xl mx-auto px-4">
         <div class="text-center mb-12">
@@ -597,6 +599,16 @@
 
     // Init
     refreshAuthAndBalance();
+
+    // Safety: Stripe Checkout Session URLs (checkout.stripe.com/c/pay/...) are single-use/short-lived.
+    // If someone accidentally pastes one into the page, block it so we don't ship a broken buy flow.
+    document.querySelectorAll('a[href^="https://checkout.stripe.com/"]').forEach((a) => {
+      a.setAttribute('href', '#token-packs');
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        showToast('Use the Buy buttons to create a fresh checkout session.');
+      });
+    });
 
     // Toast
     function showToast(message) {
