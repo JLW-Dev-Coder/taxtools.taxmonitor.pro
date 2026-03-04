@@ -494,7 +494,8 @@ async function main() {
   });
 
   // 7) Token mutation heuristics
-  const tokenSignals = findHeuristicTokenMutationSignals(allSourceText);
+  const allSourceTextNoWorkers = hasWorkerIndex ? allSourceText.replace(workerText, "") : allSourceText;
+  const tokenSignals = findHeuristicTokenMutationSignals(allSourceTextNoWorkers);
   const hasSpendEndpointRef = tokenSignals.find((s) => s.label.includes("/v1/tokens/spend"))?.ok ?? false;
   const hasLocalDecrement = tokenSignals.find((s) => s.label.includes("local decrement"))?.ok ?? false;
   const hasSubAssign = tokenSignals.find((s) => s.label.includes("subtraction assignment"))?.ok ?? false;
@@ -583,3 +584,4 @@ main().catch((err) => {
   console.error("Audit crashed:", err);
   process.exit(2);
 });
+
