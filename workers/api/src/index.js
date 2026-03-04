@@ -1,9 +1,11 @@
 /**
  * TaxTools Tax Monitor Pro — Cloudflare Worker (v1 API)
  *
- * Contract authority: README.md
+ * Checkout provider: PayPal (replacement for Stripe Checkout)
  *
  * Routes (alphabetical by path):
+ * - GET  /dev/login?email=
+ * - GET  /dev/mint?amount=
  * - GET  /health
  * - GET  /v1/auth/complete?token=
  * - GET  /v1/auth/me
@@ -16,11 +18,10 @@
  * - POST /v1/help/tickets
  * - GET  /v1/tokens/balance (alias: /v1/arcade/tokens)
  * - POST /v1/tokens/spend
- * - POST /v1/webhooks/stripe
  *
- * Dev-only (must be disabled in prod):
- * - GET  /dev/login?email=
- * - GET  /dev/mint?amount=
+ * NOTE:
+ * - This keeps the existing v1 contract and swaps Stripe checkout creation for PayPal Orders.
+ * - Frontend continues to send internal SKU (e.g. token_pack_large_200), never provider IDs.
  */
 
 /* ------------------------------------------
@@ -33,7 +34,7 @@ const COOKIE_NAMES = Object.freeze({
   session: "tm_session",
 });
 
-const CORS_ALLOWED_HEADERS = "Content-Type,Idempotency-Key,Stripe-Signature";
+const CORS_ALLOWED_HEADERS = "Content-Type,Idempotency-Key";
 const CORS_ALLOWED_METHODS = "GET,POST,OPTIONS";
 const CORS_MAX_AGE_SECONDS = "86400";
 
@@ -56,16 +57,18 @@ const VALID_GAME_SLUGS = new Set([
   "tax-tips-refund-boost",
 ]);
 
+// SKU mapping (canonical)
 const SKU_TOKEN_COUNTS = {
   token_pack_large_200: 200,
   token_pack_medium_80: 80,
   token_pack_small_30: 30,
 };
 
-const CHECKOUT_ITEM_TO_PRICE_ENV = {
-  token_pack_large_200: "STRIPE_PRICE_TOKEN_PACK_LARGE_200",
-  token_pack_medium_80: "STRIPE_PRICE_TOKEN_PACK_MEDIUM_80",
-  token_pack_small_30: "STRIPE_PRICE_TOKEN_PACK_SMALL_30",
+// PayPal amount mapping (USD)
+const SKU_USD_AMOUNTS = {
+  token_pack_large_200: "39.00",
+  token_pack_medium_80: "19.00",
+  token_pack_small_30: "9.00",
 };
 
 /* ------------------------------------------
@@ -74,7 +77,7 @@ const CHECKOUT_ITEM_TO_PRICE_ENV = {
 
 const state = {
   accounts: new Map(), // accountId -> { balance, grantsBySlug }
-  checkoutBySessionId: new Map(),
+  checkoutBySessionId: new Map(), // sessionId (PayPal order id) -> checkout record
   helpTickets: new Map(),
   spendByIdempotency: new Map(),
   webhookProcessedSessionIds: new Set(),
@@ -186,54 +189,6 @@ function getOrCreateAccount(accountId) {
     });
   }
   return state.accounts.get(accountId);
-}
-
-function timingSafeEqual(a, b) {
-  if (a.length !== b.length) return false;
-  let mismatch = 0;
-  for (let i = 0; i < a.length; i += 1) mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return mismatch === 0;
-}
-
-async function hmacSha256Hex(secret, payload) {
-  const keyData = new TextEncoder().encode(secret);
-  const cryptoKey = await crypto.subtle.importKey("raw", keyData, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const sig = await crypto.subtle.sign("HMAC", cryptoKey, new TextEncoder().encode(payload));
-  return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-async function verifyStripeSignature(request, rawBody, env) {
-  const header = request.headers.get("Stripe-Signature") || "";
-  const secret = env.STRIPE_WEBHOOK_SECRET;
-  if (!header || !secret) return false;
-
-  const parts = Object.fromEntries(
-    header.split(",").map((piece) => {
-      const [k, v] = piece.trim().split("=");
-      return [k, v];
-    })
-  );
-
-  const timestamp = parts.t;
-  const signature = parts.v1;
-  if (!timestamp || !signature) return false;
-
-  const signedPayload = `${timestamp}.${rawBody}`;
-  const expected = await hmacSha256Hex(secret, signedPayload);
-  return timingSafeEqual(expected, signature);
-}
-
-function resolvePriceIdForItem(item, env) {
-  const envVar = CHECKOUT_ITEM_TO_PRICE_ENV[item];
-  if (!envVar) return null;
-  return env[envVar] || null;
-}
-
-function tokenCountFromPriceId(priceId, env) {
-  for (const [sku, envName] of Object.entries(CHECKOUT_ITEM_TO_PRICE_ENV)) {
-    if (env[envName] === priceId) return SKU_TOKEN_COUNTS[sku];
-  }
-  return 0;
 }
 
 async function parseJson(request) {
@@ -451,10 +406,50 @@ async function getAuthContext(request, env) {
 }
 
 /* ------------------------------------------
- * Stripe: Checkout Session creation helpers
+ * PayPal helpers
  * ------------------------------------------ */
 
+function paypalApiBase(env) {
+  // PAYPAL_ENV should be "live" or "sandbox".
+  const mode = String(env.PAYPAL_ENV || "sandbox").trim().toLowerCase();
+  return mode === "live" ? "https://api-m.paypal.com" : "https://api-m.sandbox.paypal.com";
+}
+
+function paypalCheckoutBase(env) {
+  // Checkout redirect host.
+  const mode = String(env.PAYPAL_ENV || "sandbox").trim().toLowerCase();
+  return mode === "live" ? "https://www.paypal.com" : "https://www.sandbox.paypal.com";
+}
+
+async function paypalGetAccessToken(env) {
+  const clientId = String(env.PAYPAL_CLIENT_ID || "").trim();
+  const secret = String(env.PAYPAL_CLIENT_SECRET || "").trim();
+  if (!clientId) throw new Error("Missing PAYPAL_CLIENT_ID");
+  if (!secret) throw new Error("Missing PAYPAL_CLIENT_SECRET");
+
+  const basic = btoa(`${clientId}:${secret}`);
+  const res = await fetch(`${paypalApiBase(env)}/v1/oauth2/token`, {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${basic}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: "grant_type=client_credentials",
+  });
+
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const msg = data?.error_description || data?.error || `PayPal token error (${res.status})`;
+    throw new Error(String(msg));
+  }
+
+  const token = String(data?.access_token || "").trim();
+  if (!token) throw new Error("PayPal token missing access_token");
+  return token;
+}
+
 function buildCheckoutReturnUrls(request) {
+  // PayPal returns to return_url with query params token=ORDERID&PayerID=...
   const defaultAllow = "https://taxtools.taxmonitor.pro";
 
   const origin = String(request.headers.get("Origin") || "").trim();
@@ -474,9 +469,10 @@ function buildCheckoutReturnUrls(request) {
   if (returnUrl.origin !== baseUrl.origin) returnUrl = new URL(`${base}/index.html`);
 
   const cancelUrl = new URL(returnUrl.toString());
+  cancelUrl.searchParams.set("paypal", "cancel");
 
   const successUrl = new URL(returnUrl.toString());
-  successUrl.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
+  successUrl.searchParams.set("paypal", "success");
 
   return {
     cancel_url: cancelUrl.toString(),
@@ -484,43 +480,70 @@ function buildCheckoutReturnUrls(request) {
   };
 }
 
-async function stripeCreateCheckoutSession({ cancel_url, customer_email, idempotencyKey, priceId, quantity, stripeSecret, success_url, metadata }) {
-  const form = new URLSearchParams();
-  form.set("mode", "payment");
-  form.set("success_url", success_url);
-  form.set("cancel_url", cancel_url);
-  if (customer_email) form.set("customer_email", customer_email);
+async function paypalCreateOrder({ accessToken, amountUsd, cancel_url, success_url, env, metadata }) {
+  const body = {
+    intent: "CAPTURE",
+    purchase_units: [
+      {
+        amount: {
+          currency_code: "USD",
+          value: String(amountUsd),
+        },
+        custom_id: metadata?.accountId || undefined,
+        invoice_id: metadata?.idempotencyKey || undefined,
+        description: metadata?.description || undefined,
+      },
+    ],
+    application_context: {
+      user_action: "PAY_NOW",
+      return_url: success_url,
+      cancel_url: cancel_url,
+    },
+  };
 
-  form.set("line_items[0][price]", priceId);
-  form.set("line_items[0][quantity]", String(quantity));
-
-  for (const [k, v] of Object.entries(metadata || {})) {
-    if (v == null) continue;
-    form.set(`metadata[${k}]`, String(v));
-  }
-
-  const res = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+  const res = await fetch(`${paypalApiBase(env)}/v2/checkout/orders`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${stripeSecret}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-      "Idempotency-Key": idempotencyKey,
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
     },
-    body: form.toString(),
+    body: JSON.stringify(body),
   });
 
   const data = await res.json().catch(() => null);
   if (!res.ok) {
-    const msg = data && data.error && data.error.message ? String(data.error.message) : `Stripe error (${res.status})`;
-    throw new Error(msg);
+    const msg = data?.message || `PayPal order create error (${res.status})`;
+    throw new Error(String(msg));
   }
 
-  const sessionId = String(data && data.id ? data.id : "");
-  const checkoutUrl = String(data && data.url ? data.url : "");
+  const orderId = String(data?.id || "").trim();
+  if (!orderId) throw new Error("PayPal order missing id");
 
-  if (!sessionId || !checkoutUrl) throw new Error("Stripe session missing id/url");
+  // PayPal includes approval links; we also provide a fallback checkoutnow redirect.
+  const links = Array.isArray(data?.links) ? data.links : [];
+  const approve = links.find((l) => l && l.rel === "approve")?.href;
+  const checkoutUrl = approve || `${paypalCheckoutBase(env)}/checkoutnow?token=${encodeURIComponent(orderId)}`;
 
-  return { checkoutUrl, sessionId };
+  return { checkoutUrl, orderId };
+}
+
+async function paypalCaptureOrder({ accessToken, env, orderId }) {
+  const res = await fetch(`${paypalApiBase(env)}/v2/checkout/orders/${encodeURIComponent(orderId)}/capture`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const msg = data?.message || `PayPal capture error (${res.status})`;
+    throw new Error(String(msg));
+  }
+
+  const status = String(data?.status || "").trim();
+  return { data, status };
 }
 
 /* ------------------------------------------
@@ -681,46 +704,53 @@ async function handleCheckoutSessions(request, env) {
   const quantity = body.quantity == null ? 1 : Number(body.quantity);
 
   if (!item) return badRequest(request, env, "item is required");
-  if (item.startsWith("price_")) return badRequest(request, env, "Frontend must send internal item SKU, not Stripe price_ ID");
-  if (!(item in CHECKOUT_ITEM_TO_PRICE_ENV)) return badRequest(request, env, "Unknown item");
+  if (item.startsWith("price_")) return badRequest(request, env, "Frontend must send internal item SKU, not provider ID");
+  if (!(item in SKU_TOKEN_COUNTS)) return badRequest(request, env, "Unknown item");
   if (!Number.isInteger(quantity) || quantity < 1) return badRequest(request, env, "quantity must be a positive integer");
   if (quantity > 1) return badRequest(request, env, "quantity > 1 is not allowed");
 
-  const priceId = resolvePriceIdForItem(item, env);
-  if (!priceId) return json(request, env, { error: "server_misconfigured", message: "Missing Stripe Price configuration" }, 500);
+  const amountUsd = SKU_USD_AMOUNTS[item];
+  if (!amountUsd) return json(request, env, { error: "server_misconfigured", message: "Missing PayPal amount configuration" }, 500);
 
-  // Replacement for stubbed Stripe checkout creation block:
-  const stripeSecret = String(env.STRIPE_SECRET_KEY || "").trim();
-  if (!stripeSecret) return json(request, env, { error: "server_misconfigured", message: "Missing STRIPE_SECRET_KEY" }, 500);
+  let accessToken;
+  try {
+    accessToken = await paypalGetAccessToken(env);
+  } catch (err) {
+    return json(request, env, { error: "server_misconfigured", message: String(err?.message || err) }, 500);
+  }
 
   const { cancel_url, success_url } = buildCheckoutReturnUrls(request);
   const idempotencyKey = String(request.headers.get("Idempotency-Key") || "").trim() || `checkout:${auth.accountId}:${item}`;
 
   let created;
   try {
-    created = await stripeCreateCheckoutSession({
+    created = await paypalCreateOrder({
+      accessToken,
+      amountUsd,
       cancel_url,
-      customer_email: auth.email,
-      idempotencyKey,
-      priceId,
-      quantity,
-      stripeSecret,
-      success_url,
+      env,
       metadata: {
         accountId: auth.accountId,
-        item,
+        description: `TaxTools token pack: ${item}`,
+        idempotencyKey,
       },
+      success_url,
     });
   } catch (err) {
-    return json(request, env, { error: "stripe_error", message: String(err?.message || err) }, 502);
+    return json(request, env, { error: "paypal_error", message: String(err?.message || err) }, 502);
   }
 
-  const { checkoutUrl, sessionId } = created;
+  const { checkoutUrl, orderId } = created;
+
+  // We keep the v1 response shape: sessionId + checkoutUrl.
+  // sessionId is the PayPal order id.
+  const sessionId = orderId;
 
   state.checkoutBySessionId.set(sessionId, {
     accountId: auth.accountId,
+    amountUsd,
     item,
-    priceId,
+    provider: "paypal",
     paymentStatus: "unpaid",
     status: "open",
   });
@@ -735,11 +765,37 @@ async function handleCheckoutStatus(request, env) {
   if (!auth.isAuthenticated) return unauthorized(request, env);
 
   const url = new URL(request.url);
-  const sessionId = (url.searchParams.get("session_id") || "").trim();
+
+  // Keep contract param name "session_id".
+  // Also accept PayPal redirect param "token" as an alias.
+  const sessionId = (url.searchParams.get("session_id") || url.searchParams.get("token") || "").trim();
   if (!sessionId) return badRequest(request, env, "session_id is required");
 
   const checkout = state.checkoutBySessionId.get(sessionId);
   const account = auth.accountId ? getOrCreateAccount(auth.accountId) : null;
+
+  // If PayPal redirected back, attempt capture on status check.
+  // This keeps the existing client behavior (GET status then refresh balance).
+  if (checkout && checkout.provider === "paypal" && checkout.status !== "complete") {
+    let accessToken;
+    try {
+      accessToken = await paypalGetAccessToken(env);
+      const captured = await paypalCaptureOrder({ accessToken, env, orderId: sessionId });
+
+      if (String(captured.status).toUpperCase() === "COMPLETED") {
+        const tokens = SKU_TOKEN_COUNTS[checkout.item] || 0;
+        if (account && tokens > 0 && !state.webhookProcessedSessionIds.has(sessionId)) {
+          account.balance += tokens;
+          state.webhookProcessedSessionIds.add(sessionId);
+        }
+
+        checkout.paymentStatus = "paid";
+        checkout.status = "complete";
+      }
+    } catch {
+      // Leave status as-is; caller can retry.
+    }
+  }
 
   return json(request, env, {
     balance: account ? account.balance : 0,
@@ -808,35 +864,6 @@ async function handleHelpTickets(request, env) {
   state.helpTickets.set(ticketId, { email, latestUpdate: createdAt, message, status: "open", subject });
 
   return json(request, env, { ticket_id: ticketId }, 201);
-}
-
-async function handleStripeWebhook(request, env) {
-  if (request.method !== "POST") return methodNotAllowed(request, env);
-
-  const rawBody = await request.text();
-  const validSignature = await verifyStripeSignature(request, rawBody, env);
-  if (!validSignature) return unauthorized(request, env, "Invalid Stripe signature");
-
-  const event = JSON.parse(rawBody || "{}");
-  const checkoutSession = event?.data?.object || {};
-  const sessionId = checkoutSession.id;
-
-  if (!sessionId) return badRequest(request, env, "Missing checkout session id");
-  if (state.webhookProcessedSessionIds.has(sessionId)) return json(request, env, { deduped: true, received: true });
-
-  const checkout = state.checkoutBySessionId.get(sessionId);
-  if (checkout) {
-    const account = getOrCreateAccount(checkout.accountId);
-    const priceId = checkout.priceId;
-    const tokens = tokenCountFromPriceId(priceId, env);
-
-    account.balance += tokens;
-    checkout.paymentStatus = "paid";
-    checkout.status = "complete";
-  }
-
-  state.webhookProcessedSessionIds.add(sessionId);
-  return json(request, env, { received: true });
 }
 
 async function handleTokensBalance(request, env) {
@@ -929,7 +956,6 @@ export default {
     if (path === "/v1/help/tickets") return handleHelpTickets(request, env);
     if (path === "/v1/tokens/balance") return handleTokensBalance(request, env);
     if (path === "/v1/tokens/spend") return handleTokensSpend(request, env);
-    if (path === "/v1/webhooks/stripe") return handleStripeWebhook(request, env);
 
     return notFound(request, env);
   },
