@@ -329,7 +329,7 @@
 
         <div class="mt-10 grid gap-6 md:grid-cols-3">
       <!-- Large -->
-      <article class="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-emerald-100/60 p-6"">
+      <article class="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-emerald-100/60 p-6">
         <h2 class="text-xl font-semibold text-navy">Large Pack</h2>
         <p class="mt-1 text-gray-600">200 tokens</p>
         <p class="mt-4 text-3xl font-extrabold text-navy">$39</p>
@@ -346,7 +346,7 @@
       </article>
 
       <!-- Medium -->
-      <article class="rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-orange-100/60 p-6"">
+      <article class="rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-orange-100/60 p-6">
         <h2 class="text-xl font-semibold text-navy">Medium Pack</h2>
         <p class="mt-1 text-gray-600">80 tokens</p>
         <p class="mt-4 text-3xl font-extrabold text-navy">$19</p>
@@ -363,7 +363,7 @@
       </article>
 
       <!-- Small -->
-      <article class="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-blue-100/60 p-6"">
+      <article class="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-blue-100/60 p-6">
         <h2 class="text-xl font-semibold text-navy">Small Pack</h2>
         <p class="mt-1 text-gray-600">30 tokens</p>
         <p class="mt-4 text-3xl font-extrabold text-navy">$9</p>
@@ -485,7 +485,7 @@
   </div>
 
   <!-- Toast -->
-  <div id="toast" class="fixed bottom-4 right-4 bg-navy text-navy px-6 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+  <div id="toast" class="fixed bottom-4 right-4 bg-navy text-white px-6 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
     <span id="toast-message">Done.</span>
   </div>
 
@@ -495,6 +495,7 @@
 
     // Alphabetical endpoints list
     const TOOLS_API_ENDPOINTS = {
+      authLogout: `${TOOLS_API_BASE}/v1/auth/logout`,
       authMe: `${TOOLS_API_BASE}/v1/auth/me`,
       checkoutCreate: `${TOOLS_API_BASE}/v1/checkout/sessions`,
       checkoutStatus: `${TOOLS_API_BASE}/v1/checkout/status`,
@@ -612,7 +613,16 @@
       showToast('Sign-in is required to buy tokens or unlock games.');
     });
 
-    document.getElementById('signout-btn')?.addEventListener('click', () => {
+    document.getElementById('signout-btn')?.addEventListener('click', async () => {
+      try {
+        await fetch(TOOLS_API_ENDPOINTS.authLogout, {
+          method: 'POST',
+          credentials: 'include'
+        });
+      } catch {
+        // Best-effort. If logout fails, we still clear UI state.
+      }
+
       isSignedIn = false;
       userEmail = null;
       setTokenBalance(0);
@@ -620,7 +630,32 @@
     });
 
     // Init
-    refreshAuthAndBalance();
+    (async () => {
+      const url = new URL(location.href);
+      const sessionId = url.searchParams.get('session_id');
+
+      // If we just returned from Stripe, confirm status then refresh balance.
+      if (sessionId) {
+        try {
+          await fetch(`${TOOLS_API_ENDPOINTS.checkoutStatus}?session_id=${encodeURIComponent(sessionId)}`, {
+            credentials: 'include'
+          });
+          showToast('Payment status checked. Refreshing balance...');
+        } catch {
+          showToast('Could not verify checkout status.');
+        }
+
+        // Clean the URL so refreshes don’t keep re-checking.
+        url.searchParams.delete('session_id');
+        history.replaceState({}, document.title, url.toString());
+      }
+
+      await refreshAuthAndBalance();
+
+      if (sessionId) {
+        showToast('Balance refreshed.');
+      }
+    })();
 
     // Safety: Stripe Checkout Session URLs (checkout.stripe.com/c/pay/...) are single-use/short-lived.
     // If someone accidentally pastes one into the page, block it so we don't ship a broken buy flow.
