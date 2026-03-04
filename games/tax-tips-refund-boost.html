@@ -1,54 +1,337 @@
 <!-- games/tax-tips-refund-boost.html -->
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tax Tips Refund Boost • Play • TaxTools Arcade</title>
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="/styles/site.css" />
 
   <script src="/_sdk/element_sdk.js"></script>
   <script src="/_sdk/data_sdk.js"></script>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/styles/site.css" />
+
   <style>
-    body { font-family: "DM Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    * { font-family: 'Fredoka', sans-serif; }
+    html, body, #app-wrapper { height: 100%; }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    #app-wrapper {
+      width: 100%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+      50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.8); }
+    }
+
+    @keyframes bounce-in {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { opacity: 1; }
+      70% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .screen { animation: slideIn 0.6s ease-out; }
+
+    .button-primary {
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #FFD600 0%, #FFC700 100%);
+      color: #1e3a5f;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 32px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .button-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(255, 215, 0, 0.4);
+    }
+
+    .button-primary:active { transform: translateY(-1px); }
+
+    .button-secondary {
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .button-secondary:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 215, 0, 0.5);
+    }
+
+    .answer-btn {
+      transition: all 0.3s ease;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .answer-btn:hover:not(.disabled) {
+      border-color: rgba(255, 215, 0, 0.6);
+      background: rgba(255, 215, 0, 0.1);
+      transform: scale(1.02);
+    }
+
+    .answer-btn.correct {
+      animation: bounce-in 0.5s ease;
+      background: rgba(16, 185, 129, 0.3);
+      border-color: #10b981;
+    }
+
+    .answer-btn.incorrect {
+      animation: pulse-glow 0.6s ease;
+      background: rgba(239, 68, 68, 0.3);
+      border-color: #ef4444;
+    }
+
+    .answer-btn.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .score-badge {
+      background: rgba(255, 215, 0, 0.2);
+      border: 2px solid #FFD600;
+      border-radius: 20px;
+      padding: 12px 20px;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .leaderboard-entry {
+      background: rgba(255, 255, 255, 0.08);
+      border-left: 4px solid #FFD600;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .leaderboard-entry:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateX(5px);
+    }
+
+    .medal { font-size: 24px; margin-right: 10px; }
+    .player-rank { font-weight: 700; }
+
+    .power-up-btn {
+      background: rgba(139, 92, 246, 0.3);
+      border: 2px solid rgba(139, 92, 246, 0.6);
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+      transition: all 0.2s ease;
+      margin: 0 4px;
+    }
+
+    .power-up-btn:hover:not(.used) {
+      background: rgba(139, 92, 246, 0.5);
+      border-color: rgba(139, 92, 246, 0.9);
+      transform: scale(1.05);
+    }
+
+    .power-up-btn.used {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .streak-counter {
+      display: inline-block;
+      background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    .achievement-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      font-size: 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      margin: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .achievement-badge.unlocked {
+      animation: bounce-in 0.5s ease;
+      background: rgba(255, 215, 0, 0.2);
+      border-color: #FFD600;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    }
+
+    .achievement-badge:hover { transform: scale(1.1); }
+
+    @keyframes correct-flash {
+      0% { background: rgba(16, 185, 129, 0.1); }
+      50% { background: rgba(16, 185, 129, 0.4); }
+      100% { background: rgba(16, 185, 129, 0.1); }
+    }
+
+    .correct-flash { animation: correct-flash 0.6s ease; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100">
+
+<body class="h-full">
   <!-- PARTIAL:header -->
 
-  <main class="mx-auto max-w-5xl px-6 py-12">
-    <section class="space-y-3">
-      <h1 class="text-3xl font-bold tracking-tight">Tax Tips Refund Boost</h1>
-      <p class="text-slate-300">Access is verified server-side with an active play grant.</p>
-      <div id="status" class="text-sm text-slate-400"></div>
-    </section>
+  <!-- Gate status strip -->
+  <div class="bg-slate-950/60 border-b border-slate-800">
+    <div class="mx-auto max-w-7xl px-6 py-3 text-sm text-slate-200">
+      <span class="font-semibold">Game:</span> Tax Tips Refund Boost
+      <span class="mx-3 text-slate-500">•</span>
+      <span id="gate-status" class="text-slate-300">Checking access…</span>
+    </div>
+  </div>
 
-    <section class="mt-10 rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
-      <div class="font-semibold">Game Area</div>
-      <p class="mt-2 text-slate-300">
-        This is the placeholder game container. The important part is the access gate. Replace this section with the actual game UI.
-      </p>
-      <div class="mt-4 rounded-xl border border-slate-800 bg-slate-950/40 p-6 text-slate-300">
-        <span class="font-semibold">Status:</span> <span id="grant"></span>
+  <div id="app-wrapper" class="w-full flex flex-col">
+    <!-- HOME SCREEN -->
+    <div id="home-screen" class="screen flex-1 flex flex-col items-center justify-center px-6 text-center">
+      <div class="mb-8">
+        <h1 id="game-title" class="text-6xl font-black mb-4" style="background: linear-gradient(135deg, #FFD600 0%, #FFC700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tax Quest</h1>
+        <p class="text-2xl font-light mb-2">Master tax tips &amp; boost your refund!</p>
+        <p id="company-name" class="text-sm opacity-80"></p>
       </div>
-    </section>
-  </main>
+
+      <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-8 max-w-md w-full mb-8">
+        <p class="mb-6 text-lg">Ready to test your tax knowledge?</p>
+        <input id="player-name-input" type="text" placeholder="Enter your name" class="w-full px-4 py-3 rounded-lg mb-4 text-gray-800 font-600 border-2 border-transparent focus:border-yellow-400 focus:outline-none" />
+        <button id="start-game-btn" class="button-primary w-full mb-4">START GAME 🎮</button>
+        <button id="leaderboard-btn" class="button-secondary w-full">VIEW LEADERBOARD 🏆</button>
+      </div>
+
+      <div class="text-sm opacity-70 max-w-sm">
+        <p>📚 20 questions • ⏱️ Quick &amp; fun • 🎯 Learn as you play</p>
+      </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="screen hidden flex-1 flex flex-col p-6">
+      <div class="flex justify-between items-center mb-8">
+        <div class="text-left">
+          <p class="text-sm opacity-80">Question <span id="question-number">1</span>/20</p>
+          <div class="w-48 h-2 bg-white bg-opacity-20 rounded-full mt-2">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-yellow-400 to-yellow-300 rounded-full transition-all" style="width: 5%;"></div>
+          </div>
+          <div class="streak-counter" id="streak-display" style="display: none;">
+            🔥 Streak: <span id="streak-count">0</span>
+          </div>
+        </div>
+
+        <div class="text-right">
+          <div class="score-badge mb-3">Score: <span id="current-score">0</span></div>
+          <div class="flex gap-2 justify-end">
+            <button id="fifty-btn" class="power-up-btn" title="Remove 2 wrong answers">50/50</button>
+            <button id="skip-btn" class="power-up-btn" title="Skip this question">⏭️ Skip</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-1 flex flex-col justify-center mb-8">
+        <h2 id="question-text" class="text-3xl font-bold mb-8 leading-tight"></h2>
+        <div id="answers-container" class="space-y-4"></div>
+      </div>
+
+      <div class="text-center text-sm opacity-70">
+        <p id="feedback-text" class="mb-4 h-6"></p>
+      </div>
+      <button id="next-btn" class="button-primary hidden">NEXT QUESTION →</button>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div id="results-screen" class="screen hidden flex-1 flex flex-col items-center justify-center px-6 text-center">
+      <h1 class="text-5xl font-black mb-4" style="background: linear-gradient(135deg, #FFD600 0%, #FFC700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">QUIZ COMPLETE! 🎉</h1>
+
+      <div class="bg-white bg-opacity-10 backdrop-blur-md rounded-3xl p-8 max-w-md w-full my-8">
+        <p class="text-lg opacity-90 mb-4">Great job, <span id="result-name" class="font-bold"></span>!</p>
+
+        <div class="mb-8">
+          <p class="text-7xl font-black" style="background: linear-gradient(135deg, #FFD600 0%, #FFC700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"><span id="final-score">0</span>/20</p>
+          <p class="text-sm opacity-80 mt-2">Correct Answers</p>
+        </div>
+
+        <div class="bg-white bg-opacity-5 rounded-lg p-4 mb-6">
+          <p class="text-sm opacity-80 mb-2">Accuracy</p>
+          <p class="text-2xl font-bold"><span id="accuracy">0</span>%</p>
+        </div>
+
+        <div id="achievements-display" class="mb-6 p-4 bg-white bg-opacity-5 rounded-lg">
+          <p class="text-xs opacity-70 mb-3">ACHIEVEMENTS</p>
+          <div id="achievements-container" class="flex flex-wrap justify-center"></div>
+        </div>
+
+        <button id="play-again-btn" class="button-primary w-full mb-3">PLAY AGAIN 🎮</button>
+        <button id="home-btn" class="button-secondary w-full">BACK HOME 🏠</button>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD SCREEN -->
+    <div id="leaderboard-screen" class="screen hidden flex-1 flex flex-col p-6">
+      <button id="back-home-btn" class="button-secondary mb-6 self-start">← BACK</button>
+      <h1 class="text-5xl font-black mb-8 text-center" style="background: linear-gradient(135deg, #FFD600 0%, #FFC700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🏆 LEADERBOARD</h1>
+      <div class="flex-1 overflow-y-auto">
+        <div id="leaderboard-list" class="max-w-2xl mx-auto"></div>
+      </div>
+      <p id="empty-leaderboard" class="text-center opacity-70 py-12">No scores yet. Be the first to play! 🚀</p>
+    </div>
+  </div>
 
   <!-- PARTIAL:footer -->
 
   <script>
+    // ===== Access Gate (must pass before the quiz boots) =====
     const API_BASE = "https://tools-api.taxmonitor.pro";
     const slug = "tax-tips-refund-boost.html";
 
-    function setStatus(msg) {
-      const el = document.getElementById("status");
+    function setGateStatus(msg) {
+      const el = document.getElementById("gate-status");
       if (el) el.textContent = msg || "";
     }
 
@@ -57,34 +340,344 @@
       return { res, json: await res.json().catch(() => ({})) };
     }
 
-    async function boot() {
-      setStatus("Checking session…");
+    async function bootGate() {
+      setGateStatus("Checking session…");
       const me = await apiGet("/v1/auth/me");
       if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
         window.location.href = "/about-games/" + slug;
-        return;
+        return false;
       }
 
-      setStatus("Loading token balance…");
-      await apiGet("/v1/tokens/balance"); // UI-only; header can display balance
+      setGateStatus("Loading token balance…");
+      await apiGet("/v1/tokens/balance");
 
-      setStatus("Verifying access grant…");
+      setGateStatus("Verifying access grant…");
       const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(slug));
       if (!access.res.ok || !access.json || access.json.allowed !== true) {
         window.location.href = "/about-games/" + slug;
+        return false;
+      }
+
+      setGateStatus("Access granted.");
+      return true;
+    }
+
+    // ===== Quiz =====
+    const quizData = [
+      { question: "What is the standard deduction for single filers in 2025?", answers: ["$13,850", "$14,600", "$15,000", "$16,550"], correct: 1 },
+      { question: "How much can you contribute to a traditional IRA in 2025?", answers: ["$6,500", "$7,000", "$7,500", "$8,000"], correct: 1 },
+      { question: "What is the Child Tax Credit amount for 2025?", answers: ["$1,500", "$1,700", "$2,000", "$2,500"], correct: 2 },
+      { question: "How often should self-employed people make estimated tax payments in 2025?", answers: ["Monthly", "Quarterly", "Semi-annually", "Annually"], correct: 1 },
+      { question: "What does OBBA stand for?", answers: ["Operating Business Benefit Act", "Opportunity Business Breakthrough Act", "Owner Business Bonus Allowance", "Oversized Business Break Authorization"], correct: 1 },
+      { question: "How long should you keep tax records?", answers: ["1 year", "3 years", "5 years", "7 years"], correct: 1 },
+      { question: "What is an HSA primarily used for?", answers: ["Retirement savings", "Home purchases", "Qualified medical expenses", "Education"], correct: 2 },
+      { question: "What's the maximum student loan interest deduction in 2025?", answers: ["$2,000", "$2,500", "$3,000", "$3,500"], correct: 1 },
+      { question: "What's the home office deduction simplified method rate in 2025?", answers: ["$5 per sq ft", "$6 per sq ft", "$7 per sq ft", "$8 per sq ft"], correct: 1 },
+      { question: "When is the 2024 tax filing deadline in 2025?", answers: ["April 1", "April 15", "April 30", "May 15"], correct: 1 },
+      { question: "How much can you contribute to a 401(k) in 2025?", answers: ["$22,500", "$23,500", "$24,500", "$25,500"], correct: 1 },
+      { question: "What does EITC stand for?", answers: ["Earned Income Tax Credit", "Employee Income Tax Code", "Expected Income Tax Calculation", "Early Investment Tax Credit"], correct: 0 },
+      { question: "Under OBBA, what type of business owners benefit most?", answers: ["Large corporations", "Pass-through business entities", "Non-profits", "Government agencies"], correct: 1 },
+      { question: "What's the Section 179 deduction limit for 2025?", answers: ["$500,000", "$750,000", "$1,000,000", "$1,160,000"], correct: 3 },
+      { question: "What OBBA deduction relates to equipment purchases?", answers: ["Depreciation deduction", "Section 179 bonus depreciation", "Qualified property deduction", "Asset recovery"], correct: 1 },
+      { question: "Which business structures qualify for OBBA pass-through deductions?", answers: ["Corporations only", "S-Corps, Partnerships & LLCs", "Sole proprietors only", "Non-profits"], correct: 1 },
+      { question: "What is qualified business income (QBI) under OBBA?", answers: ["W-2 wages earned", "Net income from pass-through business", "Gross revenue", "Investment income"], correct: 1 },
+      { question: "What filing method is fastest for refunds in 2025?", answers: ["Paper filing", "E-filing", "In-person", "By phone"], correct: 1 },
+      { question: "Under OBBA, what's a key benefit for small business deductions?", answers: ["Unlimited write-offs", "Enhanced depreciation & Section 179 deductions", "Tax-free income", "No record keeping needed"], correct: 1 },
+      { question: "How can OBBA deductions help business owners maximize tax savings?", answers: ["By eliminating all taxes", "Through accelerated deductions & equipment write-offs", "Only for large businesses", "By deferring payments indefinitely"], correct: 1 }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let streak = 0;
+    let playerName = "";
+    let allScores = [];
+    let answered = false;
+    let fiftyUsed = false;
+    let skipUsed = false;
+    let achievements = [];
+    const skippedQuestions = new Set();
+
+    const config = { game_title: "Tax Quest", company_name: "TaxTools" };
+    const defaultConfig = { game_title: "Tax Quest", company_name: "TaxTools" };
+
+    const dataHandler = {
+      onDataChanged(data) {
+        const list = Array.isArray(data) ? data : [];
+        allScores = list.slice().sort((a, b) => (Number(b.score) || 0) - (Number(a.score) || 0));
+        updateLeaderboard();
+      }
+    };
+
+    async function initSDKs() {
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: (cfg) => {
+            const safe = cfg || {};
+            config.game_title = safe.game_title || defaultConfig.game_title;
+            config.company_name = safe.company_name || defaultConfig.company_name;
+            document.getElementById("game-title").textContent = config.game_title;
+            document.getElementById("company-name").textContent = config.company_name;
+          },
+          mapToCapabilities: () => ({ recolorables: [], borderables: [], fontEditable: undefined, fontSizeable: undefined }),
+          mapToEditPanelValues: (cfg) => new Map([
+            ["company_name", (cfg && cfg.company_name) || defaultConfig.company_name],
+            ["game_title", (cfg && cfg.game_title) || defaultConfig.game_title]
+          ])
+        });
+      }
+
+      if (window.dataSdk) {
+        const initResult = await window.dataSdk.init(dataHandler);
+        if (!initResult.isOk) console.error("Failed to initialize data SDK");
+      }
+    }
+
+    function updateLeaderboard() {
+      const leaderboardList = document.getElementById("leaderboard-list");
+      const emptyMsg = document.getElementById("empty-leaderboard");
+
+      if (allScores.length === 0) {
+        leaderboardList.innerHTML = "";
+        emptyMsg.style.display = "block";
         return;
       }
 
-      const expiresAt = access.json.expiresAt || "";
-      document.getElementById("grant").textContent = expiresAt ? ("Allowed until " + expiresAt) : "Allowed";
-      setStatus("Access granted.");
+      emptyMsg.style.display = "none";
+      const medals = ["🥇", "🥈", "🥉"];
+
+      leaderboardList.innerHTML = allScores.map((entry, idx) => {
+        const correct = Number(entry.correct_answers) || 0;
+        const pct = Math.round((correct / 20) * 100);
+        const safeName = String(entry.player_name || "Player");
+
+        return `
+          <div class="leaderboard-entry">
+            <div class="flex items-center flex-1">
+              <span class="medal">${medals[idx] || "⭐"}</span>
+              <div class="player-rank">#${idx + 1}</div>
+              <div class="ml-4">
+                <div class="font-bold text-left">${safeName}</div>
+                <div class="text-sm opacity-70">${correct}/20 correct</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-2xl font-black" style="background: linear-gradient(135deg, #FFD600 0%, #FFC700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${pct}%</div>
+            </div>
+          </div>
+        `;
+      }).join("");
     }
 
-    boot().catch(() => {
-      setStatus("Error loading game. Redirecting…");
+    function showScreen(idToShow) {
+      const ids = ["game-screen", "home-screen", "leaderboard-screen", "results-screen"];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.toggle("hidden", id !== idToShow);
+      });
+    }
+
+    function loadQuestion() {
+      answered = false;
+      const q = quizData[currentQuestion];
+
+      document.getElementById("question-number").textContent = String(currentQuestion + 1);
+      document.getElementById("question-text").textContent = q.question;
+      document.getElementById("feedback-text").textContent = "";
+      document.getElementById("next-btn").classList.add("hidden");
+
+      const progressPercent = ((currentQuestion + 1) / 20) * 100;
+      document.getElementById("progress-bar").style.width = progressPercent + "%";
+
+      if (streak > 0) {
+        document.getElementById("streak-display").style.display = "block";
+        document.getElementById("streak-count").textContent = String(streak);
+      } else {
+        document.getElementById("streak-display").style.display = "none";
+      }
+
+      document.getElementById("fifty-btn").classList.toggle("used", fiftyUsed);
+      document.getElementById("skip-btn").classList.toggle("used", skipUsed);
+
+      const container = document.getElementById("answers-container");
+      container.innerHTML = q.answers.map((answer, idx) => `
+        <button class="answer-btn" onclick="selectAnswer(${idx})" data-index="${idx}">
+          ${answer}
+        </button>
+      `).join("");
+    }
+
+    window.selectAnswer = async function selectAnswer(idx) {
+      if (answered) return;
+      answered = true;
+
+      const q = quizData[currentQuestion];
+      const buttons = document.querySelectorAll(".answer-btn");
+
+      if (idx === q.correct) {
+        score++;
+        streak++;
+        buttons[idx].classList.add("correct", "correct-flash");
+        document.getElementById("feedback-text").textContent = "✅ Correct! Great job!";
+        document.getElementById("current-score").textContent = String(score);
+        checkAchievements();
+      } else {
+        streak = 0;
+        buttons[idx].classList.add("incorrect");
+        buttons[q.correct].classList.add("correct");
+        document.getElementById("feedback-text").textContent = `❌ Not quite. The correct answer is: ${q.answers[q.correct]}`;
+      }
+
+      buttons.forEach(btn => btn.classList.add("disabled"));
+
+      setTimeout(() => {
+        if (currentQuestion < 19) document.getElementById("next-btn").classList.remove("hidden");
+        else finishGame();
+      }, 2000);
+    };
+
+    function checkAchievements() {
+      const list = [
+        { id: "comeback", condition: () => streak > 0 && currentQuestion > 15 },
+        { id: "hot_streak", condition: () => streak === 5 },
+        { id: "on_fire", condition: () => streak === 10 },
+        { id: "perfect_ten", condition: () => score === 10 },
+        { id: "tax_master", condition: () => score === 20 }
+      ];
+
+      list.forEach(a => {
+        if (!achievements.includes(a.id) && a.condition()) achievements.push(a.id);
+      });
+    }
+
+    function displayAchievements() {
+      const achievementData = {
+        comeback: { emoji: "💪", name: "Comeback" },
+        hot_streak: { emoji: "🔥", name: "Hot Streak" },
+        on_fire: { emoji: "🌟", name: "On Fire" },
+        perfect_ten: { emoji: "🔟", name: "Perfect Ten" },
+        tax_master: { emoji: "👑", name: "Tax Master" }
+      };
+
+      const container = document.getElementById("achievements-container");
+      container.innerHTML = achievements.length === 0
+        ? '<p class="text-sm opacity-70">Keep playing to unlock achievements!</p>'
+        : achievements.map(id => {
+          const a = achievementData[id];
+          return `
+            <div class="achievement-badge unlocked" title="${a.name}">${a.emoji}</div>
+          `;
+        }).join("");
+    }
+
+    async function finishGame() {
+      showScreen("results-screen");
+
+      const accuracy = Math.round((score / 20) * 100);
+      document.getElementById("result-name").textContent = playerName;
+      document.getElementById("final-score").textContent = String(score);
+      document.getElementById("accuracy").textContent = String(accuracy);
+      displayAchievements();
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create({
+          achievements: achievements.join(","),
+          completed_at: new Date().toISOString(),
+          correct_answers: score,
+          player_name: playerName,
+          power_ups_used: (fiftyUsed ? 1 : 0) + (skipUsed ? 1 : 0),
+          questions_answered: 20,
+          score: accuracy,
+          streak: streak
+        });
+
+        if (!result.isOk) console.error("Failed to save score");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("next-btn")?.addEventListener("click", () => {
+        currentQuestion++;
+        loadQuestion();
+      });
+
+      document.getElementById("fifty-btn")?.addEventListener("click", () => {
+        if (fiftyUsed || answered) return;
+        fiftyUsed = true;
+
+        const q = quizData[currentQuestion];
+        const buttons = Array.from(document.querySelectorAll(".answer-btn"));
+        const wrong = buttons.filter((_, i) => i !== q.correct);
+
+        // Remove exactly 2 wrong answers (deterministic, no "oops I removed 1" nonsense).
+        wrong.slice(0, 2).forEach(btn => {
+          btn.style.opacity = "0.3";
+          btn.style.pointerEvents = "none";
+        });
+
+        document.getElementById("fifty-btn").classList.add("used");
+      });
+
+      document.getElementById("skip-btn")?.addEventListener("click", () => {
+        if (skipUsed || answered) return;
+        skipUsed = true;
+        streak = 0;
+        skippedQuestions.add(currentQuestion);
+        document.getElementById("feedback-text").textContent = "⏭️ Question skipped!";
+
+        setTimeout(() => {
+          if (currentQuestion < 19) {
+            currentQuestion++;
+            loadQuestion();
+          } else {
+            finishGame();
+          }
+        }, 1000);
+
+        document.getElementById("skip-btn").classList.add("used");
+      });
+
+      document.getElementById("start-game-btn")?.addEventListener("click", () => {
+        playerName = document.getElementById("player-name-input").value.trim() || "Player";
+
+        currentQuestion = 0;
+        score = 0;
+        streak = 0;
+        answered = false;
+        fiftyUsed = false;
+        skipUsed = false;
+        achievements = [];
+        skippedQuestions.clear();
+
+        document.getElementById("current-score").textContent = "0";
+        showScreen("game-screen");
+        loadQuestion();
+      });
+
+      document.getElementById("leaderboard-btn")?.addEventListener("click", () => showScreen("leaderboard-screen"));
+      document.getElementById("back-home-btn")?.addEventListener("click", () => showScreen("home-screen"));
+
+      document.getElementById("play-again-btn")?.addEventListener("click", () => {
+        document.getElementById("player-name-input").value = playerName;
+        showScreen("home-screen");
+      });
+
+      document.getElementById("home-btn")?.addEventListener("click", () => showScreen("home-screen"));
+
+      document.getElementById("game-title").textContent = config.game_title;
+      document.getElementById("company-name").textContent = config.company_name;
+    });
+
+    // Gate first, then init SDKs (and let the user play).
+    (async () => {
+      const ok = await bootGate();
+      if (!ok) return;
+      await initSDKs();
+    })().catch(() => {
+      setGateStatus("Error loading game. Redirecting…");
       window.location.href = "/about-games/" + slug;
     });
   </script>
 </body>
 </html>
-
