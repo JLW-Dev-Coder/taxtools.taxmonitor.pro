@@ -92,10 +92,23 @@
           </div>
         </div>
 
+        <!-- Tokens pill (desktop) -->
+        <div id="token-pill" class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100">
+          <span class="text-blue-300">Tokens:</span>
+          <span id="token-balance" class="font-semibold text-white">0</span>
+        </div>
+
         <!-- Signed in pill (desktop) -->
-        <div id="auth-pill" class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100">
-          <span class="text-blue-300">Signed in as:</span>
-          <span id="auth-email" class="font-semibold text-white"></span>
+        <div id="auth-pill" class="hidden rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100">
+          <div class="flex items-center gap-2">
+            <span class="text-blue-300">Signed in as:</span>
+            <span id="auth-email" class="font-semibold text-white"></span>
+          </div>
+          <a
+            id="signout-link"
+            href="#"
+            class="mt-1 inline-block text-xs text-blue-300 hover:text-white transition"
+          >Sign out</a>
         </div>
 
       </nav>
@@ -122,10 +135,23 @@
 
     <div class="flex flex-col gap-4 px-6 py-6 text-sm">
 
+      <!-- Tokens pill (mobile) -->
+      <div id="token-pill-mobile" class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-4 py-3 text-xs text-blue-100">
+        <span class="text-blue-300">Tokens:</span>
+        <span id="token-balance-mobile" class="font-semibold text-white">0</span>
+      </div>
+
       <!-- Signed in pill (mobile) -->
-      <div id="auth-pill-mobile" class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-4 py-3 text-xs text-blue-100">
-        <span class="text-blue-300">Signed in as:</span>
-        <span id="auth-email-mobile" class="font-semibold text-white break-all"></span>
+      <div id="auth-pill-mobile" class="hidden rounded-xl border border-blue-900/40 bg-blue-950/10 px-4 py-3 text-xs text-blue-100">
+        <div class="flex items-center gap-2">
+          <span class="text-blue-300">Signed in as:</span>
+          <span id="auth-email-mobile" class="font-semibold text-white break-all"></span>
+        </div>
+        <a
+          id="signout-link-mobile"
+          href="#"
+          class="mt-1 inline-block text-xs text-blue-300 hover:text-white transition"
+        >Sign out</a>
       </div>
 
       <!-- Alphabetical -->
@@ -169,25 +195,25 @@
     (function () {
       var TOOLS_API_BASE = "https://tools-api.taxmonitor.pro";
 
-      var toggle = document.getElementById("mobile-menu-btn");
       var mobileMenu = document.getElementById("mobile-menu");
+      var mobileToggle = document.getElementById("mobile-menu-btn");
 
-      var resourcesToggle = document.getElementById("resources-toggle");
       var resourcesMenu = document.getElementById("resources-menu");
+      var resourcesToggle = document.getElementById("resources-toggle");
 
-      var mobileResourcesToggle = document.getElementById("mobile-resources-toggle");
       var mobileResourcesMenu = document.getElementById("mobile-resources-menu");
-
-      function closeMobileMenu() {
-        if (!mobileMenu || !toggle) return;
-        mobileMenu.classList.add("hidden");
-        toggle.setAttribute("aria-expanded", "false");
-      }
+      var mobileResourcesToggle = document.getElementById("mobile-resources-toggle");
 
       function closeDesktopResources() {
         if (!resourcesMenu || !resourcesToggle) return;
         resourcesMenu.classList.add("hidden");
         resourcesToggle.setAttribute("aria-expanded", "false");
+      }
+
+      function closeMobileMenu() {
+        if (!mobileMenu || !mobileToggle) return;
+        mobileMenu.classList.add("hidden");
+        mobileToggle.setAttribute("aria-expanded", "false");
       }
 
       function closeMobileResources() {
@@ -196,9 +222,22 @@
         mobileResourcesToggle.setAttribute("aria-expanded", "false");
       }
 
-      toggle && toggle.addEventListener("click", function () {
+      async function doSignOut() {
+        try {
+          await fetch(TOOLS_API_BASE + "/v1/auth/logout", {
+            method: "POST",
+            credentials: "include"
+          });
+        } catch (_) {
+          // ignore
+        } finally {
+          window.location.href = "/index.html";
+        }
+      }
+
+      mobileToggle && mobileToggle.addEventListener("click", function () {
         var isHidden = mobileMenu.classList.toggle("hidden");
-        toggle.setAttribute("aria-expanded", String(!isHidden));
+        mobileToggle.setAttribute("aria-expanded", String(!isHidden));
       });
 
       resourcesToggle && resourcesToggle.addEventListener("click", function (e) {
@@ -213,8 +252,8 @@
       });
 
       document.addEventListener("click", function (e) {
-        if (mobileMenu && toggle) {
-          var clickedInsideMobile = mobileMenu.contains(e.target) || toggle.contains(e.target);
+        if (mobileMenu && mobileToggle) {
+          var clickedInsideMobile = mobileMenu.contains(e.target) || mobileToggle.contains(e.target);
           if (!clickedInsideMobile) closeMobileMenu();
         }
 
@@ -232,10 +271,27 @@
       });
 
       async function hydrateSignedInPill() {
-        var pill = document.getElementById("auth-pill");
-        var pillMobile = document.getElementById("auth-pill-mobile");
+        var authPill = document.getElementById("auth-pill");
+        var authPillMobile = document.getElementById("auth-pill-mobile");
+
         var emailEl = document.getElementById("auth-email");
         var emailMobileEl = document.getElementById("auth-email-mobile");
+
+        var signoutLink = document.getElementById("signout-link");
+        var signoutLinkMobile = document.getElementById("signout-link-mobile");
+
+        var tokenPill = document.getElementById("token-pill");
+        var tokenPillMobile = document.getElementById("token-pill-mobile");
+
+        var tokenEl = document.getElementById("token-balance");
+        var tokenMobileEl = document.getElementById("token-balance-mobile");
+
+        function hideAuthedUi() {
+          authPill && authPill.classList.add("hidden");
+          authPillMobile && authPillMobile.classList.add("hidden");
+          tokenPill && tokenPill.classList.add("hidden");
+          tokenPillMobile && tokenPillMobile.classList.add("hidden");
+        }
 
         try {
           var res = await fetch(TOOLS_API_BASE + "/v1/auth/me", { credentials: "include" });
@@ -245,19 +301,44 @@
           var email = data && data.email ? String(data.email) : "";
 
           if (!res.ok || !isAuthed || !email) {
-            pill && pill.classList.add("hidden");
-            pillMobile && pillMobile.classList.add("hidden");
+            hideAuthedUi();
             return;
           }
 
           if (emailEl) emailEl.textContent = email;
           if (emailMobileEl) emailMobileEl.textContent = email;
 
-          pill && pill.classList.remove("hidden");
-          pillMobile && pillMobile.classList.remove("hidden");
+          authPill && authPill.classList.remove("hidden");
+          authPillMobile && authPillMobile.classList.remove("hidden");
+
+          if (signoutLink) {
+            signoutLink.addEventListener("click", function (e) {
+              e.preventDefault();
+              doSignOut();
+            });
+          }
+
+          if (signoutLinkMobile) {
+            signoutLinkMobile.addEventListener("click", function (e) {
+              e.preventDefault();
+              doSignOut();
+            });
+          }
+
+          // Token balance (UI only)
+          var tRes = await fetch(TOOLS_API_BASE + "/v1/tokens/balance", { credentials: "include" });
+          var tData = await tRes.json().catch(function () { return {}; });
+
+          var balance = tData && typeof tData.balance === "number" ? tData.balance : Number(tData && tData.balance) || 0;
+
+          if (tokenEl) tokenEl.textContent = String(balance);
+          if (tokenMobileEl) tokenMobileEl.textContent = String(balance);
+
+          tokenPill && tokenPill.classList.remove("hidden");
+          tokenPillMobile && tokenPillMobile.classList.remove("hidden");
+
         } catch (_) {
-          pill && pill.classList.add("hidden");
-          pillMobile && pillMobile.classList.add("hidden");
+          hideAuthedUi();
         }
       }
 
