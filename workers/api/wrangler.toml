@@ -6,20 +6,13 @@ routes = [
   { pattern = "tools-api.taxmonitor.pro/*", zone_name = "taxmonitor.pro" }
 ]
 
-MY_ORGANIZATION_ADDRESS = "1175 Avocado Avenue Suite 101 PMB 1010"
-MY_ORGANIZATION_BUSINESS_LOGO = "https://taxmonitor.pro/assets/logo.svg"
-MY_ORGANIZATION_CITY = "El Cajon"
-MY_ORGANIZATION_NAME = "Tax Monitor Pro"
-MY_ORGANIZATION_STATE_PROVINCE = "CA"
-MY_ORGANIZATION_ZIP = "92020"
-
 [[r2_buckets]]
 binding = "R2_TAXTOOLS"
 bucket_name = "taxtools-taxmonitor-pro"
 
 [vars]
-
 CLICKUP_ACCOUNTS_LIST_ID = "901710909567"
+CLICKUP_ORDERS_LIST_ID = "901710818340"
 CLICKUP_SUPPORT_LIST_ID = "901710818377"
 
 GOOGLE_CLIENT_EMAIL = "tax-monitor-worker@tax-monitor-pro.iam.gserviceaccount.com"
