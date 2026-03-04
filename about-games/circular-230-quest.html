@@ -812,6 +812,11 @@
       if (el) el.textContent = msg || "";
     }
 
+    function setStatusHtml(html) {
+      const el = document.getElementById("status");
+      if (el) el.innerHTML = html || "";
+    }
+
     function toggleFaq(button) {
       const content = button.nextElementSibling;
       const icon = button.querySelector('.faq-icon');
@@ -877,8 +882,7 @@
       }
 
       if (balance < tokenCost) {
-        setStatus("Not enough tokens. Purchase a pack to continue.");
-        window.location.href = "/index.html#pricing";
+        setStatusHtml(`Not enough tokens. <a class="underline" href="/#pricing">Purchase a pack</a> to continue.`);
         return;
       }
 
