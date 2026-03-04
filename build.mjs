@@ -215,6 +215,7 @@ function build() {
     "faq.html",
     "help-center.html",
     "index.html",
+    "login.html",
     "robots.txt",
     "sitemap.xml",
   ];
@@ -258,3 +259,4 @@ function build() {
 }
 
 build();
+
