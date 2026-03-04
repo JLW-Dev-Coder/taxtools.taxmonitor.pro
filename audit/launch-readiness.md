@@ -1,7 +1,7 @@
 # Launch Readiness Audit
 
 - Repo: taxtools.taxmonitor.pro
-- Ran: 2026-03-03T22:40:13.612Z
+- Ran: 2026-03-04T00:05:11.070Z
 - Result: **PASS (WITH WARNINGS)**
 
 ## Checklist (alphabetical)
@@ -15,7 +15,7 @@
 | No Stripe price_ IDs outside Worker | OK | PASS |
 | Stripe webhook signature + idempotency detected (heuristic) | Signals present | PASS |
 | Worker entrypoint exists (workers/api/src/index.js) | OK | PASS |
-| Worker env vars appear in README.md | 1 var(s) not found in README | WARN |
+| Worker env vars appear in README.md | OK | PASS |
 
 ## Blockers
 
@@ -26,12 +26,6 @@
 - (none)
 
 ## Warnings
-
-- **Worker env vars not found in README.md (documentation drift)**
-
-```
-STRIPE_WEBHOOK_SECRET
-```
 
 - **Possible client-side token mutation detected (heuristic)**
 

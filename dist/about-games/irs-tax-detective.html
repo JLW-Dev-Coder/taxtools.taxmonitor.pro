@@ -1,0 +1,412 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IRS Tax Detective • TaxTools Arcade</title>
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles/site.css" />
+
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+
+  <style>
+    body { font-family: "DM Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+  <!-- partials/header.html -->
+<header class="sticky top-0 z-50 border-b border-blue-900/40 bg-navy/80 backdrop-blur text-white">
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+
+    <!-- Logo -->
+    <a href="/index.html" class="flex items-center gap-3">
+      <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-navy font-bold">
+               TM
+            </span>
+      <div class="flex flex-col leading-tight">
+        <span class="font-semibold tracking-tight text-white">TaxTools.Tax Monitor Pro</span>
+        <span class="text-xs text-blue-300">Simple taxpayer tools</span>
+      </div>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <div class="hidden items-center gap-10 md:flex">
+      <nav class="flex items-center gap-8">
+        <!-- Alphabetical -->
+        <a href="/about.html" class="text-sm text-blue-200 hover:text-white transition">About</a>
+        <a href="/index.html#tools" class="text-sm text-blue-200 hover:text-white transition">Tools</a>
+        <a href="/faq.html" class="text-sm text-blue-200 hover:text-white transition">FAQ</a>
+        <a href="/help-center.html" class="text-sm text-blue-200 hover:text-white transition">Help Center</a>
+        <a href="/contact.html" class="text-sm text-blue-200 hover:text-white transition">Contact</a>
+      </nav>
+
+      <div class="h-6 w-px bg-blue-300/60"></div>
+
+      <div class="flex items-center">
+        <!-- Cart -->
+        <button id="cart-btn" class="relative inline-flex items-center justify-center rounded-lg p-2 text-blue-200 hover:text-white hover:bg-blue-950/40 transition" aria-label="Cart" type="button">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span id="cart-count" class="absolute -top-1 -right-1 hidden h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs font-bold text-white">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Toggle -->
+    <button id="mobile-menu-btn" class="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-blue-200 hover:text-white hover:bg-blue-950/40" aria-label="Open menu" aria-expanded="false" type="button">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden border-t border-blue-900/40 bg-navy md:hidden">
+    <div class="flex flex-col gap-4 px-6 py-6 text-sm">
+      <!-- Alphabetical -->
+      <a href="/about.html" class="text-blue-200 hover:text-white transition">About</a>
+      <a href="/faq.html" class="text-blue-200 hover:text-white transition">FAQ</a>
+      <a href="/help-center.html" class="text-blue-200 hover:text-white transition">Help Center</a>
+      <a href="/index.html" class="text-blue-200 hover:text-white transition">Home</a>
+      <a href="/contact.html" class="text-blue-200 hover:text-white transition">Contact</a>
+      <a href="/index.html#tools" class="text-blue-200 hover:text-white transition">Tools</a>
+
+      <div class="border-t border-blue-900/40 pt-4 mt-2">
+        <button type="button" onclick="openCart()" class="inline-flex w-full items-center justify-center rounded-lg border border-blue-900/60 bg-blue-950/20 px-4 py-3 font-semibold text-blue-100 hover:bg-blue-950/35 transition">
+          Cart (<span class="mobile-cart-count">0</span>)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var toggle = document.getElementById('mobile-menu-btn');
+      var mobileMenu = document.getElementById('mobile-menu');
+
+      function closeMenu() {
+        if (!mobileMenu || !toggle) return;
+        mobileMenu.classList.add('hidden');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+
+      toggle && toggle.addEventListener('click', function () {
+        if (!mobileMenu) return;
+        var isHidden = mobileMenu.classList.toggle('hidden');
+        toggle.setAttribute('aria-expanded', String(!isHidden));
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!mobileMenu || !toggle) return;
+        var clickedInside = mobileMenu.contains(e.target) || toggle.contains(e.target);
+        if (!clickedInside) closeMenu();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        closeMenu();
+      });
+    })();
+  </script>
+</header>
+
+
+
+
+
+  <main class="mx-auto max-w-5xl px-6 py-12">
+    <!-- Hero -->
+    <section class="space-y-4">
+      <div class="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/40 px-4 py-2 text-sm text-slate-200">
+        <span class="font-semibold">Interactive Game</span>
+        <span class="text-slate-400">•</span>
+        <span>Instant Access</span>
+      </div>
+
+      <h1 class="text-4xl font-bold tracking-tight">IRS Tax Detective</h1>
+      <p class="max-w-2xl text-lg text-slate-300">A detective-style game focused on solving tax cases using clues and IRS-style terminology.</p>
+
+      <div class="flex flex-wrap items-center gap-3 pt-2">
+        <button id="btnUnlock" class="rounded-xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 hover:bg-amber-400 transition">
+          Unlock & Play (7 tokens)
+        </button>
+        <a id="btnDemo" href="#preview" class="rounded-xl border border-slate-700 px-5 py-3 font-semibold text-slate-100 hover:bg-slate-900 transition">
+          Try Demo
+        </a>
+        <div id="status" class="text-sm text-slate-400"></div>
+      </div>
+    </section>
+
+    <!-- What You'll Learn -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-semibold">What You’ll Learn</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
+  <div class="font-semibold">Clue-based deduction</div>
+  <div class="mt-1 text-sm text-slate-400">Practice this concept through gameplay.</div>
+</div>
+<div class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
+  <div class="font-semibold">Educational explanations</div>
+  <div class="mt-1 text-sm text-slate-400">Practice this concept through gameplay.</div>
+</div>
+<div class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
+  <div class="font-semibold">Pattern recognition gameplay</div>
+  <div class="mt-1 text-sm text-slate-400">Practice this concept through gameplay.</div>
+</div>
+<div class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
+  <div class="font-semibold">Score tracking</div>
+  <div class="mt-1 text-sm text-slate-400">Practice this concept through gameplay.</div>
+</div>
+<div class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
+  <div class="font-semibold">Timed or round-based play</div>
+  <div class="mt-1 text-sm text-slate-400">Practice this concept through gameplay.</div>
+</div>
+      </div>
+    </section>
+
+    <!-- Demo / Preview -->
+    <section id="preview" class="mt-12">
+      <h2 class="text-2xl font-semibold">Demo / Preview</h2>
+      <p class="mt-2 max-w-3xl text-slate-300">
+        This preview is educational and intentionally limited. Full gameplay unlocks only after the Worker confirms a valid token spend.
+      </p>
+      <div class="mt-4 rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
+        <p class="text-slate-200 font-semibold">Preview (limited)</p>
+        <p class="mt-2 text-slate-300">
+          Coming next: a lightweight preview experience. For now, click “Unlock & Play” to launch the full game page.
+        </p>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-semibold">How It Works</h2>
+      <ol class="mt-4 grid gap-4 md:grid-cols-3">
+        <li class="rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
+          <div class="text-sm text-slate-400">Step 1</div>
+          <div class="mt-1 font-semibold">Sign in (cookie session)</div>
+        </li>
+        <li class="rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
+          <div class="text-sm text-slate-400">Step 2</div>
+          <div class="mt-1 font-semibold">Confirm spend (7 tokens)</div>
+        </li>
+        <li class="rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
+          <div class="text-sm text-slate-400">Step 3</div>
+          <div class="mt-1 font-semibold">Play instantly</div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-semibold">FAQ</h2>
+      <div class="mt-4 space-y-3">
+        <details class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
+          <summary class="cursor-pointer font-semibold">Is this tax advice?</summary>
+          <p class="mt-2 text-slate-300">No. Educational only. Not tax advice and not representation.</p>
+        </details>
+        <details class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
+          <summary class="cursor-pointer font-semibold">Do tokens expire?</summary>
+          <p class="mt-2 text-slate-300">No. Tokens do not expire and are non-transferable.</p>
+        </details>
+        <details class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
+          <summary class="cursor-pointer font-semibold">I need real help. What now?</summary>
+          <p class="mt-2 text-slate-300">If you want monitoring or representation, go to <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Trust + Disclaimers -->
+    <section class="mt-12 rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
+      <h2 class="text-xl font-semibold">Trust + Disclaimers</h2>
+      <ul class="mt-3 list-disc pl-5 text-slate-300 space-y-1">
+        <li>Educational only, not tax advice.</li>
+        <li>Not representation.</li>
+        <li>Need monitoring or representation? Visit <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</li>
+      </ul>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="mt-12 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
+      <div>
+        <div class="text-lg font-semibold">Ready to play?</div>
+        <div class="text-slate-300">Unlock access with a token spend verified by the Worker.</div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="btnUnlock2" class="rounded-xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 hover:bg-amber-400 transition">
+          Unlock & Play (7 tokens)
+        </button>
+        <a href="/index.html" class="rounded-xl border border-slate-700 px-5 py-3 font-semibold text-slate-100 hover:bg-slate-900 transition">
+          View All Games
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- partials/footer.html -->
+<footer class="border-t border-blue-900/40 bg-navy text-white">
+  <div class="mx-auto max-w-6xl px-6 py-12">
+    <div class="grid gap-y-10 md:gap-x-4 md:grid-cols-4 md:items-start">
+
+      <!-- Brand -->
+      <div class="flex flex-col gap-4 ">
+        <a href="/index.html" class="flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-navy font-bold">TM</span>
+          <div class="flex flex-col leading-tight">
+            <span class="font-semibold tracking-tight text-white">TaxTools.Tax Monitor Pro</span>
+            <span class="text-xs text-blue-300">Simple taxpayer tools</span>
+          </div>
+        </a>
+
+        <p class="text-sm text-blue-200">
+          Practical tools for taxpayers. For representation or ongoing IRS monitoring, visit
+          <a class="underline hover:text-white" href="https://taxmonitor.pro">Tax Monitor Pro</a>.
+        </p>
+
+        <!-- Mailing Address -->
+        <div class="mt-2 text-sm text-blue-300 not-italic">
+          <div class="font-semibold text-white">Mailing Address</div>
+          <div class="text-[0.9em]">
+            <div>Tax Monitor Pro</div>
+            <div>1175 Avocado Avenue Suite 101 PMB 1010</div>
+            <div>El Cajon, CA 92020</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div class="flex flex-col gap-4">
+        <h3 class="text-sm font-semibold text-white">Links</h3>
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
+          <a href="/about.html" class="text-blue-200 hover:text-white transition">About</a>
+          <a href="/faq.html" class="text-blue-200 hover:text-white transition">FAQ</a>
+          <a href="/index.html" class="text-blue-200 hover:text-white transition">Home</a>
+          <a href="/index.html#tools" class="text-blue-200 hover:text-white transition">Tools</a>
+        </nav>
+      </div>
+
+      <!-- Resources -->
+      <div class="flex flex-col gap-4">
+        <h3 class="text-sm font-semibold text-white">Resources</h3>
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
+          <a href="/help-center.html" class="text-blue-200 hover:text-white transition">Help Center</a>
+          <a href="/contact.html" class="text-blue-200 hover:text-white transition">Support</a>
+        </nav>
+
+        <div class="mt-2 h-px w-full bg-slate-800/80"></div>
+
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
+          <a href="https://taxmonitor.pro" class="text-blue-200 hover:text-white transition">Tax Monitor Pro</a>
+        </nav>
+      </div>
+
+      <!-- Legal -->
+      <div class="flex flex-col gap-4">
+        <h3 class="text-sm font-semibold text-white">Legal</h3>
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
+          <a href="/legal/privacy.html" class="text-blue-200 hover:text-white transition">Privacy</a>
+          <a href="/legal/terms.html" class="text-blue-200 hover:text-white transition">Terms</a>
+        </nav>
+
+        <p class="mt-4 text-sm text-blue-400">© <span id="footer-year"></span> TaxTools.Tax Monitor Pro</p>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var el = document.getElementById('footer-year');
+    if (el) el.textContent = String(new Date().getFullYear());
+  })();
+</script>
+
+
+
+
+  <script>
+    const API_BASE = "https://tools-api.taxmonitor.pro";
+
+    const slug = "irs-tax-detective.html";
+    const tokenCost = 7;
+
+    function setStatus(msg) {
+      const el = document.getElementById("status");
+      if (el) el.textContent = msg || "";
+    }
+
+    async function apiGet(path) {
+      const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
+      return { res, json: await res.json().catch(() => ({})) };
+    }
+
+    async function apiPost(path, body) {
+      const res = await fetch(API_BASE + path, {
+        method: "POST",
+        credentials: "include",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      return { res, json: await res.json().catch(() => ({})) };
+    }
+
+    async function unlockAndPlay() {
+      setStatus("Checking session…");
+
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
+        setStatus("Please sign in to continue.");
+        // Sign-in UX is handled by your SDK/app flow; this is a safe default.
+        window.location.href = "/index.html";
+        return;
+      }
+
+      setStatus("Checking token balance…");
+      const bal = await apiGet("/v1/tokens/balance");
+      const balance = Number(bal.json && bal.json.balance);
+      if (!Number.isFinite(balance)) {
+        setStatus("Could not load token balance.");
+        return;
+      }
+
+      if (balance < tokenCost) {
+        setStatus("Not enough tokens. Purchase a pack to continue.");
+        window.location.href = "/index.html#pricing";
+        return;
+      }
+
+      setStatus("Confirming token spend…");
+      const spend = await apiPost("/v1/tokens/spend", {
+        amount: tokenCost,
+        idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
+        reason: "arcade_play",
+        slug: slug
+      });
+
+      if (!spend.res.ok) {
+        setStatus("Spend failed. Please try again.");
+        return;
+      }
+
+      setStatus("Unlocked. Redirecting…");
+      window.location.href = "/games/" + slug;
+    }
+
+    document.getElementById("btnUnlock")?.addEventListener("click", unlockAndPlay);
+    document.getElementById("btnUnlock2")?.addEventListener("click", unlockAndPlay);
+  </script>
+</body>
+</html>

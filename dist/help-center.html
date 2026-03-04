@@ -1,0 +1,749 @@
+<!-- help-center.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help Center - TaxTools</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon" />
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            action: '#1d4ed8',
+            charcoal: '#2d3748',
+            muted: '#64748b',
+            navy: '#0f2747',
+            'navy-light': '#17365f',
+            warm: '#f97316'
+          },
+          fontFamily: {
+            dm: ['"DM Sans"', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * { font-family: 'DM Sans', system-ui, sans-serif; }
+    html, body { height: 100%; margin: 0; }
+    body { box-sizing: border-box; }
+
+    .category-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(15, 39, 71, 0.15); }
+    .article-card:hover { border-color: #1d4ed8; }
+    .search-input:focus { outline: none; box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.28); }
+  </style>
+</head>
+
+<body class="h-full bg-white text-charcoal overflow-auto">
+  <div id="app" class="w-full min-h-full bg-gradient-to-b from-slate-50 to-white">
+
+    <!-- partials/header.html -->
+<header class="sticky top-0 z-50 border-b border-blue-900/40 bg-navy/80 backdrop-blur text-white">
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+
+    <!-- Logo -->
+    <a href="/index.html" class="flex items-center gap-3">
+      <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-navy font-bold">
+               TM
+            </span>
+      <div class="flex flex-col leading-tight">
+        <span class="font-semibold tracking-tight text-white">TaxTools.Tax Monitor Pro</span>
+        <span class="text-xs text-blue-300">Simple taxpayer tools</span>
+      </div>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <div class="hidden items-center gap-10 md:flex">
+      <nav class="flex items-center gap-8">
+        <!-- Alphabetical -->
+        <a href="/about.html" class="text-sm text-blue-200 hover:text-white transition">About</a>
+        <a href="/index.html#tools" class="text-sm text-blue-200 hover:text-white transition">Tools</a>
+        <a href="/faq.html" class="text-sm text-blue-200 hover:text-white transition">FAQ</a>
+        <a href="/help-center.html" class="text-sm text-blue-200 hover:text-white transition">Help Center</a>
+        <a href="/contact.html" class="text-sm text-blue-200 hover:text-white transition">Contact</a>
+      </nav>
+
+      <div class="h-6 w-px bg-blue-300/60"></div>
+
+      <div class="flex items-center">
+        <!-- Cart -->
+        <button id="cart-btn" class="relative inline-flex items-center justify-center rounded-lg p-2 text-blue-200 hover:text-white hover:bg-blue-950/40 transition" aria-label="Cart" type="button">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span id="cart-count" class="absolute -top-1 -right-1 hidden h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs font-bold text-white">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Toggle -->
+    <button id="mobile-menu-btn" class="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-blue-200 hover:text-white hover:bg-blue-950/40" aria-label="Open menu" aria-expanded="false" type="button">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden border-t border-blue-900/40 bg-navy md:hidden">
+    <div class="flex flex-col gap-4 px-6 py-6 text-sm">
+      <!-- Alphabetical -->
+      <a href="/about.html" class="text-blue-200 hover:text-white transition">About</a>
+      <a href="/faq.html" class="text-blue-200 hover:text-white transition">FAQ</a>
+      <a href="/help-center.html" class="text-blue-200 hover:text-white transition">Help Center</a>
+      <a href="/index.html" class="text-blue-200 hover:text-white transition">Home</a>
+      <a href="/contact.html" class="text-blue-200 hover:text-white transition">Contact</a>
+      <a href="/index.html#tools" class="text-blue-200 hover:text-white transition">Tools</a>
+
+      <div class="border-t border-blue-900/40 pt-4 mt-2">
+        <button type="button" onclick="openCart()" class="inline-flex w-full items-center justify-center rounded-lg border border-blue-900/60 bg-blue-950/20 px-4 py-3 font-semibold text-blue-100 hover:bg-blue-950/35 transition">
+          Cart (<span class="mobile-cart-count">0</span>)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var toggle = document.getElementById('mobile-menu-btn');
+      var mobileMenu = document.getElementById('mobile-menu');
+
+      function closeMenu() {
+        if (!mobileMenu || !toggle) return;
+        mobileMenu.classList.add('hidden');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+
+      toggle && toggle.addEventListener('click', function () {
+        if (!mobileMenu) return;
+        var isHidden = mobileMenu.classList.toggle('hidden');
+        toggle.setAttribute('aria-expanded', String(!isHidden));
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!mobileMenu || !toggle) return;
+        var clickedInside = mobileMenu.contains(e.target) || toggle.contains(e.target);
+        if (!clickedInside) closeMenu();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        closeMenu();
+      });
+    })();
+  </script>
+</header>
+
+
+
+
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-navy via-navy to-slate-800 py-16 lg:py-24">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-10 left-10 w-64 h-64 bg-action rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 right-10 w-96 h-96 bg-warm rounded-full blur-3xl"></div>
+      </div>
+
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row items-center gap-12">
+          <div class="flex-1 text-center lg:text-left">
+            <h1 id="heroTitle" class="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6">Help Center</h1>
+            <p id="heroSubtitle" class="text-xl text-slate-300 mb-8 max-w-xl mx-auto lg:mx-0">Find answers, guides, and support for all your TaxTools questions.</p>
+
+            <!-- Search -->
+            <div class="relative max-w-xl mx-auto lg:mx-0">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search help articles..."
+                class="search-input w-full px-6 py-4 pl-14 text-lg rounded-2xl border-2 border-transparent bg-white shadow-xl transition-all"
+              />
+              <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <button class="absolute right-3 top-1/2 -translate-y-1/2 px-4 py-2 bg-action text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors">Search</button>
+            </div>
+          </div>
+
+          <!-- Hero card -->
+          <div class="flex-shrink-0">
+            <div class="relative w-64 h-64 lg:w-80 lg:h-80">
+              <div class="absolute inset-0 bg-gradient-to-br from-action to-warm rounded-3xl rotate-6 opacity-20"></div>
+              <div class="absolute inset-0 bg-white rounded-3xl shadow-2xl flex items-center justify-center">
+                <div class="text-center p-6">
+                  <div class="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-action to-warm rounded-2xl flex items-center justify-center">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <p class="text-navy font-bold text-lg">Help, minus chaos</p>
+                  <p class="text-slate-500 text-sm">Find it fast</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Simple help topics (modal-based) -->
+    <section class="py-16 lg:py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-4">Quick help</h2>
+          <p class="text-lg text-slate-600">Click a button. Read the instructions. Become unstoppable.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <button type="button" class="help-btn group text-left bg-white border-2 border-slate-100 rounded-2xl p-5 hover:border-action hover:shadow-lg transition-all" data-help="account_payment">
+            <div class="flex items-start gap-3">
+              <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-navy">Account &amp; payment</div>
+                <div class="text-sm text-slate-600">Checkout, receipts, and charge questions.</div>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" class="help-btn group text-left bg-white border-2 border-slate-100 rounded-2xl p-5 hover:border-action hover:shadow-lg transition-all" data-help="contact_support">
+            <div class="flex items-start gap-3">
+              <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-action" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-navy">Contact support</div>
+                <div class="text-sm text-slate-600">Get help from a real human (sorry).</div>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" class="help-btn group text-left bg-white border-2 border-slate-100 rounded-2xl p-5 hover:border-action hover:shadow-lg transition-all" data-help="download_access">
+            <div class="flex items-start gap-3">
+              <div class="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm8 4v6m0 0l-3-3m3 3l3-3" />
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-navy">Download &amp; access</div>
+                <div class="text-sm text-slate-600">How to get what you bought.</div>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" class="help-btn group text-left bg-white border-2 border-slate-100 rounded-2xl p-5 hover:border-action hover:shadow-lg transition-all" data-help="file_types">
+            <div class="flex items-start gap-3">
+              <div class="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10M7 11h10M7 15h6M6 3h9l3 3v15a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-navy">File types</div>
+                <div class="text-sm text-slate-600">PDF, spreadsheet, calendar, bundle.</div>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" class="help-btn group text-left bg-white border-2 border-slate-100 rounded-2xl p-5 hover:border-action hover:shadow-lg transition-all" data-help="free_previews">
+            <div class="flex items-start gap-3">
+              <div class="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-navy">Free previews</div>
+                <div class="text-sm text-slate-600">Try the demos without buying.</div>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" class="help-btn group text-left bg-white border-2 border-slate-100 rounded-2xl p-5 hover:border-action hover:shadow-lg transition-all" data-help="refunds_policies">
+            <div class="flex items-start gap-3">
+              <div class="w-11 h-11 rounded-xl bg-rose-50 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-navy">Refunds &amp; policies</div>
+                <div class="text-sm text-slate-600">Refunds, privacy, and terms.</div>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" class="help-btn group text-left bg-white border-2 border-slate-100 rounded-2xl p-5 hover:border-action hover:shadow-lg transition-all" data-help="troubleshooting">
+            <div class="flex items-start gap-3">
+              <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-action" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 3a9 9 0 100 18 9 9 0 000-18z" />
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-navy">Troubleshooting</div>
+                <div class="text-sm text-slate-600">Fix common issues fast.</div>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" class="help-btn group text-left bg-white border-2 border-slate-100 rounded-2xl p-5 hover:border-action hover:shadow-lg transition-all" data-help="using_tools">
+            <div class="flex items-start gap-3">
+              <div class="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-navy">Using your tools</div>
+                <div class="text-sm text-slate-600">Quick instructions per tool type.</div>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="mt-10 max-w-3xl mx-auto bg-slate-50 border border-slate-200 rounded-2xl p-6">
+          <div class="font-bold text-navy mb-2">Tip</div>
+          <div class="text-slate-700">This Help Center is intentionally simple: buttons open the exact instructions. No dead links. No fake article library. No pretending.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="helpModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+      <div class="absolute inset-0 bg-black/50" data-close="true"></div>
+      <div class="relative min-h-full flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+          <div class="flex items-start justify-between gap-4 p-6 border-b border-slate-200">
+            <div>
+              <div id="helpModalTitle" class="text-2xl font-bold text-navy">Help</div>
+              <div id="helpModalSubtitle" class="text-sm text-slate-600 mt-1">Instructions</div>
+            </div>
+            <button type="button" class="rounded-xl p-2 hover:bg-slate-100" aria-label="Close" data-close="true">
+              <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="p-6">
+            <div id="helpModalBody" class="text-slate-800 leading-relaxed space-y-4"></div>
+          </div>
+          <div class="p-6 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <a href="mailto:support@taxtools.taxmonitor.pro" class="text-sm font-semibold text-action hover:underline">Email support</a>
+            <div class="text-xs text-slate-500">Support: support@taxtools.taxmonitor.pro</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact support -->
+    <section class="py-16 lg:py-20 bg-gradient-to-br from-action to-navy">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+          <div class="flex flex-col lg:flex-row">
+            <div class="flex-1 p-8 lg:p-12">
+              <div class="w-16 h-16 bg-gradient-to-br from-action to-warm rounded-2xl flex items-center justify-center mb-6">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+
+              <h2 class="text-3xl font-bold text-navy mb-4">Still need help?</h2>
+              <p id="supportMessage" class="text-lg text-slate-600 mb-8">Still need help? Our support team is here for you.</p>
+
+              <div class="flex flex-col sm:flex-row gap-4">
+                <a id="supportButton" href="/contact.html" class="px-8 py-4 bg-action text-white font-bold rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Contact us
+                </a>
+
+                <a href="mailto:support@taxtools.taxmonitor.pro" class="px-8 py-4 border-2 border-slate-200 text-navy font-semibold rounded-xl hover:border-action hover:text-action transition-colors text-center">support@taxtools.taxmonitor.pro</a>
+              </div>
+            </div>
+
+            <div class="lg:w-80 bg-gradient-to-br from-slate-50 to-slate-100 p-8 lg:p-12 flex items-center justify-center">
+              <div class="text-center">
+                <div class="relative w-32 h-32 mx-auto mb-4">
+                  <div class="absolute inset-0 bg-warm rounded-full opacity-15 animate-pulse"></div>
+                  <div class="absolute inset-2 bg-white rounded-full shadow-lg flex items-center justify-center">
+                    <svg class="w-12 h-12 text-warm" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                </div>
+                <p class="text-navy font-bold">Typical response</p>
+                <p class="text-3xl font-bold text-warm">Same day</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- partials/footer.html -->
+<footer class="border-t border-blue-900/40 bg-navy text-white">
+  <div class="mx-auto max-w-6xl px-6 py-12">
+    <div class="grid gap-y-10 md:gap-x-4 md:grid-cols-4 md:items-start">
+
+      <!-- Brand -->
+      <div class="flex flex-col gap-4 ">
+        <a href="/index.html" class="flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-navy font-bold">TM</span>
+          <div class="flex flex-col leading-tight">
+            <span class="font-semibold tracking-tight text-white">TaxTools.Tax Monitor Pro</span>
+            <span class="text-xs text-blue-300">Simple taxpayer tools</span>
+          </div>
+        </a>
+
+        <p class="text-sm text-blue-200">
+          Practical tools for taxpayers. For representation or ongoing IRS monitoring, visit
+          <a class="underline hover:text-white" href="https://taxmonitor.pro">Tax Monitor Pro</a>.
+        </p>
+
+        <!-- Mailing Address -->
+        <div class="mt-2 text-sm text-blue-300 not-italic">
+          <div class="font-semibold text-white">Mailing Address</div>
+          <div class="text-[0.9em]">
+            <div>Tax Monitor Pro</div>
+            <div>1175 Avocado Avenue Suite 101 PMB 1010</div>
+            <div>El Cajon, CA 92020</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div class="flex flex-col gap-4">
+        <h3 class="text-sm font-semibold text-white">Links</h3>
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
+          <a href="/about.html" class="text-blue-200 hover:text-white transition">About</a>
+          <a href="/faq.html" class="text-blue-200 hover:text-white transition">FAQ</a>
+          <a href="/index.html" class="text-blue-200 hover:text-white transition">Home</a>
+          <a href="/index.html#tools" class="text-blue-200 hover:text-white transition">Tools</a>
+        </nav>
+      </div>
+
+      <!-- Resources -->
+      <div class="flex flex-col gap-4">
+        <h3 class="text-sm font-semibold text-white">Resources</h3>
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
+          <a href="/help-center.html" class="text-blue-200 hover:text-white transition">Help Center</a>
+          <a href="/contact.html" class="text-blue-200 hover:text-white transition">Support</a>
+        </nav>
+
+        <div class="mt-2 h-px w-full bg-slate-800/80"></div>
+
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
+          <a href="https://taxmonitor.pro" class="text-blue-200 hover:text-white transition">Tax Monitor Pro</a>
+        </nav>
+      </div>
+
+      <!-- Legal -->
+      <div class="flex flex-col gap-4">
+        <h3 class="text-sm font-semibold text-white">Legal</h3>
+        <nav class="grid gap-2 text-sm">
+          <!-- Alphabetical -->
+          <a href="/legal/privacy.html" class="text-blue-200 hover:text-white transition">Privacy</a>
+          <a href="/legal/terms.html" class="text-blue-200 hover:text-white transition">Terms</a>
+        </nav>
+
+        <p class="mt-4 text-sm text-blue-400">© <span id="footer-year"></span> TaxTools.Tax Monitor Pro</p>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var el = document.getElementById('footer-year');
+    if (el) el.textContent = String(new Date().getFullYear());
+  })();
+</script>
+
+
+
+  </div>
+
+  <script>
+    // Modal-based help content (keeps this page from pretending 75 articles exist)
+    const HELP_CONTENT = {
+      account_payment: {
+        title: 'Account & Payment',
+        subtitle: 'Checkout, receipts, and charges',
+        body: `
+          <ol class="list-decimal pl-5 space-y-2">
+            <li><span class="font-semibold">Find your receipt:</span> check the email used at checkout for a confirmation/receipt message.</li>
+            <li><span class="font-semibold">No receipt email?</span> check Spam/Promotions, then search your inbox for “TaxTools”.</li>
+            <li><span class="font-semibold">Wrong email at checkout?</span> email support with your name, the product you purchased, and the approximate purchase time.</li>
+            <li><span class="font-semibold">Charged but no download:</span> open the “Download & Access” help topic and follow it first, then contact support if you still can’t access.</li>
+          </ol>
+        `
+      },
+      contact_support: {
+        title: 'Contact Support',
+        subtitle: 'What to send so we can actually help',
+        body: `
+          <div class="space-y-4">
+            <p>Send an email to <a class="text-action font-semibold hover:underline" href="mailto:support@taxtools.taxmonitor.pro">support@taxtools.taxmonitor.pro</a> with:</p>
+            <ul class="list-disc pl-5 space-y-2">
+              <li>Your purchase email address.</li>
+              <li>The product name (or “Complete Bundle”).</li>
+              <li>What happened (1–2 sentences).</li>
+              <li>A screenshot, if something looks broken.</li>
+            </ul>
+            <p class="text-sm text-slate-600">Typical response: same day (unless everyone is doing taxes, which is always).</p>
+          </div>
+        `
+      },
+      download_access: {
+        title: 'Download & Access',
+        subtitle: 'How to get your files after purchase',
+        body: `
+          <ol class="list-decimal pl-5 space-y-2">
+            <li>Open your purchase confirmation email.</li>
+            <li>Click the download/access link inside that email.</li>
+            <li>If the link does nothing, try a different browser (Chrome or Edge) and disable ad blockers for the site.</li>
+            <li>If the link says expired or unauthorized, email support with your purchase email and product name.</li>
+          </ol>
+        `
+      },
+      file_types: {
+        title: 'File Types',
+        subtitle: 'What you bought and how it opens',
+        body: `
+          <div class="space-y-4">
+            <ul class="list-disc pl-5 space-y-2">
+              <li><span class="font-semibold">PDF:</span> opens in any browser or PDF reader. Download to save a copy.</li>
+              <li><span class="font-semibold">Spreadsheet (XLS/XLSX):</span> open in Excel, Google Sheets, or LibreOffice. Save a copy before editing.</li>
+              <li><span class="font-semibold">Calendar (ICS):</span> import into Google Calendar, Apple Calendar, or Outlook.</li>
+              <li><span class="font-semibold">Bundle:</span> you get multiple files. Download each item and store them in one folder.</li>
+            </ul>
+          </div>
+        `
+      },
+      free_previews: {
+        title: 'Free Previews',
+        subtitle: 'Try the demos first',
+        body: `
+          <ol class="list-decimal pl-5 space-y-2">
+            <li>Go to the product page.</li>
+            <li>Click the <span class="font-semibold">Try Demo</span> button.</li>
+            <li>The demo shows a preview version of the tool.</li>
+            <li>Purchase unlocks the full version delivered via your receipt/confirmation email.</li>
+          </ol>
+        `
+      },
+      refunds_policies: {
+        title: 'Refunds & Policies',
+        subtitle: 'Refunds, privacy, and terms',
+        body: `
+          <div class="space-y-4">
+            <p>Policies live here:</p>
+            <ul class="list-disc pl-5 space-y-2">
+              <li><a class="text-action font-semibold hover:underline" href="/legal/terms.html">Terms</a></li>
+              <li><a class="text-action font-semibold hover:underline" href="/legal/privacy.html">Privacy</a></li>
+            </ul>
+            <p class="text-sm text-slate-600">If you’re requesting a refund, include your purchase email and product name.</p>
+          </div>
+        `
+      },
+      troubleshooting: {
+        title: 'Troubleshooting',
+        subtitle: 'Fix the common stuff fast',
+        body: `
+          <ul class="list-disc pl-5 space-y-2">
+            <li><span class="font-semibold">Downloads not working:</span> try another browser and disable extensions for the site.</li>
+            <li><span class="font-semibold">File won’t open:</span> confirm you have the right app (PDF reader, Excel/Sheets, Calendar).</li>
+            <li><span class="font-semibold">Spreadsheet looks broken:</span> download a fresh copy, then avoid editing formula cells.</li>
+            <li><span class="font-semibold">Still stuck:</span> use “Contact Support” and send a screenshot.</li>
+          </ul>
+        `
+      },
+      using_tools: {
+        title: 'Using Your Tools',
+        subtitle: 'Quick “how to” by product type',
+        body: `
+          <div class="space-y-4">
+            <div>
+              <div class="font-bold text-navy">PDF tools</div>
+              <ul class="list-disc pl-5 space-y-1 mt-2">
+                <li>Download and save a clean copy.</li>
+                <li>Fill digitally in a PDF editor, or print and write.</li>
+              </ul>
+            </div>
+            <div>
+              <div class="font-bold text-navy">Spreadsheet tools</div>
+              <ul class="list-disc pl-5 space-y-1 mt-2">
+                <li>Make a copy before editing.</li>
+                <li>Enter data only in the input fields. Leave formulas alone.</li>
+              </ul>
+            </div>
+            <div>
+              <div class="font-bold text-navy">Calendar tools</div>
+              <ul class="list-disc pl-5 space-y-1 mt-2">
+                <li>Import the ICS file into your calendar app.</li>
+                <li>Review the events after import and adjust reminders to your liking.</li>
+              </ul>
+            </div>
+          </div>
+        `
+      }
+    };
+
+    function openHelpModal(key) {
+      const modal = document.getElementById('helpModal');
+      const title = document.getElementById('helpModalTitle');
+      const subtitle = document.getElementById('helpModalSubtitle');
+      const body = document.getElementById('helpModalBody');
+
+      const content = HELP_CONTENT[key];
+      if (!modal || !title || !subtitle || !body || !content) return;
+
+      title.textContent = content.title;
+      subtitle.textContent = content.subtitle;
+      body.innerHTML = content.body;
+
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeHelpModal() {
+      const modal = document.getElementById('helpModal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.help-btn');
+      if (btn && btn.dataset.help) {
+        openHelpModal(btn.dataset.help);
+        return;
+      }
+
+      const closeEl = e.target.closest('[data-close="true"]');
+      if (closeEl) {
+        closeHelpModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeHelpModal();
+    });
+
+    const defaultConfig = {
+      hero_title: 'Help Center',
+      hero_subtitle: 'Find answers, guides, and support for all your TaxTools questions.',
+      search_placeholder: 'Search help articles...',
+      support_message: 'Still need help? Our support team is here for you.',
+      support_button: 'Contact us',
+      background_color: '#f8fafc',
+      surface_color: '#ffffff',
+      text_color: '#2d3748',
+      primary_action_color: '#1d4ed8',
+      secondary_action_color: '#f97316',
+      font_family: 'DM Sans',
+      font_size: 16
+    };
+
+    function onConfigChange(config) {
+      const heroTitle = document.getElementById('heroTitle');
+      const heroSubtitle = document.getElementById('heroSubtitle');
+      const searchInput = document.getElementById('searchInput');
+      const supportMessage = document.getElementById('supportMessage');
+      const supportButton = document.getElementById('supportButton');
+
+      if (heroTitle) heroTitle.textContent = config.hero_title || defaultConfig.hero_title;
+      if (heroSubtitle) heroSubtitle.textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
+      if (searchInput) searchInput.placeholder = config.search_placeholder || defaultConfig.search_placeholder;
+      if (supportMessage) supportMessage.textContent = config.support_message || defaultConfig.support_message;
+
+      if (supportButton) {
+        const label = config.support_button || defaultConfig.support_button;
+        supportButton.innerHTML = `
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          ${label}
+        `;
+      }
+
+      const font = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      document.body.style.fontFamily = `${font}, system-ui, sans-serif`;
+      document.body.style.fontSize = `${fontSize}px`;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          { get: () => config.background_color || defaultConfig.background_color, set: (v) => window.elementSdk.setConfig({ background_color: v }) },
+          { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => window.elementSdk.setConfig({ surface_color: v }) },
+          { get: () => config.text_color || defaultConfig.text_color, set: (v) => window.elementSdk.setConfig({ text_color: v }) },
+          { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => window.elementSdk.setConfig({ primary_action_color: v }) },
+          { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => window.elementSdk.setConfig({ secondary_action_color: v }) }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (v) => window.elementSdk.setConfig({ font_family: v })
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (v) => window.elementSdk.setConfig({ font_size: v })
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['hero_title', config.hero_title || defaultConfig.hero_title],
+        ['hero_subtitle', config.hero_subtitle || defaultConfig.hero_subtitle],
+        ['search_placeholder', config.search_placeholder || defaultConfig.search_placeholder],
+        ['support_message', config.support_message || defaultConfig.support_message],
+        ['support_button', config.support_button || defaultConfig.support_button]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+</body>
+</html>
