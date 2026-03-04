@@ -1,230 +1,991 @@
 <!-- about-games/irs-notice-showdown.html -->
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IRS Notice Showdown • TaxTools Arcade</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IRS Notice Showdown - TaxTools</title>
+
+  <link rel="icon" href="/assets/favicon.ico" sizes="any">
+  <link rel="shortcut icon" href="/assets/favicon.ico">
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/styles/site.css" />
-
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            dm: ['"DM Sans"', 'system-ui', 'sans-serif']
+          },
+          colors: {
+            action: '#1d4ed8',
+            charcoal: '#2d3748',
+            muted: '#64748b',
+            navy: '#0f2747',
+            'navy-light': '#17365f',
+            primary: '#1d4ed8',
+            'primary-dark': '#1e40af',
+            accent: '#f97316',
+            'accent-dark': '#ea580c',
+            surface: '#f8fafc',
+            warm: '#f97316'
+          }
+        }
+      }
+    };
+  </script>
 
   <style>
-    body { font-family: "DM Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    * { font-family: 'DM Sans', system-ui, sans-serif; }
+    html { scroll-behavior: smooth; }
+    .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
+    .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+    .btn-shadow { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); }
+
+    /* Hero right panel (animated game mock, matches canonical animated hero-panel behavior) */
+    @keyframes tm-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes tm-float-soft {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(0.6deg); }
+    }
+    @keyframes tm-sheen {
+      0% { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+      20% { opacity: 0.85; }
+      60% { opacity: 0.25; }
+      100% { transform: translateX(140%) skewX(-18deg); opacity: 0; }
+    }
+    @keyframes tm-border-spin {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes tm-pulse {
+      0%, 100% { box-shadow: 0 0 0 rgba(249, 115, 22, 0); }
+      50% { box-shadow: 0 0 0 rgba(249, 115, 22, 0.35); }
+    }
+
+    .hero-mock-wrap { position: relative; }
+
+    .hero-mock-frame {
+      position: relative;
+      border-radius: 28px;
+      padding: 1px;
+      background: linear-gradient(90deg, rgba(59,130,246,0.7), rgba(249,115,22,0.75), rgba(59,130,246,0.7));
+      background-size: 220% 220%;
+      animation: tm-border-spin 7s ease-in-out infinite;
+      box-shadow: 0 30px 90px rgba(0,0,0,0.45);
+    }
+
+    .hero-mock {
+      border-radius: 27px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-glow {
+      position: absolute;
+      inset: -30px;
+      background: radial-gradient(circle at 30% 20%, rgba(249,115,22,0.22), transparent 60%),
+                  radial-gradient(circle at 70% 55%, rgba(59,130,246,0.18), transparent 55%),
+                  radial-gradient(circle at 50% 100%, rgba(255,255,255,0.10), transparent 65%);
+      filter: blur(18px);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .hero-sheen {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .hero-sheen::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      left: -40%;
+      width: 55%;
+      height: 140%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+      animation: tm-sheen 4.8s ease-in-out infinite;
+    }
+
+    .mock-card {
+      border-radius: 16px;
+      background: rgba(15,23,42,0.72);
+      border: 1px solid rgba(148,163,184,0.25);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+    }
+
+    .mock-float-1 { animation: tm-float 5.4s ease-in-out infinite; }
+    .mock-float-2 { animation: tm-float-soft 6.3s ease-in-out infinite; }
+    .mock-float-3 { animation: tm-float 6.8s ease-in-out infinite; }
+
+    .mock-drop {
+      border-radius: 18px;
+      border: 2px dashed rgba(249,115,22,0.55);
+      background: rgba(0,0,0,0.22);
+      animation: tm-pulse 2.4s ease-in-out infinite;
+    }
   </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
 </head>
-<body class="bg-slate-950 text-slate-100">
-  <!-- PARTIAL:header -->
 
-  <main class="mx-auto max-w-5xl px-6 py-12">
+<body class="h-full bg-white text-charcoal overflow-auto">
+  <div id="app" class="w-full min-h-full">
+    <!-- PARTIAL:header -->
+
     <!-- Hero -->
-    <section class="space-y-4">
-      <div class="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/40 px-4 py-2 text-sm text-slate-200">
-        <span class="font-semibold">Interactive Game</span>
-        <span class="text-slate-400">•</span>
-        <span>Instant Access</span>
-      </div>
+    <section class="gradient-hero text-white py-14 lg:py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-10 items-center">
+          <div class="text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <span class="w-2 h-2 bg-accent rounded-full"></span>
+              <span class="text-sm font-medium">Interactive Game • Practice Mode</span>
+            </div>
 
-      <h1 class="text-4xl font-bold tracking-tight">IRS Notice Showdown</h1>
-      <p class="max-w-2xl text-lg text-slate-300">A casino-style notice challenge. Match notice sections and try to beat the house by getting at least 3 out of 10.</p>
+            <h1 class="text-4xl md:text-5xl font-bold leading-tight">IRS Notice Showdown</h1>
+            <p class="mt-4 text-lg md:text-xl text-blue-100 max-w-2xl mx-auto lg:mx-0">
+              Match notice excerpts to the correct IRS notice. Score at least <strong>3 out of 10</strong> to beat the house.
+            </p>
 
-      <div class="flex flex-wrap items-center gap-3 pt-2">
-        <button id="btnUnlock" class="rounded-xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 hover:bg-amber-400 transition">
-          Unlock & Play (6 tokens)
-        </button>
-        <a id="btnDemo" href="#preview" class="rounded-xl border border-slate-700 px-5 py-3 font-semibold text-slate-100 hover:bg-slate-900 transition">
-          Try Demo
-        </a>
-        <div id="status" class="text-sm text-slate-400"></div>
+            <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <button id="btnUnlock" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105">
+                Unlock &amp; Play (8 tokens)
+              </button>
+              <a href="#preview" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-xl border border-white/20 transition-all">
+                Try Demo
+              </a>
+            </div>
+
+            <p id="status" class="mt-4 text-sm text-blue-200"></p>
+
+            <p class="mt-6 text-blue-200 text-sm">✓ Educational only • ✓ No login, no play • ✓ Tokens are non-transferable</p>
+          </div>
+
+          <div class="relative flex justify-center lg:justify-end">
+            <div class="hero-mock-wrap w-full max-w-md">
+              <div class="hero-glow"></div>
+
+              <div class="hero-mock-frame">
+                <div class="hero-mock">
+                  <div class="relative p-4 md:p-4">
+                    <div class="hero-sheen" aria-hidden="true"></div>
+
+                    <!-- Mock header (game-like) -->
+                    <div class="flex items-center justify-between gap-3">
+                      <div class="flex items-center gap-3">
+                        <div class="h-11 w-11 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center">
+                          <span class="text-sm font-bold text-white">IRS</span>
+                        </div>
+                        <div class="leading-tight">
+                          <div class="text-white font-bold">Notice Showdown</div>
+                          <div class="text-xs text-blue-200/80">Vegas-style drag + reveal</div>
+                        </div>
+                      </div>
+
+                      <div class="flex items-center gap-2">
+                        <div class="rounded-full bg-black/35 border border-white/10 px-3 py-1 text-xs">
+                          <span class="text-amber-300 font-semibold">Q</span>
+                          <span class="text-white font-bold"> 1</span>
+                          <span class="text-white/60">/10</span>
+                        </div>
+                        <div class="rounded-full bg-black/35 border border-white/10 px-3 py-1 text-xs">
+                          <span class="text-amber-300">✓</span>
+                          <span class="text-white font-bold"> 0</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Mock excerpt -->
+                    <div class="mt-4 mock-card p-3">
+                      <div class="flex items-center gap-2 mb-3">
+                        <div class="h-7 w-7 rounded-lg bg-blue-500/20 border border-blue-300/20 flex items-center justify-center">
+                          <span class="text-[10px] font-bold text-blue-100">IRS</span>
+                        </div>
+                        <div class="text-xs text-slate-200/75">Notice excerpt</div>
+                      </div>
+                      <div class="text-sm text-slate-100 leading-relaxed">
+                        “We received information that doesn’t match what you reported…”
+                      </div>
+                      <div class="mt-3 flex items-center justify-between">
+                        <div class="text-[11px] text-slate-200/70">Drag the right card</div>
+                        <div class="text-[11px] text-amber-200 font-semibold">Reveal → Letter</div>
+                      </div>
+                    </div>
+
+                    <!-- Mock drop zone -->
+                    <div class="mt-4 mock-drop h-16 flex items-center justify-center text-center px-4">
+                      <div class="text-xs text-amber-200/80">Drop answer card here</div>
+                    </div>
+
+                    <!-- Floating answer cards (animated) -->
+                    <div class="relative mt-4 h-20">
+                      <div class="absolute left-0 top-4 mock-card w-20 h-20 p-2 mock-float-1" style="transform: rotate(-8deg);">
+                        <div class="h-6 w-6 rounded-lg bg-blue-500/20 border border-blue-300/20 flex items-center justify-center mb-2">
+                          <span class="text-[10px] font-bold text-blue-100">IRS</span>
+                        </div>
+                        <div class="text-xs text-white font-bold">CP14</div>
+                        <div class="mt-1 text-[11px] text-slate-200/70">Balance Due</div>
+                      </div>
+
+                      <div class="absolute left-1/2 -translate-x-1/2 top-1 mock-card w-24 h-28 p-3 mock-float-2" style="transform: rotate(0deg);">
+                        <div class="h-6 w-6 rounded-lg bg-blue-500/20 border border-blue-300/20 flex items-center justify-center mb-2">
+                          <span class="text-[10px] font-bold text-blue-100">IRS</span>
+                        </div>
+                        <div class="text-xs text-white font-bold">CP2000</div>
+                        <div class="mt-1 text-[11px] text-slate-200/70">Proposed Changes</div>
+                      </div>
+
+                      <div class="absolute right-0 top-6 mock-card w-24 h-28 p-3 mock-float-3" style="transform: rotate(9deg);">
+                        <div class="h-6 w-6 rounded-lg bg-blue-500/20 border border-blue-300/20 flex items-center justify-center mb-2">
+                          <span class="text-[10px] font-bold text-blue-100">IRS</span>
+                        </div>
+                        <div class="text-xs text-white font-bold">CP504</div>
+                        <div class="mt-1 text-[11px] text-slate-200/70">Intent to Levy</div>
+                      </div>
+                    </div>
+
+                    <!-- Mock CTA strip -->
+                    <div class="mt-4 grid grid-cols-2 gap-2">
+                      <div class="rounded-2xl bg-white/5 border border-white/10 p-4">
+                        <div class="text-xs text-blue-200/80">Win threshold</div>
+                        <div class="text-white font-bold text-lg">3 / 10</div>
+                      </div>
+                      <div class="rounded-2xl bg-white/5 border border-white/10 p-4">
+                        <div class="text-xs text-blue-200/80">Token cost</div>
+                        <div class="text-white font-bold text-lg">8</div>
+                      </div>
+                    </div>
+
+                    <div class="mt-4">
+                      <button type="button" class="w-full bg-white text-navy hover:bg-gray-100 font-semibold px-5 py-2.5 rounded-xl transition-all hover:scale-[1.02]">
+                        Unlock &amp; Play
+                      </button>
+                      <div class="mt-2 text-[11px] text-blue-200/70">This is a visual mock. Real game is 10 rounds with letter reveals.</div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- What You'll Learn -->
-    <section class="mt-12">
-      <h2 class="text-2xl font-semibold">What You’ll Learn</h2>
-      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-  <div class="font-semibold">Beat the house theme</div>
-  <div class="mt-1 text-sm text-slate-400">Practice this concept through gameplay.</div>
-</div>
-<div class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-  <div class="font-semibold">Notice knowledge practice</div>
-  <div class="mt-1 text-sm text-slate-400">Practice this concept through gameplay.</div>
-</div>
-<div class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-  <div class="font-semibold">Score tracking</div>
-  <div class="mt-1 text-sm text-slate-400">Practice this concept through gameplay.</div>
-</div>
-<div class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-  <div class="font-semibold">Ten-round challenge</div>
-  <div class="mt-1 text-sm text-slate-400">Practice this concept through gameplay.</div>
-</div>
-<div class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-  <div class="font-semibold">Win threshold (3/10)</div>
-  <div class="mt-1 text-sm text-slate-400">Practice this concept through gameplay.</div>
-</div>
+    <section class="py-14 lg:py-20 bg-surface">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">Skills</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2">What You’ll Learn</h2>
+          <p class="text-muted text-lg max-w-2xl mx-auto mt-4">This is practice, not professional advice. It’s still useful, like most things humans do for fun.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-white rounded-2xl p-6 card-shadow">
+            <h3 class="text-navy font-bold text-lg">Beat-the-house pacing</h3>
+            <p class="text-muted text-sm mt-2">Build speed and confidence identifying common notice types under pressure.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 card-shadow">
+            <h3 class="text-navy font-bold text-lg">Notice recognition</h3>
+            <p class="text-muted text-sm mt-2">Practice mapping excerpt language to the correct notice name/number.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 card-shadow">
+            <h3 class="text-navy font-bold text-lg">Score tracking</h3>
+            <p class="text-muted text-sm mt-2">Immediate feedback helps you see patterns in what you miss.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 card-shadow">
+            <h3 class="text-navy font-bold text-lg">Ten-round challenge</h3>
+            <p class="text-muted text-sm mt-2">Short, repeatable games to reinforce memory without getting boring.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 card-shadow">
+            <h3 class="text-navy font-bold text-lg">Win threshold</h3>
+            <p class="text-muted text-sm mt-2">Hit 3/10 to “win.” The goal is practice, not perfection.</p>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Demo / Preview -->
-    <section id="preview" class="mt-12">
-      <h2 class="text-2xl font-semibold">Demo / Preview</h2>
-      <p class="mt-2 max-w-3xl text-slate-300">
-        This preview is educational and intentionally limited. Full gameplay unlocks only after the Worker confirms a valid token spend.
-      </p>
-      <div class="mt-4 rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
-        <p class="text-slate-200 font-semibold">Preview (limited)</p>
-        <p class="mt-2 text-slate-300">
-          Coming next: a lightweight preview experience. For now, click “Unlock & Play” to launch the full game page.
-        </p>
+    <section id="preview" class="py-14 lg:py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <span class="text-primary font-semibold text-sm uppercase tracking-wide">Demo</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2">Try a Mini Round</h2>
+            <p class="text-muted text-lg mt-4 max-w-2xl">
+              One sample question. No tokens. No redirect. Just enough to see how the real game works.
+            </p>
+
+            <div class="mt-8">
+              <button type="button" data-demo-open="showdown" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105">
+                Launch Demo
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-3xl p-6 md:p-8">
+            <div class="bg-white rounded-2xl card-shadow p-6">
+              <p class="text-navy font-bold">What you'll experience</p>
+              <ul class="mt-4 space-y-2 text-sm text-muted list-disc pl-5">
+                <li>Read a real notice excerpt</li>
+                <li>Select the correct notice name</li>
+                <li>Instant feedback</li>
+              </ul>
+              <p class="mt-4 text-xs text-muted">Full version includes 10 randomized rounds and score tracking.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- How It Works -->
-    <section class="mt-12">
-      <h2 class="text-2xl font-semibold">How It Works</h2>
-      <ol class="mt-4 grid gap-4 md:grid-cols-3">
-        <li class="rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
-          <div class="text-sm text-slate-400">Step 1</div>
-          <div class="mt-1 font-semibold">Sign in (cookie session)</div>
-        </li>
-        <li class="rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
-          <div class="text-sm text-slate-400">Step 2</div>
-          <div class="mt-1 font-semibold">Confirm spend (6 tokens)</div>
-        </li>
-        <li class="rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
-          <div class="text-sm text-slate-400">Step 3</div>
-          <div class="mt-1 font-semibold">Play instantly</div>
-        </li>
-      </ol>
+    <section class="py-14 lg:py-20 bg-navy text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">Flow</span>
+          <h2 class="text-3xl md:text-4xl font-bold mt-2">How It Works</h2>
+          <p class="text-blue-200 text-lg max-w-2xl mx-auto mt-4">Short and boring. Like all good security processes.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-20 h-20 bg-primary/20 rounded-3xl flex items-center justify-center mx-auto mb-5 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center font-bold text-sm">1</span>
+              <svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Sign in</h3>
+            <p class="text-blue-200">Sign in to your TaxTools account to access your game tokens securely.</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-20 h-20 bg-accent/20 rounded-3xl flex items-center justify-center mx-auto mb-5 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center font-bold text-sm">2</span>
+              <svg class="w-10 h-10 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Confirm token use</h3>
+            <p class="text-blue-200">We instantly confirm you have enough tokens and deduct the game cost.</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-20 h-20 bg-amber-500/20 rounded-3xl flex items-center justify-center mx-auto mb-5 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center font-bold text-sm">3</span>
+              <svg class="w-10 h-10 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Start the game</h3>
+            <p class="text-blue-200">You’re taken straight into the 10-round challenge with live scoring and letter reveals.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- FAQ -->
-    <section class="mt-12">
-      <h2 class="text-2xl font-semibold">FAQ</h2>
-      <div class="mt-4 space-y-3">
-        <details class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-          <summary class="cursor-pointer font-semibold">Is this tax advice?</summary>
-          <p class="mt-2 text-slate-300">No. Educational only. Not tax advice and not representation.</p>
-        </details>
-        <details class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-          <summary class="cursor-pointer font-semibold">Do tokens expire?</summary>
-          <p class="mt-2 text-slate-300">No. Tokens do not expire and are non-transferable.</p>
-        </details>
-        <details class="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-          <summary class="cursor-pointer font-semibold">I need real help. What now?</summary>
-          <p class="mt-2 text-slate-300">If you want monitoring or representation, go to <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
-        </details>
+    <section class="py-14 lg:py-20 bg-white">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">FAQ</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="space-y-4">
+          <details class="bg-surface rounded-2xl overflow-hidden">
+            <summary class="cursor-pointer font-semibold p-6 text-navy">Do tokens expire?</summary>
+            <div class="px-6 pb-6 text-muted">
+              No. Tokens do not expire and are non-transferable.
+            </div>
+          </details>
+
+          <details class="bg-surface rounded-2xl overflow-hidden">
+            <summary class="cursor-pointer font-semibold p-6 text-navy">I need real help. What now?</summary>
+            <div class="px-6 pb-6 text-muted">
+              If you want monitoring or representation, visit <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.
+            </div>
+          </details>
+
+          <details class="bg-surface rounded-2xl overflow-hidden">
+            <summary class="cursor-pointer font-semibold p-6 text-navy">Is this tax advice?</summary>
+            <div class="px-6 pb-6 text-muted">
+              No. Educational only. Not tax advice and not representation.
+            </div>
+          </details>
+        </div>
       </div>
     </section>
 
     <!-- Trust + Disclaimers -->
-    <section class="mt-12 rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
-      <h2 class="text-xl font-semibold">Trust + Disclaimers</h2>
-      <ul class="mt-3 list-disc pl-5 text-slate-300 space-y-1">
-        <li>Educational only, not tax advice.</li>
-        <li>Not representation.</li>
-        <li>Need monitoring or representation? Visit <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</li>
-      </ul>
+    <section class="py-14 bg-surface">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl card-shadow p-8">
+          <h2 class="text-2xl font-bold text-navy">Trust + Disclaimers</h2>
+          <ul class="mt-4 list-disc pl-6 text-muted space-y-2">
+            <li>Educational only, not tax advice.</li>
+            <li>Need monitoring or representation? Visit <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</li>
+            <li>Not representation.</li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <!-- Final CTA -->
-    <section class="mt-12 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
-      <div>
-        <div class="text-lg font-semibold">Ready to play?</div>
-        <div class="text-slate-300">Unlock access with a token spend verified by the Worker.</div>
-      </div>
-      <div class="flex items-center gap-3">
-        <button id="btnUnlock2" class="rounded-xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 hover:bg-amber-400 transition">
-          Unlock & Play (6 tokens)
-        </button>
-        <a href="/index.html" class="rounded-xl border border-slate-700 px-5 py-3 font-semibold text-slate-100 hover:bg-slate-900 transition">
-          View All Games
-        </a>
+    <section class="py-14 lg:py-20 gradient-hero text-white">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to play?</h2>
+        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend verified by the Worker, then jump straight into the game.</p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button id="btnUnlock4" class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105">
+            Unlock &amp; Play (8 tokens)
+          </button>
+          <a href="/index.html" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl border border-white/20 transition-all">
+            View All Games
+          </a>
+        </div>
       </div>
     </section>
-  </main>
 
-  <!-- PARTIAL:footer -->
+    <!-- PARTIAL:footer -->
+  </div>
 
   <script>
-    const API_BASE = "https://tools-api.taxmonitor.pro";
+    // Worker base (locked by README for TaxTools)
+    const API_BASE = 'https://tools-api.taxmonitor.pro';
 
-    const slug = "irs-notice-showdown.html";
-    const tokenCost = 6;
+    // Game unlock rules
+    const slug = 'irs-notice-showdown.html';
+    const tokenCost = 8;
 
     function setStatus(msg) {
-      const el = document.getElementById("status");
-      if (el) el.textContent = msg || "";
+      const el = document.getElementById('status');
+      if (el) el.textContent = msg || '';
     }
 
     async function apiGet(path) {
-      const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
+      const res = await fetch(API_BASE + path, { method: 'GET', credentials: 'include' });
       return { res, json: await res.json().catch(() => ({})) };
     }
 
     async function apiPost(path, body) {
       const res = await fetch(API_BASE + path, {
-        method: "POST",
-        credentials: "include",
-        headers: { "content-type": "application/json" },
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify(body)
       });
       return { res, json: await res.json().catch(() => ({})) };
     }
 
     async function unlockAndPlay() {
-      setStatus("Checking session…");
+      setStatus('Checking session…');
 
-      const me = await apiGet("/v1/auth/me");
+      const me = await apiGet('/v1/auth/me');
       if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-        setStatus("Please sign in to continue.");
-        // Sign-in UX is handled by your SDK/app flow; this is a safe default.
-        window.location.href = "/index.html";
+        setStatus('Please sign in to continue.');
+        window.location.href = '/index.html';
         return;
       }
 
-      setStatus("Checking token balance…");
-      const bal = await apiGet("/v1/tokens/balance");
+      setStatus('Checking token balance…');
+      const bal = await apiGet('/v1/tokens/balance');
       const balance = Number(bal.json && bal.json.balance);
       if (!Number.isFinite(balance)) {
-        setStatus("Could not load token balance.");
+        setStatus('Could not load token balance.');
         return;
       }
 
       if (balance < tokenCost) {
-        setStatus("Not enough tokens. Purchase a pack to continue.");
-        window.location.href = "/index.html#pricing";
+        setStatus('Not enough tokens. Purchase a pack to continue.');
+        window.location.href = '/index.html#pricing';
         return;
       }
 
-      setStatus("Confirming token spend…");
-      const spend = await apiPost("/v1/tokens/spend", {
+      setStatus('Confirming token spend…');
+      const idempotencyKey = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
+      const spend = await apiPost('/v1/tokens/spend', {
         amount: tokenCost,
-        idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
-        reason: "arcade_play",
-        slug: slug
+        idempotencyKey,
+        reason: 'arcade_play',
+        slug
       });
 
       if (!spend.res.ok) {
-        setStatus("Spend failed. Please try again.");
+        setStatus('Spend failed. Please try again.');
         return;
       }
 
-      setStatus("Unlocked. Redirecting…");
-      window.location.href = "/games/" + slug;
+      setStatus('Unlocked. Redirecting…');
+      window.location.href = '/games/' + slug;
     }
 
-    document.getElementById("btnUnlock")?.addEventListener("click", unlockAndPlay);
-    document.getElementById("btnUnlock2")?.addEventListener("click", unlockAndPlay);
+    ['btnUnlock', 'btnUnlock2', 'btnUnlock3', 'btnUnlock4'].forEach((id) => {
+      document.getElementById(id)?.addEventListener('click', unlockAndPlay);
+    });
+  </script>
+  <!-- Demo Modal (mimics the real game, capped at 3 rounds) -->
+  <div id="demo-modal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/70" data-demo-close="1"></div>
+
+    <!-- The demo runs inside this modal but uses the same game flow: drag/drop -> reveal -> letter modal -> next -->
+    <div class="absolute inset-4 md:inset-10 lg:inset-16 rounded-2xl overflow-hidden shadow-2xl">
+      <div class="min-h-full w-full" style="background: radial-gradient(ellipse at center, #1a5f2a 0%, #0d3d16 70%, #082810 100%);">
+        <div class="p-1" style="background: linear-gradient(90deg, #ffd700, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffd700); background-size: 400% 400%; animation: demo-vegas-lights 3s ease infinite;">
+          <div class="min-h-full p-4 md:p-6" style="background: radial-gradient(ellipse at center, #1a5f2a 0%, #0d3d16 70%, #082810 100%);">
+
+            <!-- Header Bar -->
+            <div class="flex items-center justify-between gap-4 mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-700 to-red-900 flex items-center justify-center" style="box-shadow: 4px 4px 15px rgba(0,0,0,0.4), -2px -2px 10px rgba(255,255,255,0.1);">
+                  <div class="w-8 h-8 rounded-full border-2 border-dashed border-white flex items-center justify-center">
+                    <span class="text-white font-bold text-xs">IRS</span>
+                  </div>
+                </div>
+                <div class="leading-tight">
+                  <div class="text-yellow-200 font-bold">Tax Notice Showdown</div>
+                  <div class="text-white/70 text-xs">Demo Mode (3 cards)</div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <button type="button" class="px-3 py-2 bg-white/10 hover:bg-white/15 text-white text-sm font-semibold rounded-lg border border-white/15" id="demo-unlock-btn-top">Unlock Full Game</button>
+                <button type="button" class="w-10 h-10 bg-white/10 hover:bg-white/15 text-white rounded-lg border border-white/15" data-demo-close="1" aria-label="Close">✕</button>
+              </div>
+            </div>
+
+            <!-- Score Bar (same semantics as the game) -->
+            <div class="flex justify-between items-center mb-4 px-2">
+              <div class="bg-black/50 px-4 py-2 rounded-full">
+                <span class="text-yellow-400 font-bold">Question: </span>
+                <span id="demo-question-num" class="text-white font-bold">1</span>
+                <span class="text-gray-400">/3</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-yellow-400">✓</span>
+                <span id="demo-score" class="text-white font-bold text-xl">0</span>
+              </div>
+            </div>
+
+            <!-- Question Area -->
+            <div class="flex-1 flex flex-col items-center justify-center px-2 md:px-4">
+              <!-- Notice Excerpt Card -->
+              <div class="rounded-xl p-6 md:p-8 max-w-2xl w-full mb-8 border-4" style="background: linear-gradient(to bottom, #fef3c7, #fffbeb); border-color: #d97706; box-shadow: 4px 4px 15px rgba(0,0,0,0.4), -2px -2px 10px rgba(255,255,255,0.1);">
+                <div class="flex items-center gap-2 mb-4">
+                  <div class="w-8 h-8 rounded flex items-center justify-center" style="background: #1e3a8a;"><span class="text-white text-xs font-bold">IRS</span></div>
+                  <span class="text-gray-600 text-sm">Official Notice Excerpt</span>
+                </div>
+                <p id="demo-question-text" class="text-gray-800 text-lg md:text-xl leading-relaxed" style="font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;">Loading…</p>
+              </div>
+
+              <!-- Drop Zone -->
+              <div id="demo-drop-zone" class="w-48 h-32 md:w-64 md:h-40 border-4 border-dashed rounded-xl flex items-center justify-center mb-8 mt-8 transition-all duration-300" style="border-color: rgba(202, 138, 4, 0.55); background: rgba(0,0,0,0.2);">
+                <p class="text-yellow-400/70 text-center px-4">Drop your answer card here</p>
+              </div>
+
+              <!-- Reveal Button -->
+              <button id="demo-reveal-btn" class="hidden px-6 py-3 text-white font-bold rounded-full transition-all transform hover:scale-105 mb-4" style="background: linear-gradient(to right, #22c55e, #16a34a);">
+                🎴 Reveal the Card!
+              </button>
+
+              <!-- Feedback Area -->
+              <div id="demo-feedback-area" class="hidden text-center mb-4">
+                <div id="demo-feedback-banner" class="text-3xl md:text-4xl font-black mb-2"></div>
+                <p id="demo-feedback-text" class="text-white text-lg"></p>
+                <button id="demo-next-btn" class="mt-4 px-6 py-3 text-black font-bold rounded-full transition-all" style="background: linear-gradient(to right, #eab308, #f59e0b);">
+                  Next Card →
+                </button>
+              </div>
+            </div>
+
+            <!-- Card Spread -->
+            <div id="demo-card-spread" class="flex justify-center gap-2 md:gap-4 pb-6 px-2 flex-wrap"></div>
+
+            <!-- Footer strip -->
+            <div class="mt-2 flex items-center justify-between gap-4 p-3 rounded-xl border border-white/10" style="background: rgba(0,0,0,0.35);">
+              <div class="text-xs text-white/70">Demo mode. Drag a card, reveal, then continue. Score matters, because humans love numbers.</div>
+              <button id="demo-unlock-btn" class="px-4 py-2 text-white font-semibold rounded-lg" style="background: rgba(29, 78, 216, 0.95);">Unlock Full Game (8 tokens)</button>
+            </div>
+
+            <!-- IRS LETTER MODAL (demo) -->
+            <div id="demo-letter-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4">
+              <div class="bg-white rounded-lg max-w-2xl w-full max-h-[80%] overflow-auto relative">
+                <button id="demo-close-letter" class="absolute top-2 right-2 w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300">×</button>
+                <div id="demo-letter-content" class="p-6" style="font-family: 'Courier New', monospace; background: #fff; color: #000;"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @keyframes demo-vegas-lights {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes demo-card-deal {
+      0% { transform: translateX(-200px) rotate(-20deg) scale(0.5); opacity: 0; }
+      100% { transform: translateX(0) rotate(0deg) scale(1); opacity: 1; }
+    }
+    @keyframes demo-card-flip {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(90deg); }
+      100% { transform: rotateY(0deg); }
+    }
+    .demo-card-deal { animation: demo-card-deal 0.45s ease-out forwards; }
+    .demo-card-flip { animation: demo-card-flip 0.6s ease-in-out; }
+    .demo-dragging { transform: scale(1.1) rotate(-5deg); z-index: 70; }
+    .demo-drop-zone-active { border-color: #ffd700 !important; box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); }
+  </style>
+
+  <script>
+    // Demo data (subset) + real-game mechanics (drag/drop -> reveal -> letter -> next), capped at 3 questions.
+    const demoNotices = [
+      { id: 'CP14', name: 'CP14', description: 'Balance Due - First Notice' },
+      { id: 'CP2000', name: 'CP2000', description: 'Proposed Changes to Tax Return' },
+      { id: 'CP27', name: 'CP27', description: 'Refund Different Than Expected' },
+      { id: 'CP504', name: 'CP504', description: 'Intent to Levy - Urgent Notice' },
+      { id: 'CP53', name: 'CP53', description: 'Refund Check Could Not Be Delivered' },
+      { id: 'Letter147C', name: 'Letter 147C', description: 'EIN Verification Letter' }
+    ];
+
+    const demoQuestions = [
+      {
+        text: "We received information that doesn't match what you reported on your tax return. Review the proposed changes and respond if you agree or disagree.",
+        answer: 'CP2000',
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="w-16 h-16 bg-blue-900 flex items-center justify-center"><span class="text-white font-bold">IRS</span></div>
+              <div class="text-right text-sm">
+                <p class="font-bold">Notice CP2000</p>
+                <p>Proposed Changes</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-purple-100 p-4 mb-4 border-l-4 border-purple-500">
+            <p class="font-bold text-lg">Proposed Changes to Your Tax Return</p>
+            <p>Response Due: XX/XX/XXXX</p>
+          </div>
+          <p class="mb-4">The income and/or payment information we have on file doesn't match the information you reported on your tax return. Please review the proposed changes.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      },
+      {
+        text: 'You have unpaid taxes for the tax year shown above. This is your first notice. Please pay the amount due by the date shown.',
+        answer: 'CP14',
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="w-16 h-16 bg-blue-900 flex items-center justify-center"><span class="text-white font-bold">IRS</span></div>
+              <div class="text-right text-sm">
+                <p class="font-bold">Notice CP14</p>
+                <p>Balance Due - First Notice</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-red-100 p-4 mb-4 border-l-4 border-red-500">
+            <p class="font-bold text-lg">You Have Unpaid Taxes</p>
+            <p class="text-2xl font-bold text-red-600">Amount Due: $X,XXX.XX</p>
+            <p>Due Date: XX/XX/XXXX</p>
+          </div>
+          <p class="mb-4">You have an amount due on your federal tax return. Please pay by the due date to avoid additional penalties and interest charges.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      },
+      {
+        text: 'This is your final notice before we levy (seize) your state tax refund or other property. You must pay the amount due immediately.',
+        answer: 'CP504',
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="w-16 h-16 bg-blue-900 flex items-center justify-center"><span class="text-white font-bold">IRS</span></div>
+              <div class="text-right text-sm">
+                <p class="font-bold text-red-600">Notice CP504</p>
+                <p class="text-red-600">URGENT - Intent to Levy</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-red-200 p-4 mb-4 border-l-4 border-red-700">
+            <p class="font-bold text-lg text-red-700">⚠️ INTENT TO SEIZE YOUR PROPERTY</p>
+            <p class="text-2xl font-bold text-red-700">Amount Due: $X,XXX.XX</p>
+          </div>
+          <p class="mb-4 text-red-700 font-bold">URGENT: This is your final notice. We intend to levy (seize) your state tax refund or other property. Pay immediately to prevent collection action.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      }
+    ];
+
+    // Demo state
+    let demoCurrentQuestion = 0;
+    let demoScore = 0;
+    let demoDroppedCard = null;
+
+    // Open/close
+    function openDemo() {
+      document.getElementById('demo-modal').classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+      startDemo();
+    }
+
+    function closeDemo() {
+      document.getElementById('demo-modal').classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+      // Also close letter modal if open
+      document.getElementById('demo-letter-modal')?.classList.add('hidden');
+    }
+
+    function startDemo() {
+      demoCurrentQuestion = 0;
+      demoScore = 0;
+      demoLoadQuestion();
+    }
+
+    function demoLoadQuestion() {
+      const q = demoQuestions[demoCurrentQuestion];
+      document.getElementById('demo-question-num').textContent = String(demoCurrentQuestion + 1);
+      document.getElementById('demo-score').textContent = String(demoScore);
+      document.getElementById('demo-question-text').textContent = q.text;
+
+      // Reset UI
+      document.getElementById('demo-reveal-btn').classList.add('hidden');
+      document.getElementById('demo-feedback-area').classList.add('hidden');
+
+      const dz = document.getElementById('demo-drop-zone');
+      dz.innerHTML = '<p class="text-yellow-400/70 text-center px-4">Drop your answer card here</p>';
+      dz.classList.remove('demo-drop-zone-active');
+
+      demoDroppedCard = null;
+      demoGenerateCards();
+    }
+
+    function demoGenerateCards() {
+      const spread = document.getElementById('demo-card-spread');
+      spread.innerHTML = '';
+
+      // Shuffle for display
+      const shuffled = [...demoNotices].sort(() => Math.random() - 0.5);
+
+      shuffled.forEach((notice, index) => {
+        const card = document.createElement('div');
+        card.className = 'demo-notice-card w-16 h-24 md:w-20 md:h-28 bg-white rounded-lg cursor-grab flex flex-col items-center justify-center p-2 transition-all hover:scale-110 hover:-translate-y-2 demo-card-deal';
+        card.style.animationDelay = `${index * 0.05}s`;
+        card.dataset.noticeId = notice.id;
+        card.draggable = true;
+        card.style.boxShadow = '4px 4px 15px rgba(0,0,0,0.4), -2px -2px 10px rgba(255,255,255,0.1)';
+
+        card.innerHTML = `
+          <div class="w-6 h-6 rounded text-white text-xs flex items-center justify-center mb-1" style="background:#1e3a8a;">IRS</div>
+          <p class="text-xs md:text-sm font-bold text-center text-gray-800 leading-tight">${notice.name}</p>
+        `;
+
+        card.addEventListener('dragstart', demoHandleDragStart);
+        card.addEventListener('dragend', demoHandleDragEnd);
+
+        // Click-to-drop (same as game alternative)
+        card.addEventListener('click', () => demoDropCard(notice.id));
+
+        spread.appendChild(card);
+      });
+
+      // Drop zone listeners
+      const dz = document.getElementById('demo-drop-zone');
+      dz.addEventListener('dragover', demoHandleDragOver);
+      dz.addEventListener('drop', demoHandleDrop);
+      dz.addEventListener('dragleave', demoHandleDragLeave);
+
+      // Basic touch support (demo mirrors game behavior)
+      document.querySelectorAll('.demo-notice-card').forEach((c) => {
+        c.addEventListener('touchstart', demoHandleTouchStart, { passive: false });
+        c.addEventListener('touchmove', demoHandleTouchMove, { passive: false });
+        c.addEventListener('touchend', demoHandleTouchEnd);
+      });
+    }
+
+    function demoHandleDragStart(e) {
+      e.target.classList.add('demo-dragging', 'opacity-50');
+      e.dataTransfer.setData('text/plain', e.target.dataset.noticeId);
+    }
+
+    function demoHandleDragEnd(e) {
+      e.target.classList.remove('demo-dragging', 'opacity-50');
+    }
+
+    function demoHandleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('demo-drop-zone').classList.add('demo-drop-zone-active');
+    }
+
+    function demoHandleDragLeave() {
+      document.getElementById('demo-drop-zone').classList.remove('demo-drop-zone-active');
+    }
+
+    function demoHandleDrop(e) {
+      e.preventDefault();
+      document.getElementById('demo-drop-zone').classList.remove('demo-drop-zone-active');
+      const noticeId = e.dataTransfer.getData('text/plain');
+      demoDropCard(noticeId);
+    }
+
+    // Touch handling
+    let demoTouchedCard = null;
+
+    function demoHandleTouchStart(e) {
+      demoTouchedCard = e.target.closest('.demo-notice-card');
+      if (!demoTouchedCard) return;
+      e.preventDefault();
+      demoTouchedCard.classList.add('demo-dragging');
+    }
+
+    function demoHandleTouchMove(e) {
+      if (!demoTouchedCard) return;
+      e.preventDefault();
+
+      const touch = e.touches[0];
+      const dz = document.getElementById('demo-drop-zone');
+      const rect = dz.getBoundingClientRect();
+
+      if (touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+        dz.classList.add('demo-drop-zone-active');
+      } else {
+        dz.classList.remove('demo-drop-zone-active');
+      }
+    }
+
+    function demoHandleTouchEnd(e) {
+      if (!demoTouchedCard) return;
+
+      const touch = e.changedTouches[0];
+      const dz = document.getElementById('demo-drop-zone');
+      const rect = dz.getBoundingClientRect();
+
+      if (touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+        demoDropCard(demoTouchedCard.dataset.noticeId);
+      }
+
+      demoTouchedCard.classList.remove('demo-dragging');
+      dz.classList.remove('demo-drop-zone-active');
+      demoTouchedCard = null;
+    }
+
+    function demoDropCard(noticeId) {
+      if (demoDroppedCard) return;
+
+      demoDroppedCard = noticeId;
+      const notice = demoNotices.find(n => n.id === noticeId);
+      const dz = document.getElementById('demo-drop-zone');
+
+      dz.innerHTML = `
+        <div class="flex flex-col items-center gap-3">
+          <div class="w-16 h-24 md:w-20 md:h-28 bg-white rounded-lg flex flex-col items-center justify-center p-2 demo-card-flip" style="box-shadow: 4px 4px 15px rgba(0,0,0,0.4), -2px -2px 10px rgba(255,255,255,0.1);">
+            <div class="w-6 h-6 rounded text-white text-xs flex items-center justify-center mb-1" style="background:#1e3a8a;">IRS</div>
+            <p class="text-xs md:text-sm font-bold text-center text-gray-800">${notice.name}</p>
+          </div>
+          <button id="demo-remove-card-btn" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs md:text-sm font-bold rounded transition-all">Remove</button>
+        </div>
+      `;
+
+      // Hide the original card
+      const original = document.querySelector(`#demo-card-spread [data-notice-id="${noticeId}"]`);
+      if (original) {
+        original.style.opacity = '0.3';
+        original.style.pointerEvents = 'none';
+      }
+
+      document.getElementById('demo-reveal-btn').classList.remove('hidden');
+      document.getElementById('demo-remove-card-btn').addEventListener('click', demoRemoveCard);
+    }
+
+    function demoRemoveCard() {
+      if (!demoDroppedCard) return;
+
+      const original = document.querySelector(`#demo-card-spread [data-notice-id="${demoDroppedCard}"]`);
+      if (original) {
+        original.style.opacity = '1';
+        original.style.pointerEvents = 'auto';
+      }
+
+      const dz = document.getElementById('demo-drop-zone');
+      dz.innerHTML = '<p class="text-yellow-400/70 text-center px-4">Drop your answer card here</p>';
+
+      demoDroppedCard = null;
+      document.getElementById('demo-reveal-btn').classList.add('hidden');
+    }
+
+    function demoRevealAnswer() {
+      const q = demoQuestions[demoCurrentQuestion];
+      const isCorrect = demoDroppedCard === q.answer;
+      if (isCorrect) demoScore++;
+      demoShowFeedback(isCorrect, q);
+    }
+
+    function demoShowFeedback(isCorrect, q) {
+      document.getElementById('demo-reveal-btn').classList.add('hidden');
+
+      const area = document.getElementById('demo-feedback-area');
+      const banner = document.getElementById('demo-feedback-banner');
+      const text = document.getElementById('demo-feedback-text');
+
+      if (isCorrect) {
+        banner.innerHTML = '🎰 <span class="text-green-400">WINNER!</span> 🎰';
+        text.innerHTML = `Correct! This is a <strong>${q.answer}</strong> notice.`;
+      } else {
+        const correctNotice = demoNotices.find(n => n.id === q.answer);
+        banner.innerHTML = '❌ <span class="text-red-400">BUST!</span> ❌';
+        text.innerHTML = `The correct answer was <strong>${correctNotice ? correctNotice.name : q.answer}</strong>.`;
+      }
+
+      area.classList.remove('hidden');
+      document.getElementById('demo-score').textContent = String(demoScore);
+
+      // Show IRS letter modal (like the real game)
+      document.getElementById('demo-letter-content').innerHTML = q.letterContent;
+      document.getElementById('demo-letter-modal').classList.remove('hidden');
+    }
+
+    function demoNextQuestion() {
+      document.getElementById('demo-letter-modal').classList.add('hidden');
+      demoCurrentQuestion++;
+
+      if (demoCurrentQuestion >= demoQuestions.length) {
+        // Demo complete state
+        document.getElementById('demo-question-num').textContent = String(demoQuestions.length);
+        document.getElementById('demo-question-text').textContent = `Demo complete. Final score: ${demoScore} / ${demoQuestions.length}.`;
+        document.getElementById('demo-card-spread').innerHTML = '';
+        document.getElementById('demo-drop-zone').innerHTML = '<p class="text-yellow-400/70 text-center px-4">Unlock the full game to play 10 rounds.</p>';
+        document.getElementById('demo-feedback-area').classList.add('hidden');
+        return;
+      }
+
+      demoLoadQuestion();
+    }
+
+    // Wire buttons + open/close triggers
+    document.getElementById('demo-reveal-btn')?.addEventListener('click', demoRevealAnswer);
+    document.getElementById('demo-next-btn')?.addEventListener('click', demoNextQuestion);
+    document.getElementById('demo-close-letter')?.addEventListener('click', () => document.getElementById('demo-letter-modal').classList.add('hidden'));
+
+    document.querySelectorAll('[data-demo-open="showdown"]').forEach((btn) => btn.addEventListener('click', openDemo));
+    document.querySelectorAll('[data-demo-close="1"]').forEach((btn) => btn.addEventListener('click', closeDemo));
+
+    // Unlock buttons inside demo
+    document.getElementById('demo-unlock-btn')?.addEventListener('click', () => { closeDemo(); unlockAndPlay(); });
+    document.getElementById('demo-unlock-btn-top')?.addEventListener('click', () => { closeDemo(); unlockAndPlay(); });
   </script>
 </body>
 </html>
-
