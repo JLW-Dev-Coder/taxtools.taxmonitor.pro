@@ -1,0 +1,11 @@
+{
+  "name": "taxtools-taxmonitor-pro",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "audit": "node ./audit/launch-readiness.mjs",
+    "build": "node ./build.mjs",
+    "deploy": "wrangler deploy ./workers/api/src/index.js",
+    "launch": "npm run build && npm run audit && npm run deploy"
+  }
+}
