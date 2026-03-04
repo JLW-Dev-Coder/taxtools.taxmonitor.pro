@@ -1,5 +1,5 @@
 ﻿{
-  "$schema": "node_modules/wrangler/config-schema.json",
+  "$schema": "https://developers.cloudflare.com/wrangler/config-schema.json",
   "name": "taxtools-taxmonitor-pro-api",
   "compatibility_date": "2025-09-27",
   "workers_dev": false,
@@ -7,5 +7,12 @@
   "observability": { "enabled": true },
   "assets": { "directory": "./dist" },
   "compatibility_flags": ["nodejs_compat"],
-  "routes": ["tools-api.taxmonitor.pro/*"]
+  "routes": ["tools-api.taxmonitor.pro/*"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_id": "e43ad11a-dd66-42fc-b162-b96a7295a079",
+      "database_name": "tax-tools-tax-monitor"
+    }
+  ]
 }
