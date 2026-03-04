@@ -91,32 +91,41 @@
           </div>
         </div>
 
-        <!-- Tokens -->
-        <div id="token-pill"
-          class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100">
-          <span class="text-blue-300">Tokens:</span>
-          <span id="token-balance" class="font-semibold text-white">0</span>
+        <!-- Tokens + Auth (aligned via 2-row grid) -->
+        <div class="grid grid-rows-2 gap-1 items-start">
+
+          <!-- Row 1: Tokens pill -->
+          <div
+            id="token-pill"
+            class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100"
+          >
+            <span class="text-blue-300">Tokens:</span>
+            <span id="token-balance" class="font-semibold text-white">0</span>
+          </div>
+
+          <!-- Row 2: reserved space so pills align with auth pill -->
+          <div class="h-[1rem]"></div>
         </div>
 
-        <!-- Auth section -->
-        <div class="flex flex-col items-start">
+        <div class="grid grid-rows-2 gap-1 items-start">
 
-          <!-- Signed in pill -->
-          <div id="auth-pill"
-            class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100">
+          <!-- Row 1: Signed in pill -->
+          <div
+            id="auth-pill"
+            class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100"
+          >
             <span class="text-blue-300">Signed in as:</span>
             <span id="auth-email" class="font-semibold text-white"></span>
           </div>
 
-          <!-- Sign out link -->
+          <!-- Row 2: Sign out link -->
           <a
             id="signout-link"
             href="#"
-            class="hidden mt-1 text-xs text-blue-300 underline hover:text-white transition"
+            class="hidden text-xs text-blue-300 underline hover:text-white transition"
           >
             Sign out
           </a>
-
         </div>
 
       </nav>
