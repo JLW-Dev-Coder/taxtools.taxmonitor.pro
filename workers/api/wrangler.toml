@@ -12,3 +12,7 @@ MY_ORGANIZATION_CITY = "El Cajon"
 MY_ORGANIZATION_NAME = "Tax Monitor Pro"
 MY_ORGANIZATION_STATE_PROVINCE = "CA"
 MY_ORGANIZATION_ZIP = "92020"
+
+[[r2_buckets]]
+binding = "R2_TAXTOOLS"
+bucket_name = "taxtools-taxmonitor-pro"
