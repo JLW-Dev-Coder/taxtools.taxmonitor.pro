@@ -327,36 +327,60 @@
           <p class="text-gray-600 text-lg max-w-2xl mx-auto">Choose a token pack that fits your goals. Tokens never expire and can be used across any game in the arcade.</p>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-6">
-          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-xl font-bold text-navy">Small Pack</h3>
-              <span class="text-sm font-semibold text-navy/70">$9</span>
-            </div>
-            <p class="text-sm text-gray-600 mb-6">30 tokens for quick refreshers and focused practice sessions. Ideal for testing the arcade or brushing up on specific topics.</p>
-            <button type="button" class="w-full bg-action hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors" onclick="checkoutSku('token_pack_small_30');">Buy</button>
-          </div>
+        <div class="mt-10 grid gap-6 md:grid-cols-3">
+      <!-- Large -->
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
+        <h2 class="text-xl font-semibold text-white">Large Pack</h2>
+        <p class="mt-1 text-slate-300">200 tokens</p>
+        <p class="mt-4 text-3xl font-extrabold text-white">$39</p>
 
-          <div class="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-xl font-bold text-navy">Medium Pack</h3>
-              <span class="text-sm font-semibold text-navy/70">$19</span>
-            </div>
-            <p class="text-sm text-gray-600 mb-6">80 tokens for consistent skill-building. Perfect for ongoing learning, team challenges, or structured review.</p>
-            <button type="button" class="w-full bg-warm hover:bg-orange-500 text-white px-4 py-3 rounded-xl font-semibold transition-colors" onclick="checkoutSku('token_pack_medium_80');">Buy</button>
-          </div>
+        <p class="mt-3 text-sm text-gray-300">200 tokens for deep repetition and mastery. Built for serious learners, firms, and long-term skill development.</p>
 
-          <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-xl font-bold text-navy">Large Pack</h3>
-              <span class="text-sm font-semibold text-navy/70">$39</span>
-            </div>
-            <p class="text-sm text-gray-600 mb-6">200 tokens for deep repetition and mastery. Built for serious learners, professional firms, and long-term skill development through consistent practice.</p>
-            <button type="button" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors" onclick="checkoutSku('token_pack_large_200');">Buy</button>
-          </div>
-        </div>
+        <button
+          class="mt-6 w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white hover:bg-emerald-700"
+          onclick="checkoutSku('token_pack_large_200');"
+          type="button"
+        >
+          Buy
+        </button>
+      </article>
 
-        <div class="mt-10 max-w-3xl mx-auto">
+      <!-- Medium -->
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
+        <h2 class="text-xl font-semibold text-white">Medium Pack</h2>
+        <p class="mt-1 text-slate-300">80 tokens</p>
+        <p class="mt-4 text-3xl font-extrabold text-white">$19</p>
+
+        <p class="mt-3 text-sm text-gray-300">80 tokens for consistent skill-building. Great for ongoing learning, team challenges, or structured review.</p>
+
+        <button
+          class="mt-6 w-full rounded-xl bg-warm px-4 py-3 font-semibold text-white hover:bg-orange-500"
+          onclick="checkoutSku('token_pack_medium_80');"
+          type="button"
+        >
+          Buy
+        </button>
+      </article>
+
+      <!-- Small -->
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
+        <h2 class="text-xl font-semibold text-white">Small Pack</h2>
+        <p class="mt-1 text-slate-300">30 tokens</p>
+        <p class="mt-4 text-3xl font-extrabold text-white">$9</p>
+
+        <p class="mt-3 text-sm text-gray-300">30 tokens for quick refreshers and focused practice. Great for testing the arcade or brushing up on one topic.</p>
+
+        <button
+          class="mt-6 w-full rounded-xl bg-action px-4 py-3 font-semibold text-white hover:bg-blue-700"
+          onclick="checkoutSku('token_pack_small_30');"
+          type="button"
+        >
+          Buy
+        </button>
+      </article>
+    </div>
+
+    <div class="mt-10 max-w-3xl mx-auto">
           <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
