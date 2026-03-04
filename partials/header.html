@@ -22,7 +22,6 @@
         <a href="/index.html#games" class="text-sm text-blue-200 hover:text-white transition">Games</a>
         <a href="/faq.html" class="text-sm text-blue-200 hover:text-white transition">FAQ</a>
         <a href="/help-center.html" class="text-sm text-blue-200 hover:text-white transition">Help Center</a>
-
         <a href="/contact.html" class="text-sm text-blue-200 hover:text-white transition">Contact</a>
 
         <!-- Resources -->
@@ -92,23 +91,32 @@
           </div>
         </div>
 
-        <!-- Tokens pill (desktop) -->
-        <div id="token-pill" class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100">
+        <!-- Tokens -->
+        <div id="token-pill"
+          class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100">
           <span class="text-blue-300">Tokens:</span>
           <span id="token-balance" class="font-semibold text-white">0</span>
         </div>
 
-        <!-- Signed in pill (desktop) -->
-        <div id="auth-pill" class="hidden rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100">
-          <div class="flex items-center gap-2">
+        <!-- Auth section -->
+        <div class="flex flex-col items-start">
+
+          <!-- Signed in pill -->
+          <div id="auth-pill"
+            class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100">
             <span class="text-blue-300">Signed in as:</span>
             <span id="auth-email" class="font-semibold text-white"></span>
           </div>
+
+          <!-- Sign out link -->
           <a
             id="signout-link"
             href="#"
-            class="mt-1 inline-block text-xs text-blue-300 hover:text-white transition"
-          >Sign out</a>
+            class="hidden mt-1 text-xs text-blue-300 underline hover:text-white transition"
+          >
+            Sign out
+          </a>
+
         </div>
 
       </nav>
@@ -135,214 +143,113 @@
 
     <div class="flex flex-col gap-4 px-6 py-6 text-sm">
 
-      <!-- Tokens pill (mobile) -->
-      <div id="token-pill-mobile" class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-4 py-3 text-xs text-blue-100">
+      <!-- Tokens -->
+      <div id="token-pill-mobile"
+        class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-4 py-3 text-xs text-blue-100">
         <span class="text-blue-300">Tokens:</span>
         <span id="token-balance-mobile" class="font-semibold text-white">0</span>
       </div>
 
-      <!-- Signed in pill (mobile) -->
-      <div id="auth-pill-mobile" class="hidden rounded-xl border border-blue-900/40 bg-blue-950/10 px-4 py-3 text-xs text-blue-100">
-        <div class="flex items-center gap-2">
-          <span class="text-blue-300">Signed in as:</span>
-          <span id="auth-email-mobile" class="font-semibold text-white break-all"></span>
-        </div>
-        <a
-          id="signout-link-mobile"
-          href="#"
-          class="mt-1 inline-block text-xs text-blue-300 hover:text-white transition"
-        >Sign out</a>
+      <!-- Signed in -->
+      <div id="auth-pill-mobile"
+        class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-4 py-3 text-xs text-blue-100">
+        <span class="text-blue-300">Signed in as:</span>
+        <span id="auth-email-mobile" class="font-semibold text-white break-all"></span>
       </div>
+
+      <!-- Sign out mobile -->
+      <a
+        id="signout-link-mobile"
+        href="#"
+        class="hidden text-xs text-blue-300 underline hover:text-white transition"
+      >
+        Sign out
+      </a>
 
       <!-- Alphabetical -->
       <a href="/about.html" class="text-blue-200 hover:text-white transition">About</a>
       <a href="/faq.html" class="text-blue-200 hover:text-white transition">FAQ</a>
       <a href="/help-center.html" class="text-blue-200 hover:text-white transition">Help Center</a>
       <a href="/index.html" class="text-blue-200 hover:text-white transition">Home</a>
-
       <a href="/contact.html" class="text-blue-200 hover:text-white transition">Contact</a>
-
-      <!-- Mobile Resources -->
-      <button
-        id="mobile-resources-toggle"
-        class="flex items-center justify-between rounded-lg border border-blue-900/40 bg-blue-950/10 px-4 py-3 text-left text-blue-100 hover:bg-blue-950/20 transition"
-        aria-expanded="false"
-        type="button"
-      >
-        <span>Resources</span>
-        <svg class="h-4 w-4 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M19 9l-7 7-7-7"/>
-        </svg>
-      </button>
-
-      <div id="mobile-resources-menu" class="hidden pl-2 flex flex-col gap-2">
-
-        <!-- Alphabetical -->
-        <a href="/help-center.html" class="rounded-lg px-4 py-2 text-blue-200 hover:text-white hover:bg-blue-950/20 transition">Help Center</a>
-        <a href="/contact.html" class="rounded-lg px-4 py-2 text-blue-200 hover:text-white hover:bg-blue-950/20 transition">Support</a>
-        <a href="https://taxmonitor.pro" class="rounded-lg px-4 py-2 text-blue-200 hover:text-white hover:bg-blue-950/20 transition">Tax Monitor Pro</a>
-        <a href="https://transcript.taxmonitor.pro" class="rounded-lg px-4 py-2 text-blue-200 hover:text-white hover:bg-blue-950/20 transition">Transcript.Tax Monitor Pro</a>
-
-      </div>
-
       <a href="/index.html#games" class="text-blue-200 hover:text-white transition">Games</a>
 
     </div>
   </div>
 
   <script>
-    (function () {
-      var TOOLS_API_BASE = "https://tools-api.taxmonitor.pro";
+  (function () {
 
-      var mobileMenu = document.getElementById("mobile-menu");
-      var mobileToggle = document.getElementById("mobile-menu-btn");
+    var TOOLS_API_BASE = "https://tools-api.taxmonitor.pro";
 
-      var resourcesMenu = document.getElementById("resources-menu");
-      var resourcesToggle = document.getElementById("resources-toggle");
+    async function hydrateSignedInPill() {
 
-      var mobileResourcesMenu = document.getElementById("mobile-resources-menu");
-      var mobileResourcesToggle = document.getElementById("mobile-resources-toggle");
+      var pill = document.getElementById("auth-pill");
+      var pillMobile = document.getElementById("auth-pill-mobile");
 
-      function closeDesktopResources() {
-        if (!resourcesMenu || !resourcesToggle) return;
-        resourcesMenu.classList.add("hidden");
-        resourcesToggle.setAttribute("aria-expanded", "false");
-      }
+      var emailEl = document.getElementById("auth-email");
+      var emailMobileEl = document.getElementById("auth-email-mobile");
 
-      function closeMobileMenu() {
-        if (!mobileMenu || !mobileToggle) return;
-        mobileMenu.classList.add("hidden");
-        mobileToggle.setAttribute("aria-expanded", "false");
-      }
+      var signout = document.getElementById("signout-link");
+      var signoutMobile = document.getElementById("signout-link-mobile");
 
-      function closeMobileResources() {
-        if (!mobileResourcesMenu || !mobileResourcesToggle) return;
-        mobileResourcesMenu.classList.add("hidden");
-        mobileResourcesToggle.setAttribute("aria-expanded", "false");
-      }
+      var tokenPill = document.getElementById("token-pill");
+      var tokenPillMobile = document.getElementById("token-pill-mobile");
 
-      async function doSignOut() {
-        try {
-          await fetch(TOOLS_API_BASE + "/v1/auth/logout", {
-            method: "POST",
-            credentials: "include"
-          });
-        } catch (_) {
-          // ignore
-        } finally {
-          window.location.href = "/index.html";
-        }
-      }
+      var tokenEl = document.getElementById("token-balance");
+      var tokenMobileEl = document.getElementById("token-balance-mobile");
 
-      mobileToggle && mobileToggle.addEventListener("click", function () {
-        var isHidden = mobileMenu.classList.toggle("hidden");
-        mobileToggle.setAttribute("aria-expanded", String(!isHidden));
+      try {
+
+        var res = await fetch(TOOLS_API_BASE + "/v1/auth/me", { credentials: "include" });
+        var data = await res.json().catch(function () { return {}; });
+
+        var isAuthed = !!data && !!data.isAuthenticated;
+        var email = data && data.email ? String(data.email) : "";
+
+        if (!res.ok || !isAuthed || !email) return;
+
+        emailEl.textContent = email;
+        emailMobileEl.textContent = email;
+
+        pill.classList.remove("hidden");
+        pillMobile.classList.remove("hidden");
+
+        signout.classList.remove("hidden");
+        signoutMobile.classList.remove("hidden");
+
+        var tRes = await fetch(TOOLS_API_BASE + "/v1/tokens/balance", { credentials: "include" });
+        var tData = await tRes.json().catch(function () { return {}; });
+
+        var balance = tData && tData.balance ? Number(tData.balance) : 0;
+
+        tokenEl.textContent = balance;
+        tokenMobileEl.textContent = balance;
+
+        tokenPill.classList.remove("hidden");
+        tokenPillMobile.classList.remove("hidden");
+
+      } catch (_) {}
+
+    }
+
+    function signOut(e) {
+      e.preventDefault();
+
+      fetch(TOOLS_API_BASE + "/v1/auth/logout", {
+        method: "POST",
+        credentials: "include"
+      }).finally(function () {
+        window.location.href = "/index.html";
       });
+    }
 
-      resourcesToggle && resourcesToggle.addEventListener("click", function (e) {
-        e.preventDefault();
-        var isHidden = resourcesMenu.classList.toggle("hidden");
-        resourcesToggle.setAttribute("aria-expanded", String(!isHidden));
-      });
+    document.getElementById("signout-link")?.addEventListener("click", signOut);
+    document.getElementById("signout-link-mobile")?.addEventListener("click", signOut);
 
-      mobileResourcesToggle && mobileResourcesToggle.addEventListener("click", function () {
-        var isHidden = mobileResourcesMenu.classList.toggle("hidden");
-        mobileResourcesToggle.setAttribute("aria-expanded", String(!isHidden));
-      });
+    hydrateSignedInPill();
 
-      document.addEventListener("click", function (e) {
-        if (mobileMenu && mobileToggle) {
-          var clickedInsideMobile = mobileMenu.contains(e.target) || mobileToggle.contains(e.target);
-          if (!clickedInsideMobile) closeMobileMenu();
-        }
-
-        if (resourcesMenu && resourcesToggle) {
-          var clickedInsideDesktopResources = resourcesMenu.contains(e.target) || resourcesToggle.contains(e.target);
-          if (!clickedInsideDesktopResources) closeDesktopResources();
-        }
-      });
-
-      document.addEventListener("keydown", function (e) {
-        if (e.key !== "Escape") return;
-        closeDesktopResources();
-        closeMobileMenu();
-        closeMobileResources();
-      });
-
-      async function hydrateSignedInPill() {
-        var authPill = document.getElementById("auth-pill");
-        var authPillMobile = document.getElementById("auth-pill-mobile");
-
-        var emailEl = document.getElementById("auth-email");
-        var emailMobileEl = document.getElementById("auth-email-mobile");
-
-        var signoutLink = document.getElementById("signout-link");
-        var signoutLinkMobile = document.getElementById("signout-link-mobile");
-
-        var tokenPill = document.getElementById("token-pill");
-        var tokenPillMobile = document.getElementById("token-pill-mobile");
-
-        var tokenEl = document.getElementById("token-balance");
-        var tokenMobileEl = document.getElementById("token-balance-mobile");
-
-        function hideAuthedUi() {
-          authPill && authPill.classList.add("hidden");
-          authPillMobile && authPillMobile.classList.add("hidden");
-          tokenPill && tokenPill.classList.add("hidden");
-          tokenPillMobile && tokenPillMobile.classList.add("hidden");
-        }
-
-        try {
-          var res = await fetch(TOOLS_API_BASE + "/v1/auth/me", { credentials: "include" });
-          var data = await res.json().catch(function () { return {}; });
-
-          var isAuthed = !!data && !!data.isAuthenticated;
-          var email = data && data.email ? String(data.email) : "";
-
-          if (!res.ok || !isAuthed || !email) {
-            hideAuthedUi();
-            return;
-          }
-
-          if (emailEl) emailEl.textContent = email;
-          if (emailMobileEl) emailMobileEl.textContent = email;
-
-          authPill && authPill.classList.remove("hidden");
-          authPillMobile && authPillMobile.classList.remove("hidden");
-
-          if (signoutLink) {
-            signoutLink.addEventListener("click", function (e) {
-              e.preventDefault();
-              doSignOut();
-            });
-          }
-
-          if (signoutLinkMobile) {
-            signoutLinkMobile.addEventListener("click", function (e) {
-              e.preventDefault();
-              doSignOut();
-            });
-          }
-
-          // Token balance (UI only)
-          var tRes = await fetch(TOOLS_API_BASE + "/v1/tokens/balance", { credentials: "include" });
-          var tData = await tRes.json().catch(function () { return {}; });
-
-          var balance = tData && typeof tData.balance === "number" ? tData.balance : Number(tData && tData.balance) || 0;
-
-          if (tokenEl) tokenEl.textContent = String(balance);
-          if (tokenMobileEl) tokenMobileEl.textContent = String(balance);
-
-          tokenPill && tokenPill.classList.remove("hidden");
-          tokenPillMobile && tokenPillMobile.classList.remove("hidden");
-
-        } catch (_) {
-          hideAuthedUi();
-        }
-      }
-
-      hydrateSignedInPill();
-    })();
+  })();
   </script>
+
 </header>
