@@ -287,7 +287,9 @@ async function handleGamesAccess(request) {
   const auth = getAuthContext(request);
   if (!auth.isAuthenticated) return unauthorized(request);
 
-  const url = new URL(request.url);`r`n  // Back-compat alias (canonical is /v1/tokens/balance)`r`n  if (url.pathname === "/v1/arcade/tokens") url.pathname = "/v1/tokens/balance";
+  const url = new URL(request.url);
+  // Back-compat alias (canonical is /v1/tokens/balance)
+  if (url.pathname === "/v1/arcade/tokens") url.pathname = "/v1/tokens/balance";  // Back-compat alias (canonical is /v1/tokens/balance)`r`n  if (url.pathname === "/v1/arcade/tokens") url.pathname = "/v1/tokens/balance";
   const slug = (url.searchParams.get("slug") || "").trim();
   if (!slug || !VALID_GAME_SLUGS.has(slug)) return badRequest(request, "slug is invalid");
 
@@ -344,7 +346,9 @@ async function handleCheckoutStatus(request) {
   const auth = getAuthContext(request);
   if (!auth.isAuthenticated) return unauthorized(request);
 
-  const url = new URL(request.url);`r`n  // Back-compat alias (canonical is /v1/tokens/balance)`r`n  if (url.pathname === "/v1/arcade/tokens") url.pathname = "/v1/tokens/balance";
+  const url = new URL(request.url);
+  // Back-compat alias (canonical is /v1/tokens/balance)
+  if (url.pathname === "/v1/arcade/tokens") url.pathname = "/v1/tokens/balance";  // Back-compat alias (canonical is /v1/tokens/balance)`r`n  if (url.pathname === "/v1/arcade/tokens") url.pathname = "/v1/tokens/balance";
   const sessionId = (url.searchParams.get("session_id") || "").trim();
   if (!sessionId) return badRequest(request, "session_id is required");
 
@@ -424,7 +428,9 @@ async function handleHelpTickets(request) {
 async function handleHelpStatus(request) {
   if (request.method !== "GET") return methodNotAllowed(request);
 
-  const url = new URL(request.url);`r`n  // Back-compat alias (canonical is /v1/tokens/balance)`r`n  if (url.pathname === "/v1/arcade/tokens") url.pathname = "/v1/tokens/balance";
+  const url = new URL(request.url);
+  // Back-compat alias (canonical is /v1/tokens/balance)
+  if (url.pathname === "/v1/arcade/tokens") url.pathname = "/v1/tokens/balance";  // Back-compat alias (canonical is /v1/tokens/balance)`r`n  if (url.pathname === "/v1/arcade/tokens") url.pathname = "/v1/tokens/balance";
   const ticketId = (url.searchParams.get("ticket_id") || url.searchParams.get("supportId") || "").trim();
   if (!ticketId) return badRequest(request, "ticket_id is required");
 
@@ -446,7 +452,9 @@ async function handleHelpStatus(request) {
 
 export default {
   async fetch(request, env) {
-    const url = new URL(request.url);`r`n  // Back-compat alias (canonical is /v1/tokens/balance)`r`n  if (url.pathname === "/v1/arcade/tokens") url.pathname = "/v1/tokens/balance";
+    const url = new URL(request.url);
+  // Back-compat alias (canonical is /v1/tokens/balance)
+  if (url.pathname === "/v1/arcade/tokens") url.pathname = "/v1/tokens/balance";  // Back-compat alias (canonical is /v1/tokens/balance)`r`n  if (url.pathname === "/v1/arcade/tokens") url.pathname = "/v1/tokens/balance";
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: withCors(request) });
@@ -467,4 +475,6 @@ export default {
     return notFound(request);
   },
 };
+
+
 
