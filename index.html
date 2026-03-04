@@ -614,7 +614,7 @@
 
     // Header partial hook-ups (optional)
     document.getElementById('signin-btn')?.addEventListener('click', () => {
-      showToast('Sign-in is required to buy tokens or unlock games.');
+      location.href = '/login.html';
     });
 
     document.getElementById('signout-btn')?.addEventListener('click', async () => {
