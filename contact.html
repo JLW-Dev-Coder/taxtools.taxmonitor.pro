@@ -4,7 +4,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contact Support - TaxTools.Tax Monitor Pro</title>
+    <title>Contact Support - TaxTools Tax Monitor Pro</title>
+    <meta name="description" content="Contact TaxTools support for help with purchases, downloads, and product questions. Submit a ticket to get a Support ID and track updates." />
 
     <!-- Favicon -->
     <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
@@ -12,9 +13,7 @@
 
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <script src="/_sdk/element_sdk.js"></script>
-    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
@@ -312,7 +311,7 @@
           <h2 class="text-3xl md:text-5xl font-bold mb-6">Prefer self-serve over back-and-forth?</h2>
           <p class="text-lg md:text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Most questions get answered faster with a quick tool or guide. If you still need a human, we’ve got you.</p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="index/#tools" class="bg-warm hover:bg-orange-500 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all shadow-lg hover:shadow-xl">Browse Tools</a>
+            <a href="/index.html#tools" class="bg-warm hover:bg-orange-500 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all shadow-lg hover:shadow-xl">Browse Tools</a>
             <a href="https://taxmonitor.pro" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl text-lg border border-white/20 transition-all">Need personal help?</a>
           </div>
           <p class="text-white/60 text-sm mt-8">Secure payment • Instant download • Bundle savings</p>
@@ -328,6 +327,18 @@
         const API_BASE = 'https://tools-api.taxmonitor.pro';
         const SUPPORT_POST = API_BASE + '/v1/help/tickets';
         const SUPPORT_STATUS_GET = API_BASE + '/v1/help/status?ticket_id=';
+
+        function redirectToEntry() {
+          window.location.href = '/index.html';
+        }
+
+        function handleAuth(res) {
+          if (res && res.status === 401) {
+            redirectToEntry();
+            return true;
+          }
+          return false;
+        }
 
         function getParam(name) {
           try { return new URLSearchParams(window.location.search).get(name) || ''; } catch (_) { return ''; }
@@ -429,7 +440,12 @@
           setLookupStatus('status-info', 'Checking status...');
 
           try {
-            const res = await fetch(SUPPORT_STATUS_GET + encodeURIComponent(supportId), { method: 'GET' });
+            const res = await fetch(SUPPORT_STATUS_GET + encodeURIComponent(supportId), {
+              method: 'GET',
+              credentials: 'include'
+            });
+
+            if (handleAuth(res)) return;
             let json = null;
             try { json = await res.json(); } catch (_) { json = null; }
 
@@ -528,9 +544,12 @@
             try {
               const res = await fetch(SUPPORT_POST, {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
               });
+
+              if (handleAuth(res)) return;
 
               let json = null;
               try { json = await res.json(); } catch (_) { json = null; }
@@ -583,5 +602,4 @@
     </script>
   </body>
 </html>
-
 
