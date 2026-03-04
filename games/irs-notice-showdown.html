@@ -1,50 +1,231 @@
-﻿<!doctype html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="h-full">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IRS Notice Showdown • Play • TaxTools Arcade</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Tax Notice Showdown: Vegas Edition</title>
+  <meta name="description" content="Drag-and-drop tax notice game. Match the right notice to the right excerpt and beat the house." />
+
+  <link rel="icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/styles/site.css">
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="/styles/site.css" />
-
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
 
   <style>
-    body { font-family: "DM Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.3); }
+      50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.5); }
+    }
+    @keyframes vegas-lights {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes confetti-fall {
+      0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100%) rotate(720deg); opacity: 0; }
+    }
+    @keyframes card-deal {
+      0% { transform: translateX(-200px) rotate(-20deg) scale(0.5); opacity: 0; }
+      100% { transform: translateX(0) rotate(0deg) scale(1); opacity: 1; }
+    }
+    @keyframes card-flip {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(90deg); }
+      100% { transform: rotateY(0deg); }
+    }
+    @keyframes bounce-in {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    @keyframes slot-spin {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-200%); }
+    }
+    .vegas-border {
+      background: linear-gradient(90deg, #ffd700, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffd700);
+      background-size: 400% 400%;
+      animation: vegas-lights 3s ease infinite;
+    }
+    .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+    .card-deal { animation: card-deal 0.5s ease-out forwards; }
+    .card-flip { animation: card-flip 0.6s ease-in-out; }
+    .bounce-in { animation: bounce-in 0.5s ease-out; }
+    .confetti { animation: confetti-fall 3s linear forwards; }
+    .felt-texture {
+      background: radial-gradient(ellipse at center, #1a5f2a 0%, #0d3d16 70%, #082810 100%);
+    }
+    .card-shadow {
+      box-shadow: 4px 4px 15px rgba(0,0,0,0.4), -2px -2px 10px rgba(255,255,255,0.1);
+    }
+    .gold-border {
+      border: 3px solid;
+      border-image: linear-gradient(135deg, #ffd700, #b8860b, #ffd700) 1;
+    }
+    .dragging { transform: scale(1.1) rotate(-5deg); z-index: 100; }
+    .drop-zone-active {
+      border-color: #ffd700 !important;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+    }
+    .irs-letter {
+      font-family: 'Courier New', monospace;
+      background: #fff;
+      color: #000;
+    }
   </style>
+  <style>body { box-sizing: border-box; }</style>
 </head>
-<body class="bg-slate-950 text-slate-100">
+<body class="h-full overflow-auto">
   <!-- PARTIAL:header -->
 
-  <main class="mx-auto max-w-5xl px-6 py-12">
-    <section class="space-y-3">
-      <h1 class="text-3xl font-bold tracking-tight">IRS Notice Showdown</h1>
-      <p class="text-slate-300">Access is verified server-side with an active play grant.</p>
-      <div id="status" class="text-sm text-slate-400"></div>
-    </section>
+  <div id="status" class="mx-auto max-w-6xl px-6 pt-4 text-sm text-slate-300"></div>
 
-    <section class="mt-10 rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
-      <div class="font-semibold">Game Area</div>
-      <p class="mt-2 text-slate-300">
-        This is the placeholder game container. The important part is the access gate. Replace this section with the actual game UI.
-      </p>
-      <div class="mt-4 rounded-xl border border-slate-800 bg-slate-950/40 p-6 text-slate-300">
-        <span class="font-semibold">Status:</span> <span id="grant"></span>
+  <div id="app" class="min-h-full w-full felt-texture">
+    <!-- Vegas Lights Border -->
+    <div class="vegas-border p-1 min-h-full">
+      <div class="felt-texture min-h-full p-4 md:p-8">
+        <!-- INTRO SCREEN -->
+        <div id="intro-screen" class="flex flex-col items-center justify-center min-h-full text-center px-4">
+          <!-- IRS Chip Logo -->
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-red-700 to-red-900 flex items-center justify-center mb-6 card-shadow bounce-in">
+            <div class="w-20 h-20 md:w-28 md:h-28 rounded-full border-4 border-dashed border-white flex items-center justify-center">
+              <span class="text-white font-bold text-lg md:text-xl">IRS</span>
+            </div>
+          </div>
+
+          <h1 id="game-title" class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 mb-4" style="font-family: 'Playfair Display', serif;">Tax Notice Showdown</h1>
+          <p class="text-xl md:text-2xl text-yellow-200 mb-2">Vegas Edition</p>
+          <p class="text-gray-300 mb-8 max-w-xl text-sm md:text-base">Can you beat the odds and match the right IRS notice card to each section? Drag the correct notice card to the matching description. Get 3 out of 10 right to win big!</p>
+
+          <!-- Animated Cards Preview -->
+          <div class="flex justify-center gap-2 mb-8">
+            <div class="w-12 h-16 md:w-16 md:h-22 bg-white rounded-lg card-shadow transform -rotate-12 card-deal" style="animation-delay: 0.1s;"></div>
+            <div class="w-12 h-16 md:w-16 md:h-22 bg-white rounded-lg card-shadow transform -rotate-6 card-deal" style="animation-delay: 0.2s;"></div>
+            <div class="w-12 h-16 md:w-16 md:h-22 bg-white rounded-lg card-shadow card-deal" style="animation-delay: 0.3s;"></div>
+            <div class="w-12 h-16 md:w-16 md:h-22 bg-white rounded-lg card-shadow transform rotate-6 card-deal" style="animation-delay: 0.4s;"></div>
+            <div class="w-12 h-16 md:w-16 md:h-22 bg-white rounded-lg card-shadow transform rotate-12 card-deal" style="animation-delay: 0.5s;"></div>
+          </div>
+
+          <button id="start-btn" class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold text-xl rounded-full pulse-glow hover:from-yellow-400 hover:to-yellow-500 transition-all transform hover:scale-105">
+            🎰 Deal the Cards!
+          </button>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="game-screen" class="hidden min-h-full flex flex-col">
+          <!-- Score Bar -->
+          <div class="flex justify-between items-center mb-4 px-2">
+            <div class="flex items-center gap-4">
+              <div class="bg-black/50 px-4 py-2 rounded-full">
+                <span class="text-yellow-400 font-bold">Question: </span>
+                <span id="question-num" class="text-white font-bold">1</span>
+                <span class="text-gray-400">/10</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-yellow-400">✓</span>
+              <span id="score" class="text-white font-bold text-xl">0</span>
+            </div>
+          </div>
+
+          <!-- Question Area -->
+          <div class="flex-1 flex flex-col items-center justify-center px-4">
+            <!-- Notice Excerpt Card -->
+            <div class="bg-gradient-to-b from-amber-100 to-amber-50 rounded-xl p-6 md:p-8 max-w-2xl w-full card-shadow mb-8 border-4 border-amber-600">
+              <div class="flex items-center gap-2 mb-4">
+                <div class="w-8 h-8 bg-blue-900 rounded flex items-center justify-center">
+                  <span class="text-white text-xs font-bold">IRS</span>
+                </div>
+                <span class="text-gray-600 text-sm">Official Notice Excerpt</span>
+              </div>
+              <p id="question-text" class="text-gray-800 text-lg md:text-xl leading-relaxed" style="font-family: 'Roboto', sans-serif;">Loading question...</p>
+            </div>
+
+            <!-- Drop Zone -->
+            <div id="drop-zone" class="w-48 h-32 md:w-64 md:h-40 border-4 border-dashed border-yellow-600/50 rounded-xl flex items-center justify-center mb-8 mt-12 transition-all duration-300 bg-black/20">
+              <p class="text-yellow-400/70 text-center px-4">Drop your answer card here</p>
+            </div>
+
+            <!-- Reveal Button -->
+            <button id="reveal-btn" class="hidden px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-full hover:from-green-400 hover:to-green-500 transition-all transform hover:scale-105 mb-4">
+              🎴 Reveal the Card!
+            </button>
+
+            <!-- Feedback Area -->
+            <div id="feedback-area" class="hidden text-center mb-4">
+              <div id="feedback-banner" class="text-3xl md:text-4xl font-black mb-2"></div>
+              <p id="feedback-text" class="text-white text-lg"></p>
+              <button id="next-btn" class="mt-4 px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold rounded-full hover:from-yellow-400 hover:to-yellow-500 transition-all">Next Card →</button>
+            </div>
+          </div>
+
+          <!-- Card Spread -->
+          <div id="card-spread" class="flex justify-center gap-2 md:gap-4 pb-6 px-2 flex-wrap">
+            <!-- Cards will be generated here -->
+          </div>
+        </div>
+
+        <!-- IRS LETTER MODAL -->
+        <div id="letter-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div class="bg-white rounded-lg max-w-2xl w-full max-h-[80%] overflow-auto relative">
+            <button id="close-modal" class="absolute top-2 right-2 w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300">×</button>
+            <div id="letter-content" class="p-6 irs-letter">
+              <!-- IRS Letter content will be generated here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- WIN SCREEN -->
+        <div id="win-screen" class="hidden min-h-full flex flex-col items-center justify-center text-center px-4">
+          <div id="confetti-container" class="fixed inset-0 pointer-events-none overflow-hidden"></div>
+          <div class="relative z-10">
+            <!-- Slot Machine -->
+            <div class="bg-gradient-to-b from-red-700 to-red-900 rounded-2xl p-8 mb-8 card-shadow">
+              <div class="flex gap-4 justify-center mb-4">
+                <div class="w-20 h-24 bg-white rounded-lg flex items-center justify-center text-4xl">🏆</div>
+                <div class="w-20 h-24 bg-white rounded-lg flex items-center justify-center text-4xl">💰</div>
+                <div class="w-20 h-24 bg-white rounded-lg flex items-center justify-center text-4xl">🎉</div>
+              </div>
+              <div class="text-yellow-400 font-bold text-2xl">JACKPOT!</div>
+            </div>
+
+            <h2 id="win-title" class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 mb-4" style="font-family: 'Playfair Display', serif;">You're a Tax Notice Pro!</h2>
+            <p class="text-xl text-yellow-200 mb-2">You matched <span id="final-score" class="font-bold">0</span> out of 10 notice sections!</p>
+            <p class="text-gray-300 mb-8">You beat the house! 🎰</p>
+
+            <!-- Dancing Eagle -->
+            <div class="text-6xl mb-8 bounce-in">🦅</div>
+
+            <button id="play-again-btn" class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold text-xl rounded-full pulse-glow hover:from-yellow-400 hover:to-yellow-500 transition-all transform hover:scale-105">🎰 Play Again!</button>
+          </div>
+        </div>
+
+        <!-- LOSE SCREEN -->
+        <div id="lose-screen" class="hidden min-h-full flex flex-col items-center justify-center text-center px-4">
+          <div class="text-6xl mb-6">😢</div>
+          <h2 class="text-4xl md:text-5xl font-black text-red-400 mb-4" style="font-family: 'Playfair Display', serif;">Better Luck Next Time!</h2>
+          <p class="text-xl text-gray-300 mb-2">You matched <span id="lose-score" class="font-bold">0</span> out of 10 notice sections.</p>
+          <p class="text-gray-400 mb-8">You need at least 3 correct to beat the house!</p>
+          <button id="try-again-btn" class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold text-xl rounded-full pulse-glow hover:from-yellow-400 hover:to-yellow-500 transition-all transform hover:scale-105">🎰 Try Again!</button>
+        </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </div>
 
   <!-- PARTIAL:footer -->
 
   <script>
     const API_BASE = "https://tools-api.taxmonitor.pro";
-    const slug = "irs-notice-showdown.html";
+    const slug = "irs-notice-showdown";
+    const aboutPath = "/about-games/irs-notice-showdown.html";
 
     function setStatus(msg) {
       const el = document.getElementById("status");
@@ -56,33 +237,687 @@
       return { res, json: await res.json().catch(() => ({})) };
     }
 
-    async function boot() {
+    async function bootGate() {
       setStatus("Checking session…");
       const me = await apiGet("/v1/auth/me");
       if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-        window.location.href = "/about-games/" + slug;
-        return;
+        window.location.href = "/index.html";
+        return false;
       }
 
       setStatus("Loading token balance…");
-      await apiGet("/v1/tokens/balance"); // UI-only; header can display balance
+      await apiGet("/v1/tokens/balance");
 
       setStatus("Verifying access grant…");
       const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(slug));
       if (!access.res.ok || !access.json || access.json.allowed !== true) {
-        window.location.href = "/about-games/" + slug;
-        return;
+        window.location.href = aboutPath;
+        return false;
       }
 
-      const expiresAt = access.json.expiresAt || "";
-      document.getElementById("grant").textContent = expiresAt ? ("Allowed until " + expiresAt) : "Allowed";
       setStatus("Access granted.");
+      return true;
     }
 
-    boot().catch(() => {
-      setStatus("Error loading game. Redirecting…");
-      window.location.href = "/about-games/" + slug;
+    // Config and SDK setup
+    const defaultConfig = {
+      game_title: "Tax Notice Showdown",
+      win_message: "You're a Tax Notice Pro!",
+      background_color: "#0d3d16",
+      accent_color: "#ffd700",
+      text_color: "#ffffff",
+      card_color: "#ffffff",
+      button_color: "#eab308"
+    };
+
+    let config = { ...defaultConfig };
+
+    // Game Data - IRS Notices
+    const notices = [
+      { id: "CP71C", name: "CP71C", description: "Annual Reminder of Balance Due" },
+      { id: "CP27", name: "CP27", description: "Refund Different Than Expected" },
+      { id: "CP40", name: "CP40", description: "Private Debt Collection Notice" },
+      { id: "CP53", name: "CP53", description: "Refund Check Could Not Be Delivered" },
+      { id: "CP575A", name: "CP575A", description: "EIN Assignment Notice" },
+      { id: "FTB4024", name: "FTB 4024", description: "CA Franchise Tax Board Balance Due" },
+      { id: "CP14", name: "CP14", description: "Balance Due - First Notice" },
+      { id: "CP2000", name: "CP2000", description: "Proposed Changes to Tax Return" },
+      { id: "CP504", name: "CP504", description: "Intent to Levy - Urgent Notice" },
+      { id: "Letter147C", name: "Letter 147C", description: "EIN Verification Letter" }
+    ];
+
+    const questions = [
+      {
+        text: "This is an annual reminder of balance due taxes you owe to the IRS. We previously sent you one or more notices asking for payment. We haven't received the full amount due for tax year 2017.",
+        answer: "CP71C",
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="w-16 h-16 bg-blue-900 flex items-center justify-center">
+                <span class="text-white font-bold">IRS</span>
+              </div>
+              <div class="text-right text-sm">
+                <p class="font-bold">Notice CP71C</p>
+                <p>Tax Year: 2017</p>
+                <p>Notice Date: January 15, 2024</p>
+              </div>
+            </div>
+          </div>
+          <div class="mb-4 text-sm">
+            <p class="font-bold">JOHN Q TAXPAYER</p>
+            <p>123 SAMPLE STREET</p>
+            <p>ANYTOWN, ST 12345</p>
+          </div>
+          <div class="bg-yellow-100 p-4 mb-4 border-l-4 border-yellow-500">
+            <p class="font-bold text-lg">Annual Reminder of Balance Due</p>
+            <p class="text-2xl font-bold text-red-600">Amount Due: $X,XXX.XX</p>
+          </div>
+          <p class="mb-4">This is an annual reminder of balance due taxes you owe to the IRS. We previously sent you one or more notices asking for payment. We haven't received the full amount due.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      },
+      {
+        text: "Your refund amount is different from what you expected because we made changes to your tax return. This notice explains the adjustments we made.",
+        answer: "CP27",
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="w-16 h-16 bg-blue-900 flex items-center justify-center">
+                <span class="text-white font-bold">IRS</span>
+              </div>
+              <div class="text-right text-sm">
+                <p class="font-bold">Notice CP27</p>
+                <p>Tax Year: 2023</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-blue-100 p-4 mb-4 border-l-4 border-blue-500">
+            <p class="font-bold text-lg">Your Refund Amount Changed</p>
+            <p>Original Expected: $X,XXX.XX</p>
+            <p>Adjusted Amount: $X,XXX.XX</p>
+          </div>
+          <p class="mb-4">We changed your tax return because of a miscalculation. As a result, your refund is different than you expected.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      },
+      {
+        text: "We transferred your overdue tax account to a private collection agency. They will contact you to collect the amount you owe.",
+        answer: "CP40",
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="w-16 h-16 bg-blue-900 flex items-center justify-center">
+                <span class="text-white font-bold">IRS</span>
+              </div>
+              <div class="text-right text-sm">
+                <p class="font-bold">Notice CP40</p>
+                <p>Private Collection Assignment</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-orange-100 p-4 mb-4 border-l-4 border-orange-500">
+            <p class="font-bold text-lg">Account Assigned to Private Debt Collection</p>
+          </div>
+          <p class="mb-4">We have assigned your account to a private collection agency authorized by the IRS. They will contact you regarding payment options.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      },
+      {
+        text: "We tried to send your refund check, but the Post Office could not deliver it. Please update your address so we can reissue your refund.",
+        answer: "CP53",
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="w-16 h-16 bg-blue-900 flex items-center justify-center">
+                <span class="text-white font-bold">IRS</span>
+              </div>
+              <div class="text-right text-sm">
+                <p class="font-bold">Notice CP53</p>
+                <p>Undeliverable Refund</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-yellow-100 p-4 mb-4 border-l-4 border-yellow-500">
+            <p class="font-bold text-lg">Your Refund Check Could Not Be Delivered</p>
+          </div>
+          <p class="mb-4">The Post Office was unable to deliver your refund check and returned it to us. Please verify your address and contact us to have your check reissued.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      },
+      {
+        text: "We assigned you an Employer Identification Number (EIN). Use this number on all federal tax documents and correspondence.",
+        answer: "CP575A",
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="w-16 h-16 bg-blue-900 flex items-center justify-center">
+                <span class="text-white font-bold">IRS</span>
+              </div>
+              <div class="text-right text-sm">
+                <p class="font-bold">Notice CP575A</p>
+                <p>EIN Assignment</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-green-100 p-4 mb-4 border-l-4 border-green-500">
+            <p class="font-bold text-lg">Your EIN Has Been Assigned</p>
+            <p class="text-2xl font-bold">EIN: XX-XXXXXXX</p>
+          </div>
+          <p class="mb-4">We assigned you an Employer Identification Number. Keep this notice in your permanent records. You will need this number for tax returns and correspondence.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      },
+      {
+        text: "According to our records, you have a balance due on your California state tax account. Please pay the amount shown or contact us if you disagree.",
+        answer: "FTB4024",
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="text-sm">
+                <p class="font-bold text-lg">Franchise Tax Board</p>
+                <p>State of California</p>
+              </div>
+              <div class="text-right text-sm">
+                <p class="font-bold">Notice FTB 4024</p>
+                <p>Balance Due Notice</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-red-100 p-4 mb-4 border-l-4 border-red-500">
+            <p class="font-bold text-lg">California State Tax Balance Due</p>
+            <p class="text-2xl font-bold text-red-600">Amount Due: $X,XXX.XX</p>
+          </div>
+          <p class="mb-4">Our records indicate you have an outstanding balance on your California state income tax. Payment is due within 30 days to avoid additional penalties and interest.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      },
+      {
+        text: "You have unpaid taxes for the tax year shown above. This is your first notice. Please pay the amount due by the date shown to avoid penalties and interest.",
+        answer: "CP14",
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="w-16 h-16 bg-blue-900 flex items-center justify-center">
+                <span class="text-white font-bold">IRS</span>
+              </div>
+              <div class="text-right text-sm">
+                <p class="font-bold">Notice CP14</p>
+                <p>Balance Due - First Notice</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-red-100 p-4 mb-4 border-l-4 border-red-500">
+            <p class="font-bold text-lg">You Have Unpaid Taxes</p>
+            <p class="text-2xl font-bold text-red-600">Amount Due: $X,XXX.XX</p>
+            <p>Due Date: XX/XX/XXXX</p>
+          </div>
+          <p class="mb-4">You have an amount due on your federal tax return. Please pay by the due date to avoid additional penalties and interest charges.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      },
+      {
+        text: "We received information that doesn't match what you reported on your tax return. Review the proposed changes and respond within 30 days if you agree or disagree.",
+        answer: "CP2000",
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="w-16 h-16 bg-blue-900 flex items-center justify-center">
+                <span class="text-white font-bold">IRS</span>
+              </div>
+              <div class="text-right text-sm">
+                <p class="font-bold">Notice CP2000</p>
+                <p>Proposed Changes</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-purple-100 p-4 mb-4 border-l-4 border-purple-500">
+            <p class="font-bold text-lg">Proposed Changes to Your Tax Return</p>
+            <p>Response Due: XX/XX/XXXX</p>
+          </div>
+          <p class="mb-4">The income and/or payment information we have on file doesn't match the information you reported on your tax return. Please review the proposed changes.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      },
+      {
+        text: "This is your final notice before we levy (seize) your state tax refund or other property. You must pay the amount due immediately or contact us to make payment arrangements.",
+        answer: "CP504",
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="w-16 h-16 bg-blue-900 flex items-center justify-center">
+                <span class="text-white font-bold">IRS</span>
+              </div>
+              <div class="text-right text-sm">
+                <p class="font-bold text-red-600">Notice CP504</p>
+                <p class="text-red-600">URGENT - Intent to Levy</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-red-200 p-4 mb-4 border-l-4 border-red-700">
+            <p class="font-bold text-lg text-red-700">⚠️ INTENT TO SEIZE YOUR PROPERTY</p>
+            <p class="text-2xl font-bold text-red-700">Amount Due: $X,XXX.XX</p>
+          </div>
+          <p class="mb-4 text-red-700 font-bold">URGENT: This is your final notice. We intend to levy (seize) your state tax refund or other property. Pay immediately to prevent collection action.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      },
+      {
+        text: "This letter confirms your Employer Identification Number (EIN) as requested. You may use this letter as proof of your EIN for business purposes.",
+        answer: "Letter147C",
+        letterContent: `
+          <div class="border-b-2 border-gray-300 pb-4 mb-4">
+            <div class="flex justify-between items-start">
+              <div class="w-16 h-16 bg-blue-900 flex items-center justify-center">
+                <span class="text-white font-bold">IRS</span>
+              </div>
+              <div class="text-right text-sm">
+                <p class="font-bold">Letter 147C</p>
+                <p>EIN Verification</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-green-100 p-4 mb-4 border-l-4 border-green-500">
+            <p class="font-bold text-lg">EIN Verification Letter</p>
+            <p class="text-2xl font-bold">EIN: XX-XXXXXXX</p>
+          </div>
+          <p class="mb-4">This letter confirms your Employer Identification Number as shown above. This letter may be used as proof of your EIN for banking and other business purposes.</p>
+          <div class="bg-gray-100 p-3 text-center text-red-600 font-bold">⚠️ SAMPLE - NOT A REAL NOTICE ⚠️</div>
+        `
+      }
+    ];
+
+    // Game State
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedCard = null;
+    let droppedCard = null;
+
+    // DOM Elements
+    const introScreen = document.getElementById('intro-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const winScreen = document.getElementById('win-screen');
+    const loseScreen = document.getElementById('lose-screen');
+    const letterModal = document.getElementById('letter-modal');
+
+    // Initialize SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (newConfig) => {
+          config = { ...defaultConfig, ...newConfig };
+          applyConfig();
+        },
+        mapToCapabilities: (cfg) => ({
+          recolorables: [
+            {
+              get: () => cfg.background_color || defaultConfig.background_color,
+              set: (v) => { cfg.background_color = v; window.elementSdk.setConfig({ background_color: v }); }
+            },
+            {
+              get: () => cfg.accent_color || defaultConfig.accent_color,
+              set: (v) => { cfg.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); }
+            },
+            {
+              get: () => cfg.text_color || defaultConfig.text_color,
+              set: (v) => { cfg.text_color = v; window.elementSdk.setConfig({ text_color: v }); }
+            },
+            {
+              get: () => cfg.card_color || defaultConfig.card_color,
+              set: (v) => { cfg.card_color = v; window.elementSdk.setConfig({ card_color: v }); }
+            },
+            {
+              get: () => cfg.button_color || defaultConfig.button_color,
+              set: (v) => { cfg.button_color = v; window.elementSdk.setConfig({ button_color: v }); }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (cfg) => new Map([
+          ["game_title", cfg.game_title || defaultConfig.game_title],
+          ["win_message", cfg.win_message || defaultConfig.win_message]
+        ])
+      });
+    }
+
+    function applyConfig() {
+      document.getElementById('game-title').textContent = config.game_title || defaultConfig.game_title;
+      document.getElementById('win-title').textContent = config.win_message || defaultConfig.win_message;
+
+      // Apply colors
+      document.querySelectorAll('.felt-texture').forEach(el => {
+        el.style.background = `radial-gradient(ellipse at center, ${config.background_color} 0%, ${adjustBrightness(config.background_color, -30)} 70%, ${adjustBrightness(config.background_color, -50)} 100%)`;
+      });
+    }
+
+    function adjustBrightness(hex, percent) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = Math.max(0, Math.min(255, (num >> 16) + amt));
+      const G = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amt));
+      const B = Math.max(0, Math.min(255, (num & 0x0000FF) + amt));
+      return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+    }
+
+    // Game Functions
+    function startGame() {
+      if (document.getElementById('start-btn')?.disabled) return;
+      currentQuestion = 0;
+      score = 0;
+      shuffleQuestions();
+      introScreen.classList.add('hidden');
+      winScreen.classList.add('hidden');
+      loseScreen.classList.add('hidden');
+      gameScreen.classList.remove('hidden');
+      loadQuestion();
+    }
+
+    function shuffleQuestions() {
+      for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+      }
+    }
+
+    function loadQuestion() {
+      const question = questions[currentQuestion];
+      document.getElementById('question-num').textContent = currentQuestion + 1;
+      document.getElementById('score').textContent = score;
+      document.getElementById('question-text').textContent = question.text;
+
+      // Reset UI
+      document.getElementById('reveal-btn').classList.add('hidden');
+      document.getElementById('feedback-area').classList.add('hidden');
+      document.getElementById('drop-zone').innerHTML = '<p class="text-yellow-400/70 text-center px-4">Drop your answer card here</p>';
+      droppedCard = null;
+
+      // Generate cards
+      generateCards();
+    }
+
+    function generateCards() {
+      const cardSpread = document.getElementById('card-spread');
+      cardSpread.innerHTML = '';
+
+      // Shuffle notices for display
+      const shuffledNotices = [...notices].sort(() => Math.random() - 0.5);
+
+      shuffledNotices.forEach((notice, index) => {
+        const card = document.createElement('div');
+        card.className = 'notice-card w-16 h-24 md:w-20 md:h-28 bg-white rounded-lg card-shadow cursor-grab flex flex-col items-center justify-center p-2 transition-all hover:scale-110 hover:-translate-y-2 card-deal';
+        card.style.animationDelay = `${index * 0.05}s`;
+        card.dataset.noticeId = notice.id;
+        card.draggable = true;
+
+        card.innerHTML = `
+          <div class="w-6 h-6 bg-blue-900 rounded text-white text-xs flex items-center justify-center mb-1">IRS</div>
+          <p class="text-xs md:text-sm font-bold text-center text-gray-800 leading-tight">${notice.name}</p>
+        `;
+
+        // Drag events
+        card.addEventListener('dragstart', handleDragStart);
+        card.addEventListener('dragend', handleDragEnd);
+
+        // Touch events for mobile
+        card.addEventListener('touchstart', handleTouchStart, { passive: false });
+        card.addEventListener('touchmove', handleTouchMove, { passive: false });
+        card.addEventListener('touchend', handleTouchEnd);
+
+        // Click to select (alternative to drag)
+        card.addEventListener('click', () => selectCard(card, notice.id));
+
+        cardSpread.appendChild(card);
+      });
+
+      // Setup drop zone
+      const dropZone = document.getElementById('drop-zone');
+      dropZone.addEventListener('dragover', handleDragOver);
+      dropZone.addEventListener('drop', handleDrop);
+      dropZone.addEventListener('dragleave', handleDragLeave);
+    }
+
+    function selectCard(card, noticeId) {
+      if (droppedCard) return;
+
+      // Remove previous selection
+      document.querySelectorAll('.notice-card').forEach(c => {
+        c.classList.remove('ring-4', 'ring-yellow-400');
+      });
+
+      // Select this card
+      card.classList.add('ring-4', 'ring-yellow-400');
+      selectedCard = noticeId;
+
+      // Auto-drop on click
+      dropCard(noticeId);
+    }
+
+    function handleDragStart(e) {
+      e.target.classList.add('dragging', 'opacity-50');
+      e.dataTransfer.setData('text/plain', e.target.dataset.noticeId);
+    }
+
+    function handleDragEnd(e) {
+      e.target.classList.remove('dragging', 'opacity-50');
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('drop-zone').classList.add('drop-zone-active');
+    }
+
+    function handleDragLeave() {
+      document.getElementById('drop-zone').classList.remove('drop-zone-active');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('drop-zone').classList.remove('drop-zone-active');
+      const noticeId = e.dataTransfer.getData('text/plain');
+      dropCard(noticeId);
+    }
+
+    // Touch handling for mobile
+    let touchedCard = null;
+
+    function handleTouchStart(e) {
+      touchedCard = e.target.closest('.notice-card');
+      if (!touchedCard) return;
+
+      e.preventDefault();
+      touchedCard.classList.add('dragging');
+    }
+
+    function handleTouchMove(e) {
+      if (!touchedCard) return;
+      e.preventDefault();
+
+      const touch = e.touches[0];
+      const dropZone = document.getElementById('drop-zone');
+      const rect = dropZone.getBoundingClientRect();
+
+      if (touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+        dropZone.classList.add('drop-zone-active');
+      } else {
+        dropZone.classList.remove('drop-zone-active');
+      }
+    }
+
+    function handleTouchEnd(e) {
+      if (!touchedCard) return;
+
+      const touch = e.changedTouches[0];
+      const dropZone = document.getElementById('drop-zone');
+      const rect = dropZone.getBoundingClientRect();
+
+      if (touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+        dropCard(touchedCard.dataset.noticeId);
+      }
+
+      touchedCard.classList.remove('dragging');
+      dropZone.classList.remove('drop-zone-active');
+      touchedCard = null;
+    }
+
+    function dropCard(noticeId) {
+      if (droppedCard) return;
+
+      droppedCard = noticeId;
+      const notice = notices.find(n => n.id === noticeId);
+
+      const dropZone = document.getElementById('drop-zone');
+      dropZone.innerHTML = `
+        <div class="flex flex-col items-center gap-3">
+          <div class="w-16 h-24 md:w-20 md:h-28 bg-white rounded-lg card-shadow flex flex-col items-center justify-center p-2 card-flip">
+            <div class="w-6 h-6 bg-blue-900 rounded text-white text-xs flex items-center justify-center mb-1">IRS</div>
+            <p class="text-xs md:text-sm font-bold text-center text-gray-800">${notice.name}</p>
+          </div>
+          <button id="remove-card-btn" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs md:text-sm font-bold rounded transition-all">Remove</button>
+        </div>
+      `;
+
+      // Hide the original card
+      const originalCard = document.querySelector(`[data-notice-id="${noticeId}"]`);
+      if (originalCard) {
+        originalCard.style.opacity = '0.3';
+        originalCard.style.pointerEvents = 'none';
+      }
+
+      // Show reveal button
+      document.getElementById('reveal-btn').classList.remove('hidden');
+
+      // Add remove button handler
+      document.getElementById('remove-card-btn').addEventListener('click', removeCard);
+    }
+
+    function removeCard() {
+      if (!droppedCard) return;
+
+      // Show the original card again
+      const originalCard = document.querySelector(`[data-notice-id="${droppedCard}"]`);
+      if (originalCard) {
+        originalCard.style.opacity = '1';
+        originalCard.style.pointerEvents = 'auto';
+        originalCard.classList.remove('ring-4', 'ring-yellow-400');
+      }
+
+      // Reset drop zone
+      const dropZone = document.getElementById('drop-zone');
+      dropZone.innerHTML = '<p class="text-yellow-400/70 text-center px-4">Drop your answer card here</p>';
+
+      // Reset state
+      droppedCard = null;
+      selectedCard = null;
+
+      // Hide reveal button
+      document.getElementById('reveal-btn').classList.add('hidden');
+    }
+
+    function revealAnswer() {
+      const question = questions[currentQuestion];
+      const isCorrect = droppedCard === question.answer;
+
+      if (isCorrect) {
+        score++;
+        showFeedback(true, question);
+      } else {
+        showFeedback(false, question);
+      }
+    }
+
+    function showFeedback(isCorrect, question) {
+      document.getElementById('reveal-btn').classList.add('hidden');
+      const feedbackArea = document.getElementById('feedback-area');
+      const feedbackBanner = document.getElementById('feedback-banner');
+      const feedbackText = document.getElementById('feedback-text');
+
+      if (isCorrect) {
+        feedbackBanner.innerHTML = '🎰 <span class="text-green-400">WINNER!</span> 🎰';
+        feedbackText.innerHTML = `Correct! This is a <strong>${question.answer}</strong> notice.`;
+        createConfetti();
+        showLetter(question);
+      } else {
+        const correctNotice = notices.find(n => n.id === question.answer);
+        feedbackBanner.innerHTML = '❌ <span class="text-red-400">BUST!</span> ❌';
+        feedbackText.innerHTML = `The correct answer was <strong>${correctNotice.name}</strong>.`;
+        showLetter(question);
+      }
+
+      feedbackArea.classList.remove('hidden');
+      document.getElementById('score').textContent = score;
+    }
+
+    function showLetter(question) {
+      document.getElementById('letter-content').innerHTML = question.letterContent;
+      letterModal.classList.remove('hidden');
+    }
+
+    function createConfetti() {
+      const container = document.getElementById('confetti-container');
+      container.innerHTML = '';
+
+      const emojis = ['🎰', '💰', '🎉', '⭐', '🏆'];
+
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti absolute';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.top = '-20px';
+        confetti.style.fontSize = Math.random() * 20 + 15 + 'px';
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        container.appendChild(confetti);
+      }
+    }
+
+    function nextQuestion() {
+      letterModal.classList.add('hidden');
+      currentQuestion++;
+
+      if (currentQuestion >= 10) {
+        endGame();
+      } else {
+        loadQuestion();
+      }
+    }
+
+    function endGame() {
+      gameScreen.classList.add('hidden');
+
+      if (score >= 3) {
+        document.getElementById('final-score').textContent = score;
+        winScreen.classList.remove('hidden');
+        createConfetti();
+      } else {
+        document.getElementById('lose-score').textContent = score;
+        loseScreen.classList.remove('hidden');
+      }
+    }
+
+    // Event Listeners
+    document.getElementById('start-btn').addEventListener('click', startGame);
+    document.getElementById('reveal-btn').addEventListener('click', revealAnswer);
+    document.getElementById('next-btn').addEventListener('click', nextQuestion);
+    document.getElementById('close-modal').addEventListener('click', () => {
+      letterModal.classList.add('hidden');
     });
+    document.getElementById('play-again-btn').addEventListener('click', startGame);
+    document.getElementById('try-again-btn').addEventListener('click', startGame);
+
+    // Initial config apply
+    applyConfig();
+
+    // Gate boot: disable start until grant verified
+    (async () => {
+      const startBtn = document.getElementById('start-btn');
+      if (startBtn) startBtn.disabled = true;
+
+      const ok = await bootGate().catch(() => false);
+      if (!ok) return;
+
+      if (startBtn) startBtn.disabled = false;
+    })();
   </script>
 </body>
 </html>
