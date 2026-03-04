@@ -1247,4 +1247,6 @@ export default {
 
     return notFound(request, env);
   },
+
 };
+
