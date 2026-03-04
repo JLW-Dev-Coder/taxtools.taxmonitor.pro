@@ -1,5 +1,5 @@
 /**
- * TaxTools.Tax Monitor Pro — Cloudflare Worker (v1 API)
+ * TaxTools Tax Monitor Pro — Cloudflare Worker (v1 API)
  *
  * Contract authority: README.md
  *
@@ -18,10 +18,13 @@
  * - POST /v1/tokens/spend
  * - POST /v1/webhooks/stripe
  *
- * Storage:
- * - In-memory (DEV/STAGING): accounts, sessions, grants, loginTokens, helpTickets
- * - Production should migrate to durable storage (R2/D1/KV). Not implemented here.
+ * Dev-only (must be disabled in prod):
+ * - GET  /dev/login?email=
  */
+
+/* ------------------------------------------
+ * Config
+ * ------------------------------------------ */
 
 const COOKIE_NAMES = Object.freeze({
   accountId: "tm_account_id",
@@ -29,579 +32,785 @@ const COOKIE_NAMES = Object.freeze({
   session: "tm_session",
 });
 
-const DEFAULT_ALLOWED_ORIGINS = Object.freeze([
-  "http://127.0.0.1:8787",
-  "http://localhost:8787",
-  "https://taxtools.taxmonitor.pro",
+const CORS_ALLOWED_HEADERS = "Content-Type,Idempotency-Key,Stripe-Signature";
+const CORS_ALLOWED_METHODS = "GET,POST,OPTIONS";
+const CORS_MAX_AGE_SECONDS = "86400";
+
+const LOGIN_TOKEN_TTL_MS = 15 * 60 * 1000;
+const SESSION_TTL_MS = 14 * 24 * 60 * 60 * 1000;
+
+const PLAY_GRANT_WINDOW_MS = 30 * 60 * 1000;
+
+const VALID_GAME_SLUGS = new Set([
+  "circular-230-quest",
+  "irs-notice-jackpot",
+  "irs-notice-showdown",
+  "irs-tax-detective",
+  "match-the-tax-notice",
+  "tax-deadline-master",
+  "tax-deduction-quest",
+  "tax-document-hunter",
+  "tax-jargon-game",
+  "tax-strategy-adventures",
+  "tax-tips-refund-boost",
 ]);
 
-const GRANT_TTL_MS = 30 * 60 * 1000;
+const SKU_TOKEN_COUNTS = {
+  token_pack_large_200: 200,
+  token_pack_medium_80: 80,
+  token_pack_small_30: 30,
+};
 
-function json(obj, init = {}) {
-  const headers = new Headers(init.headers || {});
-  headers.set("content-type", "application/json; charset=utf-8");
-  return new Response(JSON.stringify(obj, null, 2), { ...init, headers });
+const CHECKOUT_ITEM_TO_PRICE_ENV = {
+  token_pack_large_200: "STRIPE_PRICE_TOKEN_PACK_LARGE_200",
+  token_pack_medium_80: "STRIPE_PRICE_TOKEN_PACK_MEDIUM_80",
+  token_pack_small_30: "STRIPE_PRICE_TOKEN_PACK_SMALL_30",
+};
+
+/* ------------------------------------------
+ * In-memory state (stub until durable token storage)
+ * ------------------------------------------ */
+
+const state = {
+  accounts: new Map(), // accountId -> { balance, grantsBySlug }
+  checkoutBySessionId: new Map(),
+  helpTickets: new Map(),
+  spendByIdempotency: new Map(),
+  webhookProcessedSessionIds: new Set(),
+};
+
+/* ------------------------------------------
+ * Shared utilities
+ * ------------------------------------------ */
+
+function withCors(request, env, extra = {}) {
+  const origin = request.headers.get("Origin") || "";
+
+  const allowlist = String(env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const defaultAllow = "https://taxtools.taxmonitor.pro";
+
+  const allowOrigin = allowlist.length
+    ? (allowlist.includes(origin) ? origin : "")
+    : (origin === defaultAllow ? origin : defaultAllow);
+
+  const base = {
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Headers": CORS_ALLOWED_HEADERS,
+    "Access-Control-Allow-Methods": CORS_ALLOWED_METHODS,
+    "Access-Control-Max-Age": CORS_MAX_AGE_SECONDS,
+    Vary: "Origin",
+    ...extra,
+  };
+
+  if (allowOrigin) base["Access-Control-Allow-Origin"] = allowOrigin;
+  return base;
 }
 
-function text(body, init = {}) {
-  const headers = new Headers(init.headers || {});
-  headers.set("content-type", "text/plain; charset=utf-8");
-  return new Response(body, { ...init, headers });
+function json(request, env, body, status = 200, extraHeaders = {}) {
+  return new Response(JSON.stringify(body, null, 2), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      ...withCors(request, env),
+      ...extraHeaders,
+    },
+  });
 }
 
-function badRequest(message) {
-  return json({ ok: false, error: message }, { status: 400 });
+function badRequest(request, env, message) {
+  return json(request, env, { error: "bad_request", message }, 400);
 }
 
-function forbidden(message) {
-  return json({ ok: false, error: message }, { status: 403 });
+function unauthorized(request, env, message = "Authentication required") {
+  return json(request, env, { error: "unauthorized", message }, 401);
 }
 
-function notFound() {
-  return json({ ok: false, error: "Not found" }, { status: 404 });
+function notFound(request, env) {
+  return json(request, env, { error: "not_found", message: "Not found" }, 404);
 }
 
-function unauthorized(message = "Unauthorized") {
-  return json({ ok: false, error: message }, { status: 401 });
+function methodNotAllowed(request, env) {
+  return json(request, env, { error: "method_not_allowed", message: "Method not allowed" }, 405);
 }
 
-function nowMs() {
-  return Date.now();
-}
-
-function parseCookies(headerVal) {
+function parseCookies(request) {
+  const cookie = request.headers.get("Cookie") || "";
   const out = {};
-  if (!headerVal) return out;
-  const parts = headerVal.split(";");
-  for (const part of parts) {
-    const [k, ...rest] = part.trim().split("=");
-    if (!k) continue;
-    out[k] = rest.join("=") || "";
+  for (const part of cookie.split(";")) {
+    const [rawKey, ...rest] = part.trim().split("=");
+    if (!rawKey) continue;
+    out[rawKey] = decodeURIComponent(rest.join("=") || "");
   }
   return out;
 }
 
-function setCookie(name, value, opts = {}) {
+function getCookie(request, name) {
+  const cookies = parseCookies(request);
+  return (cookies[name] || "").trim();
+}
+
+function asIso(ms) {
+  return new Date(ms).toISOString();
+}
+
+function nowIso() {
+  return new Date().toISOString();
+}
+
+function randomId(prefix) {
+  if (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") return `${prefix}_${crypto.randomUUID()}`;
+  return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now()}`;
+}
+
+function isValidEmail(email) {
+  const e = String(email || "").trim().toLowerCase();
+  return e.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+}
+
+function isSafeRedirect(redirect) {
+  const r = String(redirect || "").trim();
+  if (!r) return false;
+  return r.startsWith("/");
+}
+
+function getOrCreateAccount(accountId) {
+  if (!state.accounts.has(accountId)) {
+    state.accounts.set(accountId, {
+      balance: 0,
+      grantsBySlug: new Map(),
+    });
+  }
+  return state.accounts.get(accountId);
+}
+
+function timingSafeEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i += 1) mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return mismatch === 0;
+}
+
+async function hmacSha256Hex(secret, payload) {
+  const keyData = new TextEncoder().encode(secret);
+  const cryptoKey = await crypto.subtle.importKey("raw", keyData, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("HMAC", cryptoKey, new TextEncoder().encode(payload));
+  return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function verifyStripeSignature(request, rawBody, env) {
+  const header = request.headers.get("Stripe-Signature") || "";
+  const secret = env.STRIPE_WEBHOOK_SECRET;
+  if (!header || !secret) return false;
+
+  const parts = Object.fromEntries(
+    header.split(",").map((piece) => {
+      const [k, v] = piece.trim().split("=");
+      return [k, v];
+    })
+  );
+
+  const timestamp = parts.t;
+  const signature = parts.v1;
+  if (!timestamp || !signature) return false;
+
+  const signedPayload = `${timestamp}.${rawBody}`;
+  const expected = await hmacSha256Hex(secret, signedPayload);
+  return timingSafeEqual(expected, signature);
+}
+
+function resolvePriceIdForItem(item, env) {
+  const envVar = CHECKOUT_ITEM_TO_PRICE_ENV[item];
+  if (!envVar) return null;
+  return env[envVar] || null;
+}
+
+function tokenCountFromPriceId(priceId, env) {
+  for (const [sku, envName] of Object.entries(CHECKOUT_ITEM_TO_PRICE_ENV)) {
+    if (env[envName] === priceId) return SKU_TOKEN_COUNTS[sku];
+  }
+  return 0;
+}
+
+async function parseJson(request) {
+  return request.json().catch(() => null);
+}
+
+/* ------------------------------------------
+ * R2 keys (auth)
+ * ------------------------------------------ */
+
+function keyLoginToken(token) {
+  return `auth/login_tokens/${token}.json`;
+}
+
+function keySession(sessionId) {
+  return `auth/sessions/${sessionId}.json`;
+}
+
+/* ------------------------------------------
+ * Cookie helpers
+ * ------------------------------------------ */
+
+function buildCookie(name, value, { httpOnly = true, maxAgeSec = null } = {}) {
   const parts = [];
-  parts.push(`${name}=${value}`);
-  parts.push(`Path=${opts.path || "/"}`);
-  if (opts.httpOnly !== false) parts.push("HttpOnly");
-  if (opts.secure !== false) parts.push("Secure");
-  parts.push(`SameSite=${opts.sameSite || "Lax"}`);
-  if (typeof opts.maxAge === "number") parts.push(`Max-Age=${opts.maxAge}`);
+  parts.push(`${name}=${encodeURIComponent(value)}`);
+  parts.push("Path=/");
+  parts.push("Secure");
+  parts.push("SameSite=Lax");
+  if (httpOnly) parts.push("HttpOnly");
+  if (typeof maxAgeSec === "number") parts.push(`Max-Age=${maxAgeSec}`);
   return parts.join("; ");
 }
 
-function deleteCookie(name) {
-  return setCookie(name, "", { maxAge: 0 });
+function buildSessionCookies({ accountId, email, sessionId }) {
+  const maxAgeSec = Math.floor(SESSION_TTL_MS / 1000);
+  return [
+    buildCookie(COOKIE_NAMES.session, sessionId, { httpOnly: true, maxAgeSec }),
+    buildCookie(COOKIE_NAMES.accountId, accountId, { httpOnly: false, maxAgeSec }),
+    buildCookie(COOKIE_NAMES.email, encodeURIComponent(email), { httpOnly: false, maxAgeSec }),
+  ];
 }
 
-function getAllowedOrigins(env) {
-  const raw = (env?.ALLOWED_ORIGINS || "").trim();
-  if (!raw) return new Set(DEFAULT_ALLOWED_ORIGINS);
-  return new Set(
-    raw
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean)
-  );
+function clearCookies() {
+  return [
+    buildCookie(COOKIE_NAMES.session, "", { httpOnly: true, maxAgeSec: 0 }),
+    buildCookie(COOKIE_NAMES.accountId, "", { httpOnly: false, maxAgeSec: 0 }),
+    buildCookie(COOKIE_NAMES.email, "", { httpOnly: false, maxAgeSec: 0 }),
+  ];
 }
 
-function corsHeaders(req, env) {
-  const origin = req.headers.get("origin") || "";
-  const allowed = getAllowedOrigins(env);
+/* ------------------------------------------
+ * Google (Gmail API) sender (magic link)
+ * ------------------------------------------ */
 
-  const headers = new Headers();
-  if (allowed.has(origin)) {
-    headers.set("access-control-allow-origin", origin);
-    headers.set("access-control-allow-credentials", "true");
-    headers.set("access-control-allow-headers", "content-type, stripe-signature");
-    headers.set("access-control-allow-methods", "GET, POST, OPTIONS");
-  }
-  headers.set("vary", "origin");
-  return headers;
+function b64UrlEncodeBytes(bytes) {
+  let bin = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) bin += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
 
-function withCors(resp, cors) {
-  const headers = new Headers(resp.headers);
-  for (const [k, v] of cors.entries()) headers.set(k, v);
-  return new Response(resp.body, { status: resp.status, headers });
+function b64UrlEncodeString(s) {
+  return b64UrlEncodeBytes(new TextEncoder().encode(s));
 }
 
-async function readJson(req) {
-  try {
-    return await req.json();
-  } catch {
-    return null;
-  }
+function pemToPkcs8Bytes(pem) {
+  const normalized = String(pem || "").replace(/\\n/g, "\n").trim();
+  const m = normalized.match(/-----BEGIN PRIVATE KEY-----([\s\S]+?)-----END PRIVATE KEY-----/);
+  if (!m) throw new Error("Invalid GOOGLE_PRIVATE_KEY PEM.");
+  const b64 = m[1].replace(/\s+/g, "");
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
 }
 
-function requireMethod(req, method) {
-  return req.method.toUpperCase() === method.toUpperCase();
-}
-
-function safeInt(x) {
-  const n = Number.parseInt(String(x), 10);
-  return Number.isFinite(n) ? n : null;
-}
-
-function timingSafeEqualHex(a, b) {
-  if (typeof a !== "string" || typeof b !== "string") return false;
-  if (a.length !== b.length) return false;
-  let out = 0;
-  for (let i = 0; i < a.length; i++) out |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return out === 0;
-}
-
-async function hmacSha256Hex(secret, message) {
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    enc.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
+async function importGooglePrivateKey(pem) {
+  const pkcs8 = pemToPkcs8Bytes(pem);
+  return crypto.subtle.importKey(
+    "pkcs8",
+    pkcs8.buffer,
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
     false,
     ["sign"]
   );
-  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(message));
-  const bytes = new Uint8Array(sig);
-  return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-function parseStripeSignatureHeader(h) {
-  // Example: "t=1700000000,v1=abcdef...,v0=..."
-  const out = {};
-  if (!h) return out;
-  for (const part of h.split(",")) {
-    const [k, v] = part.trim().split("=");
-    if (k && v) out[k] = v;
-  }
-  return out;
-}
+async function googleGetAccessToken(env) {
+  const clientEmail = env.GOOGLE_CLIENT_EMAIL;
+  const privateKey = env.GOOGLE_PRIVATE_KEY;
+  const tokenUri = env.GOOGLE_TOKEN_URI;
+  const sender = env.GOOGLE_WORKSPACE_USER_NO_REPLY;
 
-function normalizePath(u) {
-  return u.pathname.replace(/\/+$/g, "") || "/";
-}
+  if (!clientEmail) throw new Error("Missing GOOGLE_CLIENT_EMAIL.");
+  if (!privateKey) throw new Error("Missing GOOGLE_PRIVATE_KEY.");
+  if (!tokenUri) throw new Error("Missing GOOGLE_TOKEN_URI.");
+  if (!sender) throw new Error("Missing GOOGLE_WORKSPACE_USER_NO_REPLY.");
 
-function requireSession(state, req) {
-  const cookies = parseCookies(req.headers.get("cookie"));
-  const sid = cookies[COOKIE_NAMES.session];
-  if (!sid) return { ok: false, error: "Missing session cookie" };
+  const iat = Math.floor(Date.now() / 1000);
+  const exp = iat + 10 * 60;
 
-  const session = state.sessions.get(sid);
-  if (!session) return { ok: false, error: "Invalid session" };
-
-  if (!session.accountId) return { ok: false, error: "Session missing accountId" };
-  return { ok: true, session, sid, cookies };
-}
-
-function ensureAccount(state, email) {
-  const key = String(email || "").trim().toLowerCase();
-  if (!key) return null;
-
-  const existing = state.accountsByEmail.get(key);
-  if (existing) return existing;
-
-  const accountId = crypto.randomUUID();
-  const acct = {
-    accountId,
-    createdAt: new Date().toISOString(),
-    email: key,
-    tokens: 0,
-    grantsBySlug: new Map(), // slug -> expiresAtMs
+  const header = { alg: "RS256", typ: "JWT" };
+  const payload = {
+    aud: tokenUri,
+    exp,
+    iat,
+    iss: clientEmail,
+    scope: "https://www.googleapis.com/auth/gmail.send",
+    sub: sender,
   };
 
-  state.accounts.set(accountId, acct);
-  state.accountsByEmail.set(key, acct);
-  return acct;
-}
+  const signingInput = `${b64UrlEncodeString(JSON.stringify(header))}.${b64UrlEncodeString(JSON.stringify(payload))}`;
 
-async function handleHealth(req, env, state) {
-  return json({ ok: true, ts: new Date().toISOString() });
-}
+  const key = await importGooglePrivateKey(privateKey);
+  const sig = new Uint8Array(await crypto.subtle.sign("RSASSA-PKCS1-v1_5", key, new TextEncoder().encode(signingInput)));
 
-async function handleAuthStart(req, env, state) {
-  if (!requireMethod(req, "POST")) return badRequest("Expected POST");
-
-  const body = await readJson(req);
-  const email = String(body?.email || "").trim().toLowerCase();
-  if (!email) return badRequest("Missing email");
-
-  // DEV/STUB: issue a one-time token that will be redeemed on /v1/auth/complete?token=
-  const token = crypto.randomUUID();
-  const expiresAtMs = nowMs() + 10 * 60 * 1000;
-
-  state.loginTokens.set(token, { email, expiresAtMs });
-  return json({ ok: true, token });
-}
-
-async function handleAuthComplete(req, env, state, url) {
-  if (!requireMethod(req, "GET")) return badRequest("Expected GET");
-
-  const token = String(url.searchParams.get("token") || "").trim();
-  if (!token) return badRequest("Missing token");
-
-  const rec = state.loginTokens.get(token);
-  if (!rec) return unauthorized("Invalid token");
-  if (rec.expiresAtMs < nowMs()) return unauthorized("Expired token");
-
-  state.loginTokens.delete(token);
-
-  const acct = ensureAccount(state, rec.email);
-  if (!acct) return badRequest("Unable to create account");
-
-  const sid = crypto.randomUUID();
-  state.sessions.set(sid, {
-    accountId: acct.accountId,
-    createdAt: new Date().toISOString(),
-    email: acct.email,
-  });
-
-  const headers = new Headers();
-  headers.append("set-cookie", setCookie(COOKIE_NAMES.session, sid));
-  headers.append("set-cookie", setCookie(COOKIE_NAMES.accountId, acct.accountId, { httpOnly: false }));
-  headers.append("set-cookie", setCookie(COOKIE_NAMES.email, encodeURIComponent(acct.email), { httpOnly: false }));
-
-  // Redirect back to site (safe default)
-  headers.set("location", "https://taxtools.taxmonitor.pro/");
-  return new Response(null, { status: 302, headers });
-}
-
-async function handleAuthMe(req, env, state) {
-  if (!requireMethod(req, "GET")) return badRequest("Expected GET");
-
-  const cookies = parseCookies(req.headers.get("cookie"));
-  const sid = cookies[COOKIE_NAMES.session];
-  if (!sid) return json({ ok: true, authed: false });
-
-  const session = state.sessions.get(sid);
-  if (!session) return json({ ok: true, authed: false });
-
-  return json({
-    ok: true,
-    authed: true,
-    accountId: session.accountId || null,
-    email: session.email || null,
-  });
-}
-
-async function handleAuthLogout(req, env, state) {
-  if (!requireMethod(req, "POST")) return badRequest("Expected POST");
-
-  const cookies = parseCookies(req.headers.get("cookie"));
-  const sid = cookies[COOKIE_NAMES.session];
-  if (sid) state.sessions.delete(sid);
-
-  const headers = new Headers();
-  headers.append("set-cookie", deleteCookie(COOKIE_NAMES.session));
-  headers.append("set-cookie", deleteCookie(COOKIE_NAMES.accountId));
-  headers.append("set-cookie", deleteCookie(COOKIE_NAMES.email));
-
-  return json({ ok: true }, { headers });
-}
-
-async function handleTokensBalance(req, env, state) {
-  if (!requireMethod(req, "GET")) return badRequest("Expected GET");
-
-  const sess = requireSession(state, req);
-  if (!sess.ok) return unauthorized(sess.error);
-
-  const acct = state.accounts.get(sess.session.accountId);
-  if (!acct) return unauthorized("Account not found");
-
-  return json({ ok: true, tokens: acct.tokens });
-}
-
-async function handleTokensSpend(req, env, state) {
-  if (!requireMethod(req, "POST")) return badRequest("Expected POST");
-
-  const sess = requireSession(state, req);
-  if (!sess.ok) return unauthorized(sess.error);
-
-  const acct = state.accounts.get(sess.session.accountId);
-  if (!acct) return unauthorized("Account not found");
-
-  const body = await readJson(req);
-  const amount = safeInt(body?.amount);
-  const slug = String(body?.slug || "").trim();
-
-  if (!slug) return badRequest("Missing slug");
-  if (amount === null || amount < 0) return badRequest("Invalid amount");
-
-  if (acct.tokens < amount) return forbidden("Insufficient tokens");
-
-  acct.tokens -= amount;
-  acct.grantsBySlug.set(slug, nowMs() + GRANT_TTL_MS);
-
-  return json({
-    ok: true,
-    tokens: acct.tokens,
-    grant: { expiresAtMs: acct.grantsBySlug.get(slug), slug },
-  });
-}
-
-async function handleGamesAccess(req, env, state, url) {
-  if (!requireMethod(req, "GET")) return badRequest("Expected GET");
-
-  const sess = requireSession(state, req);
-  if (!sess.ok) return unauthorized(sess.error);
-
-  const acct = state.accounts.get(sess.session.accountId);
-  if (!acct) return unauthorized("Account not found");
-
-  const slug = String(url.searchParams.get("slug") || "").trim();
-  if (!slug) return badRequest("Missing slug");
-
-  const expiresAtMs = acct.grantsBySlug.get(slug) || 0;
-  const ok = expiresAtMs > nowMs();
-
-  return json({ ok: true, access: ok, expiresAtMs: expiresAtMs || null });
-}
-
-async function stripeApiCreateCheckoutSession(env, { accountId, priceId, successUrl, cancelUrl, tokens }) {
-  const sk = String(env?.STRIPE_SECRET_KEY || "").trim();
-  if (!sk) throw new Error("Missing STRIPE_SECRET_KEY");
+  const jwt = `${signingInput}.${b64UrlEncodeBytes(sig)}`;
 
   const form = new URLSearchParams();
-  form.set("mode", "payment");
-  form.set("success_url", successUrl);
-  form.set("cancel_url", cancelUrl);
-  form.set("line_items[0][price]", priceId);
-  form.set("line_items[0][quantity]", "1");
-  form.set("metadata[accountId]", accountId);
-  form.set("metadata[tokens]", String(tokens));
+  form.set("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
+  form.set("assertion", jwt);
 
-  const res = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+  const res = await fetch(tokenUri, {
     method: "POST",
-    headers: {
-      authorization: `Bearer ${sk}`,
-      "content-type": "application/x-www-form-urlencoded",
-    },
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: form.toString(),
   });
 
-  const data = await res.json();
-  if (!res.ok) throw new Error(`Stripe error: ${JSON.stringify(data)}`);
-  return data;
-}
-
-function resolvePackToPrice(env, pack) {
-  const key = String(pack || "").trim().toUpperCase();
-
-  const map = Object.freeze({
-    TOKEN_PACK_20: "STRIPE_PRICE_TOKEN_PACK_20",
-    TOKEN_PACK_50: "STRIPE_PRICE_TOKEN_PACK_50",
-  });
-
-  const envKey = map[key];
-  if (!envKey) return { ok: false, error: `Unknown pack "${pack}"` };
-
-  const priceId = String(env?.[envKey] || "").trim();
-  if (!priceId) return { ok: false, error: `Missing env var ${envKey}` };
-
-  const tokens = safeInt(key.split("_").pop());
-  if (tokens === null) return { ok: false, error: `Unable to derive tokens for pack "${pack}"` };
-
-  return { ok: true, priceId, tokens };
-}
-
-async function handleCheckoutSessions(req, env, state) {
-  if (!requireMethod(req, "POST")) return badRequest("Expected POST");
-
-  const sess = requireSession(state, req);
-  if (!sess.ok) return unauthorized(sess.error);
-
-  const acct = state.accounts.get(sess.session.accountId);
-  if (!acct) return unauthorized("Account not found");
-
-  const body = await readJson(req);
-  const pack = String(body?.pack || "").trim();
-
-  const packRes = resolvePackToPrice(env, pack);
-  if (!packRes.ok) return badRequest(packRes.error);
-
-  const successUrl = "https://taxtools.taxmonitor.pro/checkout/success";
-  const cancelUrl = "https://taxtools.taxmonitor.pro/checkout/cancel";
-
-  const session = await stripeApiCreateCheckoutSession(env, {
-    accountId: acct.accountId,
-    priceId: packRes.priceId,
-    successUrl,
-    cancelUrl,
-    tokens: packRes.tokens,
-  });
-
-  // Store minimal local lookup for /v1/checkout/status
-  state.checkoutSessions.set(session.id, {
-    accountId: acct.accountId,
-    createdAt: new Date().toISOString(),
-    status: "created",
-  });
-
-  return json({ ok: true, sessionId: session.id, url: session.url });
-}
-
-async function handleCheckoutStatus(req, env, state, url) {
-  if (!requireMethod(req, "GET")) return badRequest("Expected GET");
-
-  const sess = requireSession(state, req);
-  if (!sess.ok) return unauthorized(sess.error);
-
-  const sessionId = String(url.searchParams.get("session_id") || "").trim();
-  if (!sessionId) return badRequest("Missing session_id");
-
-  const rec = state.checkoutSessions.get(sessionId);
-  if (!rec) return json({ ok: true, found: false });
-
-  return json({ ok: true, found: true, status: rec.status });
-}
-
-async function handleHelpTickets(req, env, state) {
-  if (!requireMethod(req, "POST")) return badRequest("Expected POST");
-
-  const sess = requireSession(state, req);
-  if (!sess.ok) return unauthorized(sess.error);
-
-  const body = await readJson(req);
-  const message = String(body?.message || "").trim();
-  if (!message) return badRequest("Missing message");
-
-  const ticketId = crypto.randomUUID();
-  state.helpTickets.set(ticketId, {
-    accountId: sess.session.accountId,
-    createdAt: new Date().toISOString(),
-    message,
-    status: "open",
-  });
-
-  return json({ ok: true, ticket_id: ticketId });
-}
-
-async function handleHelpStatus(req, env, state, url) {
-  if (!requireMethod(req, "GET")) return badRequest("Expected GET");
-
-  const sess = requireSession(state, req);
-  if (!sess.ok) return unauthorized(sess.error);
-
-  const ticketId = String(url.searchParams.get("ticket_id") || "").trim();
-  if (!ticketId) return badRequest("Missing ticket_id");
-
-  const rec = state.helpTickets.get(ticketId);
-  if (!rec) return json({ ok: true, found: false });
-
-  return json({ ok: true, found: true, status: rec.status });
-}
-
-async function handleStripeWebhook(req, env, state) {
-  if (!requireMethod(req, "POST")) return badRequest("Expected POST");
-
-  const secret = String(env?.STRIPE_WEBHOOK_SECRET || "").trim();
-  if (!secret) return badRequest("Missing STRIPE_WEBHOOK_SECRET");
-
-  const toleranceSec = safeInt(env?.STRIPE_WEBHOOK_TOLERANCE_SECONDS) ?? 300;
-
-  const sigHeader = req.headers.get("stripe-signature") || "";
-  const sig = parseStripeSignatureHeader(sigHeader);
-  const t = safeInt(sig.t);
-  const v1 = String(sig.v1 || "");
-
-  if (!t || !v1) return unauthorized("Missing Stripe signature parts");
-
-  const bodyText = await req.text();
-  const age = Math.abs(Math.floor(nowMs() / 1000) - t);
-  if (age > toleranceSec) return unauthorized("Stripe signature timestamp outside tolerance");
-
-  const expected = await hmacSha256Hex(secret, `${t}.${bodyText}`);
-  if (!timingSafeEqualHex(expected, v1)) return unauthorized("Stripe signature mismatch");
-
-  let event;
-  try {
-    event = JSON.parse(bodyText);
-  } catch {
-    return badRequest("Invalid JSON event");
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const msg = data && (data.error_description || data.error) ? String(data.error_description || data.error) : "unknown";
+    throw new Error(`Google token error: ${msg}`);
   }
 
-  const eventType = String(event?.type || "");
-  if (eventType !== "checkout.session.completed") {
-    return json({ ok: true, ignored: true, type: eventType });
-  }
-
-  const session = event?.data?.object || {};
-  const accountId = String(session?.metadata?.accountId || "").trim();
-  const tokens = safeInt(session?.metadata?.tokens);
-
-  if (!accountId) return badRequest("Missing session.metadata.accountId");
-  if (tokens === null || tokens <= 0) return badRequest("Missing or invalid session.metadata.tokens");
-
-  const acct = state.accounts.get(accountId);
-  if (!acct) return badRequest("Account not found for metadata.accountId");
-
-  acct.tokens += tokens;
-
-  // Best-effort: mark local checkout session status
-  const sessionId = String(session?.id || "").trim();
-  if (sessionId && state.checkoutSessions.has(sessionId)) {
-    const rec = state.checkoutSessions.get(sessionId);
-    rec.status = "paid";
-  }
-
-  return json({ ok: true });
+  const token = String(data.access_token || "");
+  if (!token) throw new Error("Google token missing access_token.");
+  return token;
 }
 
-function createState() {
+function buildRawEmail({ from, to, subject, text }) {
+  const raw = [
+    `From: ${from}`,
+    `To: ${to}`,
+    `Subject: ${subject}`,
+    `MIME-Version: 1.0`,
+    `Content-Type: text/plain; charset="UTF-8"`,
+    ``,
+    text,
+  ].join("\r\n");
+  return b64UrlEncodeString(raw);
+}
+
+async function gmailSendMagicLink(env, { to, link }) {
+  const accessToken = await googleGetAccessToken(env);
+  const from = env.GOOGLE_WORKSPACE_USER_NO_REPLY;
+
+  const subject = "Your TaxTools sign-in link";
+  const text =
+`Sign in to TaxTools
+
+Click this link to finish signing in:
+${link}
+
+This link expires in 15 minutes.
+
+If you didn’t request this, ignore this email.
+`;
+
+  const raw = buildRawEmail({ from, to, subject, text });
+
+  const res = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ raw }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`Gmail send failed: ${body || res.status}`);
+  }
+}
+
+/* ------------------------------------------
+ * Auth context
+ * ------------------------------------------ */
+
+async function getAuthContext(request, env) {
+  const sessionId = getCookie(request, COOKIE_NAMES.session);
+  if (!sessionId) return { isAuthenticated: false, accountId: null, email: null };
+
+  const obj = await env.R2_TAXTOOLS.get(keySession(sessionId));
+  if (!obj) return { isAuthenticated: false, accountId: null, email: null };
+
+  const sess = await obj.json().catch(() => null);
+  if (!sess || !sess.email || !sess.expiresAt || !sess.accountId) return { isAuthenticated: false, accountId: null, email: null };
+
+  const exp = Date.parse(sess.expiresAt);
+  if (!Number.isFinite(exp) || exp <= Date.now()) {
+    await env.R2_TAXTOOLS.delete(keySession(sessionId));
+    return { isAuthenticated: false, accountId: null, email: null };
+  }
+
   return {
-    accounts: new Map(), // accountId -> acct
-    accountsByEmail: new Map(), // email -> acct
-    checkoutSessions: new Map(), // sessionId -> { accountId, status, createdAt }
-    helpTickets: new Map(), // ticketId -> { ... }
-    loginTokens: new Map(), // token -> { email, expiresAtMs }
-    sessions: new Map(), // sid -> { accountId, email, createdAt }
+    isAuthenticated: true,
+    accountId: String(sess.accountId || "").trim() || null,
+    email: String(sess.email || "").toLowerCase(),
   };
 }
 
+/* ------------------------------------------
+ * Route handlers
+ * ------------------------------------------ */
+
+async function handleAuthComplete(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const url = new URL(request.url);
+  const token = (url.searchParams.get("token") || "").trim();
+  if (!token) return new Response("Missing token.", { status: 400 });
+
+  const obj = await env.R2_TAXTOOLS.get(keyLoginToken(token));
+  if (!obj) return new Response("Invalid or expired token.", { status: 400 });
+
+  const rec = await obj.json().catch(() => null);
+  if (!rec || !rec.email || !rec.expiresAt || !rec.redirect) return new Response("Invalid token record.", { status: 400 });
+
+  const exp = Date.parse(rec.expiresAt);
+  if (!Number.isFinite(exp) || exp <= Date.now()) {
+    await env.R2_TAXTOOLS.delete(keyLoginToken(token));
+    return new Response("Invalid or expired token.", { status: 400 });
+  }
+
+  await env.R2_TAXTOOLS.delete(keyLoginToken(token));
+
+  const sessionId = randomId("sess");
+  const email = String(rec.email).toLowerCase();
+  const accountId = randomId("acct");
+
+  const session = {
+    accountId,
+    createdAt: nowIso(),
+    email,
+    expiresAt: asIso(Date.now() + SESSION_TTL_MS),
+  };
+
+  await env.R2_TAXTOOLS.put(keySession(sessionId), JSON.stringify(session), {
+    httpMetadata: { contentType: "application/json" },
+  });
+
+  const headers = new Headers();
+  for (const c of buildSessionCookies({ accountId, email, sessionId })) headers.append("Set-Cookie", c);
+  headers.set("Location", String(rec.redirect));
+
+  return new Response(null, { status: 302, headers });
+}
+
+async function handleAuthMe(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+  const auth = await getAuthContext(request, env);
+  return json(request, env, { accountId: auth.accountId, email: auth.email, isAuthenticated: auth.isAuthenticated });
+}
+
+async function handleAuthLogout(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const sessionId = getCookie(request, COOKIE_NAMES.session);
+  if (sessionId) await env.R2_TAXTOOLS.delete(keySession(sessionId));
+
+  const headers = new Headers();
+  for (const c of clearCookies()) headers.append("Set-Cookie", c);
+
+  return json(request, env, { ok: true }, 200, Object.fromEntries(headers));
+}
+
+async function handleAuthStart(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
+
+  const email = String(body.email || "").trim().toLowerCase();
+  const redirect = String(body.redirect || "").trim();
+
+  if (!isValidEmail(email)) return badRequest(request, env, "Invalid email");
+  if (!isSafeRedirect(redirect)) return badRequest(request, env, "Invalid redirect (must be a relative path)");
+
+  const token = randomId("ml");
+  const rec = {
+    createdAt: nowIso(),
+    email,
+    expiresAt: asIso(Date.now() + LOGIN_TOKEN_TTL_MS),
+    redirect,
+  };
+
+  await env.R2_TAXTOOLS.put(keyLoginToken(token), JSON.stringify(rec), {
+    httpMetadata: { contentType: "application/json" },
+  });
+
+  const baseUrl = String(env.TAXTOOLS_AUTH_BASE_URL || "https://tools-api.taxmonitor.pro").replace(/\/+$/g, "");
+  const link = `${baseUrl}/v1/auth/complete?token=${encodeURIComponent(token)}`;
+
+  await gmailSendMagicLink(env, { link, to: email });
+
+  return json(request, env, { ok: true }, 200);
+}
+
+async function handleDevLogin(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const enabled = String(env.DEV_LOGIN_ENABLED || "").trim().toLowerCase();
+  if (enabled !== "true") return notFound(request, env);
+
+  const url = new URL(request.url);
+  const email = String(url.searchParams.get("email") || "dev@local.test").trim().toLowerCase();
+
+  const sessionId = randomId("sess");
+  const accountId = randomId("acct");
+
+  const session = {
+    accountId,
+    createdAt: nowIso(),
+    email,
+    expiresAt: asIso(Date.now() + SESSION_TTL_MS),
+  };
+
+  await env.R2_TAXTOOLS.put(keySession(sessionId), JSON.stringify(session), {
+    httpMetadata: { contentType: "application/json" },
+  });
+
+  const headers = new Headers();
+  for (const c of buildSessionCookies({ accountId, email, sessionId })) headers.append("Set-Cookie", c);
+  headers.set("Location", "https://taxtools.taxmonitor.pro/");
+
+  return new Response(null, { status: 302, headers });
+}
+
+async function handleCheckoutSessions(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated) return unauthorized(request, env);
+
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
+
+  const item = typeof body.item === "string" ? body.item.trim() : "";
+  const quantity = body.quantity == null ? 1 : Number(body.quantity);
+
+  if (!item) return badRequest(request, env, "item is required");
+  if (item.startsWith("price_")) return badRequest(request, env, "Frontend must send internal item SKU, not Stripe price_ ID");
+  if (!(item in CHECKOUT_ITEM_TO_PRICE_ENV)) return badRequest(request, env, "Unknown item");
+  if (!Number.isInteger(quantity) || quantity < 1) return badRequest(request, env, "quantity must be a positive integer");
+  if (quantity > 1) return badRequest(request, env, "quantity > 1 is not allowed");
+
+  const priceId = resolvePriceIdForItem(item, env);
+  if (!priceId) return json(request, env, { error: "server_misconfigured", message: "Missing Stripe Price configuration" }, 500);
+
+  // NOTE: This repo keeps Stripe session creation as a stub unless you wire Stripe API calls.
+  // Return a placeholder to keep UI integration moving during game testing.
+  const sessionId = `cs_test_${crypto.randomUUID().replaceAll("-", "")}`;
+  const checkoutUrl = `https://checkout.stripe.com/c/pay/${sessionId}`;
+
+  state.checkoutBySessionId.set(sessionId, {
+    accountId: auth.accountId,
+    item,
+    priceId,
+    paymentStatus: "unpaid",
+    status: "open",
+  });
+
+  return json(request, env, { checkoutUrl, sessionId }, 201);
+}
+
+async function handleCheckoutStatus(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated) return unauthorized(request, env);
+
+  const url = new URL(request.url);
+  const sessionId = (url.searchParams.get("session_id") || "").trim();
+  if (!sessionId) return badRequest(request, env, "session_id is required");
+
+  const checkout = state.checkoutBySessionId.get(sessionId);
+  const account = auth.accountId ? getOrCreateAccount(auth.accountId) : null;
+
+  return json(request, env, {
+    balance: account ? account.balance : 0,
+    paymentStatus: checkout?.paymentStatus || "unpaid",
+    sessionId,
+    status: checkout?.status || "open",
+  });
+}
+
+async function handleGamesAccess(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated) return unauthorized(request, env);
+
+  const url = new URL(request.url);
+  const slug = (url.searchParams.get("slug") || "").trim();
+  if (!slug || !VALID_GAME_SLUGS.has(slug)) return badRequest(request, env, "slug is invalid");
+  if (!auth.accountId) return unauthorized(request, env);
+
+  const account = getOrCreateAccount(auth.accountId);
+  const grant = account.grantsBySlug.get(slug);
+
+  if (!grant || grant.expiresAtMs <= Date.now()) {
+    return json(request, env, { allowed: false, expiresAt: null, slug });
+  }
+
+  return json(request, env, { allowed: true, expiresAt: grant.expiresAt, slug });
+}
+
+async function handleHealth(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+  return json(request, env, { status: "ok" }, 200);
+}
+
+async function handleHelpStatus(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const url = new URL(request.url);
+  const ticketId = (url.searchParams.get("ticket_id") || url.searchParams.get("supportId") || "").trim();
+  if (!ticketId) return badRequest(request, env, "ticket_id is required");
+
+  const ticket = state.helpTickets.get(ticketId);
+  if (!ticket) return json(request, env, { latestUpdate: null, status: "unknown", ticket_id: ticketId });
+
+  return json(request, env, { latestUpdate: ticket.latestUpdate, status: ticket.status, ticket_id: ticketId });
+}
+
+async function handleHelpTickets(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
+
+  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const subject = typeof body.subject === "string" ? body.subject.trim() : "";
+  const message = typeof body.message === "string" ? body.message.trim() : "";
+
+  if (!email) return badRequest(request, env, "email is required");
+  if (!subject) return badRequest(request, env, "subject is required");
+  if (!message) return badRequest(request, env, "message is required");
+
+  const ticketId = `sup_${crypto.randomUUID()}`;
+  const createdAt = nowIso();
+
+  state.helpTickets.set(ticketId, { email, latestUpdate: createdAt, message, status: "open", subject });
+
+  return json(request, env, { ticket_id: ticketId }, 201);
+}
+
+async function handleStripeWebhook(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const rawBody = await request.text();
+  const validSignature = await verifyStripeSignature(request, rawBody, env);
+  if (!validSignature) return unauthorized(request, env, "Invalid Stripe signature");
+
+  const event = JSON.parse(rawBody || "{}");
+  const checkoutSession = event?.data?.object || {};
+  const sessionId = checkoutSession.id;
+
+  if (!sessionId) return badRequest(request, env, "Missing checkout session id");
+  if (state.webhookProcessedSessionIds.has(sessionId)) return json(request, env, { deduped: true, received: true });
+
+  const checkout = state.checkoutBySessionId.get(sessionId);
+  if (checkout) {
+    const account = getOrCreateAccount(checkout.accountId);
+    const priceId = checkout.priceId;
+    const tokens = tokenCountFromPriceId(priceId, env);
+
+    account.balance += tokens;
+    checkout.paymentStatus = "paid";
+    checkout.status = "complete";
+  }
+
+  state.webhookProcessedSessionIds.add(sessionId);
+  return json(request, env, { received: true });
+}
+
+async function handleTokensBalance(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated) return unauthorized(request, env);
+  if (!auth.accountId) return unauthorized(request, env);
+
+  const account = getOrCreateAccount(auth.accountId);
+  return json(request, env, { balance: account.balance });
+}
+
+async function handleTokensSpend(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated) return unauthorized(request, env);
+  if (!auth.accountId) return unauthorized(request, env);
+
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
+
+  const amount = Number(body.amount);
+  const idempotencyKey = typeof body.idempotencyKey === "string" ? body.idempotencyKey.trim() : "";
+  const reason = typeof body.reason === "string" ? body.reason.trim() : "";
+  const slug = typeof body.slug === "string" ? body.slug.trim() : "";
+
+  if (!Number.isInteger(amount) || amount <= 0) return badRequest(request, env, "amount must be a positive integer");
+  if (!idempotencyKey) return badRequest(request, env, "idempotencyKey is required");
+  if (!reason) return badRequest(request, env, "reason is required");
+  if (!slug || !VALID_GAME_SLUGS.has(slug)) return badRequest(request, env, "slug is invalid");
+
+  const idempotencyScope = `${auth.accountId}:${idempotencyKey}`;
+  const existing = state.spendByIdempotency.get(idempotencyScope);
+  if (existing) return json(request, env, existing);
+
+  const account = getOrCreateAccount(auth.accountId);
+  if (account.balance < amount) return json(request, env, { balance: account.balance, error: "insufficient_balance" }, 402);
+
+  account.balance -= amount;
+
+  const grantId = crypto.randomUUID();
+  const expiresAtMs = Date.now() + PLAY_GRANT_WINDOW_MS;
+
+  const grant = {
+    expiresAt: asIso(expiresAtMs),
+    expiresAtMs,
+    grantId,
+    slug,
+    spent: amount,
+  };
+
+  account.grantsBySlug.set(slug, grant);
+
+  const response = {
+    balance: account.balance,
+    grant: { expiresAt: grant.expiresAt, grantId: grant.grantId, slug: grant.slug, spent: grant.spent },
+  };
+
+  state.spendByIdempotency.set(idempotencyScope, response);
+  return json(request, env, response);
+}
+
+/* ------------------------------------------
+ * Router
+ * ------------------------------------------ */
+
 export default {
-  async fetch(req, env, ctx) {
-    const state = (globalThis.__STATE__ ||= createState());
-    const cors = corsHeaders(req, env);
+  async fetch(request, env) {
+    const url = new URL(request.url);
 
-    if (req.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers: cors });
-    }
+    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: withCors(request, env) });
+    if (!env.R2_TAXTOOLS) return json(request, env, { error: "server_misconfigured", message: "Missing R2_TAXTOOLS binding" }, 500);
 
-    const url = new URL(req.url);
-    const p = normalizePath(url);
+    const path = url.pathname === "/v1/arcade/tokens" ? "/v1/tokens/balance" : url.pathname;
 
-    let resp;
+    if (path === "/dev/login") return handleDevLogin(request, env);
 
-    // Health
-    if (p === "/health") resp = await handleHealth(req, env, state);
+    if (path === "/health") return handleHealth(request, env);
+    if (path === "/v1/auth/complete") return handleAuthComplete(request, env);
+    if (path === "/v1/auth/me") return handleAuthMe(request, env);
+    if (path === "/v1/auth/logout") return handleAuthLogout(request, env);
+    if (path === "/v1/auth/start") return handleAuthStart(request, env);
+    if (path === "/v1/checkout/sessions") return handleCheckoutSessions(request, env);
+    if (path === "/v1/checkout/status") return handleCheckoutStatus(request, env);
+    if (path === "/v1/games/access") return handleGamesAccess(request, env);
+    if (path === "/v1/help/status") return handleHelpStatus(request, env);
+    if (path === "/v1/help/tickets") return handleHelpTickets(request, env);
+    if (path === "/v1/tokens/balance") return handleTokensBalance(request, env);
+    if (path === "/v1/tokens/spend") return handleTokensSpend(request, env);
+    if (path === "/v1/webhooks/stripe") return handleStripeWebhook(request, env);
 
-    // Auth
-    else if (p === "/v1/auth/start") resp = await handleAuthStart(req, env, state);
-    else if (p === "/v1/auth/complete") resp = await handleAuthComplete(req, env, state, url);
-    else if (p === "/v1/auth/me") resp = await handleAuthMe(req, env, state);
-    else if (p === "/v1/auth/logout") resp = await handleAuthLogout(req, env, state);
-
-    // Checkout
-    else if (p === "/v1/checkout/sessions") resp = await handleCheckoutSessions(req, env, state);
-    else if (p === "/v1/checkout/status") resp = await handleCheckoutStatus(req, env, state, url);
-
-    // Games
-    else if (p === "/v1/games/access") resp = await handleGamesAccess(req, env, state, url);
-
-    // Help
-    else if (p === "/v1/help/tickets") resp = await handleHelpTickets(req, env, state);
-    else if (p === "/v1/help/status") resp = await handleHelpStatus(req, env, state, url);
-
-    // Tokens
-    else if (p === "/v1/arcade/tokens") resp = await handleTokensBalance(req, env, state);
-    else if (p === "/v1/tokens/balance") resp = await handleTokensBalance(req, env, state);
-    else if (p === "/v1/tokens/spend") resp = await handleTokensSpend(req, env, state);
-
-    // Stripe webhook
-    else if (p === "/v1/webhooks/stripe") resp = await handleStripeWebhook(req, env, state);
-
-    else resp = notFound();
-
-    return withCors(resp, cors);
+    return notFound(request, env);
   },
 };
