@@ -556,7 +556,11 @@
         });
 
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data?.error || `Checkout session failed (${res.status})`);
+        if (!res.ok) {
+          const code = data?.error ? String(data.error) : `http_${res.status}`;
+          const msg = data?.message ? String(data.message) : `Checkout session failed (${res.status})`;
+          throw new Error(`${code}: ${msg}`);
+        }
 
         if (data?.checkoutUrl) {
           location.href = data.checkoutUrl;
