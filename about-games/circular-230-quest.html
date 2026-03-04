@@ -863,13 +863,111 @@
       return { res, json: await res.json().catch(() => ({})) };
     }
 
+    function cleanQueryParam(name) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete(name);
+      window.history.replaceState({}, "", url.toString());
+    }
+
+    function getSessionIdFromUrl() {
+      const url = new URL(window.location.href);
+      return url.searchParams.get("session_id") || "";
+    }
+
+    async function beginLogin() {
+      setStatus("Starting sign-in…");
+      const started = await apiPost("/v1/auth/start", { returnTo: window.location.href });
+      const redirectUrl = started?.json?.redirectUrl || started?.json?.url || "";
+      if (started.res.ok && redirectUrl) {
+        window.location.href = redirectUrl;
+        return;
+      }
+      // Fallback (should not be needed, but humans love edge cases)
+      window.location.href = "/index.html";
+    }
+
+    function wireBuyButtons() {
+      document.querySelectorAll('[data-buy-item]')?.forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const item = btn.getAttribute('data-buy-item');
+          if (!item) return;
+          await beginCheckout(item);
+        });
+      });
+    }
+
+    async function beginCheckout(item) {
+      setStatus("Opening secure checkout…");
+
+      const payload = {
+        item,
+        quantity: 1,
+        // The README model expects returning to the originating page.
+        cancelUrl: window.location.href,
+        successUrl: window.location.href
+      };
+
+      const created = await apiPost("/v1/checkout/sessions", payload);
+      const checkoutUrl = created?.json?.checkoutUrl || created?.json?.url || "";
+
+      if (!created.res.ok || !checkoutUrl) {
+        setStatus("Could not start checkout. Please try again.");
+        return;
+      }
+
+      window.location.href = checkoutUrl;
+    }
+
+    async function handleCheckoutReturn() {
+      const sessionId = getSessionIdFromUrl();
+      if (!sessionId) return;
+
+      setStatus("Confirming purchase…");
+
+      const statusRes = await apiGet(`/v1/checkout/status?session_id=${encodeURIComponent(sessionId)}`);
+      // Regardless of response, clean the URL so reloads are normal.
+      cleanQueryParam("session_id");
+
+      if (!statusRes.res.ok) {
+        setStatus("Purchase confirmation failed. Please refresh.");
+        return;
+      }
+
+      const bal = await apiGet("/v1/tokens/balance");
+      const balance = Number(bal.json && bal.json.balance);
+
+      if (!Number.isFinite(balance)) {
+        setStatus("Purchase confirmed, but balance did not load.");
+        return;
+      }
+
+      if (balance >= tokenCost) {
+        setStatus("Purchase confirmed. You can unlock now.");
+        return;
+      }
+
+      setStatus("Purchase confirmed. Add more tokens to play.");
+    }
+
+    function showBuyOptions() {
+      // SKUs per README: token_pack_large_200, token_pack_medium_80, token_pack_small_30
+      setStatusHtml(
+        `Not enough tokens. ` +
+        `<span class="inline-flex flex-wrap items-center gap-2">` +
+          `<button type="button" class="underline" data-buy-item="token_pack_small_30">Buy 30 tokens</button>` +
+          `<button type="button" class="underline" data-buy-item="token_pack_medium_80">Buy 80 tokens</button>` +
+          `<button type="button" class="underline" data-buy-item="token_pack_large_200">Buy 200 tokens</button>` +
+        `</span>`
+      );
+      wireBuyButtons();
+    }
+
     async function preflightUnlock() {
       setStatus("Checking session…");
 
       const me = await apiGet("/v1/auth/me");
       if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-        setStatus("Please sign in to continue.");
-        window.location.href = "/index.html";
+        await beginLogin();
         return;
       }
 
@@ -882,7 +980,7 @@
       }
 
       if (balance < tokenCost) {
-        setStatusHtml(`Not enough tokens. <a class="underline" href="/#pricing">Purchase a pack</a> to continue.`);
+        showBuyOptions();
         return;
       }
 
@@ -1172,6 +1270,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      // README: on return from Stripe Checkout with ?session_id=..., confirm then refresh balance
+      handleCheckoutReturn();
       document.getElementById("btnUnlock")?.addEventListener("click", preflightUnlock);
       document.getElementById("btnUnlock2")?.addEventListener("click", preflightUnlock);
 
