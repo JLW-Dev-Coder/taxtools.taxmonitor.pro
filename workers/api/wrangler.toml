@@ -6,8 +6,6 @@ routes = [
   { pattern = "tools-api.taxmonitor.pro/*", zone_name = "taxmonitor.pro" }
 ]
 
-migrations_dir = "./migrations"
-
 [[d1_databases]]
 binding = "DB"
 database_name = "tax-tools-tax-monitor"
