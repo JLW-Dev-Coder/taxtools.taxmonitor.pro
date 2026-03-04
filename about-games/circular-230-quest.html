@@ -13,7 +13,7 @@
   <script src="/_sdk/element_sdk.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Nunito:wght@400;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet" />
 
   <script>
     tailwind.config = {
@@ -78,6 +78,43 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
     }
+
+    /* Demo: match game look (scoped) */
+    .demo-font-display { font-family: 'Fredoka One', cursive; }
+    .demo-font-body { font-family: 'Nunito', system-ui, sans-serif; }
+
+    @keyframes demo-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes demo-pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+      50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.8); }
+    }
+    @keyframes demo-bounce-in {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes demo-slide-up {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes demo-shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .demo-animate-float { animation: demo-float 3s ease-in-out infinite; }
+    .demo-animate-pulse-glow { animation: demo-pulse-glow 2s ease-in-out infinite; }
+    .demo-animate-bounce-in { animation: demo-bounce-in 0.5s ease-out forwards; }
+    .demo-animate-slide-up { animation: demo-slide-up 0.4s ease-out forwards; }
+    .demo-animate-shake { animation: demo-shake 0.5s ease-in-out; }
+
+    .demo-quiz-option { transition: all 0.2s ease; }
+    .demo-quiz-option:hover:not(:disabled) { transform: scale(1.02); }
+
     body { box-sizing: border-box; }
   </style>
 
@@ -412,8 +449,8 @@
             <div class="w-20 h-20 bg-primary/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
               <span class="absolute -top-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center font-bold text-sm">1</span>
               <svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.341A8 8 0 104.572 15.34" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 0 1 6 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.341A8 8 0 10 4.572 15.34" />
               </svg>
             </div>
             <h3 class="text-xl font-bold mb-3">Sign in</h3>
@@ -599,79 +636,162 @@
     </div>
   </div>
 
-  <!-- Demo Modal (game-look, limited) -->
+  <!-- Demo Modal (match game UI, limited) -->
   <div id="demoModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/70" data-demo-close="1"></div>
 
-    <div class="absolute inset-4 md:inset-10 lg:inset-16 rounded-3xl overflow-hidden flex flex-col border border-white/10" style="background: linear-gradient(135deg, rgba(30,27,75,0.95) 0%, rgba(49,46,129,0.95) 55%, rgba(67,56,202,0.95) 100%);">
+    <div class="absolute inset-4 md:inset-10 lg:inset-16 rounded-3xl overflow-hidden flex flex-col border border-white/10" style="background: linear-gradient(135deg, rgba(30,27,75,0.97) 0%, rgba(49,46,129,0.97) 50%, rgba(67,56,202,0.97) 100%);">
+
+      <!-- Header (game-ish) -->
       <div class="flex items-center justify-between px-6 py-4 border-b border-white/10" style="background: rgba(255,255,255,0.06)">
         <div>
-          <p class="text-blue-200 text-sm">Mini demo</p>
-          <h3 class="text-white text-xl font-bold">Circular 230 Quest (Preview)</h3>
+          <p class="demo-font-body text-indigo-200 text-sm">Demo mode</p>
+          <h3 class="demo-font-display text-white text-2xl">Circular 230 Quest</h3>
         </div>
         <button type="button" class="p-2 hover:bg-white/10 rounded-lg transition-colors text-white" data-demo-close="1" aria-label="Close demo">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
       </div>
 
-      <div class="flex-1 overflow-auto p-6">
-        <div class="grid lg:grid-cols-3 gap-6">
-          <!-- Left: info -->
-          <div class="lg:col-span-1">
-            <div class="rounded-2xl p-5 border border-white/10" style="background: rgba(255,255,255,0.06)">
-              <p class="text-white font-semibold">What you get</p>
-              <ul class="mt-3 space-y-2 text-blue-200 text-sm">
-                <li>Two questions only (demo).</li>
-                <li>No tokens spent here.</li>
-                <li>Full game unlocks after Worker-verified spend.</li>
-              </ul>
-              <div class="mt-5 rounded-2xl p-4 border border-white/10" style="background: rgba(249,115,22,0.12)">
-                <p class="text-white text-sm"><strong>Want full play?</strong> Unlock for <span class="font-semibold">8 tokens</span>.</p>
+      <!-- Body -->
+      <div class="flex-1 overflow-auto p-4 md:p-8 demo-font-body">
+        <div class="max-w-6xl mx-auto">
+
+          <!-- Loading -->
+          <div id="demo-loading" class="hidden h-full w-full flex items-center justify-center">
+            <div class="text-center">
+              <div class="w-16 h-16 border-4 border-indigo-300 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
+              <p class="text-white text-lg">Loading your demo...</p>
+            </div>
+          </div>
+
+          <!-- Main Menu (trimmed) -->
+          <div id="demo-menu" class="hidden">
+            <header class="text-center mb-8 demo-animate-slide-up">
+              <h1 class="demo-font-display text-4xl md:text-5xl text-white mb-2 drop-shadow-lg">🏛️ Circular 230 Quest</h1>
+              <p class="text-indigo-200 text-lg">Two questions. No token spend.</p>
+            </header>
+
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 demo-animate-slide-up" style="animation-delay: 0.08s;">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <h2 class="demo-font-display text-2xl text-white">Demo Zone</h2>
+                  <p class="text-indigo-200">Subpart E • General Provisions</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="bg-white/20 rounded-full px-4 py-2"><span class="text-white font-semibold">Questions <span id="demo-menu-qcount">2</span></span></div>
+                  <div class="bg-yellow-500/20 rounded-full px-4 py-2"><span class="text-yellow-300 font-semibold">⭐ <span id="demo-menu-score">0</span></span></div>
+                </div>
+              </div>
+
+              <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)">
+                  <p class="text-white font-semibold">Rules</p>
+                  <p class="text-indigo-200 text-sm">Pick one answer per question.</p>
+                </div>
+                <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)">
+                  <p class="text-white font-semibold">Scoring</p>
+                  <p class="text-indigo-200 text-sm">+20 per correct answer.</p>
+                </div>
+                <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)">
+                  <p class="text-white font-semibold">Unlock</p>
+                  <p class="text-indigo-200 text-sm">Full game requires 8 tokens.</p>
+                </div>
+              </div>
+
+              <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+                <button id="demo-start" type="button" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105">Start Demo →</button>
+                <button id="demo-unlock" type="button" class="bg-white/20 text-white font-bold py-4 px-8 rounded-xl hover:bg-white/30 transition-all">Unlock &amp; Play (8 tokens)</button>
+              </div>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 demo-animate-slide-up" style="animation-delay: 0.16s;">
+              <h2 class="demo-font-display text-2xl text-white mb-3 text-center">What this is (and isn’t)</h2>
+              <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)"><p class="text-white font-semibold">Education</p><p class="text-indigo-200">Training, not advice.</p></div>
+                <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)"><p class="text-white font-semibold">No representation</p><p class="text-indigo-200">That’s separate.</p></div>
+                <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)"><p class="text-white font-semibold">Cookie session</p><p class="text-indigo-200">Required for unlock.</p></div>
               </div>
             </div>
           </div>
 
-          <!-- Right: quiz card -->
-          <div class="lg:col-span-2">
-            <div class="rounded-3xl p-5 border border-white/10" style="background: rgba(255,255,255,0.06)">
-              <div class="flex items-center justify-between mb-4">
-                <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 border border-white/10" style="background: rgba(255,255,255,0.06)">
-                  <span class="text-white text-sm font-semibold">Question</span>
-                  <span class="text-white/90 text-sm"><span id="demoQIndex">1</span>/2</span>
-                </div>
-                <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 border border-white/10" style="background: rgba(255,255,255,0.06)">
-                  <span class="text-blue-200 text-sm">Score</span>
-                  <span class="text-white text-sm font-semibold" id="demoScore">0</span>
-                </div>
-              </div>
-
-              <div class="rounded-3xl bg-white p-6 md:p-8 card-shadow">
-                <span id="demoType" class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold mb-4">Multiple Choice</span>
-                <h4 id="demoQuestion" class="text-xl md:text-2xl font-bold text-gray-800"></h4>
-
-                <div id="demoOptions" class="mt-5 space-y-3"></div>
-
-                <div id="demoFeedback" class="hidden mt-6 p-4 rounded-xl">
-                  <h5 id="demoFeedbackTitle" class="font-bold text-lg"></h5>
-                  <p id="demoFeedbackText" class="text-gray-600 mt-1"></p>
-                </div>
-
-                <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-end">
-                  <button id="demoReset" type="button" class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold px-5 py-3 rounded-xl">Restart demo</button>
-                  <button id="demoNext" type="button" class="bg-navy hover:bg-navy-light text-white font-semibold px-5 py-3 rounded-xl">Next</button>
+          <!-- Quiz Screen -->
+          <div id="demo-quiz" class="hidden">
+            <div class="max-w-3xl mx-auto">
+              <div class="flex items-center justify-between mb-6">
+                <button id="demo-back" type="button" class="flex items-center gap-2 text-white hover:text-indigo-200 transition-colors">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                  Back to Demo
+                </button>
+                <div class="flex items-center gap-4">
+                  <div class="bg-white/20 rounded-full px-4 py-2"><span class="text-white font-semibold">Question <span id="demo-qnum">1</span>/<span id="demo-qtotal">2</span></span></div>
+                  <div class="bg-yellow-500/20 rounded-full px-4 py-2"><span class="text-yellow-300 font-semibold">⭐ <span id="demo-score">0</span></span></div>
                 </div>
               </div>
 
-              <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-end">
-                <button id="demoUnlock" type="button" class="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-xl btn-shadow transition-all hover:scale-105">Unlock &amp; Play (8 tokens)</button>
+              <div class="rounded-2xl p-4 mb-6 text-center bg-gradient-to-br from-orange-500 to-amber-500">
+                <h2 class="demo-font-display text-2xl text-white">📚 General Provisions</h2>
+                <p class="text-white/80">Quick-check questions</p>
+              </div>
+
+              <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 mb-6 demo-animate-slide-up">
+                <div class="mb-6">
+                  <span id="demo-type" class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold mb-4">Multiple Choice</span>
+                  <h3 id="demo-question" class="text-xl md:text-2xl font-bold text-gray-800"></h3>
+                </div>
+
+                <div id="demo-options" class="space-y-3"></div>
+
+                <div id="demo-feedback" class="hidden mt-6 p-4 rounded-xl">
+                  <div class="flex items-start gap-3">
+                    <span id="demo-feedback-icon" class="text-3xl"></span>
+                    <div>
+                      <h4 id="demo-feedback-title" class="font-bold text-lg"></h4>
+                      <p id="demo-feedback-text" class="text-gray-600 mt-1"></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-center">
+                <button id="demo-next" type="button" class="hidden bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105">Next →</button>
               </div>
             </div>
           </div>
+
+          <!-- Results Screen -->
+          <div id="demo-results" class="hidden">
+            <div class="max-w-2xl mx-auto text-center">
+              <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 demo-animate-bounce-in">
+                <div id="demo-results-icon" class="text-8xl mb-4">🏁</div>
+                <h2 class="demo-font-display text-4xl text-white mb-4" id="demo-results-title">Demo complete</h2>
+                <p class="text-indigo-200 text-xl mb-8" id="demo-results-message">You finished the demo. The rest costs tokens. Life is unfair.</p>
+
+                <div class="flex justify-center gap-8 mb-8">
+                  <div class="text-center">
+                    <div id="demo-final-score" class="text-5xl font-bold text-yellow-400">0</div>
+                    <p class="text-indigo-200">Points Earned</p>
+                  </div>
+                  <div class="text-center">
+                    <div id="demo-correct" class="text-5xl font-bold text-emerald-400">0/2</div>
+                    <p class="text-indigo-200">Correct Answers</p>
+                  </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                  <button id="demo-retry" type="button" class="bg-white/20 text-white font-bold py-3 px-6 rounded-xl hover:bg-white/30 transition-all">🔄 Try Again</button>
+                  <button id="demo-results-unlock" type="button" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:shadow-xl transition-all">Unlock &amp; Play</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
+      <!-- Footer note -->
       <div class="px-6 py-4 border-t border-white/10" style="background: rgba(255,255,255,0.06)">
-        <p class="text-blue-200 text-sm">Education only. Not tax advice. Not representation. For real help, use <a class="underline text-white" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
+        <p class="text-indigo-200 text-sm">Education only. Not tax advice. Not representation. For real help, use <a class="underline text-white" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
       </div>
     </div>
   </div>
@@ -788,7 +908,7 @@
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Demo modal (limited to 2 questions)
+    // Demo modal (limited to 2 questions, styled like game)
     const demoQuestions = [
       {
         type: 'Multiple Choice',
@@ -806,7 +926,21 @@
       }
     ];
 
-    const demoState = { index: 0, score: 0, locked: false };
+    const demoState = {
+      correct: 0,
+      index: 0,
+      locked: false,
+      score: 0
+    };
+
+    function demoShow(screenId) {
+      const ids = ['demo-loading', 'demo-menu', 'demo-quiz', 'demo-results'];
+      ids.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.toggle('hidden', id !== screenId);
+      });
+    }
 
     function showDemoModal() {
       const modal = document.getElementById('demoModal');
@@ -814,7 +948,12 @@
       modal.classList.remove('hidden');
       modal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('overflow-hidden');
-      resetDemo();
+
+      demoShow('demo-loading');
+      setTimeout(() => {
+        resetDemo();
+        demoShow('demo-menu');
+      }, 450);
     }
 
     function hideDemoModal() {
@@ -825,50 +964,64 @@
       document.body.classList.remove('overflow-hidden');
     }
 
-    function renderDemoQuestion() {
-      const q = demoQuestions[demoState.index];
-      document.getElementById('demoQIndex').textContent = String(demoState.index + 1);
-      document.getElementById('demoScore').textContent = String(demoState.score);
-      document.getElementById('demoType').textContent = q.type;
-      document.getElementById('demoQuestion').textContent = q.question;
+    function demoUpdateMenu() {
+      const qCount = document.getElementById('demo-menu-qcount');
+      const score = document.getElementById('demo-menu-score');
+      if (qCount) qCount.textContent = String(demoQuestions.length);
+      if (score) score.textContent = String(demoState.score);
+    }
 
-      const options = document.getElementById('demoOptions');
-      const feedback = document.getElementById('demoFeedback');
-      const nextBtn = document.getElementById('demoNext');
+    function demoRenderQuestion() {
+      const q = demoQuestions[demoState.index];
+
+      document.getElementById('demo-qnum').textContent = String(demoState.index + 1);
+      document.getElementById('demo-qtotal').textContent = String(demoQuestions.length);
+      document.getElementById('demo-score').textContent = String(demoState.score);
+      document.getElementById('demo-type').textContent = q.type;
+      document.getElementById('demo-question').textContent = q.question;
+
+      const feedback = document.getElementById('demo-feedback');
+      const nextBtn = document.getElementById('demo-next');
+      const options = document.getElementById('demo-options');
 
       demoState.locked = false;
       feedback.classList.add('hidden');
-      nextBtn.textContent = demoState.index < demoQuestions.length - 1 ? 'Next' : 'Finish';
+      nextBtn.classList.add('hidden');
 
       options.innerHTML = q.options.map((opt, idx) => {
         const letter = String.fromCharCode(65 + idx);
         return `
-          <button type="button" class="demo-opt w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 transition-all" data-idx="${idx}">
+          <button type="button" class="demo-quiz-option w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 transition-all" data-idx="${idx}">
             <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-700 font-bold mr-3">${letter}</span>
             <span class="text-gray-700">${opt}</span>
           </button>
         `;
       }).join('');
 
-      options.querySelectorAll('.demo-opt').forEach(btn => {
+      options.querySelectorAll('.demo-quiz-option').forEach((btn) => {
         btn.addEventListener('click', () => {
           const selected = Number(btn.getAttribute('data-idx'));
-          gradeDemo(selected);
+          demoGrade(selected);
         });
       });
     }
 
-    function gradeDemo(selectedIndex) {
+    function demoGrade(selectedIndex) {
       if (demoState.locked) return;
       demoState.locked = true;
 
       const q = demoQuestions[demoState.index];
       const isCorrect = selectedIndex === q.correct;
-      if (isCorrect) demoState.score += 10;
 
-      document.getElementById('demoScore').textContent = String(demoState.score);
+      if (isCorrect) {
+        demoState.correct += 1;
+        demoState.score += 20;
+      }
 
-      const opts = document.querySelectorAll('#demoOptions .demo-opt');
+      document.getElementById('demo-score').textContent = String(demoState.score);
+      demoUpdateMenu();
+
+      const opts = document.querySelectorAll('#demo-options .demo-quiz-option');
       opts.forEach((el, idx) => {
         el.disabled = true;
         if (idx === q.correct) {
@@ -876,83 +1029,95 @@
           el.classList.add('border-green-500', 'bg-green-50');
         } else if (idx === selectedIndex && !isCorrect) {
           el.classList.remove('border-gray-200');
-          el.classList.add('border-red-500', 'bg-red-50');
+          el.classList.add('border-red-500', 'bg-red-50', 'demo-animate-shake');
         }
       });
 
-      const feedback = document.getElementById('demoFeedback');
+      const feedback = document.getElementById('demo-feedback');
       feedback.classList.remove('hidden');
-      feedback.className = `mt-6 p-4 rounded-xl ${isCorrect ? 'bg-green-100' : 'bg-amber-100'}`;
+      feedback.className = `mt-6 p-4 rounded-xl ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`;
 
-      const title = document.getElementById('demoFeedbackTitle');
-      title.textContent = isCorrect ? 'Correct' : 'Not quite';
-      title.className = `font-bold text-lg ${isCorrect ? 'text-green-700' : 'text-amber-700'}`;
+      document.getElementById('demo-feedback-icon').textContent = isCorrect ? '🎉' : '💡';
+      document.getElementById('demo-feedback-title').textContent = isCorrect ? 'Correct!' : 'Not quite right';
+      document.getElementById('demo-feedback-title').className = `font-bold text-lg ${isCorrect ? 'text-green-700' : 'text-red-700'}`;
+      document.getElementById('demo-feedback-text').textContent = q.explanation;
 
-      document.getElementById('demoFeedbackText').textContent = q.explanation;
+      const nextBtn = document.getElementById('demo-next');
+      nextBtn.textContent = demoState.index < demoQuestions.length - 1 ? 'Next Question →' : 'See Results 🏆';
+      nextBtn.classList.remove('hidden');
+    }
+
+    function demoShowResults() {
+      const total = demoQuestions.length;
+
+      let icon = '💪';
+      let title = 'Keep Learning!';
+      let message = 'Review the material and try again.';
+
+      if (demoState.correct === total) {
+        icon = '🏆';
+        title = 'Perfect Score!';
+        message = 'Two for two. Humans do improve, occasionally.';
+      } else if (demoState.correct >= 1) {
+        icon = '🌟';
+        title = 'Nice Work!';
+        message = 'Solid start. The full quest map is bigger.';
+      }
+
+      document.getElementById('demo-results-icon').textContent = icon;
+      document.getElementById('demo-results-title').textContent = title;
+      document.getElementById('demo-results-message').textContent = message;
+      document.getElementById('demo-final-score').textContent = String(demoState.score);
+      document.getElementById('demo-correct').textContent = `${demoState.correct}/${total}`;
+
+      demoShow('demo-results');
     }
 
     function resetDemo() {
+      demoState.correct = 0;
       demoState.index = 0;
-      demoState.score = 0;
       demoState.locked = false;
-      renderDemoQuestion();
+      demoState.score = 0;
+      demoUpdateMenu();
+      demoShow('demo-menu');
     }
 
-    function advanceDemo() {
-      if (demoState.index < demoQuestions.length - 1) {
-        demoState.index += 1;
-        renderDemoQuestion();
+    function startDemo() {
+      demoState.correct = 0;
+      demoState.index = 0;
+      demoState.locked = false;
+      demoState.score = 0;
+      demoUpdateMenu();
+      demoShow('demo-quiz');
+      demoRenderQuestion();
+    }
+
+    function demoAdvance() {
+      if (!demoState.locked) {
+        // enforce click on an option
+        const feedback = document.getElementById('demo-feedback');
+        if (feedback.classList.contains('hidden')) {
+          feedback.classList.remove('hidden');
+          feedback.className = 'mt-6 p-4 rounded-xl bg-amber-100';
+          document.getElementById('demo-feedback-icon').textContent = '👉';
+          document.getElementById('demo-feedback-title').textContent = 'Pick an answer';
+          document.getElementById('demo-feedback-title').className = 'font-bold text-lg text-amber-700';
+          document.getElementById('demo-feedback-text').textContent = 'Demo rules: clicking is mandatory.';
+        }
         return;
       }
 
-      // finish state: nudge unlock
-      const q = {
-        type: 'Demo complete',
-        question: 'Demo complete. Ready to unlock the full quest map?',
-        options: ['Unlock & Play', 'Close'],
-        correct: 0,
-        explanation: 'Unlocking is token-gated and verified by the Worker. Your demo score is just for fun.'
-      };
+      if (demoState.index < demoQuestions.length - 1) {
+        demoState.index += 1;
+        demoRenderQuestion();
+        return;
+      }
 
-      document.getElementById('demoType').textContent = q.type;
-      document.getElementById('demoQuestion').textContent = q.question;
-      document.getElementById('demoQIndex').textContent = '2';
-
-      const options = document.getElementById('demoOptions');
-      options.innerHTML = q.options.map((opt, idx) => {
-        const letter = String.fromCharCode(65 + idx);
-        return `
-          <button type="button" class="demo-finish w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 transition-all" data-idx="${idx}">
-            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-700 font-bold mr-3">${letter}</span>
-            <span class="text-gray-700">${opt}</span>
-          </button>
-        `;
-      }).join('');
-
-      options.querySelectorAll('.demo-finish').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const idx = Number(btn.getAttribute('data-idx'));
-          if (idx === 0) {
-            hideDemoModal();
-            preflightUnlock();
-            return;
-          }
-          hideDemoModal();
-        });
-      });
-
-      const feedback = document.getElementById('demoFeedback');
-      feedback.classList.remove('hidden');
-      feedback.className = 'mt-6 p-4 rounded-xl bg-indigo-100';
-      document.getElementById('demoFeedbackTitle').textContent = 'Nice';
-      document.getElementById('demoFeedbackTitle').className = 'font-bold text-lg text-indigo-700';
-      document.getElementById('demoFeedbackText').textContent = q.explanation;
-
-      document.getElementById('demoNext').textContent = 'Done';
+      demoShowResults();
     }
 
     function wireDemoModal() {
-      document.querySelectorAll('[data-demo-close="1"]').forEach(el => {
+      document.querySelectorAll('[data-demo-close="1"]').forEach((el) => {
         el.addEventListener('click', hideDemoModal);
       });
 
@@ -962,31 +1127,20 @@
         if (modal && !modal.classList.contains('hidden')) hideDemoModal();
       });
 
-      document.getElementById('demoReset')?.addEventListener('click', resetDemo);
-      document.getElementById('demoNext')?.addEventListener('click', () => {
-        if (!demoState.locked && demoState.index < demoQuestions.length - 1) {
-          // force an answer before advancing for the actual demo questions
-          const feedback = document.getElementById('demoFeedback');
-          if (feedback.classList.contains('hidden')) {
-            feedback.classList.remove('hidden');
-            feedback.className = 'mt-6 p-4 rounded-xl bg-amber-100';
-            document.getElementById('demoFeedbackTitle').textContent = 'Pick an answer';
-            document.getElementById('demoFeedbackTitle').className = 'font-bold text-lg text-amber-700';
-            document.getElementById('demoFeedbackText').textContent = 'It’s a demo. You still have to click something.';
-            return;
-          }
-        }
-
-        if (demoState.index < demoQuestions.length - 1) {
-          demoState.index += 1;
-          renderDemoQuestion();
-          return;
-        }
-
-        advanceDemo();
+      document.getElementById('demo-start')?.addEventListener('click', startDemo);
+      document.getElementById('demo-unlock')?.addEventListener('click', () => {
+        hideDemoModal();
+        preflightUnlock();
       });
 
-      document.getElementById('demoUnlock')?.addEventListener('click', () => {
+      document.getElementById('demo-back')?.addEventListener('click', () => {
+        demoShow('demo-menu');
+      });
+
+      document.getElementById('demo-next')?.addEventListener('click', demoAdvance);
+
+      document.getElementById('demo-retry')?.addEventListener('click', startDemo);
+      document.getElementById('demo-results-unlock')?.addEventListener('click', () => {
         hideDemoModal();
         preflightUnlock();
       });
