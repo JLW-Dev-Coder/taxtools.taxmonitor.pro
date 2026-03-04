@@ -92,6 +92,12 @@
           </div>
         </div>
 
+        <!-- Signed in pill (desktop) -->
+        <div id="auth-pill" class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2 text-xs text-blue-100">
+          <span class="text-blue-300">Signed in as:</span>
+          <span id="auth-email" class="font-semibold text-white"></span>
+        </div>
+
       </nav>
     </div>
 
@@ -115,6 +121,12 @@
   <div id="mobile-menu" class="hidden border-t border-blue-900/40 bg-navy md:hidden">
 
     <div class="flex flex-col gap-4 px-6 py-6 text-sm">
+
+      <!-- Signed in pill (mobile) -->
+      <div id="auth-pill-mobile" class="hidden items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-4 py-3 text-xs text-blue-100">
+        <span class="text-blue-300">Signed in as:</span>
+        <span id="auth-email-mobile" class="font-semibold text-white break-all"></span>
+      </div>
 
       <!-- Alphabetical -->
       <a href="/about.html" class="text-blue-200 hover:text-white transition">About</a>
@@ -155,52 +167,52 @@
 
   <script>
     (function () {
+      var TOOLS_API_BASE = "https://tools-api.taxmonitor.pro";
 
-      var toggle = document.getElementById('mobile-menu-btn');
-      var mobileMenu = document.getElementById('mobile-menu');
+      var toggle = document.getElementById("mobile-menu-btn");
+      var mobileMenu = document.getElementById("mobile-menu");
 
-      var resourcesToggle = document.getElementById('resources-toggle');
-      var resourcesMenu = document.getElementById('resources-menu');
+      var resourcesToggle = document.getElementById("resources-toggle");
+      var resourcesMenu = document.getElementById("resources-menu");
 
-      var mobileResourcesToggle = document.getElementById('mobile-resources-toggle');
-      var mobileResourcesMenu = document.getElementById('mobile-resources-menu');
+      var mobileResourcesToggle = document.getElementById("mobile-resources-toggle");
+      var mobileResourcesMenu = document.getElementById("mobile-resources-menu");
 
       function closeMobileMenu() {
         if (!mobileMenu || !toggle) return;
-        mobileMenu.classList.add('hidden');
-        toggle.setAttribute('aria-expanded', 'false');
+        mobileMenu.classList.add("hidden");
+        toggle.setAttribute("aria-expanded", "false");
       }
 
       function closeDesktopResources() {
         if (!resourcesMenu || !resourcesToggle) return;
-        resourcesMenu.classList.add('hidden');
-        resourcesToggle.setAttribute('aria-expanded', 'false');
+        resourcesMenu.classList.add("hidden");
+        resourcesToggle.setAttribute("aria-expanded", "false");
       }
 
       function closeMobileResources() {
         if (!mobileResourcesMenu || !mobileResourcesToggle) return;
-        mobileResourcesMenu.classList.add('hidden');
-        mobileResourcesToggle.setAttribute('aria-expanded', 'false');
+        mobileResourcesMenu.classList.add("hidden");
+        mobileResourcesToggle.setAttribute("aria-expanded", "false");
       }
 
-      toggle && toggle.addEventListener('click', function () {
-        var isHidden = mobileMenu.classList.toggle('hidden');
-        toggle.setAttribute('aria-expanded', String(!isHidden));
+      toggle && toggle.addEventListener("click", function () {
+        var isHidden = mobileMenu.classList.toggle("hidden");
+        toggle.setAttribute("aria-expanded", String(!isHidden));
       });
 
-      resourcesToggle && resourcesToggle.addEventListener('click', function (e) {
+      resourcesToggle && resourcesToggle.addEventListener("click", function (e) {
         e.preventDefault();
-        var isHidden = resourcesMenu.classList.toggle('hidden');
-        resourcesToggle.setAttribute('aria-expanded', String(!isHidden));
+        var isHidden = resourcesMenu.classList.toggle("hidden");
+        resourcesToggle.setAttribute("aria-expanded", String(!isHidden));
       });
 
-      mobileResourcesToggle && mobileResourcesToggle.addEventListener('click', function () {
-        var isHidden = mobileResourcesMenu.classList.toggle('hidden');
-        mobileResourcesToggle.setAttribute('aria-expanded', String(!isHidden));
+      mobileResourcesToggle && mobileResourcesToggle.addEventListener("click", function () {
+        var isHidden = mobileResourcesMenu.classList.toggle("hidden");
+        mobileResourcesToggle.setAttribute("aria-expanded", String(!isHidden));
       });
 
-      document.addEventListener('click', function (e) {
-
+      document.addEventListener("click", function (e) {
         if (mobileMenu && toggle) {
           var clickedInsideMobile = mobileMenu.contains(e.target) || toggle.contains(e.target);
           if (!clickedInsideMobile) closeMobileMenu();
@@ -210,16 +222,46 @@
           var clickedInsideDesktopResources = resourcesMenu.contains(e.target) || resourcesToggle.contains(e.target);
           if (!clickedInsideDesktopResources) closeDesktopResources();
         }
-
       });
 
-      document.addEventListener('keydown', function (e) {
-        if (e.key !== 'Escape') return;
+      document.addEventListener("keydown", function (e) {
+        if (e.key !== "Escape") return;
         closeDesktopResources();
         closeMobileMenu();
         closeMobileResources();
       });
 
+      async function hydrateSignedInPill() {
+        var pill = document.getElementById("auth-pill");
+        var pillMobile = document.getElementById("auth-pill-mobile");
+        var emailEl = document.getElementById("auth-email");
+        var emailMobileEl = document.getElementById("auth-email-mobile");
+
+        try {
+          var res = await fetch(TOOLS_API_BASE + "/v1/auth/me", { credentials: "include" });
+          var data = await res.json().catch(function () { return {}; });
+
+          var isAuthed = !!data && !!data.isAuthenticated;
+          var email = data && data.email ? String(data.email) : "";
+
+          if (!res.ok || !isAuthed || !email) {
+            pill && pill.classList.add("hidden");
+            pillMobile && pillMobile.classList.add("hidden");
+            return;
+          }
+
+          if (emailEl) emailEl.textContent = email;
+          if (emailMobileEl) emailMobileEl.textContent = email;
+
+          pill && pill.classList.remove("hidden");
+          pillMobile && pillMobile.classList.remove("hidden");
+        } catch (_) {
+          pill && pill.classList.add("hidden");
+          pillMobile && pillMobile.classList.add("hidden");
+        }
+      }
+
+      hydrateSignedInPill();
     })();
   </script>
 </header>
