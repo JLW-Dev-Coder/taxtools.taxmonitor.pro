@@ -20,6 +20,7 @@
  *
  * Dev-only (must be disabled in prod):
  * - GET  /dev/login?email=
+ * - GET  /dev/mint?amount=
  */
 
 /* ------------------------------------------
@@ -237,6 +238,10 @@ function tokenCountFromPriceId(priceId, env) {
 
 async function parseJson(request) {
   return request.json().catch(() => null);
+}
+
+function isDevEnabled(env) {
+  return String(env.DEV_LOGIN_ENABLED || "").trim().toLowerCase() === "true";
 }
 
 /* ------------------------------------------
@@ -544,9 +549,7 @@ async function handleAuthStart(request, env) {
 
 async function handleDevLogin(request, env) {
   if (request.method !== "GET") return methodNotAllowed(request, env);
-
-  const enabled = String(env.DEV_LOGIN_ENABLED || "").trim().toLowerCase();
-  if (enabled !== "true") return notFound(request, env);
+  if (!isDevEnabled(env)) return notFound(request, env);
 
   const url = new URL(request.url);
   const email = String(url.searchParams.get("email") || "dev@local.test").trim().toLowerCase();
@@ -570,6 +573,34 @@ async function handleDevLogin(request, env) {
   headers.set("Location", "https://taxtools.taxmonitor.pro/");
 
   return new Response(null, { status: 302, headers });
+}
+
+/**
+ * Dev-only: mint tokens onto the current authenticated account.
+ * - Gated by DEV_LOGIN_ENABLED=true
+ * - Requires cookie session (so tokens go to a real accountId)
+ *
+ * Example:
+ *   GET /dev/mint?amount=500
+ */
+async function handleDevMint(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+  if (!isDevEnabled(env)) return notFound(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  const url = new URL(request.url);
+  const amountRaw = url.searchParams.get("amount");
+  const amount = amountRaw == null || amountRaw === "" ? 200 : Number(amountRaw);
+
+  if (!Number.isInteger(amount) || amount <= 0) return badRequest(request, env, "amount must be a positive integer");
+  if (amount > 10000) return badRequest(request, env, "amount too large (max 10000)");
+
+  const account = getOrCreateAccount(auth.accountId);
+  account.balance += amount;
+
+  return json(request, env, { ok: true, balance: account.balance, minted: amount }, 200);
 }
 
 async function handleCheckoutSessions(request, env) {
@@ -796,6 +827,7 @@ export default {
     const path = url.pathname === "/v1/arcade/tokens" ? "/v1/tokens/balance" : url.pathname;
 
     if (path === "/dev/login") return handleDevLogin(request, env);
+    if (path === "/dev/mint") return handleDevMint(request, env);
 
     if (path === "/health") return handleHealth(request, env);
     if (path === "/v1/auth/complete") return handleAuthComplete(request, env);
