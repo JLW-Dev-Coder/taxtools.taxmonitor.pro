@@ -6,6 +6,11 @@ routes = [
   { pattern = "tools-api.taxmonitor.pro/*", zone_name = "taxmonitor.pro" }
 ]
 
+[[d1_databases]]
+binding = "DB"
+database_name = "tax-tools-tax-monitor"
+database_id = "e43ad11a-dd66-42fc-b162-b96a7295a079"
+
 [[r2_buckets]]
 binding = "R2_TAXTOOLS"
 bucket_name = "taxtools-taxmonitor-pro"
