@@ -1,86 +1,496 @@
-﻿<!doctype html>
-<html lang="en">
+<!-- games/tax-deduction-quest.html -->
+<!doctype html>
+<html lang="en" class="h-full">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tax Deduction Quest • Play • TaxTools Arcade</title>
 
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+  <!-- Canonical local assets -->
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon" />
   <link rel="stylesheet" href="/styles/site.css" />
 
+  <!-- Tailwind + SDKs -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'dm': ['DM Sans', 'sans-serif']
+          },
+          colors: {
+            'accent-yellow': '#FFD600',
+            'action-blue': '#3b82f6',
+            'charcoal': '#2d3748',
+            'navy': '#1e3a5f',
+            'trust-green': '#10b981'
+          },
+          keyframes: {
+            'bounce-subtle': {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-5px)' }
+            },
+            'glow': {
+              '0%, 100%': { boxShadow: '0 0 5px rgba(255, 214, 0, 0.5)' },
+              '50%': { boxShadow: '0 0 20px rgba(255, 214, 0, 0.8)' }
+            },
+            'pop-in': {
+              '0%': { transform: 'scale(0.5)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' }
+            },
+            'slide-up': {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
+            }
+          },
+          animation: {
+            'bounce-subtle': 'bounce-subtle 2s infinite',
+            'glow': 'glow 2s ease-in-out infinite',
+            'pop-in': 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            'slide-up': 'slide-up 0.5s ease-out'
+          }
+        }
+      }
+    };
+  </script>
 
   <style>
-    body { font-family: "DM Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body { box-sizing: border-box; }
+    .card-reveal { animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .points-pop { animation: slide-up 0.6s ease-out; }
+    @keyframes float-up {
+      to { transform: translateY(-80px); opacity: 0; }
+    }
+    .float-points { animation: float-up 1s ease-out forwards; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100">
+
+<body class="h-full bg-gradient-to-br from-navy via-slate-800 to-navy font-dm">
   <!-- PARTIAL:header -->
 
-  <main class="mx-auto max-w-5xl px-6 py-12">
-    <section class="space-y-3">
-      <h1 class="text-3xl font-bold tracking-tight">Tax Deduction Quest</h1>
-      <p class="text-slate-300">Access is verified server-side with an active play grant.</p>
-      <div id="status" class="text-sm text-slate-400"></div>
-    </section>
-
-    <section class="mt-10 rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
-      <div class="font-semibold">Game Area</div>
-      <p class="mt-2 text-slate-300">
-        This is the placeholder game container. The important part is the access gate. Replace this section with the actual game UI.
-      </p>
-      <div class="mt-4 rounded-xl border border-slate-800 bg-slate-950/40 p-6 text-slate-300">
-        <span class="font-semibold">Status:</span> <span id="grant"></span>
+  <div id="app-wrapper" class="w-full h-full overflow-auto flex flex-col items-center justify-center px-4 py-8">
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="w-full max-w-4xl">
+      <div class="text-center mb-12 animate-slide-up">
+        <div class="inline-block mb-6 animate-bounce-subtle">
+          <div class="w-32 h-32 bg-gradient-to-br from-accent-yellow to-orange-400 rounded-full flex items-center justify-center shadow-2xl">
+            <span class="text-6xl">💰</span>
+          </div>
+        </div>
+        <h1 id="game-title" class="text-5xl md:text-6xl font-bold text-accent-yellow mb-4 drop-shadow-lg">Tax Deduction Quest</h1>
+        <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">Discover hidden deductions and collect tax savings! Match wits with our 15 categories of deductions. Can you find them all?</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <input id="player-name-input" type="text" placeholder="Enter your name..." class="px-6 py-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-gray-300 text-center font-semibold focus:outline-none focus:border-accent-yellow" />
+          <button id="start-game-btn" class="px-8 py-3 bg-gradient-to-r from-accent-yellow to-orange-400 text-navy font-bold text-lg rounded-xl hover:shadow-2xl transition-all transform hover:scale-105">Start Playing</button>
+        </div>
       </div>
-    </section>
-  </main>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="hidden w-full max-w-4xl">
+      <!-- Header -->
+      <div class="mb-8 text-center">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 bg-white/10 backdrop-blur-sm rounded-xl p-4">
+          <div class="text-left">
+            <p class="text-gray-300 text-sm">Player</p>
+            <p id="game-player-name" class="text-2xl font-bold text-white"></p>
+          </div>
+          <div class="text-center">
+            <p class="text-gray-300 text-sm">Level</p>
+            <p id="game-level" class="text-3xl font-bold text-accent-yellow">1</p>
+          </div>
+          <div class="text-right">
+            <p class="text-gray-300 text-sm">Score</p>
+            <p id="game-score" class="text-3xl font-bold text-trust-green">0</p>
+          </div>
+        </div>
+        <h2 id="level-description" class="text-2xl text-white font-bold mb-4">Match the Deduction to its Category</h2>
+      </div>
+
+      <!-- Question Card -->
+      <div class="bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/30 mb-8 card-reveal">
+        <p id="question-text" class="text-2xl text-white font-bold text-center mb-2">Question goes here</p>
+        <p id="question-subtext" class="text-gray-300 text-center">Select the correct category</p>
+      </div>
+
+      <!-- Answer Buttons Grid -->
+      <div id="answers-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8"></div>
+
+      <!-- Streak & Lives -->
+      <div class="flex justify-center gap-8 text-center">
+        <div class="bg-white/10 rounded-xl p-4 min-w-[120px]">
+          <p class="text-gray-300 text-sm">Streak</p>
+          <p id="streak" class="text-3xl font-bold text-accent-yellow">0</p>
+        </div>
+        <div class="bg-white/10 rounded-xl p-4 min-w-[120px]">
+          <p class="text-gray-300 text-sm">Deductions Found</p>
+          <p id="found-count" class="text-3xl font-bold text-trust-green">0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- End Screen -->
+    <div id="end-screen" class="hidden w-full max-w-2xl text-center">
+      <div class="mb-8 animate-pop-in">
+        <div class="text-8xl mb-4">🎉</div>
+        <h2 class="text-4xl font-bold text-accent-yellow mb-4">Quest Complete!</h2>
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/30 mb-8">
+          <p class="text-gray-300 mb-2">Final Score</p>
+          <p id="final-score" class="text-5xl font-bold text-trust-green mb-6">0</p>
+          <p id="end-message" class="text-xl text-white mb-6"></p>
+        </div>
+        <button id="reset-btn" class="px-8 py-4 bg-gradient-to-r from-accent-yellow to-orange-400 text-navy font-bold text-lg rounded-xl hover:shadow-2xl transition-all transform hover:scale-105">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Points -->
+  <div id="points-container" class="fixed pointer-events-none"></div>
 
   <!-- PARTIAL:footer -->
 
   <script>
+    // ===== Canonical access gate (per README) =====
     const API_BASE = "https://tools-api.taxmonitor.pro";
     const slug = "tax-deduction-quest.html";
-
-    function setStatus(msg) {
-      const el = document.getElementById("status");
-      if (el) el.textContent = msg || "";
-    }
 
     async function apiGet(path) {
       const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
       return { res, json: await res.json().catch(() => ({})) };
     }
 
-    async function boot() {
-      setStatus("Checking session…");
+    async function verifyAccessOrRedirect() {
       const me = await apiGet("/v1/auth/me");
       if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
         window.location.href = "/about-games/" + slug;
-        return;
+        return false;
       }
 
-      setStatus("Loading token balance…");
-      await apiGet("/v1/tokens/balance"); // UI-only; header can display balance
+      await apiGet("/v1/tokens/balance");
 
-      setStatus("Verifying access grant…");
       const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(slug));
       if (!access.res.ok || !access.json || access.json.allowed !== true) {
         window.location.href = "/about-games/" + slug;
+        return false;
+      }
+
+      return true;
+    }
+
+    // ===== Game code (unchanged behavior; deferred until after grant) =====
+
+    // Game data with deductions and categories
+    const DEDUCTIONS_DATA = [
+      { deduction: "Mortgage interest", category: "Home & Mortgage" },
+      { deduction: "Property taxes", category: "Home & Mortgage" },
+      { deduction: "Home office equipment", category: "Home & Mortgage" },
+      { deduction: "Cash donations", category: "Charitable Giving" },
+      { deduction: "Donated clothing", category: "Charitable Giving" },
+      { deduction: "Volunteer mileage", category: "Charitable Giving" },
+      { deduction: "Student loan interest", category: "Education" },
+      { deduction: "Tuition payments", category: "Education" },
+      { deduction: "529 plan contributions", category: "Education" },
+      { deduction: "Medical expenses", category: "Medical & Dental" },
+      { deduction: "Dental treatments", category: "Medical & Dental" },
+      { deduction: "Prescription drugs", category: "Medical & Dental" },
+      { deduction: "State income taxes", category: "State & Local Taxes" },
+      { deduction: "Local property taxes", category: "State & Local Taxes" },
+      { deduction: "Sales tax paid", category: "State & Local Taxes" },
+      { deduction: "Traditional IRA contributions", category: "Retirement Contributions" },
+      { deduction: "401(k) contributions", category: "Retirement Contributions" },
+      { deduction: "SEP IRA contributions", category: "Retirement Contributions" },
+      { deduction: "Union dues", category: "Work Expenses" },
+      { deduction: "Professional fees", category: "Work Expenses" },
+      { deduction: "Business travel", category: "Work Expenses" },
+      { deduction: "Daycare costs", category: "Child & Dependent Care" },
+      { deduction: "After-school programs", category: "Child & Dependent Care" },
+      { deduction: "Summer camp fees", category: "Child & Dependent Care" },
+      { deduction: "Solar panel installation", category: "Energy Efficiency" },
+      { deduction: "Energy-efficient windows", category: "Energy Efficiency" },
+      { deduction: "Home insulation", category: "Energy Efficiency" },
+      { deduction: "Investment advisory fees", category: "Investment Expenses" },
+      { deduction: "Brokerage commissions", category: "Investment Expenses" },
+      { deduction: "Safe deposit box", category: "Investment Expenses" },
+      { deduction: "HSA contributions", category: "Health Savings (HSA)" },
+      { deduction: "Qualified medical expenses", category: "Health Savings (HSA)" },
+      { deduction: "Long-term care insurance", category: "Health Savings (HSA)" },
+      { deduction: "Resume writing", category: "Job Search" },
+      { deduction: "Interview travel", category: "Job Search" },
+      { deduction: "Employment agency fees", category: "Job Search" },
+      { deduction: "Vehicle registration", category: "Transportation" },
+      { deduction: "Business mileage", category: "Transportation" },
+      { deduction: "Parking and tolls", category: "Transportation" },
+      { deduction: "Continuing education", category: "Professional Development" },
+      { deduction: "Certification exams", category: "Professional Development" },
+      { deduction: "Professional conferences", category: "Professional Development" },
+      { deduction: "Tax preparation fees", category: "Miscellaneous" },
+      { deduction: "Gambling losses", category: "Miscellaneous" },
+      { deduction: "Casualty losses", category: "Miscellaneous" }
+    ];
+
+    const CATEGORIES = [
+      "Home & Mortgage",
+      "Charitable Giving",
+      "Education",
+      "Medical & Dental",
+      "State & Local Taxes",
+      "Retirement Contributions",
+      "Work Expenses",
+      "Child & Dependent Care",
+      "Energy Efficiency",
+      "Investment Expenses",
+      "Health Savings (HSA)",
+      "Job Search",
+      "Transportation",
+      "Professional Development",
+      "Miscellaneous"
+    ];
+
+    // Game state
+    let gameState = {
+      playerName: "",
+      score: 0,
+      level: 1,
+      streak: 0,
+      foundCount: 0,
+      currentQuestion: null,
+      usedQuestions: [],
+      isAnswering: false
+    };
+
+    // Data SDK handler
+    const dataHandler = {
+      onDataChanged(data) {
+        // Update UI with saved game data if needed
+      }
+    };
+
+    // Initialize Data SDK
+    async function initDataSDK() {
+      if (!window.dataSdk) return;
+      const result = await window.dataSdk.init(dataHandler);
+      if (!result.isOk) console.error("Failed to initialize Data SDK");
+    }
+
+    // Save game result
+    async function saveGameResult() {
+      if (!window.dataSdk) return;
+      const result = await window.dataSdk.create({
+        player_name: gameState.playerName,
+        total_score: gameState.score,
+        deductions_found: gameState.foundCount,
+        level: gameState.level,
+        timestamp: new Date().toISOString()
+      });
+      if (!result.isOk) console.error("Failed to save game result");
+    }
+
+    // Start game
+    function startGame() {
+      const nameInput = document.getElementById("player-name-input");
+      const playerName = nameInput.value.trim() || "Player";
+      gameState.playerName = playerName;
+      gameState.usedQuestions = [];
+
+      document.getElementById("welcome-screen").classList.add("hidden");
+      document.getElementById("game-screen").classList.remove("hidden");
+      document.getElementById("game-player-name").textContent = playerName;
+
+      nextQuestion();
+    }
+
+    // Generate next question
+    function nextQuestion() {
+      if (gameState.usedQuestions.length >= DEDUCTIONS_DATA.length) {
+        endGame();
         return;
       }
 
-      const expiresAt = access.json.expiresAt || "";
-      document.getElementById("grant").textContent = expiresAt ? ("Allowed until " + expiresAt) : "Allowed";
-      setStatus("Access granted.");
+      let question;
+      do {
+        question = DEDUCTIONS_DATA[Math.floor(Math.random() * DEDUCTIONS_DATA.length)];
+      } while (gameState.usedQuestions.includes(question.deduction));
+
+      gameState.usedQuestions.push(question.deduction);
+      gameState.currentQuestion = question;
+      gameState.isAnswering = false;
+
+      document.getElementById("question-text").textContent = `"${question.deduction}"`;
+
+      // Generate answer options
+      const correctCategory = question.category;
+      const options = [correctCategory];
+
+      // Add 2 random wrong categories
+      while (options.length < 3) {
+        const randomCategory = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
+        if (!options.includes(randomCategory)) {
+          options.push(randomCategory);
+        }
+      }
+
+      // Shuffle options
+      options.sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById("answers-grid");
+      grid.innerHTML = "";
+
+      options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "p-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-all border border-white/30 hover:border-accent-yellow card-reveal";
+        button.textContent = option;
+        button.style.animationDelay = `${index * 0.1}s`;
+        button.onclick = () => checkAnswer(option);
+        grid.appendChild(button);
+      });
+
+      document.getElementById("found-count").textContent = gameState.foundCount;
     }
 
-    boot().catch(() => {
-      setStatus("Error loading game. Redirecting…");
+    // Check answer
+    function checkAnswer(selectedCategory) {
+      if (gameState.isAnswering) return;
+      gameState.isAnswering = true;
+
+      const isCorrect = selectedCategory === gameState.currentQuestion.category;
+
+      if (isCorrect) {
+        gameState.score += 10 * gameState.level;
+        gameState.streak++;
+        gameState.foundCount++;
+        showFloatingPoints(10 * gameState.level);
+      } else {
+        gameState.streak = 0;
+        showFloatingPoints(-5, true);
+      }
+
+      document.getElementById("game-score").textContent = gameState.score;
+      document.getElementById("streak").textContent = gameState.streak;
+
+      // Level up every 5 correct answers
+      if (gameState.foundCount % 5 === 0 && gameState.foundCount > 0) {
+        gameState.level = Math.floor(gameState.foundCount / 5) + 1;
+        document.getElementById("game-level").textContent = gameState.level;
+      }
+
+      setTimeout(() => {
+        nextQuestion();
+      }, 800);
+    }
+
+    // Show floating points animation
+    function showFloatingPoints(points, isNegative = false) {
+      const container = document.getElementById("points-container");
+      const div = document.createElement("div");
+      div.className = "float-points text-3xl font-bold";
+      div.textContent = (isNegative ? "" : "+") + points;
+      div.style.color = isNegative ? "#ff6b6b" : "#10b981";
+      div.style.left = "50%";
+      div.style.top = "50%";
+      div.style.transform = "translate(-50%, -50%)";
+      div.style.position = "absolute";
+
+      container.appendChild(div);
+      setTimeout(() => div.remove(), 1000);
+    }
+
+    // End game
+    function endGame() {
+      document.getElementById("game-screen").classList.add("hidden");
+      document.getElementById("end-screen").classList.remove("hidden");
+      document.getElementById("final-score").textContent = gameState.score;
+
+      let message = "";
+      if (gameState.score >= 400) {
+        message = "🏆 Tax Master! You found them all!";
+      } else if (gameState.score >= 250) {
+        message = "🌟 Excellent! You're a deduction expert!";
+      } else if (gameState.score >= 150) {
+        message = "😊 Good job! You know your deductions!";
+      } else {
+        message = "👍 Nice try! Keep learning about deductions!";
+      }
+
+      document.getElementById("end-message").textContent = message;
+      saveGameResult();
+    }
+
+    // Reset game
+    function resetGame() {
+      gameState = {
+        playerName: "",
+        score: 0,
+        level: 1,
+        streak: 0,
+        foundCount: 0,
+        currentQuestion: null,
+        usedQuestions: [],
+        isAnswering: false
+      };
+
+      document.getElementById("welcome-screen").classList.remove("hidden");
+      document.getElementById("end-screen").classList.add("hidden");
+      document.getElementById("player-name-input").value = "";
+      document.getElementById("player-name-input").focus();
+    }
+
+    // Element SDK configuration
+    const defaultConfig = {
+      game_title: "Tax Deduction Quest",
+      level_description: "Match the Deduction to its Category",
+      brand_name: "TaxTools"
+    };
+
+    function initElementSDK() {
+      if (!window.elementSdk) return;
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          const title = document.getElementById("game-title");
+          if (title) title.textContent = config.game_title || defaultConfig.game_title;
+
+          const description = document.getElementById("level-description");
+          if (description) description.textContent = config.level_description || defaultConfig.level_description;
+        },
+        mapToCapabilities: () => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["brand_name", config.brand_name || defaultConfig.brand_name],
+          ["game_title", config.game_title || defaultConfig.game_title],
+          ["level_description", config.level_description || defaultConfig.level_description]
+        ])
+      });
+    }
+
+    async function initAfterGrant() {
+      initElementSDK();
+      await initDataSDK();
+
+      document.getElementById("start-game-btn").addEventListener("click", startGame);
+      document.getElementById("reset-btn").addEventListener("click", resetGame);
+
+      document.getElementById("player-name-input").focus();
+    }
+
+    (async () => {
+      const ok = await verifyAccessOrRedirect();
+      if (!ok) return;
+      await initAfterGrant();
+    })().catch(() => {
       window.location.href = "/about-games/" + slug;
     });
   </script>
