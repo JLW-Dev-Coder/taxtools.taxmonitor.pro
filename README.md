@@ -982,92 +982,6 @@ Token crediting behavior (server-side):
 * Returns payment status
 * Returns updated token balance
 
-## GET /v1/arcade/tokens
-
-* Returns current token balance
-
----
-
-# Stripe IDs
-
-### Stripe Products
-
-Note:
-
-* Checkout uses **Stripe Price IDs** (`price_...`), not Product IDs (`prod_...`).
-* Frontend sends internal `item` (SKU); Worker maps SKU → Price ID.
-
-Product IDs (alphabetical):
-
-* STRIPE_PRODUCT_TOKEN_PACK_LARGE_200 = prod_U58Jcfo43FZIz8
-* STRIPE_PRODUCT_TOKEN_PACK_MEDIUM_80 = prod_U58vBbhyRNbrRc
-* STRIPE_PRODUCT_TOKEN_PACK_SMALL_30 = prod_U58xGeoAbfgaM5
-
-Price IDs (alphabetical):
-
-* STRIPE_PRICE_TOKEN_PACK_LARGE_200 = price_1T6y2OCMpIgwe61Zze4NyfMX
-* STRIPE_PRICE_TOKEN_PACK_MEDIUM_80 = price_1T6ye4CMpIgwe61Z4oLNPx5u
-* STRIPE_PRICE_TOKEN_PACK_SMALL_30 = price_1T6yfVCMpIgwe61ZvV5XlUut
-
-Internal SKU mapping (alphabetical):
-
-* token_pack_large_200  -> STRIPE_PRICE_TOKEN_PACK_LARGE_200
-* token_pack_medium_80  -> STRIPE_PRICE_TOKEN_PACK_MEDIUM_80
-* token_pack_small_30   -> STRIPE_PRICE_TOKEN_PACK_SMALL_30
-
-### Worker validation rules
-
-* `POST /v1/checkout/sessions` must reject unknown `item` values.
-* Worker must not accept `price_...` directly from the client.
-* Worker must create Stripe Checkout Sessions using the mapped Price ID only.
-
----
-
-# Stripe Product + Price Mapping
-
-Stripe Structure:
-
-* 3 Stripe Products
-* 1 Price per Product
-* Checkout uses Stripe **Price IDs**, not Product IDs.
-
-Products (alphabetical):
-
-* Large Pack — 200 tokens — $39
-* Medium Pack — 80 tokens — $19
-* Small Pack — 30 tokens — $9
-
-Worker environment variables (alphabetical):
-
-* STRIPE_PRICE_TOKEN_PACK_LARGE_200
-* STRIPE_PRICE_TOKEN_PACK_MEDIUM_80
-* STRIPE_PRICE_TOKEN_PACK_SMALL_30
-* STRIPE_WEBHOOK_SECRET
-
-Internal SKU → Stripe Price ID mapping (server-side only):
-
-* token_pack_large_200 → STRIPE_PRICE_TOKEN_PACK_LARGE_200
-* token_pack_medium_80 → STRIPE_PRICE_TOKEN_PACK_MEDIUM_80
-* token_pack_small_30 → STRIPE_PRICE_TOKEN_PACK_SMALL_30
-
-Stripe metadata requirements:
-
-Each Stripe Price must include metadata:
-
-* tokens = 30 | 80 | 200
-* sku = token_pack_*
-
-Webhook behavior:
-
-* Stripe webhook must read `metadata.tokens`.
-* Worker must increment token balance by `metadata.tokens`.
-* Token balance mutation must occur server-side only.
-
----
-
-# Stripe Webhook Destination
-
-Yes, this should be defined in the README so it’s auditable and doesn’t drift.
 
 ## Destination (Stripe Dashboard)
 
@@ -1112,7 +1026,9 @@ tools-api.taxmonitor.pro/*
 If you want the README to be **100% internally consistent**, the one remaining inconsistency is that it defines both:
 
 - `GET /v1/tokens/balance` (used everywhere)
-- `GET /v1/arcade/tokens` (only appears in Stripe Flow section)
+- `GET /v1/tokens/balance` (only appears in Stripe Flow section)
 
 Pick one and delete the other, or declare one as an alias explicitly. Otherwise your audit and your Worker will keep disagreeing for sport.
 ```
+
+
