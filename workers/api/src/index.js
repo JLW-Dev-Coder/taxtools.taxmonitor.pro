@@ -451,6 +451,79 @@ async function getAuthContext(request, env) {
 }
 
 /* ------------------------------------------
+ * Stripe: Checkout Session creation helpers
+ * ------------------------------------------ */
+
+function buildCheckoutReturnUrls(request) {
+  const defaultAllow = "https://taxtools.taxmonitor.pro";
+
+  const origin = String(request.headers.get("Origin") || "").trim();
+  const base = origin || defaultAllow;
+
+  const referer = String(request.headers.get("Referer") || "").trim();
+
+  let returnUrl;
+  try {
+    returnUrl = referer ? new URL(referer) : new URL(`${base}/index.html`);
+  } catch {
+    returnUrl = new URL(`${base}/index.html`);
+  }
+
+  // Avoid open redirects: only return to the same origin.
+  const baseUrl = new URL(base);
+  if (returnUrl.origin !== baseUrl.origin) returnUrl = new URL(`${base}/index.html`);
+
+  const cancelUrl = new URL(returnUrl.toString());
+
+  const successUrl = new URL(returnUrl.toString());
+  successUrl.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
+
+  return {
+    cancel_url: cancelUrl.toString(),
+    success_url: successUrl.toString(),
+  };
+}
+
+async function stripeCreateCheckoutSession({ cancel_url, customer_email, idempotencyKey, priceId, quantity, stripeSecret, success_url, metadata }) {
+  const form = new URLSearchParams();
+  form.set("mode", "payment");
+  form.set("success_url", success_url);
+  form.set("cancel_url", cancel_url);
+  if (customer_email) form.set("customer_email", customer_email);
+
+  form.set("line_items[0][price]", priceId);
+  form.set("line_items[0][quantity]", String(quantity));
+
+  for (const [k, v] of Object.entries(metadata || {})) {
+    if (v == null) continue;
+    form.set(`metadata[${k}]`, String(v));
+  }
+
+  const res = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${stripeSecret}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Idempotency-Key": idempotencyKey,
+    },
+    body: form.toString(),
+  });
+
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const msg = data && data.error && data.error.message ? String(data.error.message) : `Stripe error (${res.status})`;
+    throw new Error(msg);
+  }
+
+  const sessionId = String(data && data.id ? data.id : "");
+  const checkoutUrl = String(data && data.url ? data.url : "");
+
+  if (!sessionId || !checkoutUrl) throw new Error("Stripe session missing id/url");
+
+  return { checkoutUrl, sessionId };
+}
+
+/* ------------------------------------------
  * Route handlers
  * ------------------------------------------ */
 
@@ -575,14 +648,6 @@ async function handleDevLogin(request, env) {
   return new Response(null, { status: 302, headers });
 }
 
-/**
- * Dev-only: mint tokens onto the current authenticated account.
- * - Gated by DEV_LOGIN_ENABLED=true
- * - Requires cookie session (so tokens go to a real accountId)
- *
- * Example:
- *   GET /dev/mint?amount=500
- */
 async function handleDevMint(request, env) {
   if (request.method !== "GET") return methodNotAllowed(request, env);
   if (!isDevEnabled(env)) return notFound(request, env);
@@ -624,10 +689,33 @@ async function handleCheckoutSessions(request, env) {
   const priceId = resolvePriceIdForItem(item, env);
   if (!priceId) return json(request, env, { error: "server_misconfigured", message: "Missing Stripe Price configuration" }, 500);
 
-  // NOTE: This repo keeps Stripe session creation as a stub unless you wire Stripe API calls.
-  // Return a placeholder to keep UI integration moving during game testing.
-  const sessionId = `cs_test_${crypto.randomUUID().replaceAll("-", "")}`;
-  const checkoutUrl = `https://checkout.stripe.com/c/pay/${sessionId}`;
+  // Replacement for stubbed Stripe checkout creation block:
+  const stripeSecret = String(env.STRIPE_SECRET_KEY || "").trim();
+  if (!stripeSecret) return json(request, env, { error: "server_misconfigured", message: "Missing STRIPE_SECRET_KEY" }, 500);
+
+  const { cancel_url, success_url } = buildCheckoutReturnUrls(request);
+  const idempotencyKey = String(request.headers.get("Idempotency-Key") || "").trim() || `checkout:${auth.accountId}:${item}`;
+
+  let created;
+  try {
+    created = await stripeCreateCheckoutSession({
+      cancel_url,
+      customer_email: auth.email,
+      idempotencyKey,
+      priceId,
+      quantity,
+      stripeSecret,
+      success_url,
+      metadata: {
+        accountId: auth.accountId,
+        item,
+      },
+    });
+  } catch (err) {
+    return json(request, env, { error: "stripe_error", message: String(err?.message || err) }, 502);
+  }
+
+  const { checkoutUrl, sessionId } = created;
 
   state.checkoutBySessionId.set(sessionId, {
     accountId: auth.accountId,
