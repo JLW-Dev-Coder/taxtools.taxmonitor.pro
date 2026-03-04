@@ -534,8 +534,10 @@
         return;
       }
 
+      // FIX: redirect to login instead of just toasting.
       if (!isSignedIn || !userEmail) {
-        showToast('Sign in to buy tokens.');
+        const next = `${location.pathname}${location.hash || '#token-packs'}`;
+        location.href = `/login.html?redirect=${encodeURIComponent(next)}`;
         return;
       }
 
@@ -636,9 +638,11 @@
     // Init
     (async () => {
       const url = new URL(location.href);
-      const sessionId = url.searchParams.get('session_id');
 
-      // If we just returned from Stripe, confirm status then refresh balance.
+      // FIX: PayPal returns token=ORDERID, Worker accepts it as alias to session_id.
+      const sessionId = url.searchParams.get('session_id') || url.searchParams.get('token');
+
+      // If we just returned from checkout, confirm status then refresh balance.
       if (sessionId) {
         try {
           await fetch(`${TOOLS_API_ENDPOINTS.checkoutStatus}?session_id=${encodeURIComponent(sessionId)}`, {
@@ -651,6 +655,7 @@
 
         // Clean the URL so refreshes don’t keep re-checking.
         url.searchParams.delete('session_id');
+        url.searchParams.delete('token');
         history.replaceState({}, document.title, url.toString());
       }
 
