@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Help Center - TaxTools</title>
+  <title>Help Center - TaxTools Tax Monitor Pro</title>
+  <meta name="description" content="Browse the TaxTools Help Center for quick answers about purchases, downloads, refunds, and troubleshooting. Contact support if you still need help." />
 
   <!-- Favicon -->
   <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
@@ -12,7 +13,6 @@
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -154,7 +154,7 @@
             </div>
           </button>
 
-          <button type="button" class="help-btn group text-left bg-white border-2 border-slate-100 rounded-2xl p-5 hover:border-action hover:shadow-lg transition-all" data-help="file_types">
+          <button type="button" class="help-btn group text-left bg-white border-2 border-slate-100 rounded-2xl p-5 hover:border-action hover:shadow-lg transition-all" data-help="token_packs">
             <div class="flex items-start gap-3">
               <div class="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
                 <svg class="w-6 h-6 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -162,8 +162,8 @@
                 </svg>
               </div>
               <div>
-                <div class="font-bold text-navy">File types</div>
-                <div class="text-sm text-slate-600">PDF, spreadsheet, calendar, bundle.</div>
+                <div class="font-bold text-navy">Token packs</div>
+                <div class="text-sm text-slate-600">Small, Medium, Large. Tokens never expire.</div>
               </div>
             </div>
           </button>
@@ -228,7 +228,7 @@
 
         <div class="mt-10 max-w-3xl mx-auto bg-slate-50 border border-slate-200 rounded-2xl p-6">
           <div class="font-bold text-navy mb-2">Tip</div>
-          <div class="text-slate-700">This Help Center is intentionally simple: buttons open the exact instructions. No dead links. No fake article library. No pretending.</div>
+          <div class="text-slate-700">This Help Center keeps things simple. Click a button to open the exact instructions you need. Then get back to playing.</div>
         </div>
       </div>
     </section>
@@ -253,7 +253,7 @@
             <div id="helpModalBody" class="text-slate-800 leading-relaxed space-y-4"></div>
           </div>
           <div class="p-6 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-            <a href="mailto:support@taxtools.taxmonitor.pro" class="text-sm font-semibold text-action hover:underline">Email support</a>
+            <a href="/contact.html" class="text-sm font-semibold text-action hover:underline">Contact support</a>
             <div class="text-xs text-slate-500">Support: support@taxtools.taxmonitor.pro</div>
           </div>
         </div>
@@ -283,7 +283,7 @@
                   Contact us
                 </a>
 
-                <a href="mailto:support@taxtools.taxmonitor.pro" class="px-8 py-4 border-2 border-slate-200 text-navy font-semibold rounded-xl hover:border-action hover:text-action transition-colors text-center">support@taxtools.taxmonitor.pro</a>
+                <a href="/contact.html" class="px-8 py-4 border-2 border-slate-200 text-navy font-semibold rounded-xl hover:border-action hover:text-action transition-colors text-center">Open support request</a>
               </div>
             </div>
 
@@ -319,8 +319,8 @@
           <ol class="list-decimal pl-5 space-y-2">
             <li><span class="font-semibold">Find your receipt:</span> check the email used at checkout for a confirmation/receipt message.</li>
             <li><span class="font-semibold">No receipt email?</span> check Spam/Promotions, then search your inbox for “TaxTools”.</li>
-            <li><span class="font-semibold">Wrong email at checkout?</span> email support with your name, the product you purchased, and the approximate purchase time.</li>
-            <li><span class="font-semibold">Charged but no download:</span> open the “Download & Access” help topic and follow it first, then contact support if you still can’t access.</li>
+            <li><span class="font-semibold">Wrong email at checkout?</span> contact support with your account email, the token pack purchased, and the approximate purchase time.</li>
+            <li><span class="font-semibold">Charged but tokens didn’t show:</span> refresh the page to pull your latest balance from the server, then try again.</li>
           </ol>
         `
       },
@@ -328,54 +328,37 @@
         title: 'Contact Support',
         subtitle: 'What to send so we can actually help',
         body: `
-          <div class="space-y-4">
-            <p>Send an email to <a class="text-action font-semibold hover:underline" href="mailto:support@taxtools.taxmonitor.pro">support@taxtools.taxmonitor.pro</a> with:</p>
-            <ul class="list-disc pl-5 space-y-2">
-              <li>Your purchase email address.</li>
-              <li>The product name (or “Complete Bundle”).</li>
-              <li>What happened (1–2 sentences).</li>
-              <li>A screenshot, if something looks broken.</li>
-            </ul>
-            <p class="text-sm text-slate-600">Typical response: same day (unless everyone is doing taxes, which is always).</p>
-          </div>
+          <ul class="list-disc pl-5 space-y-2">
+            <li><span class="font-semibold">Account email:</span> the email you use to sign in.</li>
+            <li><span class="font-semibold">Game name:</span> which game you were trying to play.</li>
+            <li><span class="font-semibold">Token pack:</span> Small, Medium, or Large (if you purchased one).</li>
+            <li><span class="font-semibold">What happened:</span> one sentence is fine.</li>
+            <li><span class="font-semibold">Screenshot:</span> include one if the page looks broken.</li>
+          </ul>
         `
       },
       download_access: {
         title: 'Download & Access',
-        subtitle: 'How to get your files after purchase',
+        subtitle: 'How to get what you bought',
         body: `
           <ol class="list-decimal pl-5 space-y-2">
-            <li>Open your purchase confirmation email.</li>
-            <li>Click the download/access link inside that email.</li>
-            <li>If the link does nothing, try a different browser (Chrome or Edge) and disable ad blockers for the site.</li>
-            <li>If the link says expired or unauthorized, email support with your purchase email and product name.</li>
+            <li><span class="font-semibold">Sign in:</span> token balance is tied to your account session.</li>
+            <li><span class="font-semibold">Buy tokens:</span> purchase a token pack if you don’t have enough balance.</li>
+            <li><span class="font-semibold">Open a game:</span> go to the game page you want to play.</li>
+            <li><span class="font-semibold">Unlock:</span> click <span class="font-semibold">Unlock &amp; Play</span> and confirm the token spend.</li>
           </ol>
-        `
-      },
-      file_types: {
-        title: 'File Types',
-        subtitle: 'What you bought and how it opens',
-        body: `
-          <div class="space-y-4">
-            <ul class="list-disc pl-5 space-y-2">
-              <li><span class="font-semibold">PDF:</span> opens in any browser or PDF reader. Download to save a copy.</li>
-              <li><span class="font-semibold">Spreadsheet (XLS/XLSX):</span> open in Excel, Google Sheets, or LibreOffice. Save a copy before editing.</li>
-              <li><span class="font-semibold">Calendar (ICS):</span> import into Google Calendar, Apple Calendar, or Outlook.</li>
-              <li><span class="font-semibold">Bundle:</span> you get multiple files. Download each item and store them in one folder.</li>
-            </ul>
-          </div>
+          <p class="text-sm text-slate-600 mt-4">There are no files to download. Games run in your browser and unlock via token spend.</p>
         `
       },
       free_previews: {
         title: 'Free Previews',
-        subtitle: 'Try the demos first',
+        subtitle: 'Try demos without spending tokens',
         body: `
-          <ol class="list-decimal pl-5 space-y-2">
-            <li>Go to the product page.</li>
-            <li>Click the <span class="font-semibold">Try Demo</span> button.</li>
-            <li>The demo shows a preview version of the tool.</li>
-            <li>Purchase unlocks the full version delivered via your receipt/confirmation email.</li>
-          </ol>
+          <ul class="list-disc pl-5 space-y-2">
+            <li>Each game has a <span class="font-semibold">Try Demo</span> option.</li>
+            <li>Demos are limited previews and never call the token spend endpoint.</li>
+            <li>To access the full experience, use <span class="font-semibold">Unlock &amp; Play</span>.</li>
+          </ul>
         `
       },
       refunds_policies: {
@@ -383,51 +366,69 @@
         subtitle: 'Refunds, privacy, and terms',
         body: `
           <div class="space-y-4">
-            <p>Policies live here:</p>
+            <p>For policy details, use the links below:</p>
             <ul class="list-disc pl-5 space-y-2">
-              <li><a class="text-action font-semibold hover:underline" href="/legal/terms.html">Terms</a></li>
               <li><a class="text-action font-semibold hover:underline" href="/legal/privacy.html">Privacy</a></li>
+              <li><a class="text-action font-semibold hover:underline" href="/legal/refund.html">Refund Policy</a></li>
+              <li><a class="text-action font-semibold hover:underline" href="/legal/terms.html">Terms</a></li>
             </ul>
-            <p class="text-sm text-slate-600">If you’re requesting a refund, include your purchase email and product name.</p>
+          </div>
+        `
+      },
+      token_packs: {
+        title: 'Token Packs',
+        subtitle: 'Pick a pack that fits your goals',
+        body: `
+          <div class="space-y-4">
+            <p>Tokens never expire and can be used across any game in the arcade.</p>
+            <ul class="list-disc pl-5 space-y-2">
+              <li><span class="font-semibold">Large Pack</span> — 200 tokens for deep repetition and mastery.</li>
+              <li><span class="font-semibold">Medium Pack</span> — 80 tokens for consistent skill-building.</li>
+              <li><span class="font-semibold">Small Pack</span> — 30 tokens for quick refreshers.</li>
+            </ul>
+            <p class="text-sm text-slate-600">Your balance appears after you sign in.</p>
           </div>
         `
       },
       troubleshooting: {
         title: 'Troubleshooting',
-        subtitle: 'Fix the common stuff fast',
+        subtitle: 'Fix common game issues fast',
         body: `
           <ul class="list-disc pl-5 space-y-2">
-            <li><span class="font-semibold">Downloads not working:</span> try another browser and disable extensions for the site.</li>
-            <li><span class="font-semibold">File won’t open:</span> confirm you have the right app (PDF reader, Excel/Sheets, Calendar).</li>
-            <li><span class="font-semibold">Spreadsheet looks broken:</span> download a fresh copy, then avoid editing formula cells.</li>
-            <li><span class="font-semibold">Still stuck:</span> use “Contact Support” and send a screenshot.</li>
+            <li><span class="font-semibold">Demo works but full game won’t unlock:</span> confirm you completed the token confirmation step.</li>
+            <li><span class="font-semibold">Game won’t start:</span> refresh the page and make sure you are signed in before trying again.</li>
+            <li><span class="font-semibold">Page looks broken:</span> disable browser extensions for this site and reload.</li>
+            <li><span class="font-semibold">Tokens not updating:</span> refresh the page to pull the latest balance from the server.</li>
+            <li><span class="font-semibold">Still stuck:</span> open <a class="text-action font-semibold hover:underline" href="/contact.html">Contact Support</a> and include the game name and what happened.</li>
           </ul>
         `
       },
       using_tools: {
         title: 'Using Your Tools',
-        subtitle: 'Quick “how to” by product type',
+        subtitle: 'Quick “how to” for the arcade',
         body: `
           <div class="space-y-4">
             <div>
-              <div class="font-bold text-navy">PDF tools</div>
+              <div class="font-bold text-navy">Game demos</div>
               <ul class="list-disc pl-5 space-y-1 mt-2">
-                <li>Download and save a clean copy.</li>
-                <li>Fill digitally in a PDF editor, or print and write.</li>
+                <li>Open the game page and click <span class="font-semibold">Try Demo</span>.</li>
+                <li>The demo shows a limited preview so you can test the gameplay before spending tokens.</li>
               </ul>
             </div>
             <div>
-              <div class="font-bold text-navy">Spreadsheet tools</div>
+              <div class="font-bold text-navy">Unlocking a game</div>
               <ul class="list-disc pl-5 space-y-1 mt-2">
-                <li>Make a copy before editing.</li>
-                <li>Enter data only in the input fields. Leave formulas alone.</li>
+                <li>Sign in to your account.</li>
+                <li>Click <span class="font-semibold">Unlock &amp; Play</span> on the game page.</li>
+                <li>Confirm the token spend to unlock full access.</li>
               </ul>
             </div>
             <div>
-              <div class="font-bold text-navy">Calendar tools</div>
+              <div class="font-bold text-navy">Playing the full version</div>
               <ul class="list-disc pl-5 space-y-1 mt-2">
-                <li>Import the ICS file into your calendar app.</li>
-                <li>Review the events after import and adjust reminders to your liking.</li>
+                <li>Once unlocked, the full game loads immediately in your browser.</li>
+                <li>Your token balance updates automatically after the spend is confirmed.</li>
+                <li>You can return later and continue practicing anytime.</li>
               </ul>
             </div>
           </div>
