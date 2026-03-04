@@ -1030,5 +1030,3 @@ If you want the README to be **100% internally consistent**, the one remaining i
 
 Pick one and delete the other, or declare one as an alias explicitly. Otherwise your audit and your Worker will keep disagreeing for sport.
 ```
-
-
