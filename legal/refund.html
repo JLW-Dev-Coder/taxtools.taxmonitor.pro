@@ -1,0 +1,214 @@
+<!-- /legal/refund.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaxTools — Refund Policy</title>
+  <meta name="description" content="Refund Policy for TaxTools token packs and game access." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial']
+          }
+        }
+      }
+    };
+  </script>
+  <script src="/_sdk/element_sdk.js"></script>
+
+  <style>
+    body { box-sizing: border-box; }
+    * { font-family: "DM Sans", system-ui, sans-serif; }
+
+    .blue-glow {
+      background: radial-gradient(ellipse 700px 420px at 50% -140px, rgba(59, 130, 246, 0.16), transparent 60%);
+    }
+
+    .grid-overlay {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    .glass-card {
+      background: rgba(30, 35, 45, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow:
+        0 0 60px rgba(59, 130, 246, 0.06),
+        0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    }
+
+    .badge-gradient {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    }
+
+    .section-divider {
+      border-color: rgba(255, 255, 255, 0.06);
+    }
+
+    @keyframes tmFadeUp {
+      0% { opacity: 0; transform: translateY(14px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .tm-anim { opacity: 0; transform: translateY(14px); }
+    .tm-loaded .tm-anim { animation: tmFadeUp 700ms ease forwards; }
+    .tm-loaded .tm-anim.delay-1 { animation-delay: 80ms; }
+    .tm-loaded .tm-anim.delay-2 { animation-delay: 160ms; }
+    .tm-loaded .tm-anim.delay-3 { animation-delay: 240ms; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tm-anim { opacity: 1 !important; transform: none !important; }
+      .tm-loaded .tm-anim { animation: none !important; }
+    }
+  </style>
+
+  <style>@view-transition { navigation: auto; }</style>
+</head>
+
+<body class="h-full bg-slate-950 text-slate-300 overflow-auto">
+  <div id="app" class="min-h-screen flex flex-col grid-overlay">
+    <div class="blue-glow min-h-screen flex flex-col">
+
+      <!-- Minimal Legal Header -->
+      <header class="sticky top-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur">
+        <div class="mx-auto flex max-w-7xl items-center justify-end px-6 py-4">
+          <a
+            href="https://taxtools.taxmonitor.pro/"
+            aria-label="Close"
+            class="inline-flex items-center justify-center rounded-2xl border border-slate-800/60 bg-slate-950/60 p-4 text-white/80 backdrop-blur hover:text-white hover:scale-105 transition"
+          >
+            <svg class="h-[32px] w-[32px]" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6L6 18" />
+              <path d="M6 6l12 12" />
+            </svg>
+          </a>
+        </div>
+      </header>
+
+      <main class="flex-1 max-w-[900px] mx-auto px-6 py-12 tm-anim">
+        <!-- Brand Header (inside legal content) -->
+        <div class="text-center mb-10 tm-anim delay-1">
+          <a href="https://taxtools.taxmonitor.pro/" class="inline-flex items-center justify-center gap-3 mb-2" aria-label="TaxTools">
+            <div class="badge-gradient w-10 h-10 rounded-lg flex items-center justify-center shadow-lg">
+              <span class="text-slate-950 font-bold text-sm tracking-tight">TM</span>
+            </div>
+            <div class="text-left">
+              <h1 class="text-white font-semibold text-lg leading-tight">TaxTools</h1>
+              <p class="text-slate-500 text-xs">A Tax Monitor Pro Project • Lenore, Inc.</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Page Title -->
+        <div class="text-center mb-8 tm-anim delay-2">
+          <h2 class="text-3xl font-bold text-white mb-2">Refund Policy</h2>
+          <p class="text-slate-500 text-sm">Last updated: March 3, 2026</p>
+        </div>
+
+        <!-- Glass Content Card -->
+        <div class="glass-card rounded-2xl p-8 md:p-10 tm-anim delay-3">
+
+          <section class="mb-8 pb-8 border-b section-divider">
+            <p class="text-slate-400 leading-relaxed">
+              This Refund Policy applies to purchases made on TaxTools (token packs used to unlock browser-based educational games). If you need help, use <a class="text-blue-400 hover:underline" href="/contact.html">Contact Support</a>.
+            </p>
+          </section>
+
+          <section class="mb-8 pb-8 border-b section-divider">
+            <h3 class="text-white font-semibold text-lg mb-3">A. What You’re Buying</h3>
+            <ul class="list-disc list-inside text-slate-400 leading-relaxed space-y-2">
+              <li><span class="font-semibold">Token packs</span> can be used across any game in the arcade.</li>
+              <li><span class="font-semibold">Tokens never expire</span>.</li>
+              <li>Games run <span class="font-semibold">in your browser</span>. There are no files to download.</li>
+            </ul>
+          </section>
+
+          <section class="mb-8 pb-8 border-b section-divider">
+            <h3 class="text-white font-semibold text-lg mb-3">B. General Rule</h3>
+            <p class="text-slate-400 leading-relaxed">
+              Because token packs are digital credits that deliver immediate access and can be spent right away, purchases are generally <span class="font-semibold">non-refundable once tokens are delivered</span> to your account.
+            </p>
+          </section>
+
+          <section class="mb-8 pb-8 border-b section-divider">
+            <h3 class="text-white font-semibold text-lg mb-3">C. When We May Approve a Refund</h3>
+            <p class="text-slate-400 leading-relaxed mb-4">We may approve a refund (in full or part) in situations like:</p>
+            <ul class="list-disc list-inside text-slate-400 leading-relaxed space-y-2">
+              <li><span class="font-semibold">Duplicate charge</span> for the same purchase.</li>
+              <li><span class="font-semibold">Unrecognized charge</span> that appears to be unauthorized (subject to verification and payment processor rules).</li>
+              <li><span class="font-semibold">Technical failure</span> where tokens were purchased but never delivered to the account.</li>
+              <li><span class="font-semibold">Service outage at purchase time</span> that prevented access after purchase, and we cannot reasonably resolve it.</li>
+            </ul>
+            <p class="text-slate-500 text-sm mt-4">Approvals are case-by-case and may require supporting details.</p>
+          </section>
+
+          <section class="mb-8 pb-8 border-b section-divider">
+            <h3 class="text-white font-semibold text-lg mb-3">D. When We Don’t Refund</h3>
+            <p class="text-slate-400 leading-relaxed mb-4">Refunds are not typically provided for:</p>
+            <ul class="list-disc list-inside text-slate-400 leading-relaxed space-y-2">
+              <li><span class="font-semibold">Change of mind</span> after tokens are delivered.</li>
+              <li><span class="font-semibold">Partially used tokens</span> or gameplay completed.</li>
+              <li><span class="font-semibold">Failure to sign in</span> to the correct account email used for purchase.</li>
+              <li><span class="font-semibold">Browser extensions</span> or device settings causing display issues (we’ll help you troubleshoot).</li>
+            </ul>
+          </section>
+
+          <section class="mb-8 pb-8 border-b section-divider">
+            <h3 class="text-white font-semibold text-lg mb-3">E. How to Request a Refund</h3>
+            <ol class="list-decimal list-inside text-slate-400 leading-relaxed space-y-2">
+              <li>Submit a request through <a class="text-blue-400 hover:underline" href="/contact.html">Contact Support</a>.</li>
+              <li>Include your account email and the approximate purchase date/time.</li>
+              <li>If available, include the receipt or last 4 digits of the card shown on the receipt.</li>
+            </ol>
+          </section>
+
+          <section>
+            <h3 class="text-white font-semibold text-lg mb-3">F. Policy Changes</h3>
+            <p class="text-slate-400 leading-relaxed">
+              We may update this policy from time to time. The “Last updated” date will reflect the most recent revision.
+            </p>
+          </section>
+
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="px-6 py-3 mt-1 border-t border-slate-800/60 bg-slate-950/80 backdrop-blur">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <p class="text-slate-500 text-sm">© <span id="footer-year"></span> TaxTools.Tax Monitor Pro. All rights reserved.</p>
+          <div class="flex items-center gap-6">
+            <a href="/legal/privacy.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Privacy Policy</a>
+            <a href="/legal/refund.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Refund Policy</a>
+            <a href="/legal/terms.html" class="text-slate-400 hover:text-blue-400 text-sm transition-colors">Terms of Service</a>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      requestAnimationFrame(() => document.documentElement.classList.add('tm-loaded'));
+      var y = document.getElementById('footer-year');
+      if (y) y.textContent = String(new Date().getFullYear());
+    })();
+  </script>
+</body>
+</html>
