@@ -799,7 +799,12 @@
   <script>
     const API_BASE = "https://tools-api.taxmonitor.pro";
 
-    const slug = "circular-230-quest.html";
+    // FIX: gameSlug is what the Worker validates (no ".html")
+    const gameSlug = "circular-230-quest";
+
+    // FIX: gameFile is what your static site routes to
+    const gameFile = "circular-230-quest.html";
+
     const tokenCost = 8;
 
     function setStatus(msg) {
@@ -888,7 +893,8 @@
         amount: tokenCost,
         idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
         reason: "arcade_play",
-        slug: slug
+        // FIX: send the Worker slug, not the filename
+        slug: gameSlug
       });
 
       if (!spend.res.ok) {
@@ -899,7 +905,8 @@
 
       hideConfirmModal();
       setStatus("Unlocked. Redirecting…");
-      window.location.href = "/games/" + slug;
+      // FIX: redirect to the file path
+      window.location.href = "/games/" + gameFile;
     }
 
     function scrollToPreview() {
@@ -1094,7 +1101,6 @@
 
     function demoAdvance() {
       if (!demoState.locked) {
-        // enforce click on an option
         const feedback = document.getElementById('demo-feedback');
         if (feedback.classList.contains('hidden')) {
           feedback.classList.remove('hidden');
@@ -1186,4 +1192,3 @@
   </script>
 </body>
 </html>
-
