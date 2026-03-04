@@ -1229,5 +1229,5 @@ Environment vars (alphabetical):
 * `STRIPE_SECRET_KEY`
 * `STRIPE_WEBHOOK_SECRET`
 * `TAXTOOLS_AUTH_BASE_URL`
-
+ 
 ---
