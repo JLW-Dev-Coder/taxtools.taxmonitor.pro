@@ -17,6 +17,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
 
+  <!-- Game-like demo modal fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="/styles/site.css" />
 
   <script>
@@ -24,7 +27,9 @@
       theme: {
         extend: {
           fontFamily: {
-            dm: ['"DM Sans"', 'system-ui', 'sans-serif']
+            dm: ['"DM Sans"', 'system-ui', 'sans-serif'],
+            poppins: ['Poppins', 'system-ui', 'sans-serif'],
+            title: ['Fredoka One', 'system-ui', 'sans-serif']
           },
           colors: {
             action: '#1d4ed8',
@@ -37,7 +42,14 @@
             accent: '#f97316',
             'accent-dark': '#ea580c',
             surface: '#f8fafc',
-            warm: '#f97316'
+            warm: '#f97316',
+
+            /* Demo modal (game-like palette) */
+            detective: '#1a1a2e',
+            glow: '#00d4ff',
+            success: '#00ff41',
+            danger: '#ff006e',
+            warning: '#ffd60a'
           }
         }
       }
@@ -80,6 +92,53 @@
     }
 
     body { box-sizing: border-box; }
+
+    /* Demo modal: game-like effects */
+    .game-bg {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .game-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 255, 65, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      animation: pulse-glow 6s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    .neon-text {
+      text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 30px #00d4ff;
+    }
+    .card-reveal {
+      animation: card-flip 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    @keyframes card-flip {
+      0% { transform: rotateY(0deg) scale(0.8); opacity: 0; }
+      50% { transform: rotateY(90deg); }
+      100% { transform: rotateY(0deg) scale(1); opacity: 1; }
+    }
+    .glitch { animation: glitch-effect 0.3s; }
+    @keyframes glitch-effect {
+      0% { transform: translate(2px, 0); }
+      25% { transform: translate(-2px, 0); }
+      50% { transform: translate(2px, 0); }
+      75% { transform: translate(-2px, 0); }
+      100% { transform: translate(0, 0); }
+    }
+    .success-glow {
+      animation: success-glow-anim 0.6s ease-out;
+    }
+    @keyframes success-glow-anim {
+      0% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.7); }
+      100% { box-shadow: 0 0 0 20px rgba(0, 255, 65, 0); }
+    }
   </style>
 </head>
 
@@ -354,7 +413,7 @@
           <div class="order-1 lg:order-2 text-center lg:text-left">
             <span class="text-primary font-semibold text-sm uppercase tracking-wide">Preview</span>
             <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Try the first two prompts</h2>
-            <p class="text-muted text-lg mb-6">Demo mode stays limited. Full gameplay unlocks only after the Worker confirms a valid token spend.</p>
+            <p class="text-muted text-lg mb-6">Demo mode stays limited. Full gameplay unlocks after your token purchase is confirmed.</p>
 
             <ul class="space-y-4 mb-8">
               <li class="flex items-center gap-3 justify-center lg:justify-start">
@@ -402,7 +461,7 @@
         <div class="text-center mb-16">
           <span class="text-primary font-semibold text-sm uppercase tracking-wide">Simple Setup</span>
           <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">How It Works</h2>
-          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. Minimal drama. The Worker does the gate, not your vibes.</p>
+          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three simple steps. Sign in, confirm token use, and start playing.</p>
         </div>
 
         <div class="grid md:grid-cols-3 gap-8">
@@ -469,7 +528,7 @@
               <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
             <div class="faq-content hidden px-6 pb-6">
-              <p class="text-muted">When you confirm, the Worker verifies your balance and creates a time-limited play grant for this game so reloading doesn’t charge you twice during the grant window.</p>
+              <p class="text-muted">When you confirm, our system checks your token balance and unlocks the game for a limited time so refreshing the page won’t charge you twice while you’re playing.</p>
             </div>
           </div>
 
@@ -489,7 +548,7 @@
               <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
             <div class="faq-content hidden px-6 pb-6">
-              <p class="text-muted">Tokens and play grants are tied to your account, and the Worker uses a cookie session to verify access.</p>
+              <p class="text-muted">Tokens and game access are tied to your account, and your secure session confirms that you’re signed in.</p>
             </div>
           </div>
 
@@ -533,7 +592,7 @@
     <section class="py-16 lg:py-24 gradient-hero text-white">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to play?</h2>
-        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend verified by the Worker.</p>
+        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access by using tokens from your account.</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <button id="btnUnlock2" class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2" type="button">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -556,101 +615,100 @@
   <div id="demoModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/70" data-demo-close="1"></div>
 
-    <div class="absolute inset-4 md:inset-10 lg:inset-16 rounded-3xl overflow-hidden flex flex-col border border-white/10" style="background: linear-gradient(135deg, rgba(30,27,75,0.95) 0%, rgba(49,46,129,0.95) 55%, rgba(67,56,202,0.95) 100%);">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10" style="background: rgba(255,255,255,0.06)">
-        <div>
-          <p class="text-blue-200 text-sm">Mini demo</p>
-          <h3 class="text-white text-xl font-bold">IRS Tax Detective (Preview)</h3>
-        </div>
-        <button type="button" class="p-2 hover:bg-white/10 rounded-lg transition-colors text-white" data-demo-close="1" aria-label="Close demo">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
-      </div>
+    <div class="absolute inset-4 md:inset-10 lg:inset-16 rounded-3xl overflow-hidden border border-white/10 game-bg">
+      <div class="relative h-full w-full overflow-auto">
+        <div class="relative z-10 p-4 md:p-8">
 
-      <div class="flex-1 overflow-auto p-6">
-        <div class="grid lg:grid-cols-3 gap-6">
-          <div class="lg:col-span-1">
-            <div class="rounded-2xl p-5 border border-white/10" style="background: rgba(255,255,255,0.06)">
-              <p class="text-white font-semibold">What you get</p>
-              <ul class="mt-3 space-y-2 text-blue-200 text-sm">
-                <li>Two questions only (demo).</li>
-                <li>No tokens spent here.</li>
-                <li>Full game unlocks after Worker-verified spend.</li>
-              </ul>
-              <div class="mt-5 rounded-2xl p-4 border border-white/10" style="background: rgba(249,115,22,0.12)">
-                <p class="text-white text-sm"><strong>Want full play?</strong> Unlock for <span class="font-semibold">8 tokens</span>.</p>
+          <!-- Modal Header -->
+          <header class="text-center mb-6">
+            <div class="flex items-center justify-between gap-4">
+              <div class="text-left">
+                <p class="text-glow text-xs font-semibold tracking-wide" style="font-family: Poppins, system-ui, sans-serif;">MINI DEMO</p>
+                <h2 class="font-title text-2xl md:text-3xl neon-text text-white" style="font-family: 'Fredoka One', system-ui, sans-serif;">IRS Tax Detective</h2>
+                <p class="text-glow text-sm" style="font-family: Poppins, system-ui, sans-serif;">Preview only. Two questions. No token spend.</p>
               </div>
+
+              <button type="button" class="p-2 rounded-lg border border-white/10 text-white hover:bg-white/10 transition" data-demo-close="1" aria-label="Close demo">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+          </header>
+
+          <!-- Score / Level -->
+          <div class="flex flex-wrap justify-center gap-3 md:gap-4 mb-6">
+            <div class="bg-detective/60 border-2 border-glow rounded-lg px-5 py-3 backdrop-blur-sm">
+              <div class="text-xs text-glow/80 mb-1" style="font-family: Poppins, system-ui, sans-serif;">SCORE</div>
+              <div id="demo-score" class="text-2xl font-bold text-success" style="font-family: Poppins, system-ui, sans-serif;">0</div>
+            </div>
+            <div class="bg-detective/60 border-2 border-glow rounded-lg px-5 py-3 backdrop-blur-sm">
+              <div class="text-xs text-glow/80 mb-1" style="font-family: Poppins, system-ui, sans-serif;">LEVEL</div>
+              <div class="text-2xl font-bold text-glow" style="font-family: Poppins, system-ui, sans-serif;"><span id="demo-level">1</span>/2</div>
+            </div>
+            <div class="bg-detective/60 border-2 border-glow rounded-lg px-5 py-3 backdrop-blur-sm">
+              <div class="text-xs text-glow/80 mb-1" style="font-family: Poppins, system-ui, sans-serif;">STREAK</div>
+              <div id="demo-streak" class="text-2xl font-bold text-warning" style="font-family: Poppins, system-ui, sans-serif;">0</div>
             </div>
           </div>
 
-          <div class="lg:col-span-2">
-            <div class="rounded-3xl p-5 border border-white/10" style="background: rgba(255,255,255,0.06)">
+          <main class="max-w-3xl mx-auto">
 
-              <div id="demo-start">
-                <div class="rounded-3xl bg-white p-6 md:p-8 card-shadow">
-                  <span class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold mb-4">Preview</span>
-                  <h4 class="text-xl md:text-2xl font-bold text-gray-800">Mini case file</h4>
-                  <p class="text-gray-600 mt-2">Your refund vanished. Match a couple of IRS-style codes to their meanings.</p>
-                  <div class="mt-5 flex flex-wrap items-center gap-3">
-                    <button id="demo-start-btn" type="button" class="bg-navy hover:bg-navy-light text-white font-semibold px-6 py-3 rounded-xl">Start demo</button>
-                    <span id="demo-status" class="text-gray-500 text-sm"></span>
-                  </div>
+            <!-- Start Screen -->
+            <div id="demo-start" class="text-center">
+              <div class="bg-detective/60 border-2 border-glow rounded-lg p-6 md:p-8 backdrop-blur-sm">
+                <p class="text-white text-base md:text-lg leading-relaxed mb-6" style="font-family: Poppins, system-ui, sans-serif;">Your refund vanished. Match IRS-style codes to their meanings. Each correct answer earns points.</p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button id="demo-start-btn" class="bg-glow text-detective font-bold py-3 px-8 rounded-lg text-base md:text-lg hover:bg-success hover:shadow-lg transition-all transform hover:scale-105" type="button" style="font-family: Poppins, system-ui, sans-serif;">
+                    START DEMO
+                  </button>
+                  <button id="demo-unlock-btn" type="button" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-3 rounded-lg btn-shadow transition-all hover:scale-105" style="font-family: Poppins, system-ui, sans-serif;">
+                    Unlock &amp; Play (8 tokens)
+                  </button>
                 </div>
+                <p id="demo-status" class="mt-4 text-glow/80 text-sm" style="font-family: Poppins, system-ui, sans-serif;"></p>
               </div>
-
-              <div id="demo-game" class="hidden">
-                <div class="flex items-center justify-between mb-4">
-                  <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 border border-white/10" style="background: rgba(255,255,255,0.06)">
-                    <span class="text-white text-sm font-semibold">Question</span>
-                    <span class="text-white/90 text-sm"><span id="demo-level">1</span>/2</span>
-                  </div>
-                  <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 border border-white/10" style="background: rgba(255,255,255,0.06)">
-                    <span class="text-blue-200 text-sm">Score</span>
-                    <span class="text-white text-sm font-semibold" id="demo-score">0</span>
-                  </div>
-                </div>
-
-                <div class="rounded-3xl bg-white p-6 md:p-8 card-shadow">
-                  <span class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold mb-4">Multiple Choice</span>
-                  <h4 id="demo-question" class="text-xl md:text-2xl font-bold text-gray-800"></h4>
-
-                  <div id="demo-cards" class="mt-5 space-y-3"></div>
-
-                  <div id="demo-feedback" class="hidden mt-6 p-4 rounded-xl">
-                    <div id="demo-feedback-text" class="font-semibold"></div>
-                  </div>
-
-                  <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-end">
-                    <button id="demo-reset-btn" type="button" class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold px-5 py-3 rounded-xl">Restart demo</button>
-                    <button id="demo-next-btn" type="button" class="bg-navy hover:bg-navy-light text-white font-semibold px-5 py-3 rounded-xl hidden">Next</button>
-                    <button id="demo-skip-btn" type="button" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold px-5 py-3 rounded-xl">Skip (-100)</button>
-                  </div>
-                </div>
-
-                <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-end">
-                  <button id="demo-unlock-btn" type="button" class="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-xl btn-shadow transition-all hover:scale-105">Unlock &amp; Play (8 tokens)</button>
-                </div>
-              </div>
-
-              <div id="demo-results" class="hidden">
-                <div class="rounded-3xl bg-white p-6 md:p-8 card-shadow text-center">
-                  <span class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold mb-4">Demo complete</span>
-                  <h4 class="text-xl md:text-2xl font-bold text-gray-800">Final demo score: <span id="demo-final" class="text-primary">0</span></h4>
-                  <p class="text-gray-600 mt-2">Want the full version? Unlock play to get the complete experience.</p>
-                  <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
-                    <button id="demo-restart-btn" type="button" class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold px-5 py-3 rounded-xl">Replay demo</button>
-                    <button id="demo-unlock-btn-2" type="button" class="bg-primary hover:bg-primary-dark text-white font-semibold px-5 py-3 rounded-xl btn-shadow">Unlock &amp; Play</button>
-                  </div>
-                </div>
-              </div>
-
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="px-6 py-4 border-t border-white/10" style="background: rgba(255,255,255,0.06)">
-        <p class="text-blue-200 text-sm">Education only. Not tax advice. Not representation. For real help, use <a class="underline text-white" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
+            <!-- Game Screen -->
+            <div id="demo-game" class="hidden">
+              <div class="bg-detective/60 border-2 border-glow rounded-lg p-5 md:p-6 mb-5 backdrop-blur-sm">
+                <div class="text-glow text-sm font-bold mb-2" style="font-family: Poppins, system-ui, sans-serif;">CODE IDENTIFICATION</div>
+                <div id="demo-question" class="text-2xl md:text-3xl text-white" style="font-family: 'Fredoka One', system-ui, sans-serif;"></div>
+              </div>
+
+              <div id="demo-cards" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5"></div>
+
+              <div id="demo-feedback" class="hidden bg-detective/60 border-2 rounded-lg p-4 backdrop-blur-sm mb-4">
+                <div id="demo-feedback-text" class="text-center font-bold text-lg" style="font-family: Poppins, system-ui, sans-serif;"></div>
+              </div>
+
+              <div class="flex flex-wrap gap-3 justify-center">
+                <button id="demo-next-btn" class="hidden bg-success text-detective font-bold py-2 px-6 rounded-lg hover:shadow-lg transition-all" type="button" style="font-family: Poppins, system-ui, sans-serif;">NEXT →</button>
+                <button id="demo-skip-btn" class="bg-danger text-white font-bold py-2 px-6 rounded-lg hover:shadow-lg transition-all" type="button" style="font-family: Poppins, system-ui, sans-serif;">SKIP (-100)</button>
+                <button id="demo-reset-btn" class="bg-white/10 border border-white/15 text-white font-semibold py-2 px-6 rounded-lg hover:bg-white/15 transition-all" type="button" style="font-family: Poppins, system-ui, sans-serif;">RESTART</button>
+                <button id="demo-unlock-btn-2" type="button" class="bg-glow text-detective font-bold py-2 px-6 rounded-lg hover:bg-success hover:shadow-lg transition-all" style="font-family: Poppins, system-ui, sans-serif;">UNLOCK (8)</button>
+              </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div id="demo-results" class="hidden text-center">
+              <div class="bg-detective/60 border-2 border-glow rounded-lg p-6 md:p-8 backdrop-blur-sm">
+                <div class="text-4xl mb-4">🎉</div>
+                <h3 class="text-2xl md:text-3xl font-title text-success mb-2" style="font-family: 'Fredoka One', system-ui, sans-serif;">DEMO COMPLETE!</h3>
+                <p class="text-lg text-glow mb-6" style="font-family: Poppins, system-ui, sans-serif;">Final Score: <span id="demo-final" class="font-bold">0</span></p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button id="demo-restart-btn" class="bg-white/10 border border-white/15 text-white font-semibold py-3 px-8 rounded-lg hover:bg-white/15 transition-all" type="button" style="font-family: Poppins, system-ui, sans-serif;">REPLAY DEMO</button>
+                  <button id="demo-unlock-btn-3" class="bg-glow text-detective font-bold py-3 px-8 rounded-lg hover:bg-success hover:shadow-lg transition-all transform hover:scale-105" type="button" style="font-family: Poppins, system-ui, sans-serif;">UNLOCK &amp; PLAY (8)</button>
+                </div>
+              </div>
+            </div>
+
+          </main>
+
+          <div class="max-w-3xl mx-auto mt-6">
+            <p class="text-glow/80 text-sm text-center" style="font-family: Poppins, system-ui, sans-serif;">Education only. Not tax advice. Not representation. For real help, use <a class="underline text-white" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
+          </div>
+
+        </div>
       </div>
     </div>
   </div>
@@ -709,6 +767,7 @@
       answered: false,
       currentQuestion: 0,
       score: 0,
+      streak: 0,
     };
 
     function shuffleArray(arr) {
@@ -731,6 +790,7 @@
         skip: document.getElementById("demo-skip-btn"),
         start: document.getElementById("demo-start"),
         status: document.getElementById("demo-status"),
+        streak: document.getElementById("demo-streak"),
       };
     }
 
@@ -744,9 +804,36 @@
     }
 
     function demoUpdateUI() {
-      const { level, score } = demoEls();
+      const { level, score, streak } = demoEls();
       if (score) score.textContent = String(demoState.score);
       if (level) level.textContent = String(demoState.currentQuestion + 1);
+      if (streak) streak.textContent = String(demoState.streak);
+    }
+
+    function demoFeedbackShow(kind, text) {
+      const { feedback, feedbackText } = demoEls();
+      if (!feedback || !feedbackText) return;
+
+      feedback.classList.remove('hidden');
+      feedback.classList.remove('border-success', 'border-danger', 'border-warning');
+
+      if (kind === 'success') {
+        feedback.classList.add('border-success');
+        feedbackText.textContent = text;
+        feedbackText.className = 'text-success text-lg font-bold';
+        return;
+      }
+
+      if (kind === 'danger') {
+        feedback.classList.add('border-danger');
+        feedbackText.textContent = text;
+        feedbackText.className = 'text-danger text-lg font-bold';
+        return;
+      }
+
+      feedback.classList.add('border-warning');
+      feedbackText.textContent = text;
+      feedbackText.className = 'text-warning text-lg font-bold';
     }
 
     function demoRenderQuestion() {
@@ -757,15 +844,11 @@
       if (cards) cards.innerHTML = "";
 
       const answers = shuffleArray(currentQ.answers);
-      answers.forEach((a, idx) => {
-        const letter = String.fromCharCode(65 + idx);
+      answers.forEach((a) => {
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.className = "w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 transition-all";
-        btn.innerHTML = `
-          <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-700 font-bold mr-3">${letter}</span>
-          <span class="text-gray-700">${a.text}</span>
-        `;
+        btn.className = "bg-detective/60 border-2 border-glow hover:border-success rounded-lg p-4 backdrop-blur-sm card-reveal text-left transition-all hover:shadow-lg transform hover:scale-105 text-white";
+        btn.textContent = a.text;
         btn.addEventListener("click", () => demoSelectAnswer(a, btn));
         cards?.appendChild(btn);
       });
@@ -777,34 +860,29 @@
     }
 
     function demoSelectAnswer(answer, btn) {
-      const { cards, feedback, feedbackText, next } = demoEls();
+      const { cards, next } = demoEls();
       if (demoState.answered) return;
 
       demoState.answered = true;
       const isCorrect = !!answer.correct;
 
       // lock buttons
-      cards?.querySelectorAll('button')?.forEach(b => { b.disabled = true; });
+      cards?.querySelectorAll('button')?.forEach((b) => {
+        b.disabled = true;
+        b.classList.add('opacity-70');
+      });
 
       if (isCorrect) {
         demoState.score += 250;
-        btn.classList.remove('border-gray-200');
-        btn.classList.add('border-green-500', 'bg-green-50');
-        if (feedbackText) {
-          feedbackText.textContent = "Correct (+250)";
-          feedbackText.className = "font-semibold text-green-700";
-        }
-        feedback.classList.remove('hidden');
-        feedback.className = "mt-6 p-4 rounded-xl bg-green-100";
+        demoState.streak += 1;
+
+        btn.classList.add('success-glow', 'border-success', 'bg-success/10');
+        demoFeedbackShow('success', '✅ CORRECT! +250 PTS');
       } else {
-        btn.classList.remove('border-gray-200');
-        btn.classList.add('border-red-500', 'bg-red-50');
-        if (feedbackText) {
-          feedbackText.textContent = "Not quite";
-          feedbackText.className = "font-semibold text-amber-700";
-        }
-        feedback.classList.remove('hidden');
-        feedback.className = "mt-6 p-4 rounded-xl bg-amber-100";
+        demoState.streak = 0;
+
+        btn.classList.add('glitch', 'border-danger', 'bg-danger/10');
+        demoFeedbackShow('danger', '❌ INCORRECT!');
       }
 
       demoUpdateUI();
@@ -825,19 +903,14 @@
     }
 
     function demoSkip() {
-      const { feedback, feedbackText, next } = demoEls();
+      const { next } = demoEls();
       if (demoState.answered) return;
 
       demoState.answered = true;
       demoState.score = Math.max(0, demoState.score - 100);
+      demoState.streak = 0;
 
-      if (feedbackText) {
-        feedbackText.textContent = "Skipped (-100)";
-        feedbackText.className = "font-semibold text-amber-700";
-      }
-      feedback.classList.remove('hidden');
-      feedback.className = "mt-6 p-4 rounded-xl bg-amber-100";
-
+      demoFeedbackShow('warning', '⏭️ SKIPPED -100 PTS');
       demoUpdateUI();
 
       window.setTimeout(() => {
@@ -853,13 +926,13 @@
     }
 
     function demoStart() {
-      demoState = { answered: false, currentQuestion: 0, score: 0 };
+      demoState = { answered: false, currentQuestion: 0, score: 0, streak: 0 };
       demoShow("game");
       demoRenderQuestion();
     }
 
     function demoReset() {
-      demoState = { answered: false, currentQuestion: 0, score: 0 };
+      demoState = { answered: false, currentQuestion: 0, score: 0, streak: 0 };
       demoShow("start");
       demoUpdateUI();
     }
@@ -1003,6 +1076,45 @@
         hideDemoModal();
         unlockAndPlay();
       });
+      document.getElementById('demo-unlock-btn-3')?.addEventListener('click', () => {
+        hideDemoModal();
+        unlockAndPlay();
+      });
+    }
+
+    // -----------------------------
+    // Self-tests (opt-in)
+    // -----------------------------
+
+    function runSelfTests() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('test') !== '1') return;
+
+      const errors = [];
+
+      function assert(name, condition) {
+        if (condition) return;
+        errors.push(name);
+      }
+
+      try {
+        demoReset();
+        assert('demoReset sets level to 1', document.getElementById('demo-level')?.textContent === '1');
+        assert('demoReset sets score to 0', document.getElementById('demo-score')?.textContent === '0');
+        assert('demoReset sets streak to 0', document.getElementById('demo-streak')?.textContent === '0');
+
+        demoStart();
+        assert('demoStart shows game screen', !document.getElementById('demo-game')?.classList.contains('hidden'));
+
+        // simulate skip to ensure no throw and score updates
+        demoSkip();
+        assert('demoSkip clamps score >= 0', Number(document.getElementById('demo-score')?.textContent) >= 0);
+      } catch (e) {
+        errors.push('exception: ' + (e && e.message ? e.message : String(e)));
+      }
+
+      // eslint-disable-next-line no-console
+      console.log(errors.length ? ['Self-tests FAILED:', ...errors] : ['Self-tests PASSED']);
     }
 
     // -----------------------------
@@ -1018,6 +1130,7 @@
       document.getElementById("heroTryDemo")?.addEventListener("click", showDemoModal);
 
       wireDemoModal();
+      runSelfTests();
     });
   </script>
 </body>
