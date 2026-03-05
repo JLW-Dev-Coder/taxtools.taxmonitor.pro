@@ -1,4 +1,3 @@
-<!-- contact.html -->
 <!doctype html>
 <html lang="en" class="h-full">
   <head>
@@ -13,7 +12,8 @@
 
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <script src="/_sdk/element_sdk.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
@@ -296,7 +296,8 @@
               <div class="text-3xl font-bold text-navy font-mono mb-3" id="support-id"></div>
               <p class="text-sm text-emerald-900/80">We’ve emailed confirmation. Keep this ID for status checks.</p>
             </div>
-          </form></div>
+          </form>
+        </div>
       </section>
 
       <!-- CTA -->
@@ -317,6 +318,7 @@
           <p class="text-white/60 text-sm mt-8">Secure payment • Instant download • Bundle savings</p>
         </div>
       </section>
+
       <div class="mt-auto">
         <!-- PARTIAL:footer -->
       </div>
@@ -332,9 +334,9 @@
           window.location.href = '/index.html';
         }
 
+        // Support endpoints are PUBLIC. A 401 is likely a config bug (CORS, route) and should not bounce users.
         function handleAuth(res) {
           if (res && res.status === 401) {
-            redirectToEntry();
             return true;
           }
           return false;
@@ -424,6 +426,25 @@
           const tokenParam = getParam('tokenId') || '';
           const tokenInput = document.getElementById('tokenId');
           if (tokenInput && tokenParam) tokenInput.value = tokenParam;
+
+          // Optional: prefill lookup from URL (?ticket_id= or ?supportId=)
+          const pref = getParam('ticket_id') || getParam('supportId') || getParam('support_id') || '';
+          const lookup = document.getElementById('support-id-lookup');
+          if (lookup && pref) lookup.value = pref;
+        }
+
+        function pickSupportId(obj) {
+          if (!obj || typeof obj !== 'object') return '';
+          const raw = obj.supportId || obj.support_id || obj.ticket_id || obj.ticketId || '';
+          return raw ? String(raw).trim() : '';
+        }
+
+        function formatIso(ts) {
+          if (!ts) return '';
+          const s = String(ts);
+          const d = new Date(s);
+          if (isNaN(d.getTime())) return s;
+          return d.toLocaleString();
         }
 
         async function lookupSupportId() {
@@ -442,10 +463,15 @@
           try {
             const res = await fetch(SUPPORT_STATUS_GET + encodeURIComponent(supportId), {
               method: 'GET',
-              credentials: 'include'
+              credentials: 'omit'
             });
 
-            if (handleAuth(res)) return;
+            if (handleAuth(res)) {
+              setLookupStatus('status-error', 'Support status is temporarily unavailable (401).');
+              enable(btn);
+              return;
+            }
+
             let json = null;
             try { json = await res.json(); } catch (_) { json = null; }
 
@@ -463,7 +489,7 @@
             const parts = [];
             if (latestUpdate) parts.push(latestUpdate);
             if (status) parts.push('Status: ' + status);
-            if (updatedAt) parts.push('Updated: ' + updatedAt);
+            if (updatedAt) parts.push('Updated: ' + formatIso(updatedAt));
 
             setLookupStatus('status-success', parts.length ? parts.join(' • ') : 'Your ticket is in progress. Please check back later.');
             enable(btn);
@@ -544,12 +570,16 @@
             try {
               const res = await fetch(SUPPORT_POST, {
                 method: 'POST',
-                credentials: 'include',
+                credentials: 'omit',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
               });
 
-              if (handleAuth(res)) return;
+              if (handleAuth(res)) {
+                setStatus('status-error', 'Support submission is temporarily unavailable (401).');
+                enable(btn);
+                return;
+              }
 
               let json = null;
               try { json = await res.json(); } catch (_) { json = null; }
@@ -561,7 +591,7 @@
                 return;
               }
 
-              const supportId = json && (json.supportId || json.support_id) ? String(json.supportId || json.support_id) : '';
+              const supportId = pickSupportId(json);
 
               if (supportId) {
                 const sid = document.getElementById('support-id');
@@ -570,10 +600,23 @@
                 if (sid) sid.textContent = supportId;
                 if (display) display.classList.remove('hidden');
                 if (statusEl) statusEl.classList.add('hidden');
+
+                // Auto-fill lookup and update URL for easy sharing
+                const lookup = document.getElementById('support-id-lookup');
+                if (lookup) lookup.value = supportId;
+                try {
+                  const u = new URL(window.location.href);
+                  u.searchParams.set('ticket_id', supportId);
+                  history.replaceState(null, '', u.toString());
+                } catch (_) {}
+
+                // Fire an immediate status check so the user sees it working
+                lookupSupportId();
               } else {
                 setStatus('status-success', 'Ticket submitted. Check your email for your Support ID.');
               }
 
+              form.reset();
               form.style.display = 'none';
               enable(btn);
 
@@ -591,6 +634,10 @@
           initAnchorNav();
           initFormHandler();
           initLookupHandler();
+
+          // If URL includes a ticket id, auto-check
+          const pref = getParam('ticket_id') || getParam('supportId') || getParam('support_id') || '';
+          if (pref) lookupSupportId();
         }
 
         if (document.readyState === 'loading') {
@@ -602,4 +649,3 @@
     </script>
   </body>
 </html>
-
