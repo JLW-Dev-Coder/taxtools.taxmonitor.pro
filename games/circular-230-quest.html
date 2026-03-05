@@ -75,10 +75,6 @@
       transform: translateY(-8px) scale(1.02);
     }
 
-    .progress-ring {
-      transition: stroke-dashoffset 0.5s ease-in-out;
-    }
-
     .quiz-option {
       transition: all 0.2s ease;
     }
@@ -221,14 +217,8 @@
           <h2 class="font-display text-2xl text-white mb-4 text-center">📊 Your Progress</h2>
           <div class="flex flex-wrap justify-center items-center gap-8">
             <div class="text-center">
-              <div class="relative w-32 h-32 grid place-items-center">
-                <svg class="absolute inset-0 w-32 h-32 transform -rotate-90">
-                  <circle cx="64" cy="64" r="56" stroke="rgba(255,255,255,0.2)" stroke-width="8" fill="none" />
-                  <circle id="progress-circle" class="progress-ring" cx="64" cy="64" r="56" stroke="#10b981" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="352" />
-                </svg>
-                <span id="progress-percent" class="text-2xl font-bold text-white translate-y-[1px]">0%</span>
-              </div>
-              <p class="text-indigo-200 mt-2">Overall Mastery</p>
+              <div class="text-4xl font-bold text-indigo-300" id="progress-percent">0%</div>
+              <p class="text-indigo-200">Overall Mastery</p>
             </div>
             <div class="text-center">
               <div class="text-4xl font-bold text-yellow-400" id="total-points">0</div>
@@ -1021,14 +1011,7 @@
       const completedZones = appState.progress.filter(p => p.completed).length;
       const totalZones = gameData.zones.length;
       const percentage = Math.round((completedZones / totalZones) * 100);
-
-      const progressCircle = document.getElementById('progress-circle');
-      if (progressCircle) {
-        const offset = 352 - (352 * percentage / 100);
-        progressCircle.style.strokeDashoffset = offset;
-      }
-
-      const percentText = document.getElementById('progress-percent');
+const percentText = document.getElementById('progress-percent');
       if (percentText) {
         percentText.textContent = `${percentage}%`;
       }
