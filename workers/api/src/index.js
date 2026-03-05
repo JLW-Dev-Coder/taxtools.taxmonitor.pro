@@ -799,10 +799,20 @@ async function handleAuthStart(request, env) {
     httpMetadata: { contentType: "application/json" },
   });
 
-  const baseUrl = String(env.TAXTOOLS_AUTH_BASE_URL || "https://tools-api.taxmonitor.pro").replace(/\/+$/g, "");
+  const baseUrl = String(env.TAXTOOLS_AUTH_BASE_URL || "https://tools-api.taxmonitor.pro").replace(/\/+$\/g, "");
   const link = `${baseUrl}/v1/auth/complete?token=${encodeURIComponent(token)}`;
 
-  await gmailSendMagicLink(env, { link, to: email });
+  try {
+    await gmailSendMagicLink(env, { link, to: email });
+  } catch (err) {
+    await env.R2_TAXTOOLS.delete(keyLoginToken(token));
+    return json(
+      request,
+      env,
+      { error: "email_send_failed", message: String(err?.message || err || "Email send failed") },
+      500
+    );
+  }
 
   return json(request, env, { ok: true }, 200);
 }
@@ -1397,32 +1407,40 @@ async function handlePayPalWebhook(request, env) {
 
 export default {
   async fetch(request, env) {
-    const url = new URL(request.url);
+    try {
+      const url = new URL(request.url);
 
-    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: withCors(request, env) });
-    if (!env.R2_TAXTOOLS) return json(request, env, { error: "server_misconfigured", message: "Missing R2_TAXTOOLS binding" }, 500);
-    if (!env.DB) return json(request, env, { error: "server_misconfigured", message: "Missing D1 binding DB" }, 500);
+      if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: withCors(request, env) });
+      if (!env.R2_TAXTOOLS) return json(request, env, { error: "server_misconfigured", message: "Missing R2_TAXTOOLS binding" }, 500);
+      if (!env.DB) return json(request, env, { error: "server_misconfigured", message: "Missing D1 binding DB" }, 500);
 
-    const path = url.pathname === "/v1/arcade/tokens" ? "/v1/tokens/balance" : url.pathname;
+      const path = url.pathname === "/v1/arcade/tokens" ? "/v1/tokens/balance" : url.pathname;
 
-    if (path === "/dev/login") return handleDevLogin(request, env);
-    if (path === "/dev/mint") return handleDevMint(request, env);
+      if (path === "/dev/login") return handleDevLogin(request, env);
+      if (path === "/dev/mint") return handleDevMint(request, env);
 
-    if (path === "/health") return handleHealth(request, env);
-    if (path === "/v1/auth/complete") return handleAuthComplete(request, env);
-    if (path === "/v1/auth/me") return handleAuthMe(request, env);
-    if (path === "/v1/auth/logout") return handleAuthLogout(request, env);
-    if (path === "/v1/auth/start") return handleAuthStart(request, env);
-    if (path === "/v1/checkout/sessions") return handleCheckoutSessions(request, env);
-    if (path === "/v1/checkout/status") return handleCheckoutStatus(request, env);
-    if (path === "/v1/games/access") return handleGamesAccess(request, env);
-    if (path === "/v1/help/status") return handleHelpStatus(request, env);
-    if (path === "/v1/help/tickets") return handleHelpTickets(request, env);
-    if (path === "/v1/tokens/balance") return handleTokensBalance(request, env);
-    if (path === "/v1/tokens/spend") return handleTokensSpend(request, env);
-    if (path === "/v1/webhooks/paypal") return handlePayPalWebhook(request, env);
+      if (path === "/health") return handleHealth(request, env);
+      if (path === "/v1/auth/complete") return handleAuthComplete(request, env);
+      if (path === "/v1/auth/me") return handleAuthMe(request, env);
+      if (path === "/v1/auth/logout") return handleAuthLogout(request, env);
+      if (path === "/v1/auth/start") return handleAuthStart(request, env);
+      if (path === "/v1/checkout/sessions") return handleCheckoutSessions(request, env);
+      if (path === "/v1/checkout/status") return handleCheckoutStatus(request, env);
+      if (path === "/v1/games/access") return handleGamesAccess(request, env);
+      if (path === "/v1/help/status") return handleHelpStatus(request, env);
+      if (path === "/v1/help/tickets") return handleHelpTickets(request, env);
+      if (path === "/v1/tokens/balance") return handleTokensBalance(request, env);
+      if (path === "/v1/tokens/spend") return handleTokensSpend(request, env);
+      if (path === "/v1/webhooks/paypal") return handlePayPalWebhook(request, env);
 
-    return notFound(request, env);
+      return notFound(request, env);
+    } catch (err) {
+      return json(
+        request,
+        env,
+        { error: "internal_error", message: String(err?.message || err || "Unknown error") },
+        500
+      );
+    }
   },
-
 };
