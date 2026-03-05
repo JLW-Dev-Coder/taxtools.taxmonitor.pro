@@ -270,8 +270,8 @@
                 <p class="text-white/90 text-xs">per play</p>
               </div>
               <div class="absolute -bottom-3 -left-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(29,78,216,0.95)">
-                <p class="text-white text-sm font-bold">60 min</p>
-                <p class="text-white/90 text-xs">grant window</p>
+                <p class="text-white text-sm font-bold">Run to</p>
+                <p class="text-white/90 text-xs">completion</p>
               </div>
             </div>
           </div>
@@ -410,7 +410,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span class="text-navy">Token-gated unlock (no double-charging during grant)</span>
+                <span class="text-navy">Token-gated unlock (no double-charging during an active session)</span>
               </li>
               <li class="flex items-center gap-3 justify-center lg:justify-start">
                 <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
@@ -508,7 +508,7 @@
               <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
             <div class="faq-content hidden px-6 pb-6">
-              <p class="text-muted">When you confirm, the Worker verifies your balance and creates a time-limited play grant for this game so reloading doesn’t charge you twice during the grant window.</p>
+              <p class="text-muted">When you confirm, the Worker verifies your balance and creates an active play session for this game so reloading doesn’t charge you twice while the session is active.</p>
             </div>
           </div>
 
@@ -584,7 +584,7 @@
         </div>
         <div class="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm rounded-full px-6 py-3">
           <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-          <span class="text-sm font-medium">Tokens are non-expiring. Grants prevent double-spend during active play.</span>
+          <span class="text-sm font-medium">Tokens are non-expiring. Sessions prevent double-spend during active play.</span>
         </div>
       </div>
     </section>
@@ -610,7 +610,7 @@
 
       <div class="flex-1 overflow-auto p-6">
         <div class="bg-green-50 border border-green-200 rounded-2xl p-4">
-          <p class="text-green-900 text-sm"><strong>Grant behavior:</strong> This spend creates a time-limited play grant so reloads don’t charge you again during the grant window.</p>
+          <p class="text-green-900 text-sm"><strong>Session behavior:</strong> This spend creates an active play session that stays valid until you complete or lose, so reloads don’t charge you again while the session is active.</p>
         </div>
 
         <div class="mt-5 grid md:grid-cols-2 gap-4">
