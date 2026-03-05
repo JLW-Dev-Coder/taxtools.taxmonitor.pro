@@ -318,6 +318,7 @@
         </div>
       </div>
     </section>
+
     <!-- NOTE: Do NOT hard-code Stripe Checkout URLs (checkout.stripe.com/c/pay/...). Those are single-use/short-lived.
          Always create a fresh Checkout Session via the Worker (POST /v1/checkout/sessions) and redirect to the returned checkoutUrl. -->
     <section id="token-packs" class="py-16 md:py-20 bg-white border-t border-gray-100">
@@ -493,6 +494,9 @@
     // API (v1)
     const TOOLS_API_BASE = 'https://tools-api.taxmonitor.pro';
 
+    // Checkout return helper key (session storage)
+    const TM_LAST_CHECKOUT_SESSION_ID_KEY = 'tm_last_checkout_session_id';
+
     // Alphabetical endpoints list
     const TOOLS_API_ENDPOINTS = {
       authLogout: `${TOOLS_API_BASE}/v1/auth/logout`,
@@ -565,6 +569,13 @@
         }
 
         if (data?.checkoutUrl) {
+          if (data?.sessionId) {
+            try {
+              sessionStorage.setItem(TM_LAST_CHECKOUT_SESSION_ID_KEY, String(data.sessionId));
+            } catch {
+              // Non-fatal. If storage fails, user can still manually verify status.
+            }
+          }
           location.href = data.checkoutUrl;
           return;
         }
@@ -592,7 +603,7 @@
         const meRes = await fetch(TOOLS_API_ENDPOINTS.authMe, { credentials: 'include' });
         const meData = await meRes.json().catch(() => ({}));
 
-        isSignedIn = !!meData?.accountId;
+        isSignedIn = !!meData?.isAuthenticated;
         userEmail = meData?.email || null;
 
         // Header partial can optionally show email in #user-email.
@@ -639,8 +650,23 @@
     (async () => {
       const url = new URL(location.href);
 
-      // FIX: PayPal returns token=ORDERID, Worker accepts it as alias to session_id.
-      const sessionId = url.searchParams.get('session_id') || url.searchParams.get('token');
+      const paypalStatus = url.searchParams.get('paypal');
+
+      // FIX: PayPal sometimes returns only PayerID (no token). We store sessionId before redirecting.
+      const storedSessionId = (() => {
+        try {
+          return sessionStorage.getItem(TM_LAST_CHECKOUT_SESSION_ID_KEY) || '';
+        } catch {
+          return '';
+        }
+      })();
+
+      // PayPal returns token=ORDERID, Worker accepts it as alias to session_id.
+      // Also allow storedSessionId when paypal=success but token is missing.
+      const sessionId =
+        url.searchParams.get('session_id') ||
+        url.searchParams.get('token') ||
+        (paypalStatus === 'success' ? storedSessionId : '');
 
       // If we just returned from checkout, confirm status then refresh balance.
       if (sessionId) {
@@ -654,9 +680,16 @@
         }
 
         // Clean the URL so refreshes don’t keep re-checking.
+        url.searchParams.delete('paypal');
         url.searchParams.delete('session_id');
         url.searchParams.delete('token');
         history.replaceState({}, document.title, url.toString());
+
+        try {
+          sessionStorage.removeItem(TM_LAST_CHECKOUT_SESSION_ID_KEY);
+        } catch {
+          // Non-fatal.
+        }
       }
 
       await refreshAuthAndBalance();
