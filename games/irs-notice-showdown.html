@@ -78,13 +78,7 @@
       50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.5); }
     }
 
-    @keyframes vegas-lights {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    @keyframes confetti-fall {
+        @keyframes confetti-fall {
       0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100%) rotate(720deg); opacity: 0; }
     }
@@ -107,9 +101,7 @@
     }
 
     .vegas-border {
-      background: linear-gradient(90deg, #ffd700, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffd700);
-      background-size: 400% 400%;
-      animation: vegas-lights 3s ease infinite;
+      background: radial-gradient(ellipse at center, #1a5f2a 0%, #0d3d16 70%, #082810 100%);
     }
 
     .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
@@ -159,7 +151,7 @@
 
     <!-- Vegas Lights Border -->
     <div class="vegas-border p-1 min-h-full">
-      <div class="felt-texture min-h-full p-4 md:p-8">
+      <div class="min-h-full p-4 md:p-8">
 
         <!-- INTRO SCREEN -->
         <div id="intro-screen" class="flex flex-col items-center justify-center min-h-full text-center px-4">
@@ -765,7 +757,7 @@ function applyConfig() {
   document.getElementById('game-title').textContent = config.game_title || defaultConfig.game_title;
   document.getElementById('win-title').textContent = config.win_message || defaultConfig.win_message;
 
-  document.querySelectorAll('.felt-texture').forEach(el => {
+  document.querySelectorAll('.vegas-border').forEach(el => {
     el.style.background = `radial-gradient(ellipse at center, ${config.background_color} 0%, ${adjustBrightness(config.background_color, -30)} 70%, ${adjustBrightness(config.background_color, -50)} 100%)`;
   });
 }
