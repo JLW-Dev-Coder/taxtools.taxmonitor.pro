@@ -263,6 +263,10 @@ function keyReceiptUnmapped(orderId) {
   return `receipts/paypal/${orderId}/unmapped.json`;
 }
 
+function keySupportTicket(ticketId) {
+  return `support/tickets/${ticketId}.json`;
+}
+
 async function r2Exists(env, key) {
   const obj = await env.R2_TAXTOOLS.head(key);
   return !!obj;
@@ -454,6 +458,38 @@ If you didn’t request this, ignore this email.
     const body = await res.text().catch(() => "");
     throw new Error(`Gmail send failed: ${body || res.status}`);
   }
+}
+
+/* ------------------------------------------
+ * ClickUp (Support task projection)
+ * ------------------------------------------ */
+
+async function clickupCreateSupportTask(env, { description, subject }) {
+  const token = String(env.CLICKUP_API_TOKEN || "").trim();
+  const listId = String(env.CLICKUP_SUPPORT_LIST_ID || "").trim();
+
+  // Not configured? Cool. Ticket still exists in R2.
+  if (!token || !listId) return null;
+
+  const res = await fetch(`https://api.clickup.com/api/v2/list/${encodeURIComponent(listId)}/task`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: subject || "Support ticket",
+      description: description || "",
+    }),
+  });
+
+  const data = await res.json().catch(() => null);
+  if (!res.ok) return null;
+
+  const taskId = data?.id ? String(data.id) : null;
+  const url = data?.url ? String(data.url) : null;
+
+  return taskId ? { taskId, url } : null;
 }
 
 /* ------------------------------------------
@@ -953,16 +989,180 @@ async function handleHelpStatus(request, env) {
   if (request.method !== "GET") return methodNotAllowed(request, env);
 
   const url = new URL(request.url);
-  const ticketId = (url.searchParams.get("ticket_id") || url.searchParams.get("supportId") || "").trim();
+  const ticketId = (url.searchParams.get("ticket_id") || url.searchParams.get("supportId") || url.searchParams.get("support_id") || "").trim();
   if (!ticketId) return badRequest(request, env, "ticket_id is required");
 
-  const ticket = state.helpTickets.get(ticketId);
-  if (!ticket) return json(request, env, { latestUpdate: null, status: "unknown", ticket_id: ticketId }, 200);
+  const obj = await env.R2_TAXTOOLS.get(keySupportTicket(ticketId));
+  if (!obj) {
+    return json(request, env, {
+      latestUpdate: null,
+      latest_update: null,
+      status: "unknown",
+      ticket_id: ticketId,
+      updatedAt: null,
+      updated_at: null,
+    });
+  }
 
-  return json(request, env, { latestUpdate: ticket.latestUpdate, status: ticket.status, ticket_id: ticketId }, 200);
+  const ticket = await obj.json().catch(() => null);
+  if (!ticket || typeof ticket !== "object") {
+    return json(request, env, {
+      latestUpdate: null,
+      latest_update: null,
+      status: "unknown",
+      ticket_id: ticketId,
+      updatedAt: null,
+      updated_at: null,
+    });
+  }
+
+  const latestUpdate = ticket.latestUpdate || ticket.updatedAt || ticket.createdAt || null;
+  const updatedAt = ticket.updatedAt || ticket.createdAt || null;
+
+  return json(request, env, {
+    clickupTaskId: ticket.clickupTaskId || null,
+    clickupUrl: ticket.clickupUrl || null,
+    latestUpdate,
+    latest_update: latestUpdate,
+    status: ticket.status || "open",
+    ticket_id: ticketId,
+    updatedAt,
+    updated_at: updatedAt,
+  });
 }
 
 async function handleHelpTickets(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
+
+  // Required (page supplies these)
+  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const subject = typeof body.subject === "string" ? body.subject.trim() : "";
+  const message = typeof body.message === "string" ? body.message.trim() : "";
+
+  if (!email) return badRequest(request, env, "email is required");
+  if (!subject) return badRequest(request, env, "subject is required");
+  if (!message) return badRequest(request, env, "message is required");
+  if (!isValidEmail(email)) return badRequest(request, env, "Invalid email");
+
+  // Optional fields from your page payload
+  const category = typeof body.category === "string" ? body.category.trim() : "";
+  const eventId = typeof body.eventId === "string" ? body.eventId.trim() : "";
+  const issueType = typeof body.issueType === "string" ? body.issueType.trim() : "";
+  const name = typeof body.name === "string" ? body.name.trim() : "";
+  const priority = typeof body.priority === "string" ? body.priority.trim() : "";
+  const urgency = typeof body.urgency === "string" ? body.urgency.trim() : "";
+  const tokenId = typeof body.tokenId === "string" ? body.tokenId.trim() : "";
+  const relatedOrderId = typeof body.relatedOrderId === "string" ? body.relatedOrderId.trim() : "";
+
+  // UTM fields (optional)
+  const utm_campaign = typeof body.utm_campaign === "string" ? body.utm_campaign.trim() : "";
+  const utm_content = typeof body.utm_content === "string" ? body.utm_content.trim() : "";
+  const utm_medium = typeof body.utm_medium === "string" ? body.utm_medium.trim() : "";
+  const utm_source = typeof body.utm_source === "string" ? body.utm_source.trim() : "";
+  const utm_term = typeof body.utm_term === "string" ? body.utm_term.trim() : "";
+
+  const supportId = `sup_${crypto.randomUUID()}`;
+  const createdAt = nowIso();
+  const updatedAt = createdAt;
+
+  const ticket = {
+    // Canonical ids
+    supportId,
+    ticket_id: supportId,
+
+    // Core
+    email,
+    subject,
+    message,
+    status: "open",
+
+    // Audit timestamps
+    createdAt,
+    updatedAt,
+    latestUpdate: createdAt,
+
+    // Optional metadata from form
+    category,
+    eventId,
+    issueType,
+    name,
+    priority,
+    urgency,
+    tokenId,
+    relatedOrderId,
+
+    // Optional marketing
+    utm_campaign,
+    utm_content,
+    utm_medium,
+    utm_source,
+    utm_term,
+
+    // ClickUp projection
+    clickupTaskId: null,
+    clickupUrl: null,
+  };
+
+  // 1) Persist source-of-truth to R2
+  await env.R2_TAXTOOLS.put(keySupportTicket(supportId), JSON.stringify(ticket), {
+    httpMetadata: { contentType: "application/json" },
+  });
+
+  // 2) Best-effort ClickUp projection (do NOT fail the ticket if ClickUp fails)
+  try {
+    const descriptionLines = [
+      `Support ID: ${supportId}`,
+      `From: ${email}`,
+      `Name: ${name || "(not provided)"}`,
+      `Created: ${createdAt}`,
+      ``,
+      `Category: ${category || "(none)"}`,
+      `Issue Type: ${issueType || "(none)"}`,
+      `Priority: ${priority || "(none)"}`,
+      `Urgency: ${urgency || "(none)"}`,
+      `Event ID: ${eventId || "(none)"}`,
+      `Token ID: ${tokenId || "(none)"}`,
+      `Related Order ID: ${relatedOrderId || "(none)"}`,
+      ``,
+      `UTM Source: ${utm_source || "(none)"}`,
+      `UTM Medium: ${utm_medium || "(none)"}`,
+      `UTM Campaign: ${utm_campaign || "(none)"}`,
+      `UTM Term: ${utm_term || "(none)"}`,
+      `UTM Content: ${utm_content || "(none)"}`,
+      ``,
+      `Subject: ${subject}`,
+      ``,
+      message,
+    ];
+
+    const created = await clickupCreateSupportTask(env, {
+      subject,
+      description: descriptionLines.join("
+"),
+    });
+
+    if (created?.taskId) {
+      ticket.clickupTaskId = created.taskId;
+      ticket.clickupUrl = created.url;
+      ticket.updatedAt = nowIso();
+      ticket.latestUpdate = `Created ClickUp task ${created.taskId}`;
+
+      await env.R2_TAXTOOLS.put(keySupportTicket(supportId), JSON.stringify(ticket), {
+        httpMetadata: { contentType: "application/json" },
+      });
+    }
+  } catch (_) {
+    // swallow on purpose
+  }
+
+  // Page expects supportId/support_id. Give it all three to be safe.
+  return json(request, env, { supportId, support_id: supportId, ticket_id: supportId }, 201);
+}
+
+async function handleTokensBalance(request, env) {
   if (request.method !== "POST") return methodNotAllowed(request, env);
 
   const body = await parseJson(request);
@@ -1249,4 +1449,3 @@ export default {
   },
 
 };
-
