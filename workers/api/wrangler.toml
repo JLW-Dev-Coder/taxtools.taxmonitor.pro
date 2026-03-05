@@ -16,8 +16,10 @@ binding = "R2_TAXTOOLS"
 bucket_name = "taxtools-taxmonitor-pro"
 
 [observability]
+enabled = true
+
 [observability.logs]
-enabled = false
+enabled = true
 invocation_logs = true
 
 [vars]
@@ -46,11 +48,6 @@ MY_ORGANIZATION_ZIP = "92020"
 
 # PayPal IDs
 PAYPAL_CLIENT_ID = "AV2m6CB9YJrSFXZl8SLkdMqHNkoQfRwbTIQNUTlXfIjnPMOfdik_2kPqGWbYsMsOAISA3rkoveVgncPU"
-PAYPAL_WEBHOOK_ID = "6G067419132359413"
 PAYPAL_ENV = "sandbox"
 PAYPAL_WEBHOOKS_ENABLED = "true"
-
-
-
-
-
+PAYPAL_WEBHOOK_ID = "6G067419132359413"
