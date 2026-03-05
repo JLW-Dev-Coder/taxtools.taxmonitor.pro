@@ -100,6 +100,24 @@
       .status-error { border-color: rgba(239, 68, 68, 0.25); background: rgba(239, 68, 68, 0.06); color: rgb(153, 27, 27); }
       .status-info { border-color: rgba(29, 78, 216, 0.20); background: rgba(29, 78, 216, 0.06); color: rgb(30, 58, 138); }
       .status-success { border-color: rgba(16, 185, 129, 0.25); background: rgba(16, 185, 129, 0.08); color: rgb(6, 95, 70); }
+
+      /* Dark-hero readability: lookup status sits on a dark background */
+      .hero-grid .status {
+        border-color: rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.10);
+        color: rgba(255, 255, 255, 0.92);
+      }
+
+      .hero-grid .status-error {
+        border-color: rgba(239, 68, 68, 0.55);
+        background: rgba(239, 68, 68, 0.22);
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      .hero-grid .status-error a {
+        color: rgba(255, 255, 255, 0.95);
+        text-decoration: underline;
+      }
     </style>
 
     <script>
@@ -137,7 +155,7 @@
               </p>
 
               <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <a href="#support-form" class="bg-warm hover:bg-orange-500 text-white font-bold px-8 py-4 rounded-xl transition-all shadow-lg hover:shadow-xl" data-scroll>
+                <a href="#support-form" class="bg-action hover:bg-blue-700 text-white font-bold px-8 py-4 rounded-xl transition-all shadow-lg hover:shadow-xl" data-scroll>
                   Create a ticket
                 </a>
                 <a href="/help-center.html" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-xl border border-white/20 transition-all">
@@ -145,7 +163,7 @@
                 </a>
               </div>
 
-              <p class="mt-6 text-white/70 text-sm">No passwords. No SSNs. No payment card details. Humans, please.</p>
+              <p class="mt-6 text-white/70 text-sm">No passwords. No SSNs. No payment card details.</p>
             </div>
 
             <div class="animate-slide-up">
@@ -312,7 +330,7 @@
           <h2 class="text-3xl md:text-5xl font-bold mb-6">Prefer self-serve over back-and-forth?</h2>
           <p class="text-lg md:text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Most questions get answered faster with a quick tool or guide. If you still need a human, we’ve got you.</p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/index.html#tools" class="bg-warm hover:bg-orange-500 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all shadow-lg hover:shadow-xl">Browse Tools</a>
+            <a href="/index.html#tools" class="bg-action hover:bg-blue-700 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all shadow-lg hover:shadow-xl">Browse Tools</a>
             <a href="https://taxmonitor.pro" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl text-lg border border-white/20 transition-all">Need personal help?</a>
           </div>
           <p class="text-white/60 text-sm mt-8">Secure payment • Instant download • Bundle savings</p>
@@ -502,8 +520,8 @@
         function initLookupHandler() {
           const input = document.getElementById('support-id-lookup');
           const btn = document.getElementById('support-id-lookup-btn');
-          if (btn) btn.addEventListener('click', lookupSupportId);
 
+          if (btn) btn.addEventListener('click', lookupSupportId);
           if (input) {
             input.addEventListener('keydown', function (e) {
               if (e.key === 'Enter') {
