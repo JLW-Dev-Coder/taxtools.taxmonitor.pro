@@ -1269,16 +1269,101 @@
       document.getElementById("btnCancelSpend")?.addEventListener("click", hideConfirmModal);
     }
 
+    function setUnlockMode(mode) {
+      const btns = [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean);
+      const labels = {
+        locked: `Unlock & Play (${tokenCost} tokens)`,
+        resume: "Resume Play",
+      };
+
+      btns.forEach((b) => {
+        b.textContent = labels[mode] || labels.locked;
+        b.dataset.mode = mode;
+      });
+    }
+
+    async function refreshGrantStatus() {
+      // Key rule: never auto-spend on load/back. Only check access.
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok) {
+        setUnlockMode('locked');
+        setStatus("");
+        return { allowed: false };
+      }
+
+      const access = await apiGet(`/v1/games/access?slug=${encodeURIComponent(gameSlug)}`);
+      const allowed = !!(access.res.ok && access.json && access.json.allowed);
+
+      if (allowed) {
+        setUnlockMode('resume');
+        setStatus("Active session detected. You can resume without spending tokens.");
+        return { allowed: true };
+      }
+
+      setUnlockMode('locked');
+      setStatus("");
+      return { allowed: false };
+    }
+
+    function resumePlay() {
+      // No spend. Just go.
+      window.location.href = "/games/" + gameFile;
+    }
+
+    function wireUnlockButtons() {
+      const btn1 = document.getElementById("btnUnlock");
+      const btn2 = document.getElementById("btnUnlock2");
+
+      [btn1, btn2].filter(Boolean).forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+
+          // Always re-check right before action (covers back-button + BFCache).
+          const st = await refreshGrantStatus();
+          if (st.allowed) {
+            resumePlay();
+            return;
+          }
+
+          preflightUnlock();
+        });
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       // README: on return from Stripe Checkout with ?session_id=..., confirm then refresh balance
       handleCheckoutReturn();
-      document.getElementById("btnUnlock")?.addEventListener("click", preflightUnlock);
-      document.getElementById("btnUnlock2")?.addEventListener("click", preflightUnlock);
+
+      // Back-button safety: refresh access state on load.
+      refreshGrantStatus();
+
+      // Wire buttons through the "resume if allowed" gate.
+      wireUnlockButtons();
 
       document.getElementById("btnDemo")?.addEventListener("click", (e) => {
         e.preventDefault();
         scrollToPreview();
       });
+
+      document.getElementById("previewTryDemo")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        showDemoModal();
+      });
+
+      wireConfirmModal();
+      wireDemoModal();
+
+      document.getElementById('heroTryDemo')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        scrollToPreview();
+      });
+    });
+
+    // Critical: when navigating back from the game, browsers may restore this page from BFCache
+    // without re-running DOMContentLoaded. pageshow catches that.
+    window.addEventListener('pageshow', () => {
+      refreshGrantStatus();
+    });
 
       document.getElementById("previewTryDemo")?.addEventListener("click", (e) => {
         e.preventDefault();
