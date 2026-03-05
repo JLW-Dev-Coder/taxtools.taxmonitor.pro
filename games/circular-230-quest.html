@@ -129,12 +129,261 @@
 <body class="h-full font-body">
   <!-- PARTIAL:header -->
 
-  <!-- Status line required by Canonical UX safety -->
-  <div class="mx-auto max-w-6xl px-6 pt-4">
-    <div id="status" class="text-sm text-white/70"></div>
+  <!-- partials/topbar.html (inlined for game mode) -->
+  <div class="border-b border-blue-900/40 bg-navy/60 text-white">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-3">
+
+      <!-- Left: Context -->
+      <div class="flex items-center gap-3">
+        <div class="hidden sm:flex items-center gap-2 text-xs text-blue-300">
+          <a href="/index.html" class="hover:text-white transition">Home</a>
+          <span class="opacity-60">/</span>
+          <span id="topbar-context" class="text-blue-200">Games</span>
+        </div>
+
+        <div class="sm:hidden text-xs text-blue-300">
+          <span id="topbar-context-mobile" class="text-blue-200">Games</span>
+        </div>
+
+        <span class="hidden md:inline-flex items-center rounded-full border border-blue-900/50 bg-blue-950/10 px-3 py-1 text-xs font-semibold text-blue-200">
+          Educational only
+        </span>
+      </div>
+
+      <!-- Right: Player + Tokens + Actions -->
+      <div class="flex items-center gap-3">
+        <div class="hidden md:flex items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2">
+          <span class="text-xs font-semibold text-blue-300">Tokens</span>
+          <span id="topbar-token-balance" class="text-sm font-bold text-white">—</span>
+        </div>
+
+        <div class="hidden lg:flex items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2">
+          <span class="text-xs font-semibold text-blue-300">Status</span>
+          <span id="topbar-status" class="text-xs text-blue-200">Checking session…</span>
+        </div>
+
+        <!-- Actions (alphabetical) -->
+        <button id="topbar-cart" type="button" class="inline-flex items-center justify-center rounded-lg border border-blue-900/50 bg-blue-950/10 px-3 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition" aria-label="Open cart">
+          Cart
+          <span id="topbar-cart-count" class="ml-2 hidden rounded-full bg-blue-500 px-2 py-0.5 text-xs font-bold text-white">0</span>
+        </button>
+
+        <button id="topbar-signin" type="button" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-3 py-2 text-sm font-semibold text-white hover:from-blue-400 hover:to-blue-500 transition">
+          Sign in
+        </button>
+
+        <button id="topbar-signout" type="button" class="hidden inline-flex items-center justify-center rounded-lg border border-blue-900/50 bg-blue-950/10 px-3 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
+          Sign out
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Small-screen: status row -->
+    <div class="mx-auto max-w-7xl px-6 pb-3 md:hidden">
+      <p id="topbar-status-mobile" class="text-xs text-blue-300">Checking session…</p>
+    </div>
   </div>
 
-  <div id="app" class="h-full w-full overflow-auto custom-scrollbar" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);">
+  <script>
+    (function () {
+      // Topbar is UI-only. No API calls here.
+      // Pages can wire session/balance updates by setting these elements.
+
+      var cartBtn = document.getElementById('topbar-cart');
+      var signinBtn = document.getElementById('topbar-signin');
+      var signoutBtn = document.getElementById('topbar-signout');
+
+      function dispatch(name, detail) {
+        try {
+          document.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
+        } catch (e) {
+          // Fail silently.
+        }
+      }
+
+      cartBtn && cartBtn.addEventListener('click', function () {
+        if (typeof window.openCart === 'function') return window.openCart();
+        dispatch('tm:topbar:cart');
+      });
+
+      signinBtn && signinBtn.addEventListener('click', function () {
+        window.location.href = '/index.html';
+      });
+
+      signoutBtn && signoutBtn.addEventListener('click', function () {
+        dispatch('tm:topbar:signout');
+      });
+
+      window.tmTopbarSetAuth = function (isAuthed) {
+        var authed = !!isAuthed;
+        if (signinBtn) signinBtn.classList.toggle('hidden', authed);
+        if (signoutBtn) signoutBtn.classList.toggle('hidden', !authed);
+      };
+
+      window.tmTopbarSetStatus = function (msg) {
+        var s1 = document.getElementById('topbar-status');
+        var s2 = document.getElementById('topbar-status-mobile');
+        if (s1) s1.textContent = String(msg || '');
+        if (s2) s2.textContent = String(msg || '');
+      };
+
+      window.tmTopbarSetTokens = function (n) {
+        var el = document.getElementById('topbar-token-balance');
+        if (el) el.textContent = (n === 0 || n) ? String(n) : '—';
+      };
+
+      window.tmTopbarSetCartCount = function (n) {
+        var badge = document.getElementById('topbar-cart-count');
+        if (!badge) return;
+        var num = Number(n);
+        var show = Number.isFinite(num) && num > 0;
+        badge.textContent = show ? String(num) : '0';
+        badge.classList.toggle('hidden', !show);
+      };
+
+      window.tmTopbarSetAuth(false);
+    })();
+  </script>
+  <main class="mx-auto max-w-7xl px-6 py-6">
+    <div class="flex items-start gap-6">
+
+      <!-- partials/sidebar.html (inlined for game mode) -->
+      <aside class="hidden lg:block lg:w-72 xl:w-80">
+        <div class="sticky top-24">
+
+          <!-- Player Card -->
+          <div class="rounded-2xl border border-blue-900/40 bg-blue-950/10 p-5 text-white shadow-2xl">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Player</div>
+                <div id="sidebar-player" class="mt-1 text-sm font-semibold text-white">Signed in</div>
+              </div>
+              <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-navy font-bold">TM</div>
+            </div>
+
+            <div class="mt-4 grid grid-cols-2 gap-3">
+              <div class="rounded-xl border border-blue-900/40 bg-navy/40 p-3">
+                <div class="text-[11px] font-semibold uppercase tracking-wide text-blue-300">Tokens</div>
+                <div id="sidebar-token-balance" class="mt-1 text-lg font-bold text-white">—</div>
+              </div>
+              <div class="rounded-xl border border-blue-900/40 bg-navy/40 p-3">
+                <div class="text-[11px] font-semibold uppercase tracking-wide text-blue-300">Streak</div>
+                <div id="sidebar-streak" class="mt-1 text-lg font-bold text-white">—</div>
+              </div>
+            </div>
+
+            <p id="sidebar-status" class="mt-4 text-xs text-blue-300">Ready.</p>
+
+            <div class="mt-4 grid gap-2">
+              <!-- Alphabetical -->
+              <a href="/index.html#games" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white hover:from-blue-400 hover:to-blue-500 transition">Browse games</a>
+              <a href="/help-center.html" class="inline-flex items-center justify-center rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">Help Center</a>
+            </div>
+
+            <div class="mt-4 h-px w-full bg-blue-900/40"></div>
+
+            <div class="mt-4">
+              <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Quick actions</div>
+              <div class="mt-2 grid gap-2">
+                <!-- Alphabetical -->
+                <button id="sidebar-open-cart" type="button" class="inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
+                  <span>Cart</span>
+                  <span class="text-blue-300">→</span>
+                </button>
+                <a href="https://taxmonitor.pro" class="inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
+                  <span>Get real help</span>
+                  <span class="text-blue-300">→</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search + Filters -->
+          <div class="mt-6 rounded-2xl border border-blue-900/40 bg-blue-950/10 p-5 text-white">
+            <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Find a game</div>
+
+            <label class="mt-3 block">
+              <span class="sr-only">Search games</span>
+              <input
+                id="sidebar-search"
+                type="search"
+                inputmode="search"
+                autocomplete="off"
+                placeholder="Search…"
+                class="w-full rounded-lg border border-blue-900/40 bg-navy/50 px-3 py-2 text-sm text-white placeholder:text-blue-300/70 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+              />
+            </label>
+
+            <div class="mt-4">
+              <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Categories</div>
+              <div class="mt-2 grid gap-2">
+                <!-- Alphabetical -->
+                <button data-filter="all" type="button" class="sidebar-filter inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
+                  <span>All</span><span class="text-blue-300">→</span>
+                </button>
+                <button data-filter="compliance" type="button" class="sidebar-filter inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
+                  <span>Compliance</span><span class="text-blue-300">→</span>
+                </button>
+                <button data-filter="payments" type="button" class="sidebar-filter inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
+                  <span>Payments</span><span class="text-blue-300">→</span>
+                </button>
+                <button data-filter="transcripts" type="button" class="sidebar-filter inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
+                  <span>Transcripts</span><span class="text-blue-300">→</span>
+                </button>
+              </div>
+              <p class="mt-2 text-xs text-blue-300">These are UI filters only (no API calls in the sidebar partial).</p>
+            </div>
+          </div>
+
+          <!-- Keep it light: one nudge, not a novel -->
+          <div class="mt-6 rounded-2xl border border-blue-900/40 bg-blue-950/10 p-5 text-white">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Tip</div>
+                <div class="mt-1 text-sm text-blue-100">Short games win. Pick one, finish it, repeat.</div>
+              </div>
+              <span class="text-blue-300">★</span>
+            </div>
+          </div>
+
+        </div>
+
+        <script>
+          (function () {
+            // Sidebar is presentation-first. No API calls here.
+            // Pages can optionally wire these IDs to their own logic.
+
+            var openCartBtn = document.getElementById('sidebar-open-cart');
+            openCartBtn && openCartBtn.addEventListener('click', function () {
+              if (typeof window.openCart === 'function') window.openCart();
+            });
+
+            var search = document.getElementById('sidebar-search');
+            search && search.addEventListener('input', function () {
+              var ev = new CustomEvent('tm:sidebar:search', { detail: { q: String(search.value || '') } });
+              document.dispatchEvent(ev);
+            });
+
+            var filters = Array.prototype.slice.call(document.querySelectorAll('.sidebar-filter'));
+            filters.forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                var key = String(btn.getAttribute('data-filter') || 'all');
+                var ev = new CustomEvent('tm:sidebar:filter', { detail: { key: key } });
+                document.dispatchEvent(ev);
+              });
+            });
+          })();
+        </script>
+      </aside>
+
+      <section class="min-w-0 flex-1">
+        <!-- Status line required by Canonical UX safety -->
+        <div class="pb-4">
+          <div id="status" class="text-sm text-white/70"></div>
+        </div>
+
+        <div id="app" class="h-[calc(100vh-220px)] w-full overflow-auto custom-scrollbar rounded-2xl" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);">
 
     <!-- Loading Screen -->
     <div id="loading-screen" class="h-full w-full flex items-center justify-center">
@@ -321,7 +570,11 @@
         </div>
       </div>
     </div>
-  </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
 
   <!-- PARTIAL:footer -->
 
@@ -332,8 +585,28 @@
     const ABOUT_URL = "/about-games/" + GAME_FILE;
 
     function setStatus(msg) {
+      const text = msg || "";
       const el = document.getElementById("status");
-      if (el) el.textContent = msg || "";
+      if (el) el.textContent = text;
+
+      if (typeof window.tmTopbarSetStatus === "function") {
+        window.tmTopbarSetStatus(text);
+      }
+
+      const sidebar = document.getElementById("sidebar-status");
+      if (sidebar) sidebar.textContent = text;
+    }
+
+    function setTokenBalance(n) {
+      const num = Number(n);
+      if (!Number.isFinite(num)) return;
+
+      if (typeof window.tmTopbarSetTokens === "function") {
+        window.tmTopbarSetTokens(num);
+      }
+
+      const sideTokens = document.getElementById("sidebar-token-balance");
+      if (sideTokens) sideTokens.textContent = String(num);
     }
 
     async function safeJson(res) {
@@ -374,7 +647,9 @@
       }
 
       setStatus("Loading token balance…");
-      await apiGet("/v1/tokens/balance");
+      const bal = await apiGet("/v1/tokens/balance");
+      const n = (bal && bal.json && (bal.json.balance ?? bal.json.tokens ?? bal.json.tokenBalance)) ?? null;
+      if (n === 0 || n) setTokenBalance(n);
 
       setStatus("Verifying access…");
       const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(GAME_SLUG));
