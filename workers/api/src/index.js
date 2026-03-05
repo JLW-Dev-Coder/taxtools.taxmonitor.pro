@@ -1173,6 +1173,52 @@ async function handlePayPalWebhook(request, env) {
 }
 
 /* ------------------------------------------
+ * Auth handlers
+ * ------------------------------------------ */
+
+async function handleAuthStart(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
+
+  const email = String(body.email || "").trim().toLowerCase();
+  const redirect = String(body.redirect || "").trim();
+
+  if (!isValidEmail(email)) return badRequest(request, env, "Invalid email");
+  if (!isSafeRedirect(redirect)) return badRequest(request, env, "Invalid redirect (must be a relative path)");
+
+  const token = randomId("ml");
+  const rec = {
+    createdAt: nowIso(),
+    email,
+    expiresAt: asIso(Date.now() + LOGIN_TOKEN_TTL_MS),
+    redirect,
+  };
+
+  await env.R2_TAXTOOLS.put(keyLoginToken(token), JSON.stringify(rec), {
+    httpMetadata: { contentType: "application/json" },
+  });
+
+  const baseUrl = String(env.TAXTOOLS_AUTH_BASE_URL || "https://tools-api.taxmonitor.pro").replace(/\/+$/g, "");
+  const link = `${baseUrl}/v1/auth/complete?token=${encodeURIComponent(token)}`;
+
+  try {
+    await gmailSendMagicLink(env, { link, to: email });
+  } catch (err) {
+    await env.R2_TAXTOOLS.delete(keyLoginToken(token));
+    return json(
+      request,
+      env,
+      { error: "email_send_failed", message: String(err?.message || err || "Email send failed") },
+      500
+    );
+  }
+
+  return json(request, env, { ok: true }, 200);
+}
+
+/* ------------------------------------------
  * Router
  * ------------------------------------------ */
 
