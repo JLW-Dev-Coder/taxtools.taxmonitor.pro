@@ -125,6 +125,25 @@
 
     html, body { background: #020617; color: #fff; }
 
+    /* Keep the site header/footer readable on game pages (without touching in-game <header> tags). */
+    body > header,
+    body > footer {
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%) !important;
+      border-color: rgba(30, 58, 138, 0.5) !important;
+      color: #fff !important;
+      backdrop-filter: blur(8px) !important;
+    }
+
+    body > header a,
+    body > footer a {
+      color: inherit !important;
+    }
+
+    body > header *,
+    body > footer * {
+      border-color: rgba(30, 58, 138, 0.5) !important;
+    }
+
     body { box-sizing: border-box; }
 
     /* Status badge styling (matches Canva design) */
@@ -190,7 +209,7 @@
     </div>
   </div>
 
-  <div id="app" class="h-full w-full overflow-auto custom-scrollbar" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);">
+  $1$2; padding-bottom: 6rem$3
 
     <!-- Loading Screen -->
     <div id="loading-screen" class="h-full w-full flex items-center justify-center">
@@ -201,7 +220,7 @@
     </div>
 
     <!-- Main Menu -->
-    <div id="main-menu" class="hidden h-full w-full p-4 md:p-8">
+    <div id="main-menu" class="hidden h-full w-full p-4 md:p-8 pb-24">
       <div class="max-w-6xl mx-auto">
 
         <!-- Header -->
@@ -256,7 +275,7 @@
     </div>
 
     <!-- Quiz Screen -->
-    <div id="quiz-screen" class="hidden h-full w-full p-4 md:p-8 overflow-auto">
+    <div id="quiz-screen" class="hidden h-full w-full p-4 md:p-8 pb-24 overflow-auto">
       <div class="max-w-3xl mx-auto">
 
         <!-- Quiz Header -->
@@ -313,7 +332,7 @@
     </div>
 
     <!-- Results Screen -->
-    <div id="results-screen" class="hidden h-full w-full p-4 md:p-8 overflow-auto">
+    <div id="results-screen" class="hidden h-full w-full p-4 md:p-8 pb-24 overflow-auto">
       <div class="max-w-2xl mx-auto text-center">
         <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 animate-bounce-in">
           <div id="results-icon" class="text-8xl mb-4"></div>
@@ -349,7 +368,7 @@
     </div>
 
     <!-- Certification Screen -->
-    <div id="certification-screen" class="hidden h-full w-full p-4 md:p-8 overflow-auto">
+    <div id="certification-screen" class="hidden h-full w-full p-4 md:p-8 pb-24 overflow-auto">
       <div class="max-w-3xl mx-auto text-center">
         <div class="bg-gradient-to-br from-yellow-400/20 to-orange-500/20 backdrop-blur-sm rounded-3xl p-8 border-4 border-yellow-400/50 animate-bounce-in">
           <div class="text-8xl mb-4">🎓</div>
