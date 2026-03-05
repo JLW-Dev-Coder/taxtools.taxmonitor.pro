@@ -1,531 +1,499 @@
 <!-- games/match-the-tax-notice.html -->
 <!doctype html>
 <html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tax Notice Matching Game</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
-  <style>
-    * { font-family: 'Outfit', sans-serif; }
-    
-    @keyframes confetti-fall {
-      0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-    }
-    
-    @keyframes firework-burst {
-      0% { transform: scale(0); opacity: 1; }
-      50% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(1.5); opacity: 0; }
-    }
-    
-    @keyframes bounce-in {
-      0% { transform: scale(0.3); opacity: 0; }
-      50% { transform: scale(1.05); }
-      70% { transform: scale(0.9); }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-    
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
-      50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.8); }
-    }
-    
-    .confetti-piece {
-      position: fixed;
-      width: 12px;
-      height: 12px;
-      top: -20px;
-      animation: confetti-fall 3s ease-out forwards;
-    }
-    
-    .firework {
-      position: fixed;
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      animation: firework-burst 1s ease-out forwards;
-    }
-    
-    .bounce-in { animation: bounce-in 0.6s ease-out; }
-    .shake { animation: shake 0.5s ease-in-out; }
-    .pulse-glow { animation: pulse-glow 2s infinite; }
-    
-    .gradient-bg {
-      background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 50%, #1a365d 100%);
-    }
-    
-    .card-gradient {
-      background: linear-gradient(145deg, #ffffff 0%, #f0f9ff 100%);
-    }
-    
-    .notice-card {
-      background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
-      border-left: 4px solid #0369a1;
-    }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, #059669 0%, #047857 100%);
-      transition: all 0.3s ease;
-    }
-    
-    .btn-primary:hover {
-      background: linear-gradient(135deg, #047857 0%, #065f46 100%);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
-    }
-    
-    .input-field:focus {
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
-    }
-    
-    .progress-bar {
-      background: linear-gradient(90deg, #0ea5e9 0%, #06b6d4 100%);
-    }
-  </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full">
-  <div id="app" class="h-full w-full gradient-bg overflow-auto"><!-- Intro Screen -->
-   <div id="intro-screen" class="min-h-full flex items-center justify-center p-6">
-    <div class="card-gradient rounded-3xl shadow-2xl p-8 md:p-12 max-w-2xl w-full text-center bounce-in">
-     <div class="mb-6">
-      <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-sky-500 to-blue-600 rounded-full mb-4 shadow-lg">
-       <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-       </svg>
-      </div>
-     </div>
-     <h1 id="main-title" class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Match the Tax Notice!</h1>
-     <p class="text-lg text-slate-600 mb-6">Can you match the correct notice number to its description?</p>
-     <div class="notice-card rounded-xl p-5 mb-8 text-left">
-      <h3 class="font-bold text-sky-800 mb-3 flex items-center gap-2"><span class="text-xl">📋</span> How to Play</h3>
-      <ul class="text-slate-700 space-y-2 text-sm md:text-base">
-       <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">•</span> Read each tax notice description carefully</li>
-       <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">•</span> Select the matching notice number from the options</li>
-       <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">•</span> Get <strong>3 out of 10</strong> correct to win!</li>
-      </ul>
-     </div><button onclick="startGame()" class="btn-primary text-white font-bold text-lg px-10 py-4 rounded-full shadow-lg"> 🎮 Start Game </button>
-    </div>
-   </div><!-- Game Screen -->
-   <div id="game-screen" class="min-h-full flex flex-col p-4 md:p-6 hidden"><!-- Progress Bar -->
-    <div class="max-w-3xl w-full mx-auto mb-6">
-     <div class="flex justify-between items-center mb-2"><span class="text-white font-semibold">Question <span id="current-question">1</span>/10</span> <span class="text-emerald-400 font-semibold">Score: <span id="current-score">0</span>/10</span>
-     </div>
-     <div class="bg-slate-700 rounded-full h-3 overflow-hidden">
-      <div id="progress-bar" class="progress-bar h-full rounded-full transition-all duration-500" style="width: 10%"></div>
-     </div>
-    </div><!-- Question Card -->
-    <div class="flex-1 flex items-center justify-center">
-     <div id="question-card" class="card-gradient rounded-3xl shadow-2xl p-6 md:p-10 max-w-3xl w-full">
-      <div class="text-center mb-6"><span class="inline-block bg-sky-100 text-sky-800 font-bold px-4 py-2 rounded-full text-sm mb-4"> Tax Notice Challenge </span>
-       <h2 id="question-text" class="text-xl md:text-2xl font-bold text-slate-800 leading-relaxed"></h2>
-      </div>
-      <div id="options-container" class="grid gap-3 mb-6"></div><!-- Feedback Area -->
-      <div id="feedback-area" class="hidden text-center py-4 rounded-xl mb-4">
-       <p id="feedback-text" class="font-bold text-lg"></p>
-       <p id="feedback-detail" class="text-sm mt-1"></p>
-      </div><button id="next-btn" onclick="nextQuestion()" class="hidden w-full btn-primary text-white font-bold text-lg py-4 rounded-full shadow-lg"> Next Question → </button>
-     </div>
-    </div>
-   </div><!-- Win Screen -->
-   <div id="win-screen" class="min-h-full flex items-center justify-center p-6 hidden">
-    <div id="confetti-container"></div>
-    <div class="card-gradient rounded-3xl shadow-2xl p-8 md:p-12 max-w-2xl w-full text-center bounce-in relative z-10">
-     <div class="mb-6">
-      <div class="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-emerald-400 to-green-600 rounded-full mb-4 shadow-xl pulse-glow"><span class="text-6xl">🏆</span>
-      </div>
-     </div>
-     <h1 id="win-title" class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Congratulations!</h1>
-     <p class="text-xl text-emerald-600 font-bold mb-2">You're a Tax Notice Pro!</p>
-     <p class="text-slate-600 mb-6">You matched <span id="final-score" class="font-bold text-emerald-600">0</span> out of 10 notice sections correctly!</p>
-     <div class="flex flex-col sm:flex-row gap-4 justify-center"><button onclick="restartGame()" class="btn-primary text-white font-bold text-lg px-8 py-4 rounded-full shadow-lg"> 🔄 Play Again </button>
-     </div>
-    </div>
-   </div><!-- Lose Screen -->
-   <div id="lose-screen" class="min-h-full flex items-center justify-center p-6 hidden">
-    <div class="card-gradient rounded-3xl shadow-2xl p-8 md:p-12 max-w-2xl w-full text-center bounce-in">
-     <div class="mb-6">
-      <div class="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full mb-4 shadow-xl"><span class="text-6xl">📚</span>
-      </div>
-     </div>
-     <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Keep Learning!</h1>
-     <p class="text-xl text-amber-600 font-bold mb-2">You're on your way to becoming a pro!</p>
-     <p class="text-slate-600 mb-6">You got <span id="lose-score" class="font-bold text-amber-600">0</span> out of 10 correct. You need 3 to win!</p><button onclick="restartGame()" class="btn-primary text-white font-bold text-lg px-8 py-4 rounded-full shadow-lg"> 🔄 Try Again </button>
-    </div>
-   </div>
-  </div>
-  <script>
-    // Game Data
-    const questions = [
-      {
-        id: 1,
-        description: "Annual reminder of balance due taxes for a specific tax year. This notice informs you that you still owe taxes and may mention passport certification.",
-        correctAnswer: "CP71C",
-        options: ["CP71C", "CP27", "CP40", "CP575A"]
-      },
-      {
-        id: 2,
-        description: "Credit Not Claimed - You may be entitled to claim the Earned Income Credit (EIC) on your federal income tax return.",
-        correctAnswer: "CP27",
-        options: ["CP53", "CP27", "CP71C", "FTB 4024"]
-      },
-      {
-        id: 3,
-        description: "Account Assigned to Private Collection Agency - The IRS has assigned your overdue tax account to a private collection agency.",
-        correctAnswer: "CP40",
-        options: ["CP575A", "CP71C", "CP40", "CP27"]
-      },
-      {
-        id: 4,
-        description: "Cannot Provide Direct Deposit Refund Check Mailed - We were unable to deposit your refund directly into your bank account, so we're mailing a check instead.",
-        correctAnswer: "CP53",
-        options: ["CP40", "CP53", "FTB 4024", "CP71C"]
-      },
-      {
-        id: 5,
-        description: "EIN Assignment Letter - We assigned you an Employer Identification Number (EIN) for your business or organization.",
-        correctAnswer: "CP575A",
-        options: ["CP27", "FTB 4024", "CP575A", "CP40"]
-      },
-      {
-        id: 6,
-        description: "Installment Agreement - Electronic Funds Transfer (EFT) Approval - Your request to pay your tax debt through automatic bank withdrawals has been approved.",
-        correctAnswer: "FTB 4024",
-        options: ["FTB 4024", "CP53", "CP27", "CP575A"]
-      },
-      {
-        id: 7,
-        description: "Denial or revocation of United States Passport - Due to seriously delinquent tax debt, the IRS has certified your debt to the State Department.",
-        correctAnswer: "CP71C",
-        options: ["CP40", "CP27", "CP53", "CP71C"]
-      },
-      {
-        id: 8,
-        description: "Your refund was deposited into a different account than expected due to a banking error or incorrect routing number.",
-        correctAnswer: "CP53",
-        options: ["CP575A", "CP53", "CP40", "FTB 4024"]
-      },
-      {
-        id: 9,
-        description: "Notification that a third-party agency will be contacting you about your outstanding federal tax liability.",
-        correctAnswer: "CP40",
-        options: ["CP71C", "FTB 4024", "CP40", "CP27"]
-      },
-      {
-        id: 10,
-        description: "Confirmation of your new tax identification number for your newly formed LLC or corporation.",
-        correctAnswer: "CP575A",
-        options: ["CP27", "CP575A", "CP53", "CP71C"]
-      }
-    ];
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tax Notice Matching Game</title>
 
-    // Game State
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let answered = false;
+<!-- Canonical assets -->
+<link rel="icon" href="/assets/favicon.ico" />
+<link rel="stylesheet" href="/styles/site.css" />
 
-    // Default Config
-    const defaultConfig = {
-      game_title: "Match the Tax Notice!",
-      win_message: "Congratulations! You're a Tax Notice Pro!",
-      background_color: "#1e3a5f",
-      card_color: "#ffffff",
-      text_color: "#1e293b",
-      primary_action_color: "#059669",
-      secondary_action_color: "#0ea5e9"
-    };
+<!-- SDKs -->
+<script src="/_sdk/element_sdk.js"></script>
+<script src="/_sdk/data_sdk.js"></script>
 
-    // Initialize Element SDK
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange: async (config) => {
-          const mainTitle = document.getElementById('main-title');
-          const winTitle = document.getElementById('win-title');
-          
-          if (mainTitle) {
-            mainTitle.textContent = config.game_title || defaultConfig.game_title;
-          }
-          if (winTitle) {
-            const winMsg = config.win_message || defaultConfig.win_message;
-            winTitle.textContent = winMsg.split('!')[0] + '!';
-          }
+<!-- Game-specific remote assets (kept) -->
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-          // Apply colors
-          const bgColor = config.background_color || defaultConfig.background_color;
-          const cardColor = config.card_color || defaultConfig.card_color;
-          const textColor = config.text_color || defaultConfig.text_color;
-          const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
-          const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+<style>
+* { font-family: 'Outfit', sans-serif; }
 
-          document.documentElement.style.setProperty('--bg-color', bgColor);
-          
-          document.querySelectorAll('.gradient-bg').forEach(el => {
-            el.style.background = `linear-gradient(135deg, ${bgColor} 0%, ${adjustColor(bgColor, -20)} 50%, ${adjustColor(bgColor, 10)} 100%)`;
-          });
+html, body { background: #020617; }
 
-          document.querySelectorAll('.card-gradient').forEach(el => {
-            el.style.background = `linear-gradient(145deg, ${cardColor} 0%, ${adjustColor(cardColor, -5)} 100%)`;
-          });
+@keyframes confetti-fall {
+0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
 
-          document.querySelectorAll('.btn-primary').forEach(el => {
-            el.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -10)} 100%)`;
-          });
+@keyframes firework-burst {
+0% { transform: scale(0); opacity: 1; }
+50% { transform: scale(1.2); opacity: 1; }
+100% { transform: scale(1.5); opacity: 0; }
+}
 
-          document.querySelectorAll('.progress-bar').forEach(el => {
-            el.style.background = `linear-gradient(90deg, ${secondaryColor} 0%, ${adjustColor(secondaryColor, 10)} 100%)`;
-          });
+@keyframes bounce-in {
+0% { transform: scale(0.3); opacity: 0; }
+50% { transform: scale(1.05); }
+70% { transform: scale(0.9); }
+100% { transform: scale(1); opacity: 1; }
+}
 
-          // Apply font
-          const fontFamily = config.font_family || defaultConfig.font_family || 'Outfit';
-          document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+@keyframes shake {
+0%, 100% { transform: translateX(0); }
+25% { transform: translateX(-5px); }
+75% { transform: translateX(5px); }
+}
 
-          // Apply font size
-          const fontSize = config.font_size || 16;
-          document.querySelectorAll('h1').forEach(el => el.style.fontSize = `${fontSize * 2}px`);
-          document.querySelectorAll('h2').forEach(el => el.style.fontSize = `${fontSize * 1.5}px`);
-          document.querySelectorAll('p, li, span').forEach(el => {
-            if (!el.closest('button')) el.style.fontSize = `${fontSize}px`;
-          });
-        },
-        mapToCapabilities: (config) => ({
-          recolorables: [
-            {
-              get: () => config.background_color || defaultConfig.background_color,
-              set: (value) => window.elementSdk.setConfig({ background_color: value })
-            },
-            {
-              get: () => config.card_color || defaultConfig.card_color,
-              set: (value) => window.elementSdk.setConfig({ card_color: value })
-            },
-            {
-              get: () => config.text_color || defaultConfig.text_color,
-              set: (value) => window.elementSdk.setConfig({ text_color: value })
-            },
-            {
-              get: () => config.primary_action_color || defaultConfig.primary_action_color,
-              set: (value) => window.elementSdk.setConfig({ primary_action_color: value })
-            },
-            {
-              get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
-              set: (value) => window.elementSdk.setConfig({ secondary_action_color: value })
-            }
-          ],
-          borderables: [],
-          fontEditable: {
-            get: () => config.font_family || 'Outfit',
-            set: (value) => window.elementSdk.setConfig({ font_family: value })
-          },
-          fontSizeable: {
-            get: () => config.font_size || 16,
-            set: (value) => window.elementSdk.setConfig({ font_size: value })
-          }
-        }),
-        mapToEditPanelValues: (config) => new Map([
-          ["game_title", config.game_title || defaultConfig.game_title],
-          ["win_message", config.win_message || defaultConfig.win_message]
-        ])
-      });
-    }
+@keyframes pulse-glow {
+0%, 100% { box-shadow: 0 0 20px rgba(34,197,94,0.5); }
+50% { box-shadow: 0 0 40px rgba(34,197,94,0.8); }
+}
 
-    // Helper function to adjust color brightness
-    function adjustColor(hex, percent) {
-      const num = parseInt(hex.replace('#', ''), 16);
-      const amt = Math.round(2.55 * percent);
-      const R = Math.max(0, Math.min(255, (num >> 16) + amt));
-      const G = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amt));
-      const B = Math.max(0, Math.min(255, (num & 0x0000FF) + amt));
-      return `#${(1 << 24 | R << 16 | G << 8 | B).toString(16).slice(1)}`;
-    }
+@keyframes pulse-indicator {
+0%,100% {
+box-shadow: 0 0 12px rgba(16,185,129,0.6), inset 0 0 6px rgba(255,255,255,0.3);
+}
+50% {
+box-shadow: 0 0 20px rgba(16,185,129,0.9), inset 0 0 8px rgba(255,255,255,0.5);
+}
+}
 
-    // Game Functions
-    function startGame() {
-      currentQuestionIndex = 0;
-      score = 0;
-      shuffleArray(questions);
-      
-      document.getElementById('intro-screen').classList.add('hidden');
-      document.getElementById('game-screen').classList.remove('hidden');
-      document.getElementById('win-screen').classList.add('hidden');
-      document.getElementById('lose-screen').classList.add('hidden');
-      
-      showQuestion();
-    }
+.status-badge{
+display:inline-flex;
+align-items:center;
+gap:12px;
+background:linear-gradient(135deg, rgba(16,185,129,0.08) 0%, rgba(6,182,212,0.08) 100%);
+border:2px solid rgba(16,185,129,0.35);
+border-radius:14px;
+padding:12px 20px;
+font-size:15px;
+font-weight:600;
+letter-spacing:0.3px;
+box-shadow:0 4px 20px rgba(16,185,129,0.1), inset 0 1px 2px rgba(255,255,255,0.1);
+transition:all .3s ease;
+}
 
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
+.status-indicator{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+width:12px;
+height:12px;
+background:linear-gradient(135deg,#10b981,#06b6d4);
+border-radius:50%;
+box-shadow:0 0 12px rgba(16,185,129,0.6), inset 0 0 6px rgba(255,255,255,0.3);
+animation:pulse-indicator 2s ease-in-out infinite;
+flex-shrink:0;
+}
 
-    function showQuestion() {
-      answered = false;
-      const question = questions[currentQuestionIndex];
-      
-      document.getElementById('current-question').textContent = currentQuestionIndex + 1;
-      document.getElementById('current-score').textContent = score;
-      document.getElementById('progress-bar').style.width = `${((currentQuestionIndex + 1) / 10) * 100}%`;
-      
-      document.getElementById('question-text').textContent = question.description;
-      
-      const optionsContainer = document.getElementById('options-container');
-      optionsContainer.innerHTML = '';
-      
-      const shuffledOptions = [...question.options];
-      shuffleArray(shuffledOptions);
-      
-      shuffledOptions.forEach(option => {
-        const button = document.createElement('button');
-        button.className = 'w-full p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-sky-400 hover:bg-sky-50 transition-all duration-200 text-left font-semibold text-slate-700 flex items-center gap-3';
-        button.innerHTML = `
-          <span class="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center text-sky-700 font-bold text-sm">${option}</span>
-          <span>Notice ${option}</span>
-        `;
-        button.onclick = () => selectAnswer(option, button);
-        optionsContainer.appendChild(button);
-      });
-      
-      document.getElementById('feedback-area').classList.add('hidden');
-      document.getElementById('next-btn').classList.add('hidden');
-      
-      const card = document.getElementById('question-card');
-      card.classList.remove('bounce-in');
-      void card.offsetWidth;
-      card.classList.add('bounce-in');
-    }
+.status-text{
+background:linear-gradient(135deg,#10b981 0%,#06b6d4 100%);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+background-clip:text;
+font-weight:600;
+}
 
-    function selectAnswer(selected, button) {
-      if (answered) return;
-      answered = true;
-      
-      const question = questions[currentQuestionIndex];
-      const isCorrect = selected === question.correctAnswer;
-      
-      const allButtons = document.querySelectorAll('#options-container button');
-      allButtons.forEach(btn => {
-        btn.disabled = true;
-        btn.classList.remove('hover:border-sky-400', 'hover:bg-sky-50');
-      });
-      
-      if (isCorrect) {
-        score++;
-        button.classList.remove('border-slate-200', 'bg-white');
-        button.classList.add('border-emerald-500', 'bg-emerald-50');
-        
-        document.getElementById('feedback-area').classList.remove('hidden', 'bg-red-50');
-        document.getElementById('feedback-area').classList.add('bg-emerald-50');
-        document.getElementById('feedback-text').textContent = '✅ Correct!';
-        document.getElementById('feedback-text').className = 'font-bold text-lg text-emerald-700';
-        document.getElementById('feedback-detail').textContent = `${question.correctAnswer} is the right answer!`;
-        document.getElementById('feedback-detail').className = 'text-sm mt-1 text-emerald-600';
-      } else {
-        button.classList.remove('border-slate-200', 'bg-white');
-        button.classList.add('border-red-500', 'bg-red-50', 'shake');
-        
-        allButtons.forEach(btn => {
-          if (btn.textContent.includes(question.correctAnswer)) {
-            btn.classList.remove('border-slate-200', 'bg-white');
-            btn.classList.add('border-emerald-500', 'bg-emerald-50');
-          }
-        });
-        
-        document.getElementById('feedback-area').classList.remove('hidden', 'bg-emerald-50');
-        document.getElementById('feedback-area').classList.add('bg-red-50');
-        document.getElementById('feedback-text').textContent = '❌ Not quite!';
-        document.getElementById('feedback-text').className = 'font-bold text-lg text-red-700';
-        document.getElementById('feedback-detail').textContent = `The correct answer was ${question.correctAnswer}`;
-        document.getElementById('feedback-detail').className = 'text-sm mt-1 text-red-600';
-      }
-      
-      document.getElementById('current-score').textContent = score;
-      document.getElementById('next-btn').classList.remove('hidden');
-      
-      if (currentQuestionIndex === 9) {
-        document.getElementById('next-btn').textContent = 'See Results 🎉';
-      }
-    }
+.confetti-piece{position:fixed;width:12px;height:12px;top:-20px;animation:confetti-fall 3s ease-out forwards;}
+.firework{position:fixed;width:100px;height:100px;border-radius:50%;animation:firework-burst 1s ease-out forwards;}
+.bounce-in{animation:bounce-in .6s ease-out;}
+.shake{animation:shake .5s ease-in-out;}
+.pulse-glow{animation:pulse-glow 2s infinite;}
 
-    function nextQuestion() {
-      currentQuestionIndex++;
-      
-      if (currentQuestionIndex >= 10) {
-        endGame();
-      } else {
-        showQuestion();
-      }
-    }
+.gradient-bg{background:linear-gradient(135deg,#1e3a5f 0%,#0d2137 50%,#1a365d 100%);}
+.card-gradient{background:linear-gradient(145deg,#ffffff 0%,#f0f9ff 100%);}
+.notice-card{background:linear-gradient(135deg,#f8fafc 0%,#e0f2fe 100%);border-left:4px solid #0369a1;}
 
-    function endGame() {
-      document.getElementById('game-screen').classList.add('hidden');
-      
-      if (score >= 3) {
-        document.getElementById('win-screen').classList.remove('hidden');
-        document.getElementById('final-score').textContent = score;
-        createConfetti();
-        createFireworks();
-      } else {
-        document.getElementById('lose-screen').classList.remove('hidden');
-        document.getElementById('lose-score').textContent = score;
-      }
-    }
+.btn-primary{background:linear-gradient(135deg,#059669 0%,#047857 100%);transition:all .3s ease;}
+.btn-primary:hover{background:linear-gradient(135deg,#047857 0%,#065f46 100%);transform:translateY(-2px);box-shadow:0 10px 25px rgba(5,150,105,.4);}
 
-    function createConfetti() {
-      const container = document.getElementById('confetti-container');
-      container.innerHTML = '';
-      
-      const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899'];
-      
-      for (let i = 0; i < 100; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti-piece';
-        confetti.style.left = Math.random() * 100 + '%';
-        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.animationDelay = Math.random() * 2 + 's';
-        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-        
-        if (Math.random() > 0.5) {
-          confetti.style.borderRadius = '50%';
-        }
-        
-        container.appendChild(confetti);
-      }
-    }
+.input-field:focus{box-shadow:0 0 0 3px rgba(14,165,233,.3);}
+.progress-bar{background:linear-gradient(90deg,#0ea5e9 0%,#06b6d4 100%);}
 
-    function createFireworks() {
-      const colors = ['rgba(239, 68, 68, 0.6)', 'rgba(59, 130, 246, 0.6)', 'rgba(34, 197, 94, 0.6)', 'rgba(168, 85, 247, 0.6)'];
-      
-      for (let i = 0; i < 5; i++) {
-        setTimeout(() => {
-          const firework = document.createElement('div');
-          firework.className = 'firework';
-          firework.style.left = (Math.random() * 60 + 20) + '%';
-          firework.style.top = (Math.random() * 40 + 20) + '%';
-          firework.style.background = `radial-gradient(circle, ${colors[Math.floor(Math.random() * colors.length)]} 0%, transparent 70%)`;
-          document.getElementById('win-screen').appendChild(firework);
-          
-          setTimeout(() => firework.remove(), 1000);
-        }, i * 400);
-      }
-    }
+.custom-scrollbar::-webkit-scrollbar{width:8px}
+.custom-scrollbar::-webkit-scrollbar-track{background:rgba(255,255,255,.1);border-radius:4px}
+.custom-scrollbar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.3);border-radius:4px}
 
-    function restartGame() {
-      document.getElementById('confetti-container').innerHTML = '';
-      startGame();
-    }
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d6b8ff731cc27c7',t:'MTc3MjU3MTUzOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</style>
+</head>
+
+<body class="h-full">
+
+<!-- PARTIAL:header -->
+
+<!-- Status line required by Canonical UX safety -->
+<div class="mx-auto max-w-6xl px-6 pt-4 pb-4 flex justify-center">
+<div class="status-badge">
+<span class="status-indicator" aria-hidden="true"></span>
+<span id="status" class="status-text">Checking access…</span>
+</div>
+</div>
+
+<div id="app" class="h-full w-full overflow-auto custom-scrollbar gradient-bg" style="padding-bottom:6rem;">
+
+<!-- Intro Screen -->
+<div id="intro-screen" class="min-h-full flex items-center justify-center p-6">
+<div class="card-gradient rounded-3xl shadow-2xl p-8 md:p-12 max-w-2xl w-full text-center bounce-in">
+
+<div class="mb-6">
+<div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-sky-500 to-blue-600 rounded-full mb-4 shadow-lg">
+<svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+</div>
+</div>
+
+<h1 id="main-title" class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Match the Tax Notice!</h1>
+
+<p class="text-lg text-slate-600 mb-6">Can you match the correct notice number to its description?</p>
+
+<div class="notice-card rounded-xl p-5 mb-8 text-left">
+<h3 class="font-bold text-sky-800 mb-3 flex items-center gap-2"><span class="text-xl">📋</span> How to Play</h3>
+<ul class="text-slate-700 space-y-2 text-sm md:text-base">
+<li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">•</span> Read each tax notice description carefully</li>
+<li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">•</span> Select the matching notice number from the options</li>
+<li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">•</span> Get <strong>3 out of 10</strong> correct to win!</li>
+</ul>
+</div>
+
+<button id="start-btn" onclick="startGame()" disabled class="btn-primary text-white font-bold text-lg px-10 py-4 rounded-full shadow-lg">🎮 Start Game</button>
+
+</div>
+</div>
+
+<!-- Game Screen -->
+<div id="game-screen" class="min-h-full flex flex-col p-4 md:p-6 hidden">
+
+<div class="max-w-3xl w-full mx-auto mb-6">
+<div class="flex justify-between items-center mb-2">
+<span class="text-white font-semibold">Question <span id="current-question">1</span>/10</span>
+<span class="text-emerald-400 font-semibold">Score: <span id="current-score">0</span>/10</span>
+</div>
+
+<div class="bg-slate-700 rounded-full h-3 overflow-hidden">
+<div id="progress-bar" class="progress-bar h-full rounded-full transition-all duration-500" style="width:10%"></div>
+</div>
+</div>
+
+<div class="flex-1 flex items-center justify-center">
+<div id="question-card" class="card-gradient rounded-3xl shadow-2xl p-6 md:p-10 max-w-3xl w-full">
+
+<div class="text-center mb-6">
+<span class="inline-block bg-sky-100 text-sky-800 font-bold px-4 py-2 rounded-full text-sm mb-4">Tax Notice Challenge</span>
+<h2 id="question-text" class="text-xl md:text-2xl font-bold text-slate-800 leading-relaxed"></h2>
+</div>
+
+<div id="options-container" class="grid gap-3 mb-6"></div>
+
+<div id="feedback-area" class="hidden text-center py-4 rounded-xl mb-4">
+<p id="feedback-text" class="font-bold text-lg"></p>
+<p id="feedback-detail" class="text-sm mt-1"></p>
+</div>
+
+<button id="next-btn" onclick="nextQuestion()" class="hidden w-full btn-primary text-white font-bold text-lg py-4 rounded-full shadow-lg">Next Question →</button>
+
+</div>
+</div>
+
+</div>
+
+<!-- Win Screen -->
+<div id="win-screen" class="min-h-full flex items-center justify-center p-6 hidden">
+<div id="confetti-container"></div>
+
+<div class="card-gradient rounded-3xl shadow-2xl p-8 md:p-12 max-w-2xl w-full text-center bounce-in relative z-10">
+
+<div class="mb-6">
+<div class="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-emerald-400 to-green-600 rounded-full mb-4 shadow-xl pulse-glow">
+<span class="text-6xl">🏆</span>
+</div>
+</div>
+
+<h1 id="win-title" class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Congratulations!</h1>
+
+<p class="text-xl text-emerald-600 font-bold mb-2">You're a Tax Notice Pro!</p>
+
+<p class="text-slate-600 mb-6">You matched <span id="final-score" class="font-bold text-emerald-600">0</span> out of 10 notice sections correctly!</p>
+
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button onclick="restartGame()" class="btn-primary text-white font-bold text-lg px-8 py-4 rounded-full shadow-lg">🔄 Play Again</button>
+</div>
+
+</div>
+</div>
+
+<!-- Lose Screen -->
+<div id="lose-screen" class="min-h-full flex items-center justify-center p-6 hidden">
+
+<div class="card-gradient rounded-3xl shadow-2xl p-8 md:p-12 max-w-2xl w-full text-center bounce-in">
+
+<div class="mb-6">
+<div class="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full mb-4 shadow-xl">
+<span class="text-6xl">📚</span>
+</div>
+</div>
+
+<h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3">Keep Learning!</h1>
+
+<p class="text-xl text-amber-600 font-bold mb-2">You're on your way to becoming a pro!</p>
+
+<p class="text-slate-600 mb-6">You got <span id="lose-score" class="font-bold text-amber-600">0</span> out of 10 correct. You need 3 to win!</p>
+
+<button onclick="restartGame()" class="btn-primary text-white font-bold text-lg px-8 py-4 rounded-full shadow-lg">🔄 Try Again</button>
+
+</div>
+</div>
+
+</div>
+
+<!-- PARTIAL:footer -->
+
+<script>
+
+const API_BASE = "https://tools-api.taxmonitor.pro";
+const GAME_FILE = "match-the-tax-notice.html";
+const GAME_SLUG = "match-the-tax-notice";
+const ABOUT_URL = "/about-games/" + GAME_FILE;
+
+function setStatus(msg){
+const el=document.getElementById("status");
+if(el) el.textContent=msg||"";
+}
+
+async function apiGet(path){
+const res=await fetch(API_BASE+path,{method:"GET",credentials:"include"});
+let json={};
+try{json=await res.json();}catch{}
+return {res,json};
+}
+
+async function endRun(result){
+await fetch(API_BASE+"/v1/games/end",{
+method:"POST",
+credentials:"include",
+headers:{"content-type":"application/json"},
+body:JSON.stringify({result,slug:GAME_SLUG})
+}).catch(()=>{});
+}
+
+function redirectToAbout(){
+window.location.href=ABOUT_URL;
+}
+
+async function gateAccess(){
+
+setStatus("Checking session…");
+const me=await apiGet("/v1/auth/me");
+
+if(!me.res.ok || !me.json || me.json.isAuthenticated===false){
+redirectToAbout();
+return false;
+}
+
+setStatus("Loading token balance…");
+await apiGet("/v1/tokens/balance");
+
+setStatus("Verifying access…");
+const access=await apiGet("/v1/games/access?slug="+encodeURIComponent(GAME_SLUG));
+
+if(!access.res.ok || !access.json || access.json.allowed!==true){
+redirectToAbout();
+return false;
+}
+
+setStatus("Access granted.");
+return true;
+}
+
+function initializeApp(){
+
+const start=document.getElementById("start-btn");
+if(start) start.disabled=false;
+
+}
+
+
+// Game Data
+const questions=[
+{ id:1,description:"Annual reminder of balance due taxes for a specific tax year. This notice informs you that you still owe taxes and may mention passport certification.",correctAnswer:"CP71C",options:["CP71C","CP27","CP40","CP575A"] },
+{ id:2,description:"Credit Not Claimed - You may be entitled to claim the Earned Income Credit (EIC) on your federal income tax return.",correctAnswer:"CP27",options:["CP53","CP27","CP71C","FTB 4024"] },
+{ id:3,description:"Account Assigned to Private Collection Agency - The IRS has assigned your overdue tax account to a private collection agency.",correctAnswer:"CP40",options:["CP575A","CP71C","CP40","CP27"] },
+{ id:4,description:"Cannot Provide Direct Deposit Refund Check Mailed - We were unable to deposit your refund directly into your bank account, so we're mailing a check instead.",correctAnswer:"CP53",options:["CP40","CP53","FTB 4024","CP71C"] },
+{ id:5,description:"EIN Assignment Letter - We assigned you an Employer Identification Number (EIN) for your business or organization.",correctAnswer:"CP575A",options:["CP27","FTB 4024","CP575A","CP40"] },
+{ id:6,description:"Installment Agreement - Electronic Funds Transfer (EFT) Approval - Your request to pay your tax debt through automatic bank withdrawals has been approved.",correctAnswer:"FTB 4024",options:["FTB 4024","CP53","CP27","CP575A"] },
+{ id:7,description:"Denial or revocation of United States Passport - Due to seriously delinquent tax debt, the IRS has certified your debt to the State Department.",correctAnswer:"CP71C",options:["CP40","CP27","CP53","CP71C"] },
+{ id:8,description:"Your refund was deposited into a different account than expected due to a banking error or incorrect routing number.",correctAnswer:"CP53",options:["CP575A","CP53","CP40","FTB 4024"] },
+{ id:9,description:"Notification that a third-party agency will be contacting you about your outstanding federal tax liability.",correctAnswer:"CP40",options:["CP71C","FTB 4024","CP40","CP27"] },
+{ id:10,description:"Confirmation of your new tax identification number for your newly formed LLC or corporation.",correctAnswer:"CP575A",options:["CP27","CP575A","CP53","CP71C"] }
+];
+
+let currentQuestionIndex=0;
+let score=0;
+let answered=false;
+
+function startGame(){
+currentQuestionIndex=0;
+score=0;
+shuffleArray(questions);
+
+document.getElementById('intro-screen').classList.add('hidden');
+document.getElementById('game-screen').classList.remove('hidden');
+document.getElementById('win-screen').classList.add('hidden');
+document.getElementById('lose-screen').classList.add('hidden');
+
+showQuestion();
+}
+
+function shuffleArray(array){
+for(let i=array.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1));
+[array[i],array[j]]=[array[j],array[i]];
+}
+}
+
+function showQuestion(){
+answered=false;
+const question=questions[currentQuestionIndex];
+
+document.getElementById('current-question').textContent=currentQuestionIndex+1;
+document.getElementById('current-score').textContent=score;
+document.getElementById('progress-bar').style.width=`${((currentQuestionIndex+1)/10)*100}%`;
+
+document.getElementById('question-text').textContent=question.description;
+
+const optionsContainer=document.getElementById('options-container');
+optionsContainer.innerHTML='';
+
+const shuffledOptions=[...question.options];
+shuffleArray(shuffledOptions);
+
+shuffledOptions.forEach(option=>{
+const button=document.createElement('button');
+button.className='w-full p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-sky-400 hover:bg-sky-50 transition-all duration-200 text-left font-semibold text-slate-700 flex items-center gap-3';
+button.innerHTML=`<span class="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center text-sky-700 font-bold text-sm">${option}</span><span>Notice ${option}</span>`;
+button.onclick=()=>selectAnswer(option,button);
+optionsContainer.appendChild(button);
+});
+
+}
+
+function selectAnswer(selected,button){
+if(answered) return;
+answered=true;
+
+const question=questions[currentQuestionIndex];
+const isCorrect=selected===question.correctAnswer;
+
+const allButtons=document.querySelectorAll('#options-container button');
+allButtons.forEach(btn=>{btn.disabled=true});
+
+if(isCorrect){
+score++;
+button.classList.add('border-emerald-500','bg-emerald-50');
+}else{
+button.classList.add('border-red-500','bg-red-50','shake');
+allButtons.forEach(btn=>{
+if(btn.textContent.includes(question.correctAnswer)){
+btn.classList.add('border-emerald-500','bg-emerald-50');
+}
+});
+}
+
+document.getElementById('current-score').textContent=score;
+document.getElementById('next-btn').classList.remove('hidden');
+
+if(currentQuestionIndex===9){
+document.getElementById('next-btn').textContent='See Results 🎉';
+}
+}
+
+function nextQuestion(){
+currentQuestionIndex++;
+if(currentQuestionIndex>=10){endGame();}
+else{showQuestion();}
+}
+
+async function endGame(){
+
+document.getElementById('game-screen').classList.add('hidden');
+
+if(score>=3){
+
+document.getElementById('win-screen').classList.remove('hidden');
+document.getElementById('final-score').textContent=score;
+createConfetti();
+createFireworks();
+
+await endRun("completed");
+
+}else{
+
+document.getElementById('lose-screen').classList.remove('hidden');
+document.getElementById('lose-score').textContent=score;
+
+await endRun("lost");
+
+}
+
+}
+
+function createConfetti(){
+const container=document.getElementById('confetti-container');
+container.innerHTML='';
+
+const colors=['#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#8b5cf6','#ec4899'];
+
+for(let i=0;i<100;i++){
+const confetti=document.createElement('div');
+confetti.className='confetti-piece';
+confetti.style.left=Math.random()*100+'%';
+confetti.style.backgroundColor=colors[Math.floor(Math.random()*colors.length)];
+confetti.style.animationDelay=Math.random()*2+'s';
+confetti.style.animationDuration=(Math.random()*2+2)+'s';
+if(Math.random()>0.5){confetti.style.borderRadius='50%';}
+container.appendChild(confetti);
+}
+}
+
+function createFireworks(){
+const colors=['rgba(239,68,68,0.6)','rgba(59,130,246,0.6)','rgba(34,197,94,0.6)','rgba(168,85,247,0.6)'];
+
+for(let i=0;i<5;i++){
+setTimeout(()=>{
+const firework=document.createElement('div');
+firework.className='firework';
+firework.style.left=(Math.random()*60+20)+'%';
+firework.style.top=(Math.random()*40+20)+'%';
+firework.style.background=`radial-gradient(circle, ${colors[Math.floor(Math.random()*colors.length)]} 0%, transparent 70%)`;
+document.getElementById('win-screen').appendChild(firework);
+setTimeout(()=>firework.remove(),1000);
+},i*400);
+}
+}
+
+function restartGame(){
+document.getElementById('confetti-container').innerHTML='';
+startGame();
+}
+
+// Boot sequence
+(async()=>{
+const ok=await gateAccess();
+if(!ok){
+setStatus("Access denied. Redirecting…");
+redirectToAbout();
+return;
+}
+initializeApp();
+})().catch(()=>{
+setStatus("Error loading game. Redirecting…");
+redirectToAbout();
+});
+
+</script>
+
+</body>
 </html>
-
