@@ -51,6 +51,9 @@
     .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
     .btn-shadow { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); }
     .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    .demo-card { transition: all 0.2s ease; }
+    .demo-card:hover:not(:disabled) { transform: scale(1.02); }
+
     @keyframes pulse-ring {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
@@ -61,24 +64,22 @@
       0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 18px 28px rgba(0,0,0,0.25)); }
       50% { transform: translateY(-10px) rotate(0.6deg); filter: drop-shadow(0 26px 34px rgba(0,0,0,0.35)); }
     }
+
     .hero-panel::after {
       content: "";
       position: absolute;
       inset: -2px;
       border-radius: 26px;
       pointer-events: none;
-      background: radial-gradient(600px 220px at 20% 0%, rgba(255,255,255,0.10), transparent 55%),
-                  radial-gradient(500px 260px at 80% 100%, rgba(249,115,22,0.10), transparent 60%);
+      background: radial-gradient(600px 220px at 20% 0%, rgba(255,255,255,0.10), transparent 55%), radial-gradient(500px 260px at 80% 100%, rgba(249,115,22,0.10), transparent 60%);
       opacity: 0.75;
       animation: hero-glow 3.8s ease-in-out infinite;
     }
+
     @keyframes hero-glow {
       0%, 100% { opacity: 0.55; }
       50% { opacity: 0.9; }
     }
-
-    .demo-card { transition: all 0.2s ease; }
-    .demo-card:hover:not(:disabled) { transform: scale(1.02); }
   </style>
 </head>
 
@@ -90,7 +91,6 @@
     <section class="gradient-hero text-white py-16 lg:py-24">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
-
           <div class="text-center lg:text-left">
             <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
               <span class="w-2 h-2 bg-accent rounded-full pulse-ring"></span>
@@ -194,7 +194,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>
@@ -231,7 +230,6 @@
     <section id="preview" class="py-16 lg:py-24 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
-
           <div class="order-2 lg:order-1">
             <div class="bg-gray-50 rounded-3xl p-6 md:p-8">
               <div class="bg-white rounded-2xl card-shadow overflow-hidden">
@@ -324,7 +322,6 @@
               Try Demo
             </button>
           </div>
-
         </div>
       </div>
     </section>
@@ -470,7 +467,6 @@
     </section>
 
     <!-- PARTIAL:footer -->
-
   </div>
 
   <div id="confirmModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
@@ -531,7 +527,7 @@
 
       <div class="flex-1 overflow-auto p-6 md:p-8">
         <div class="max-w-3xl mx-auto">
-          <div id="demo-menu" class="">
+          <div id="demo-menu">
             <div class="text-center mb-8">
               <h2 class="text-3xl font-bold text-navy mb-2">Two-question demo</h2>
               <p class="text-muted">No tokens spent. No real access granted. Remarkably civil behavior for a monetized page.</p>
@@ -604,9 +600,9 @@
   </div>
 
   <script>
-    const API_BASE = "https://tools-api.taxmonitor.pro";
-    const gameFile = "irs-notice-showdown.html";
-    const gameSlug = "irs-notice-showdown";
+    const API_BASE = 'https://tools-api.taxmonitor.pro';
+    const gameFile = 'irs-notice-showdown.html';
+    const gameSlug = 'irs-notice-showdown';
     const tokenCost = 8;
 
     const demoQuestions = [
@@ -643,6 +639,39 @@
       if (el) el.innerHTML = html || '';
     }
 
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function isPreviewRuntime() {
+      return ['about:', 'blob:', 'data:', 'file:'].includes(window.location.protocol);
+    }
+
+    function getNetworkMessage(error) {
+      if (!navigator.onLine) return 'You appear to be offline.';
+      if (isPreviewRuntime()) return 'Live API calls are unavailable in this preview environment.';
+      return error?.message ? `Network request failed: ${error.message}` : 'Network request failed.';
+    }
+
+    function buildFailureResponse(error) {
+      return {
+        ok: false,
+        status: 0,
+        json: {},
+        error,
+        networkError: true
+      };
+    }
+
+    function isAuthenticatedPayload(payload) {
+      return !!(payload && (payload.isAuthenticated === true || payload.authenticated === true || payload.user));
+    }
+
     function toggleFaq(button) {
       const content = button.nextElementSibling;
       const icon = button.querySelector('.faq-icon');
@@ -674,19 +703,28 @@
       document.body.classList.remove('overflow-hidden');
     }
 
+    async function safeFetch(path, options) {
+      try {
+        const res = await fetch(API_BASE + path, options);
+        const json = await res.json().catch(() => ({}));
+        return { ok: res.ok, status: res.status, json, res, networkError: false };
+      } catch (error) {
+        console.warn('API fetch failed:', path, error);
+        return buildFailureResponse(error);
+      }
+    }
+
     async function apiGet(path) {
-      const res = await fetch(API_BASE + path, { method: 'GET', credentials: 'include' });
-      return { res, json: await res.json().catch(() => ({})) };
+      return safeFetch(path, { method: 'GET', credentials: 'include' });
     }
 
     async function apiPost(path, body) {
-      const res = await fetch(API_BASE + path, {
+      return safeFetch(path, {
         method: 'POST',
         credentials: 'include',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(body)
       });
-      return { res, json: await res.json().catch(() => ({})) };
     }
 
     function cleanQueryParam(name) {
@@ -704,10 +742,17 @@
       setStatus('Starting sign-in…');
       const started = await apiPost('/v1/auth/start', { returnTo: window.location.href });
       const redirectUrl = started?.json?.redirectUrl || started?.json?.url || '';
-      if (started.res.ok && redirectUrl) {
+
+      if (started.ok && redirectUrl) {
         window.location.href = redirectUrl;
         return;
       }
+
+      if (started.networkError) {
+        setStatus(getNetworkMessage(started.error));
+        return;
+      }
+
       window.location.href = '/index.html';
     }
 
@@ -734,8 +779,8 @@
       const created = await apiPost('/v1/checkout/sessions', payload);
       const checkoutUrl = created?.json?.checkoutUrl || created?.json?.url || '';
 
-      if (!created.res.ok || !checkoutUrl) {
-        setStatus('Could not start checkout. Please try again.');
+      if (!created.ok || !checkoutUrl) {
+        setStatus(created.networkError ? getNetworkMessage(created.error) : 'Could not start checkout. Please try again.');
         return;
       }
 
@@ -747,18 +792,21 @@
       if (!sessionId) return;
 
       setStatus('Confirming purchase…');
-
       const statusRes = await apiGet(`/v1/checkout/status?session_id=${encodeURIComponent(sessionId)}`);
       cleanQueryParam('session_id');
 
-      if (!statusRes.res.ok) {
-        setStatus('Purchase confirmation failed. Please refresh.');
+      if (!statusRes.ok) {
+        setStatus(statusRes.networkError ? getNetworkMessage(statusRes.error) : 'Purchase confirmation failed. Please refresh.');
         return;
       }
 
       const bal = await apiGet('/v1/tokens/balance');
-      const balance = Number(bal.json && bal.json.balance);
+      if (!bal.ok) {
+        setStatus(bal.networkError ? getNetworkMessage(bal.error) : 'Purchase confirmed, but balance did not load.');
+        return;
+      }
 
+      const balance = Number(bal.json && bal.json.balance);
       if (!Number.isFinite(balance)) {
         setStatus('Purchase confirmed, but balance did not load.');
         return;
@@ -786,15 +834,25 @@
 
     async function preflightUnlock() {
       setStatus('Checking session…');
-
       const me = await apiGet('/v1/auth/me');
-      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
+
+      if (me.networkError) {
+        setStatus(getNetworkMessage(me.error));
+        return;
+      }
+
+      if (!me.ok || !isAuthenticatedPayload(me.json)) {
         await beginLogin();
         return;
       }
 
       setStatus('Checking token balance…');
       const bal = await apiGet('/v1/tokens/balance');
+      if (!bal.ok) {
+        setStatus(bal.networkError ? getNetworkMessage(bal.error) : 'Could not load token balance.');
+        return;
+      }
+
       const balance = Number(bal.json && bal.json.balance);
       if (!Number.isFinite(balance)) {
         setStatus('Could not load token balance.');
@@ -812,7 +870,6 @@
 
     async function confirmSpendAndRedirect() {
       setStatus('Confirming token spend…');
-
       const spend = await apiPost('/v1/tokens/spend', {
         amount: tokenCost,
         idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
@@ -820,9 +877,9 @@
         slug: gameSlug
       });
 
-      if (!spend.res.ok) {
+      if (!spend.ok) {
         hideConfirmModal();
-        setStatus('Spend failed. Please try again.');
+        setStatus(spend.networkError ? getNetworkMessage(spend.error) : 'Spend failed. Please try again.');
         return;
       }
 
@@ -846,15 +903,26 @@
 
     async function refreshGrantStatus() {
       const me = await apiGet('/v1/auth/me');
-      if (!me.res.ok) {
+      if (me.networkError) {
+        setUnlockMode('locked');
+        setStatus(getNetworkMessage(me.error));
+        return { allowed: false, networkError: true };
+      }
+
+      if (!me.ok || !isAuthenticatedPayload(me.json)) {
         setUnlockMode('locked');
         setStatus('');
         return { allowed: false };
       }
 
       const access = await apiGet(`/v1/games/access?slug=${encodeURIComponent(gameSlug)}`);
-      const allowed = !!(access.res.ok && access.json && access.json.allowed);
+      if (access.networkError) {
+        setUnlockMode('locked');
+        setStatus(getNetworkMessage(access.error));
+        return { allowed: false, networkError: true };
+      }
 
+      const allowed = !!(access.ok && access.json && access.json.allowed);
       if (allowed) {
         setUnlockMode('resume');
         setStatus('Active session detected. You can resume without spending tokens.');
@@ -879,7 +947,9 @@
             resumePlay();
             return;
           }
-          preflightUnlock();
+          if (!state.networkError) {
+            preflightUnlock();
+          }
         });
       });
     }
@@ -937,7 +1007,7 @@
         return `
           <button type="button" class="demo-card w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-primary hover:bg-blue-50 transition-all" data-idx="${idx}">
             <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-700 font-bold mr-3">${letter}</span>
-            <span class="text-gray-700">${opt}</span>
+            <span class="text-gray-700">${escapeHtml(opt)}</span>
           </button>
         `;
       }).join('');
@@ -976,7 +1046,7 @@
       const feedback = document.getElementById('demo-feedback');
       feedback.classList.remove('hidden');
       feedback.className = `mt-6 p-4 rounded-xl ${isCorrect ? 'bg-green-100 text-green-900' : 'bg-red-100 text-red-900'}`;
-      feedback.innerHTML = `<strong>${isCorrect ? 'Correct.' : 'Not quite.'}</strong> ${q.explanation}`;
+      feedback.innerHTML = `<strong>${isCorrect ? 'Correct.' : 'Not quite.'}</strong> ${escapeHtml(q.explanation)}`;
 
       const nextBtn = document.getElementById('demo-next');
       nextBtn.textContent = demoState.index < demoQuestions.length - 1 ? 'Next' : 'See Results';
@@ -985,9 +1055,7 @@
 
     function demoShowResults() {
       document.getElementById('demo-results-title').textContent = demoState.correct === demoQuestions.length ? 'Perfect demo run' : 'Demo complete';
-      document.getElementById('demo-results-message').textContent = demoState.correct === demoQuestions.length
-        ? 'Two out of two. Suspiciously competent.'
-        : 'You finished the demo. Full play still requires a confirmed token spend.';
+      document.getElementById('demo-results-message').textContent = demoState.correct === demoQuestions.length ? 'Two out of two. Suspiciously competent.' : 'You finished the demo. Full play still requires a confirmed token spend.';
       document.getElementById('demo-final-score').textContent = String(demoState.score);
       document.getElementById('demo-correct').textContent = `${demoState.correct}/${demoQuestions.length}`;
       demoShow('demo-results');
@@ -1069,9 +1137,29 @@
       });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      handleCheckoutReturn();
-      refreshGrantStatus();
+    function runSelfTests() {
+      console.assert(gameFile === 'irs-notice-showdown.html', 'gameFile should match slug html');
+      console.assert(gameSlug === 'irs-notice-showdown', 'gameSlug should match slug without extension');
+      console.assert(tokenCost === 8, 'tokenCost should remain 8');
+      console.assert(isPreviewRuntime() === ['about:', 'blob:', 'data:', 'file:'].includes(window.location.protocol), 'preview runtime detection should match protocol set');
+      console.assert(getNetworkMessage(new Error('Failed to fetch')).length > 0, 'network message should be non-empty');
+      console.assert(isAuthenticatedPayload({ isAuthenticated: true }) === true, 'auth payload true should be recognized');
+      console.assert(isAuthenticatedPayload({ isAuthenticated: false }) === false, 'auth payload false should be rejected');
+    }
+
+    window.__aboutGamesTests = {
+      buildFailureResponse,
+      escapeHtml,
+      getNetworkMessage,
+      isAuthenticatedPayload,
+      isPreviewRuntime,
+      runSelfTests
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      runSelfTests();
+      await handleCheckoutReturn();
+      await refreshGrantStatus();
       wireUnlockButtons();
       wireConfirmModal();
       wireDemoModal();
@@ -1093,8 +1181,8 @@
       });
     });
 
-    window.addEventListener('pageshow', () => {
-      refreshGrantStatus();
+    window.addEventListener('pageshow', async () => {
+      await refreshGrantStatus();
     });
   </script>
 </body>
