@@ -203,10 +203,16 @@ async function parseRawJson(request) {
  * Cookie helpers
  * ------------------------------------------ */
 
-function buildCookie(name, value, { httpOnly = true, maxAgeSec = null } = {}) {
+function cookieDomain(env) {
+  const d = String(env?.COOKIE_DOMAIN || ".taxmonitor.pro").trim();
+  return d || ".taxmonitor.pro";
+}
+
+function buildCookie(name, value, { domain = null, httpOnly = true, maxAgeSec = null } = {}) {
   const parts = [];
   parts.push(`${name}=${encodeURIComponent(value)}`);
   parts.push("Path=/");
+  if (domain) parts.push(`Domain=${domain}`);
   parts.push("Secure");
   parts.push("SameSite=Lax");
   if (httpOnly) parts.push("HttpOnly");
@@ -214,20 +220,20 @@ function buildCookie(name, value, { httpOnly = true, maxAgeSec = null } = {}) {
   return parts.join("; ");
 }
 
-function buildSessionCookies({ accountId, email, sessionId }) {
+function buildSessionCookies({ accountId, cookieDomain: domain = null, email, sessionId }) {
   const maxAgeSec = Math.floor(SESSION_TTL_MS / 1000);
   return [
-    buildCookie(COOKIE_NAMES.session, sessionId, { httpOnly: true, maxAgeSec }),
-    buildCookie(COOKIE_NAMES.accountId, accountId, { httpOnly: false, maxAgeSec }),
-    buildCookie(COOKIE_NAMES.email, email, { httpOnly: false, maxAgeSec }),
+    buildCookie(COOKIE_NAMES.session, sessionId, { domain, httpOnly: true, maxAgeSec }),
+    buildCookie(COOKIE_NAMES.accountId, accountId, { domain, httpOnly: false, maxAgeSec }),
+    buildCookie(COOKIE_NAMES.email, email, { domain, httpOnly: false, maxAgeSec }),
   ];
 }
 
-function clearCookies() {
+function clearCookies(domain = null) {
   return [
-    buildCookie(COOKIE_NAMES.session, "", { httpOnly: true, maxAgeSec: 0 }),
-    buildCookie(COOKIE_NAMES.accountId, "", { httpOnly: false, maxAgeSec: 0 }),
-    buildCookie(COOKIE_NAMES.email, "", { httpOnly: false, maxAgeSec: 0 }),
+    buildCookie(COOKIE_NAMES.session, "", { domain, httpOnly: true, maxAgeSec: 0 }),
+    buildCookie(COOKIE_NAMES.accountId, "", { domain, httpOnly: false, maxAgeSec: 0 }),
+    buildCookie(COOKIE_NAMES.email, "", { domain, httpOnly: false, maxAgeSec: 0 }),
   ];
 }
 
@@ -1264,7 +1270,9 @@ async function handleAuthComplete(request, env) {
   const location = `${appOrigin}${redirect}`;
 
   const headers = new Headers({ Location: location });
-  for (const c of buildSessionCookies({ accountId, email, sessionId })) headers.append("Set-Cookie", c);
+  for (const c of buildSessionCookies({ accountId, cookieDomain: cookieDomain(env), email, sessionId })) {
+    headers.append("Set-Cookie", c);
+  }
 
   // Browser redirect. Not CORS.
   return new Response(null, { status: 302, headers });
@@ -1287,7 +1295,7 @@ async function handleAuthLogout(request, env) {
 
   // Use the standard JSON helper for body + CORS, then append cookies safely.
   const res = json(request, env, { ok: true }, 200);
-  for (const c of clearCookies()) res.headers.append("Set-Cookie", c);
+  for (const c of clearCookies(cookieDomain(env))) res.headers.append("Set-Cookie", c);
   return res;
 }
 
