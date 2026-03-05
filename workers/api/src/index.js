@@ -679,50 +679,46 @@ async function paypalVerifyWebhookSignature(env, request, webhookEvent) {
   try {
     accessToken = await paypalGetAccessToken(env);
   } catch (err) {
-    return json(
-      request,
-      env,
-      { error: "paypal_token_error", message: String(err?.message || err || "PayPal token error") },
-      502
-    );
+    return { ok: false, reason: "paypal_token_error", detail: String(err?.message || err || "PayPal token error") };
   }
 
-  const { cancel_url, success_url } = buildCheckoutReturnUrls(request);
-  const idempotencyKey = String(request.headers.get("Idempotency-Key") || "").trim() || `checkout:${auth.accountId}:${item}`;
+  const body = {
+    auth_algo: headers.auth_algo,
+    cert_url: headers.cert_url,
+    transmission_id: headers.transmission_id,
+    transmission_sig: headers.transmission_sig,
+    transmission_time: headers.transmission_time,
+    webhook_id: webhookId,
+    webhook_event: webhookEvent,
+  };
 
-  let created;
+  const base = String(env.PAYPAL_ENV || "").trim().toLowerCase() === "live"
+    ? "https://api-m.paypal.com"
+    : "https://api-m.sandbox.paypal.com";
+
+  let res;
   try {
-    created = await paypalCreateOrder({
-      accessToken,
-      amountUsd,
-      cancel_url,
-      env,
-      metadata: {
-        accountId: auth.accountId,
-        description: `TaxTools token pack: ${item}`,
-        idempotencyKey,
+    res = await fetch(`${base}/v1/notifications/verify-webhook-signature`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
       },
-      success_url,
+      body: JSON.stringify(body),
     });
   } catch (err) {
-    return json(request, env, { error: "paypal_error", message: String(err?.message || err) }, 502);
+    return { ok: false, reason: "paypal_verify_fetch_error", detail: String(err?.message || err || "Fetch failed") };
   }
 
-  const { checkoutUrl, orderId } = created;
-  const sessionId = orderId;
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    return { ok: false, reason: "paypal_verify_http_error", detail: { status: res.status, data } };
+  }
 
-  const tokens = SKU_TOKEN_COUNTS[item];
+  const status = String(data?.verification_status || "").toUpperCase();
+  if (status === "SUCCESS") return { ok: true };
 
-  await r2PutJson(env, keyOrder(sessionId), {
-    accountId: auth.accountId,
-    amountUsd,
-    createdAt: nowIso(),
-    provider: "paypal",
-    sku: item,
-    tokens,
-  });
-
-  return json(request, env, { checkoutUrl, sessionId }, 201);
+  return { ok: false, reason: "verification_failed", detail: data || null };
 }
 
 async function handleCheckoutSessions(request, env) {
