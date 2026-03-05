@@ -117,6 +117,9 @@
 
           <button
             id="account-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="account-menu"
             class="flex items-center gap-2 text-sm text-blue-200 hover:text-white transition"
           >
             <span id="auth-email"></span>
@@ -231,19 +234,60 @@ var balanceMobile=document.getElementById("token-balance-mobile");
 var accountToggle=document.getElementById("account-toggle");
 var accountMenu=document.getElementById("account-menu");
 
+var resourcesToggle=document.getElementById("resources-toggle");
+var resourcesMenu=document.getElementById("resources-menu");
+
 var signout=document.getElementById("signout-link");
 var signoutMobile=document.getElementById("signout-link-mobile");
 
-if(accountToggle){
-accountToggle.addEventListener("click",function(){
-accountMenu.classList.toggle("hidden");
+function setExpanded(btn,isOpen){
+if(!btn)return;
+btn.setAttribute("aria-expanded",isOpen?"true":"false");
+}
+
+function closeMenu(btn,menu){
+if(!menu)return;
+menu.classList.add("hidden");
+setExpanded(btn,false);
+}
+
+function toggleMenu(btn,menu,otherBtn,otherMenu){
+if(!btn||!menu)return;
+var willOpen=menu.classList.contains("hidden");
+if(otherMenu)closeMenu(otherBtn,otherMenu);
+menu.classList.toggle("hidden",!willOpen);
+setExpanded(btn,willOpen);
+}
+
+if(accountToggle&&accountMenu){
+accountToggle.addEventListener("click",function(e){
+e.stopPropagation();
+toggleMenu(accountToggle,accountMenu,resourcesToggle,resourcesMenu);
+});
+}
+
+if(resourcesToggle&&resourcesMenu){
+resourcesToggle.addEventListener("click",function(e){
+e.stopPropagation();
+toggleMenu(resourcesToggle,resourcesMenu,accountToggle,accountMenu);
 });
 }
 
 document.addEventListener("click",function(e){
-if(!accountMenu||!accountToggle)return;
-var inside=accountMenu.contains(e.target)||accountToggle.contains(e.target);
-if(!inside)accountMenu.classList.add("hidden");
+if(accountMenu&&accountToggle){
+var insideA=accountMenu.contains(e.target)||accountToggle.contains(e.target);
+if(!insideA)closeMenu(accountToggle,accountMenu);
+}
+if(resourcesMenu&&resourcesToggle){
+var insideR=resourcesMenu.contains(e.target)||resourcesToggle.contains(e.target);
+if(!insideR)closeMenu(resourcesToggle,resourcesMenu);
+}
+});
+
+document.addEventListener("keydown",function(e){
+if(e.key!=="Escape")return;
+closeMenu(accountToggle,accountMenu);
+closeMenu(resourcesToggle,resourcesMenu);
 });
 
 function wireSignout(link){
