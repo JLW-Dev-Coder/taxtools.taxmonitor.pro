@@ -192,10 +192,10 @@
   <!-- PARTIAL:header -->
 
   <!-- Canonical status line (required) -->
-  <div id="status" class="sr-only" aria-live="polite"></div>
+  <span id="status" class="sr-only" aria-live="polite">Checking access…</span>
 
   <!-- GAME UI (as provided) -->
-  <div id="app" class="h-full overflow-auto" style="background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%);">
+  <div id="app" class="h-full w-full overflow-auto custom-scrollbar" style="background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%); padding-bottom: 6rem;">
     <!-- Intro Screen -->
     <div id="intro-screen" class="min-h-full flex flex-col items-center justify-center p-6 text-center">
       <div class="relative">
@@ -218,7 +218,7 @@
           <p>🏆 Get 7 out of 10 for the JACKPOT!</p>
         </div>
       </div>
-      <button onclick="startGame()" class="slot-font text-2xl bg-gradient-to-r from-red-600 via-red-500 to-red-600 text-white px-12 py-4 rounded-full border-4 border-yellow-400 hover:scale-105 transition-transform pulse-glow">🎰 PULL TO START 🎰</button>
+      <button id="start-btn" onclick="startGame()" disabled class="slot-font text-2xl bg-gradient-to-r from-red-600 via-red-500 to-red-600 text-white px-12 py-4 rounded-full border-4 border-yellow-400 transition-transform pulse-glow opacity-50 cursor-not-allowed">🎰 PULL TO START 🎰</button>
 
       <!-- Mini slot machine decoration -->
       <div class="mt-8 flex gap-2">
@@ -340,10 +340,15 @@
   <!-- PARTIAL:footer -->
 
   <script>
-    // --- Canonical access gate ---
+    // --- Canonical access gate (Canvas-equivalent) ---
     const API_BASE = "https://tools-api.taxmonitor.pro";
-    const slug = "irs-notice-jackpot";
-    const aboutPage = "/about-games/irs-notice-jackpot.html";
+    const GAME_FILE = "irs-notice-jackpot.html";
+    const GAME_SLUG = "irs-notice-jackpot";
+    const ABOUT_URL = "/about-games/" + GAME_FILE;
+
+    function redirectToAbout() {
+      window.location.href = ABOUT_URL;
+    }
 
     function setStatus(msg) {
       const el = document.getElementById("status");
@@ -352,28 +357,43 @@
 
     async function apiGet(path) {
       const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
-      return { res, json: await res.json().catch(() => ({})) };
+      const json = await res.json().catch(() => ({}));
+      return { res, json };
     }
 
-    async function bootGate() {
+    async function gateAccess() {
       setStatus("Checking session…");
       const me = await apiGet("/v1/auth/me");
-      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-        window.location.href = aboutPage;
-        return;
-      }
+      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) return false;
 
       setStatus("Loading token balance…");
-      await apiGet("/v1/tokens/balance");
+      const bal = await apiGet("/v1/tokens/balance");
+      if (!bal.res.ok) return false;
 
       setStatus("Verifying access grant…");
-      const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(slug));
-      if (!access.res.ok || !access.json || access.json.allowed !== true) {
-        window.location.href = aboutPage;
-        return;
-      }
+      const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(GAME_SLUG));
+      if (!access.res.ok || !access.json || access.json.allowed !== true) return false;
 
       setStatus("Access granted.");
+      return true;
+    }
+
+    async function endRun(result) {
+      await fetch(API_BASE + "/v1/games/end", {
+        method: "POST",
+        credentials: "include",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ result, slug: GAME_SLUG })
+      }).catch(() => {});
+    }
+
+    function initializeApp() {
+      const startBtn = document.getElementById("start-btn");
+      if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        startBtn.classList.add("hover:scale-105");
+      }
     }
 
     // --- Game code (as provided) ---
@@ -727,6 +747,9 @@
     function endGame() {
       document.getElementById('game-screen').classList.add('hidden');
 
+      const result = wins >= 7 ? "completed" : "lost";
+      endRun(result);
+
       if (wins >= 7) {
         // Jackpot!
         document.getElementById('jackpot-screen').classList.remove('hidden');
@@ -759,10 +782,18 @@
       document.getElementById('intro-screen').classList.remove('hidden');
     }
 
-    // Start gate ASAP
-    bootGate().catch(() => {
-      setStatus("Error loading game. Redirecting…");
-      window.location.href = aboutPage;
+        // Boot sequence: gate first, then initialize
+    (async () => {
+      const ok = await gateAccess();
+      if (!ok) {
+        setStatus("Access denied. Redirecting…");
+        redirectToAbout();
+        return;
+      }
+      initializeApp();
+    })().catch(() => {
+      setStatus('Error loading game. Redirecting…');
+      redirectToAbout();
     });
   </script>
 </body>
