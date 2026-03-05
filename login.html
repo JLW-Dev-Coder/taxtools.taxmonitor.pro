@@ -1,304 +1,270 @@
+<!-- login.html -->
 <!doctype html>
 <html lang="en" class="h-full">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TaxTools.Tax Monitor Pro — Login</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TaxTools.Tax Monitor Pro — Login</title>
 
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="/_sdk/element_sdk.js"></script>
+<script src="/_sdk/data_sdk.js" type="text/javascript"></script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
 
-  <link rel="apple-touch-icon" href="/assets/favicon.ico" />
-  <link rel="icon" href="/assets/favicon.ico" sizes="any" />
-  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
+<link rel="apple-touch-icon" href="/assets/favicon.ico" />
+<link rel="icon" href="/assets/favicon.ico" sizes="any" />
+<link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            action: "#1d4ed8",
-            charcoal: "#2d3748",
-            navy: "#0f2747",
-            warm: "#f97316"
-          },
-          fontFamily: { dm: ['"DM Sans"', "system-ui", "sans-serif"] }
-        }
-      }
-    };
-  </script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+action: "#1d4ed8",
+charcoal: "#2d3748",
+navy: "#0f2747",
+warm: "#f97316"
+},
+fontFamily: { dm: ['"DM Sans"', "system-ui", "sans-serif"] }
+}
+}
+};
+</script>
 
-  <style>
-    * { font-family: "DM Sans", system-ui, sans-serif; }
-    *, *::before, *::after { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body { box-sizing: border-box; }
+<style>
+* { font-family: "DM Sans", system-ui, sans-serif; }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body { box-sizing: border-box; }
 
-    .modal-overlay { backdrop-filter: blur(4px); }
+.hero-grid {
+background-color: #0f2747;
+background-image:
+linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+background-size: 40px 40px;
+position: relative;
+overflow: hidden;
+}
 
-    /* Hero grid + glow system (match index.html) */
-    .hero-grid {
-      background-color: #0f2747;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      position: relative;
-      overflow: hidden;
-    }
+.hero-glow::before {
+content: "";
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 800px;
+height: 800px;
+background: radial-gradient(circle, rgba(29,78,216,0.35) 0%, rgba(29,78,216,0.15) 35%, rgba(15,39,71,0) 70%);
+pointer-events: none;
+z-index: 0;
+}
 
-    .hero-glow::before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(29,78,216,0.35) 0%, rgba(29,78,216,0.15) 35%, rgba(15,39,71,0) 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
+.hero-content {
+position: relative;
+z-index: 1;
+}
 
-    .hero-content {
-      position: relative;
-      z-index: 1;
-    }
+.tool-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.tool-card:hover { transform: translateY(-2px); }
 
-    /* Card system */
-    .tool-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-    .tool-card:hover { transform: translateY(-2px); }
+.card-glow {
+box-shadow:
+0 0 0 1px rgba(255, 255, 255, 0.10),
+0 24px 60px -18px rgba(0, 0, 0, 0.65);
+backdrop-filter: blur(14px);
+-webkit-backdrop-filter: blur(14px);
+}
 
-    .card-glow {
-      box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.10),
-        0 24px 60px -18px rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
+.btn-action { background: #1d4ed8; }
+.btn-action:hover { background: #1e40af; }
 
-    .btn-action { background: #1d4ed8; }
-    .btn-action:hover { background: #1e40af; }
-
-    .glass-card {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 16px;
-      box-shadow: 0 14px 40px -18px rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .fade-in-up { animation: fadeInUp 420ms ease-out both; }
-
-    @view-transition { navigation: auto; }
-  </style>
+.glass-card {
+background: rgba(255,255,255,0.06);
+border: 1px solid rgba(255, 255, 255, 0.14);
+border-radius: 16px;
+box-shadow: 0 14px 40px -18px rgba(0, 0, 0, 0.6);
+backdrop-filter: blur(14px);
+-webkit-backdrop-filter: blur(14px);
+}
+</style>
 </head>
 
 <body class="h-full bg-navy text-charcoal overflow-auto">
-  <div id="app" class="w-full min-h-full hero-grid hero-glow">
 
-    <div class="hero-content min-h-screen flex flex-col">
+<div id="app" class="w-full min-h-full hero-grid hero-glow">
+<div class="hero-content min-h-screen flex flex-col">
 
-    <!-- Main -->
-    <main class="relative flex-1">
-      <section class="px-6 py-16 md:py-20">
-        <div class="mx-auto max-w-2xl">
+<main class="relative flex-1">
+<section class="px-6 py-16 md:py-20">
+<div class="mx-auto max-w-2xl">
 
-          <div class="text-center mb-10 fade-in-up">
-            <div class="flex flex-col items-center justify-center mb-6">
-              <a href="/index.html" class="flex flex-col items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/60 rounded-xl">
-                <div class="w-[54px] h-[54px] rounded-xl flex items-center justify-center shadow-md bg-action">
-                  <span class="text-white font-bold text-xl tracking-tight">TM</span>
-                </div>
-                <span class="mt-4 text-white font-semibold text-[2rem] tracking-tight">Tax Tools</span>
-              </a>
-            </div>
+<div class="text-center mb-10">
+<div class="flex flex-col items-center justify-center mb-6">
 
-            <h1 class="text-3xl sm:text-4xl font-bold text-white tracking-tight text-center">Sign in to buy tokens</h1>
-            <p class="mt-3 text-blue-100">We’ll email you a one-time magic link. No passwords, no nonsense.</p>
-          </div>
+<a href="/index.html" class="flex flex-col items-center justify-center">
+<div class="w-[54px] h-[54px] rounded-xl flex items-center justify-center shadow-md bg-action">
+<span class="text-white font-bold text-xl">TM</span>
+</div>
 
-          <div class="mx-auto max-w-[560px] fade-in-up" style="animation-delay: 60ms;">
-            <div class="tool-card card-glow w-full rounded-2xl border border-white/15 p-8 sm:p-10 bg-white/10">
+<span class="mt-4 text-white font-semibold text-[2rem] tracking-tight">
+Tax Tools
+</span>
 
-              <!-- Error (hidden) -->
-              <div id="error-alert" class="hidden mb-5 rounded-xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
-                <div class="font-semibold text-red-200">Sign-in failed</div>
-                <div id="error-message" class="mt-1">Please try again.</div>
-              </div>
+</a>
+</div>
 
-              <!-- Success (hidden) -->
-              <div id="success-alert" class="hidden mb-5 rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
-                <div class="font-semibold text-emerald-200">Check your email</div>
-                <div class="mt-1">We sent you a magic link to finish signing in.</div>
-              </div>
+<h1 class="text-3xl sm:text-4xl font-bold text-white text-center">
+Sign in to buy tokens
+</h1>
 
-              <form id="magic-form" class="space-y-4" novalidate>
-                <label class="block">
-                  <span class="text-sm text-slate-300">Email</span>
-                  <input
-                    id="email"
-                    type="email"
-                    autocomplete="email"
-                    inputmode="email"
-                    required
-                    placeholder="you@domain.com"
-                    class="mt-2 w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-blue-300/60"
-                  />
-                </label>
+<p class="mt-3 text-blue-100">
+We’ll email you a one-time magic link. No passwords, no nonsense.
+</p>
 
-                <button id="magic-btn" type="submit" class="btn-action w-full py-3.5 px-6 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200 shadow-lg shadow-blue-900/30 hover:shadow-blue-900/40 hover:scale-[1.02] active:scale-[0.98]">
-                  Send magic link
-                </button>
+</div>
 
-                <p class="text-xs text-white/70">
-                  By continuing, you agree to the
-                  <a href="/legal/terms.html" class="text-white hover:text-warm transition">Terms</a>
-                  and
-                  <a href="/legal/privacy.html" class="text-slate-300 hover:text-amber-400 transition">Privacy Policy</a>.
-                </p>
+<div class="mx-auto max-w-[560px]">
 
-                <div class="text-xs text-slate-500" aria-hidden="true">
-                  <span class="text-slate-400">After signing in, you will return to the main page.</span>
-                  
-                </div>
-              </form>
+<div class="tool-card card-glow w-full rounded-2xl border border-white/15 p-8 sm:p-10 bg-white/10">
 
-              <div class="mt-8 rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-xs text-white/80">
-                <div class="font-semibold text-white">Reminder</div>
-                <div class="mt-1 text-white/70">TaxTools provides educational games and token-based access. It does not provide tax advice.</div>
-              </div>
+<div id="error-alert" class="hidden mb-5 rounded-xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+<div class="font-semibold text-red-200">Sign-in failed</div>
+<div id="error-message" class="mt-1">Please try again.</div>
+</div>
 
-            </div>
-          </div>
+<div id="success-alert" class="hidden mb-5 rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+<div class="font-semibold text-emerald-200">Check your email</div>
+<div class="mt-1">We sent you a magic link to finish signing in.</div>
+</div>
 
-        </div>
-      </section>
-    </main>
+<form id="magic-form" class="space-y-4" novalidate>
 
-    <!-- Footer -->
-    <footer class="glass-card mx-4 mb-4 px-6 py-4">
-      <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        <p class="text-white/70 text-sm">© <span id="footer-year"></span> TaxTools.Tax Monitor Pro. All rights reserved.</p>
-        <div class="flex items-center gap-6">
-          <a href="/legal/privacy.html" class="text-white/70 hover:text-warm text-sm transition-colors">Privacy Policy</a>
-          <a href="/legal/terms.html" class="text-slate-400 hover:text-amber-400 text-sm transition-colors">Terms of Service</a>
-          <a href="/contact.html" class="text-slate-400 hover:text-amber-400 text-sm transition-colors">Contact Support</a>
-        </div>
-      </div>
-    </footer>
+<label class="block">
+<span class="text-sm text-slate-300">Email</span>
 
-    </div>
-  </div>
+<input
+id="email"
+type="email"
+autocomplete="email"
+required
+placeholder="you@domain.com"
+class="mt-2 w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-blue-300/60"
+/>
 
-  <script>
-    const API_BASE = "https://tools-api.taxmonitor.pro";
+</label>
 
-    function getRedirect() {
-      const p = new URLSearchParams(String(window.location.search || ""));
-      const raw = p.get("redirect");
-      const redirect = raw && String(raw).trim() ? String(raw).trim() : "/index.html";
-      return redirect.startsWith("/") ? redirect : "/index.html";
-    }
+<button
+id="magic-btn"
+type="submit"
+class="btn-action w-full py-3.5 px-6 rounded-xl font-semibold text-white flex items-center justify-center"
+>
 
-    function normalizeEmail(raw) {
-      return String(raw || "").trim().toLowerCase();
-    }
+Send magic link
 
-    function setText(id, value) {
-      const el = document.getElementById(id);
-      if (el) el.textContent = String(value ?? "");
-    }
+</button>
 
-    function show(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.remove("hidden");
-    }
+</form>
 
-    function hide(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.add("hidden");
-    }
+</div>
+</div>
+</div>
+</section>
+</main>
 
-    function showError(message) {
-      setText("error-message", message || "Please try again.");
-      show("error-alert");
-    }
+<footer class="glass-card mx-4 mb-4 px-6 py-4">
+<div class="max-w-6xl mx-auto flex items-center justify-between">
 
-    function hideError() {
-      hide("error-alert");
-    }
+<p class="text-white/70 text-sm">
+© <span id="footer-year"></span> TaxTools.Tax Monitor Pro
+</p>
 
-    function showSuccess() {
-      show("success-alert");
-    }
+</div>
+</footer>
 
-    function hideSuccess() {
-      hide("success-alert");
-    }
+</div>
+</div>
 
-    async function startMagicLink(email, redirect) {
-      const res = await fetch(API_BASE + "/v1/auth/start", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, redirect })
-      });
+<script>
 
-      const data = await res.json().catch(() => null);
-      if (!res.ok) {
-        const msg = data && (data.message || data.error) ? String(data.message || data.error) : "Request failed.";
-        throw new Error(msg);
-      }
-      return data;
-    }
+/* FIX: same-origin API */
+const API_BASE = ""
 
-    (function init() {
-      setText("footer-year", new Date().getFullYear());
-      setText("redirect-preview", getRedirect());
+function normalizeEmail(v){
+return String(v || "").trim().toLowerCase()
+}
 
-      const form = document.getElementById("magic-form");
-      const btn = document.getElementById("magic-btn");
-      const emailEl = document.getElementById("email");
+function show(id){
+document.getElementById(id).classList.remove("hidden")
+}
 
-      if (!form || !btn || !emailEl) return;
+function hide(id){
+document.getElementById(id).classList.add("hidden")
+}
 
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        hideError();
-        hideSuccess();
+async function startMagicLink(email){
 
-        const email = normalizeEmail(emailEl.value);
-        if (!email || !email.includes("@")) {
-          showError("Enter a valid email.");
-          return;
-        }
+const res = await fetch(API_BASE + "/v1/auth/start",{
+method:"POST",
+credentials:"include",
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify({ email })
+})
 
-        btn.disabled = true;
-        btn.textContent = "Sending...";
+const data = await res.json().catch(()=>null)
 
-        try {
-          await startMagicLink(email, getRedirect());
-          showSuccess();
-        } catch (err) {
-          showError(err && err.message ? err.message : "Sign-in failed.");
-        } finally {
-          btn.disabled = false;
-          btn.textContent = "Send magic link";
-        }
-      });
-    })();
-  </script>
+if(!res.ok){
+throw new Error(data?.message || data?.error || "Request failed")
+}
+
+return data
+}
+
+document.getElementById("footer-year").textContent = new Date().getFullYear()
+
+const form = document.getElementById("magic-form")
+const btn = document.getElementById("magic-btn")
+
+form.addEventListener("submit", async (e)=>{
+
+e.preventDefault()
+
+hide("error-alert")
+hide("success-alert")
+
+const email = normalizeEmail(document.getElementById("email").value)
+
+if(!email.includes("@")){
+document.getElementById("error-message").textContent="Enter a valid email."
+show("error-alert")
+return
+}
+
+btn.disabled=true
+btn.textContent="Sending..."
+
+try{
+
+await startMagicLink(email)
+
+show("success-alert")
+
+}catch(err){
+
+document.getElementById("error-message").textContent = err.message
+show("error-alert")
+
+}
+
+btn.disabled=false
+btn.textContent="Send magic link"
+
+})
+
+</script>
+
 </body>
 </html>
