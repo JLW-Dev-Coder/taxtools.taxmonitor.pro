@@ -4,24 +4,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>IRS Detective • TaxTools Arcade</title>
   <meta name="description" content="Match common IRS transaction codes to their meanings in a fast, detective-style quiz. Educational only. Token-gated play." />
 
-  <link rel="icon" href="/assets/favicon.ico" sizes="any" />
-  <link rel="shortcut icon" href="/assets/favicon.ico" />
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="stylesheet" href="/styles/site.css" />
 
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
-
-  <!-- Game-like demo modal fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="/styles/site.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fredoka+One&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 
   <script>
     tailwind.config = {
@@ -44,8 +39,6 @@
             'accent-dark': '#ea580c',
             surface: '#f8fafc',
             warm: '#f97316',
-
-            /* Demo modal (game-like palette) */
             detective: '#1a1a2e',
             glow: '#00d4ff',
             success: '#00ff41',
@@ -60,17 +53,16 @@
   <style>
     * { font-family: 'DM Sans', system-ui, sans-serif; }
     html { scroll-behavior: smooth; }
+    body { box-sizing: border-box; }
     .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
     .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
     .btn-shadow { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); }
-
     .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     @keyframes pulse-ring {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
     }
 
-    /* Hero right-panel animation (subtle, game-y, no emojis) */
     .hero-panel { animation: hero-float 4.5s ease-in-out infinite; transform-origin: center; }
     @keyframes hero-float {
       0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 18px 28px rgba(0,0,0,0.25)); }
@@ -92,9 +84,6 @@
       50% { opacity: 0.9; }
     }
 
-    body { box-sizing: border-box; }
-
-    /* Demo modal: game-like effects */
     .game-bg {
       background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
       position: relative;
@@ -143,8 +132,8 @@
   </style>
 </head>
 
-<body class="h-full bg-white text-charcoal overflow-auto">
-  <div id="app" class="w-full min-h-full">
+<body class="h-full bg-white text-charcoal overflow-hidden font-dm">
+  <div id="app" class="h-full w-full overflow-auto custom-scrollbar">
 
     <!-- PARTIAL:header -->
 
@@ -153,15 +142,14 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
 
-          <!-- Content -->
           <div class="text-center lg:text-left">
             <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
               <span class="w-2 h-2 bg-accent rounded-full pulse-ring"></span>
               <span class="text-sm font-medium">Interactive Game • Instant Access</span>
             </div>
 
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">IRS Detective</h1>
-            <p class="text-xl md:text-2xl text-blue-100 mb-8">Decode the mystery of your refund offset by matching IRS transaction codes to their meanings.</p>
+            <h1 id="gameTitle" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">IRS Detective</h1>
+            <p id="gameSubtitle" class="text-xl md:text-2xl text-blue-100 mb-8">Decode the mystery of refund offsets by matching IRS transaction codes to their meanings.</p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <button id="btnUnlock" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105" type="button">
@@ -172,16 +160,14 @@
               </button>
             </div>
 
-            <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
+            <div class="mt-6 flex flex-col gap-3 justify-center lg:justify-start items-center lg:items-start">
               <p class="text-blue-200 text-sm">✓ Cookie session • ✓ Education only • ✓ Token-gated unlock</p>
-              <span id="status" class="text-blue-200 text-sm"></span>
+              <div id="status"></div>
             </div>
           </div>
 
-          <!-- Illustration -->
           <div class="relative flex justify-center lg:justify-end">
             <div class="relative w-full max-w-md">
-
               <div class="hero-panel relative rounded-3xl p-5 card-shadow border border-white/10" style="background: linear-gradient(135deg, rgba(30,27,75,0.85) 0%, rgba(49,46,129,0.85) 55%, rgba(67,56,202,0.85) 100%);">
                 <div class="flex items-center justify-between mb-5">
                   <div>
@@ -272,8 +258,8 @@
                     <p class="text-blue-200 text-xs">Per hit</p>
                   </div>
                   <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
-                    <p class="text-white text-lg font-bold">100</p>
-                    <p class="text-blue-200 text-xs">Skip</p>
+                    <p class="text-white text-lg font-bold">Run</p>
+                    <p class="text-blue-200 text-xs">to completion</p>
                   </div>
                 </div>
 
@@ -291,8 +277,8 @@
                 <p class="text-white/90 text-xs">per play</p>
               </div>
               <div class="absolute -bottom-3 -left-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(29,78,216,0.95)">
-                <p class="text-white text-sm font-bold">60 min</p>
-                <p class="text-white/90 text-xs">grant window</p>
+                <p class="text-white text-sm font-bold">Resume</p>
+                <p class="text-white/90 text-xs">if active</p>
               </div>
             </div>
           </div>
@@ -301,7 +287,6 @@
       </div>
     </section>
 
-    <!-- What You’ll Learn -->
     <section id="what-youll-learn" class="py-16 lg:py-24 bg-surface">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
@@ -318,7 +303,7 @@
               </svg>
             </div>
             <h3 class="text-navy font-bold text-lg mb-2">Clue-based deduction</h3>
-            <p class="text-muted text-sm">Practice identifying what matters, ignoring what doesn’t.</p>
+            <p class="text-muted text-sm">Practice identifying what matters and ignoring what doesn’t.</p>
           </div>
 
           <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
@@ -348,13 +333,12 @@
               </svg>
             </div>
             <h3 class="text-navy font-bold text-lg mb-2">Score feedback</h3>
-            <p class="text-muted text-sm">Immediate feedback round-by-round.</p>
+            <p class="text-muted text-sm">Immediate feedback round by round.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Demo / Preview -->
     <section id="preview" class="py-16 lg:py-24 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
@@ -414,7 +398,7 @@
           <div class="order-1 lg:order-2 text-center lg:text-left">
             <span class="text-primary font-semibold text-sm uppercase tracking-wide">Preview</span>
             <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Try the first two prompts</h2>
-            <p class="text-muted text-lg mb-6">Demo mode stays limited. Full gameplay unlocks after your token purchase is confirmed.</p>
+            <p class="text-muted text-lg mb-6">Demo mode stays limited. Full gameplay unlocks only after the Worker confirms a valid token spend.</p>
 
             <ul class="space-y-4 mb-8">
               <li class="flex items-center gap-3 justify-center lg:justify-start">
@@ -439,7 +423,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span class="text-navy">Token-gated unlock (no double-charging during grant)</span>
+                <span class="text-navy">Token-gated unlock with resume during an active session</span>
               </li>
             </ul>
 
@@ -456,13 +440,12 @@
       </div>
     </section>
 
-    <!-- How It Works -->
     <section id="how-it-works" class="py-16 lg:py-24 bg-navy text-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
           <span class="text-primary font-semibold text-sm uppercase tracking-wide">Simple Setup</span>
           <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">How It Works</h2>
-          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. Sign in, confirm token use, start playing.</p>
+          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. Minimal drama. The Worker does the gate, not wishful thinking.</p>
         </div>
 
         <div class="grid md:grid-cols-3 gap-8">
@@ -475,7 +458,7 @@
               </svg>
             </div>
             <h3 class="text-xl font-bold mb-3">Sign in</h3>
-            <p class="text-blue-200">Your account ties tokens to your session securely.</p>
+            <p class="text-blue-200">Cookie session required so tokens and play grants attach to your account.</p>
           </div>
 
           <div class="text-center">
@@ -485,8 +468,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 class="text-xl font-bold mb-3">Confirm token use</h3>
-            <p class="text-blue-200">We confirm balance and deduct the game cost once per grant window.</p>
+            <h3 class="text-xl font-bold mb-3">Confirm spend</h3>
+            <p class="text-blue-200">You approve the spend. The Worker validates balance and idempotency.</p>
           </div>
 
           <div class="text-center">
@@ -497,14 +480,13 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 class="text-xl font-bold mb-3">Start the game</h3>
-            <p class="text-blue-200">You’re dropped into the full 4-round challenge with scoring and streak tracking.</p>
+            <h3 class="text-xl font-bold mb-3">Play</h3>
+            <p class="text-blue-200">You’re redirected into the game once access is granted.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FAQ -->
     <section id="faq" class="py-16 lg:py-24 bg-white">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
@@ -529,7 +511,7 @@
               <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
             <div class="faq-content hidden px-6 pb-6">
-              <p class="text-muted">When you confirm, we check your balance and unlock the game for a limited time so refreshing won’t charge you twice while you’re playing.</p>
+              <p class="text-muted">When you confirm, the Worker verifies your balance and creates an active play session so reloads do not charge you again while the session remains active.</p>
             </div>
           </div>
 
@@ -559,14 +541,13 @@
               <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
             <div class="faq-content hidden px-6 pb-6">
-              <p class="text-muted">Tokens and game access are tied to your account, and your secure session confirms you’re signed in.</p>
+              <p class="text-muted">Tokens and play grants are tied to your account, and the Worker uses a cookie session to verify access.</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Trust + Disclaimers -->
     <section class="py-16 bg-surface">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white rounded-3xl card-shadow p-8">
@@ -590,11 +571,10 @@
       </div>
     </section>
 
-    <!-- Final CTA -->
     <section class="py-16 lg:py-24 gradient-hero text-white">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to play?</h2>
-        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access by using tokens from your account.</p>
+        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend verified by the Worker.</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <button id="btnUnlock2" class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2" type="button">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -604,7 +584,7 @@
         </div>
         <div class="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm rounded-full px-6 py-3">
           <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-          <span class="text-sm font-medium">Tokens are non-expiring. Grants prevent double-spend during active play.</span>
+          <span class="text-sm font-medium">Tokens are non-expiring. Active sessions switch the page to Resume Play.</span>
         </div>
       </div>
     </section>
@@ -613,15 +593,56 @@
 
   </div>
 
-  <!-- Demo Modal (game-look, limited) -->
+  <!-- Confirm Spend Modal -->
+  <div id="confirmModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/60" data-confirm-close="1"></div>
+
+    <div class="absolute inset-4 md:inset-10 lg:inset-16 bg-white rounded-3xl overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <div>
+          <p class="text-muted text-sm">Confirm spend</p>
+          <h3 class="text-xl font-bold text-navy">Spend <span id="modalCost">8</span> tokens to unlock?</h3>
+        </div>
+        <button id="btnCloseModal" type="button" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" data-confirm-close="1" aria-label="Close">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-auto p-6">
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-4">
+          <p class="text-green-900 text-sm"><strong>Session behavior:</strong> This spend creates an active play session that stays valid until you complete or lose, so reloads do not charge you again while the session remains active.</p>
+        </div>
+
+        <div class="mt-5 grid md:grid-cols-2 gap-4">
+          <div class="bg-surface rounded-2xl p-5">
+            <p class="text-navy font-semibold">Game</p>
+            <p class="text-muted text-sm">IRS Detective</p>
+          </div>
+          <div class="bg-surface rounded-2xl p-5">
+            <p class="text-navy font-semibold">Cost</p>
+            <p class="text-muted text-sm"><span id="modalCost2">8</span> tokens</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-gray-200 bg-surface flex items-center justify-end gap-3">
+        <button id="btnCancelSpend" type="button" class="bg-white hover:bg-gray-50 text-navy font-semibold px-6 py-3 rounded-xl border border-gray-200 transition-all">
+          Cancel
+        </button>
+        <button id="btnConfirmSpend" type="button" class="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-xl btn-shadow transition-all hover:scale-105">
+          Confirm spend (8 tokens)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demo Modal -->
   <div id="demoModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/70" data-demo-close="1"></div>
 
     <div class="absolute inset-4 md:inset-10 lg:inset-16 rounded-3xl overflow-hidden border border-white/10 game-bg">
       <div class="relative h-full w-full overflow-auto">
         <div class="relative z-10 p-4 md:p-8">
-
-          <!-- Modal Header -->
           <header class="text-center mb-6">
             <div class="flex items-center justify-between gap-4">
               <div class="text-left">
@@ -636,7 +657,6 @@
             </div>
           </header>
 
-          <!-- Score / Level -->
           <div class="flex flex-wrap justify-center gap-3 md:gap-4 mb-6">
             <div class="bg-detective/60 border-2 border-glow rounded-lg px-5 py-3 backdrop-blur-sm">
               <div class="text-xs text-glow/80 mb-1" style="font-family: Poppins, system-ui, sans-serif;">SCORE</div>
@@ -653,8 +673,6 @@
           </div>
 
           <main class="max-w-3xl mx-auto">
-
-            <!-- Start Screen -->
             <div id="demo-start" class="text-center">
               <div class="bg-detective/60 border-2 border-glow rounded-lg p-6 md:p-8 backdrop-blur-sm">
                 <p class="text-white text-base md:text-lg leading-relaxed mb-6" style="font-family: Poppins, system-ui, sans-serif;">Your refund disappeared. Match codes to meanings. Each correct answer earns points.</p>
@@ -666,11 +684,9 @@
                     Unlock &amp; Play (8 tokens)
                   </button>
                 </div>
-                <p id="demo-status" class="mt-4 text-glow/80 text-sm" style="font-family: Poppins, system-ui, sans-serif;"></p>
               </div>
             </div>
 
-            <!-- Game Screen -->
             <div id="demo-game" class="hidden">
               <div class="bg-detective/60 border-2 border-glow rounded-lg p-5 md:p-6 mb-5 backdrop-blur-sm">
                 <div class="text-glow text-sm font-bold mb-2" style="font-family: Poppins, system-ui, sans-serif;">CODE IDENTIFICATION</div>
@@ -691,7 +707,6 @@
               </div>
             </div>
 
-            <!-- Results Screen -->
             <div id="demo-results" class="hidden text-center">
               <div class="bg-detective/60 border-2 border-glow rounded-lg p-6 md:p-8 backdrop-blur-sm">
                 <div class="text-4xl mb-4">🎉</div>
@@ -703,13 +718,11 @@
                 </div>
               </div>
             </div>
-
           </main>
 
           <div class="max-w-3xl mx-auto mt-6">
             <p class="text-glow/80 text-sm text-center" style="font-family: Poppins, system-ui, sans-serif;">Education only. Not tax advice. Not representation. For real help, use <a class="underline text-white" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
           </div>
-
         </div>
       </div>
     </div>
@@ -717,22 +730,31 @@
 
   <script>
     const API_BASE = "https://tools-api.taxmonitor.pro";
-
-    // Canonical improvement: keep slug stable without extensions.
-    const slug = "irs-tax-detective";
+    const gameFile = "irs-tax-detective.html";
+    const gameSlug = "irs-tax-detective";
     const tokenCost = 8;
 
-    // -----------------------------
-    // FAQ (accordion)
-    // -----------------------------
+    function setStatus(msg) {
+      const el = document.getElementById("status");
+      if (!el) return;
+      el.className = "text-blue-200 text-sm";
+      el.textContent = msg || "";
+    }
+
+    function setStatusHtml(html) {
+      const el = document.getElementById("status");
+      if (!el) return;
+      el.className = "text-blue-200 text-sm";
+      el.innerHTML = html || "";
+    }
 
     function toggleFaq(button) {
       const content = button.nextElementSibling;
       const icon = button.querySelector('.faq-icon');
       const isOpen = !content.classList.contains('hidden');
 
-      document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
-      document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = 'rotate(0deg)');
+      document.querySelectorAll('.faq-content').forEach((c) => c.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach((i) => { i.style.transform = 'rotate(0deg)'; });
 
       if (!isOpen) {
         content.classList.remove('hidden');
@@ -740,9 +762,165 @@
       }
     }
 
-    // -----------------------------
-    // Demo (limited, no spend)
-    // -----------------------------
+    function showConfirmModal() {
+      document.getElementById("modalCost").textContent = String(tokenCost);
+      document.getElementById("modalCost2").textContent = String(tokenCost);
+      document.getElementById("btnConfirmSpend").textContent = `Confirm spend (${tokenCost} tokens)`;
+      const modal = document.getElementById("confirmModal");
+      modal.classList.remove("hidden");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function hideConfirmModal() {
+      const modal = document.getElementById("confirmModal");
+      modal.classList.add("hidden");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    async function apiGet(path) {
+      const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
+      return { res, json: await res.json().catch(() => ({})) };
+    }
+
+    async function apiPost(path, body) {
+      const res = await fetch(API_BASE + path, {
+        method: "POST",
+        credentials: "include",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      return { res, json: await res.json().catch(() => ({})) };
+    }
+
+    async function beginLogin() {
+      setStatus("Starting sign-in…");
+      const started = await apiPost("/v1/auth/start", { returnTo: window.location.href });
+      const redirectUrl = started?.json?.redirectUrl || started?.json?.url || "";
+      if (started.res.ok && redirectUrl) {
+        window.location.href = redirectUrl;
+        return;
+      }
+      window.location.href = "/index.html";
+    }
+
+    function setUnlockMode(mode) {
+      const btns = [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean);
+      const label = mode === "resume" ? "Resume Play" : `Unlock & Play (${tokenCost} tokens)`;
+      btns.forEach((btn) => {
+        btn.dataset.mode = mode;
+        btn.innerHTML = mode === "resume"
+          ? "Resume Play"
+          : btn.id === "btnUnlock2"
+            ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Unlock &amp; Play (8 tokens)'
+            : label;
+      });
+    }
+
+    async function preflightUnlock() {
+      setStatus("Checking session…");
+
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
+        await beginLogin();
+        return;
+      }
+
+      setStatus("Checking token balance…");
+      const bal = await apiGet("/v1/tokens/balance");
+      const balance = Number(bal.json && bal.json.balance);
+      if (!Number.isFinite(balance)) {
+        setStatus("Could not load token balance.");
+        return;
+      }
+
+      if (balance < tokenCost) {
+        setStatusHtml('Not enough tokens. Buy a pack from the main arcade page, then come back.');
+        return;
+      }
+
+      setStatus("Ready. Confirm spend to unlock.");
+      showConfirmModal();
+    }
+
+    async function confirmSpendAndRedirect() {
+      setStatus("Confirming token spend…");
+
+      const spend = await apiPost("/v1/tokens/spend", {
+        amount: tokenCost,
+        idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
+        reason: "arcade_play",
+        slug: gameSlug
+      });
+
+      if (!spend.res.ok) {
+        hideConfirmModal();
+        setStatus("Spend failed. Please try again.");
+        return;
+      }
+
+      hideConfirmModal();
+      setStatus("Unlocked. Redirecting…");
+      window.location.href = "/games/" + gameFile;
+    }
+
+    async function refreshGrantStatus() {
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok) {
+        setUnlockMode("locked");
+        setStatus("");
+        return { allowed: false };
+      }
+
+      const access = await apiGet(`/v1/games/access?slug=${encodeURIComponent(gameSlug)}`);
+      const allowed = !!(access.res.ok && access.json && access.json.allowed);
+
+      if (allowed) {
+        setUnlockMode("resume");
+        setStatus("Active session detected. You can resume without spending tokens.");
+        return { allowed: true };
+      }
+
+      setUnlockMode("locked");
+      setStatus("");
+      return { allowed: false };
+    }
+
+    function resumePlay() {
+      window.location.href = "/games/" + gameFile;
+    }
+
+    function wireUnlockButtons() {
+      [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean).forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          const state = await refreshGrantStatus();
+          if (state.allowed) {
+            resumePlay();
+            return;
+          }
+          preflightUnlock();
+        });
+      });
+    }
+
+    function wireConfirmModal() {
+      document.querySelectorAll('[data-confirm-close="1"]').forEach((el) => {
+        el.addEventListener("click", hideConfirmModal);
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        const confirmModal = document.getElementById("confirmModal");
+        const demoModal = document.getElementById("demoModal");
+        if (confirmModal && !confirmModal.classList.contains("hidden")) hideConfirmModal();
+        if (demoModal && !demoModal.classList.contains("hidden")) hideDemoModal();
+      });
+
+      document.getElementById("btnConfirmSpend")?.addEventListener("click", confirmSpendAndRedirect);
+      document.getElementById("btnCancelSpend")?.addEventListener("click", hideConfirmModal);
+    }
 
     const demoData = [
       {
@@ -750,9 +928,9 @@
         question: "What does code 826 mean?",
         answers: [
           { text: "Overpayment transferred to another tax period", correct: true },
-          { text: "Notice issued (check your mail)", correct: false },
-          { text: "Refund applied to non-IRS debt", correct: false },
-        ],
+          { text: "Notice issued and mailed", correct: false },
+          { text: "Refund applied to non-IRS debt", correct: false }
+        ]
       },
       {
         code: "820",
@@ -760,16 +938,16 @@
         answers: [
           { text: "Credit transferred to another tax period", correct: true },
           { text: "Overpayment transferred to another tax period", correct: false },
-          { text: "Refund applied to non-IRS debt", correct: false },
-        ],
-      },
+          { text: "Identity verified successfully", correct: false }
+        ]
+      }
     ];
 
     let demoState = {
       answered: false,
       currentQuestion: 0,
       score: 0,
-      streak: 0,
+      streak: 0
     };
 
     function shuffleArray(arr) {
@@ -789,14 +967,13 @@
         results: document.getElementById("demo-results"),
         score: document.getElementById("demo-score"),
         start: document.getElementById("demo-start"),
-        streak: document.getElementById("demo-streak"),
+        streak: document.getElementById("demo-streak")
       };
     }
 
     function demoShow(screen) {
       const { game, results, start } = demoEls();
       if (!game || !results || !start) return;
-
       start.classList.toggle("hidden", screen !== "start");
       game.classList.toggle("hidden", screen !== "game");
       results.classList.toggle("hidden", screen !== "results");
@@ -812,43 +989,28 @@
     function demoFeedbackShow(kind, text) {
       const { feedback, feedbackText } = demoEls();
       if (!feedback || !feedbackText) return;
-
-      feedback.classList.remove('hidden');
-      feedback.classList.remove('border-success', 'border-danger', 'border-warning');
-
-      if (kind === 'danger') {
-        feedback.classList.add('border-danger');
-        feedbackText.textContent = text;
-        feedbackText.className = 'text-danger text-lg font-bold';
-        return;
-      }
-
-      if (kind === 'success') {
-        feedback.classList.add('border-success');
-        feedbackText.textContent = text;
-        feedbackText.className = 'text-success text-lg font-bold';
-        return;
-      }
-
-      feedback.classList.add('border-warning');
+      feedback.classList.remove("hidden", "border-success", "border-danger", "border-warning");
+      feedback.classList.add(kind === "success" ? "border-success" : kind === "danger" ? "border-danger" : "border-warning");
       feedbackText.textContent = text;
-      feedbackText.className = 'text-warning text-lg font-bold';
+      feedbackText.className = kind === "success"
+        ? "text-success text-lg font-bold"
+        : kind === "danger"
+          ? "text-danger text-lg font-bold"
+          : "text-warning text-lg font-bold";
     }
 
     function demoRenderQuestion() {
       const { cards, feedback, next, question } = demoEls();
       const currentQ = demoData[demoState.currentQuestion];
-
       if (question) question.textContent = currentQ.question;
       if (cards) cards.innerHTML = "";
 
-      const answers = shuffleArray(currentQ.answers);
-      answers.forEach((a) => {
+      shuffleArray(currentQ.answers).forEach((answer) => {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "bg-detective/60 border-2 border-glow hover:border-success rounded-lg p-4 backdrop-blur-sm card-reveal text-left transition-all hover:shadow-lg transform hover:scale-105 text-white";
-        btn.textContent = a.text;
-        btn.addEventListener("click", () => demoSelectAnswer(a, btn));
+        btn.textContent = answer.text;
+        btn.addEventListener("click", () => demoSelectAnswer(answer, btn));
         cards?.appendChild(btn);
       });
 
@@ -861,27 +1023,22 @@
     function demoSelectAnswer(answer, btn) {
       const { cards, next } = demoEls();
       if (demoState.answered) return;
-
       demoState.answered = true;
-      const isCorrect = !!answer.correct;
 
-      // lock buttons
-      cards?.querySelectorAll('button')?.forEach((b) => {
+      cards?.querySelectorAll("button")?.forEach((b) => {
         b.disabled = true;
-        b.classList.add('opacity-70');
+        b.classList.add("opacity-70");
       });
 
-      if (isCorrect) {
+      if (answer.correct) {
         demoState.score += 250;
         demoState.streak += 1;
-
-        btn.classList.add('success-glow', 'border-success', 'bg-success/10');
-        demoFeedbackShow('success', '✅ CORRECT! +250 PTS');
+        btn.classList.add("success-glow", "border-success", "bg-success/10");
+        demoFeedbackShow("success", "✅ CORRECT! +250 PTS");
       } else {
         demoState.streak = 0;
-
-        btn.classList.add('glitch', 'border-danger', 'bg-danger/10');
-        demoFeedbackShow('danger', '❌ INCORRECT!');
+        btn.classList.add("glitch", "border-danger", "bg-danger/10");
+        demoFeedbackShow("danger", "❌ INCORRECT!");
       }
 
       demoUpdateUI();
@@ -910,12 +1067,10 @@
     function demoSkip() {
       const { next } = demoEls();
       if (demoState.answered) return;
-
       demoState.answered = true;
       demoState.score = Math.max(0, demoState.score - 100);
       demoState.streak = 0;
-
-      demoFeedbackShow('warning', '⏭️ SKIPPED -100 PTS');
+      demoFeedbackShow("warning", "⏭️ SKIPPED -100 PTS");
       demoUpdateUI();
 
       window.setTimeout(() => {
@@ -942,193 +1097,66 @@
       demoShow("results");
     }
 
-    // -----------------------------
-    // Unlock flow (token spend)
-    // -----------------------------
-
-    let isUnlocking = false;
-
-    function setStatus(msg) {
-      const el = document.getElementById("status");
-      if (el) el.textContent = msg || "";
-    }
-
-    function setUnlockDisabled(disabled) {
-      const btn1 = document.getElementById("btnUnlock");
-      const btn2 = document.getElementById("btnUnlock2");
-      [btn1, btn2].forEach((btn) => {
-        if (!btn) return;
-        btn.disabled = !!disabled;
-        btn.classList.toggle("opacity-60", !!disabled);
-        btn.classList.toggle("cursor-not-allowed", !!disabled);
-      });
-    }
-
-    async function apiGet(path) {
-      const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
-      return { res, json: await res.json().catch(() => ({})) };
-    }
-
-    async function apiPost(path, body) {
-      const res = await fetch(API_BASE + path, {
-        method: "POST",
-        credentials: "include",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      return { res, json: await res.json().catch(() => ({})) };
-    }
-
-    async function unlockAndPlay() {
-      if (isUnlocking) return;
-      isUnlocking = true;
-      setUnlockDisabled(true);
-
-      try {
-        setStatus("Checking session…");
-
-        const me = await apiGet("/v1/auth/me");
-        if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-          setStatus("Please sign in to continue.");
-          window.location.href = "/index.html";
-          return;
-        }
-
-        setStatus("Checking token balance…");
-        const bal = await apiGet("/v1/tokens/balance");
-        const balance = Number(bal.json && bal.json.balance);
-        if (!Number.isFinite(balance)) {
-          setStatus("Could not load token balance.");
-          return;
-        }
-
-        if (balance < tokenCost) {
-          setStatus("Not enough tokens. Purchase a pack to continue.");
-          window.location.href = "/index.html#pricing";
-          return;
-        }
-
-        setStatus("Confirming token spend…");
-        const idempotencyKey = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
-        const spend = await apiPost("/v1/tokens/spend", {
-          amount: tokenCost,
-          idempotencyKey,
-          reason: "arcade_play",
-          slug,
-        });
-
-        if (!spend.res.ok) {
-          setStatus("Spend failed. Please try again.");
-          return;
-        }
-
-        setStatus("Unlocked. Redirecting…");
-        window.location.href = "/games/" + slug + ".html";
-      } finally {
-        isUnlocking = false;
-        setUnlockDisabled(false);
-      }
-    }
-
-    // -----------------------------
-    // Demo modal
-    // -----------------------------
-
     function showDemoModal() {
-      const modal = document.getElementById('demoModal');
+      const modal = document.getElementById("demoModal");
       if (!modal) return;
-      modal.classList.remove('hidden');
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('overflow-hidden');
+      modal.classList.remove("hidden");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("overflow-hidden");
       demoReset();
     }
 
     function hideDemoModal() {
-      const modal = document.getElementById('demoModal');
+      const modal = document.getElementById("demoModal");
       if (!modal) return;
-      modal.classList.add('hidden');
-      modal.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('overflow-hidden');
+      modal.classList.add("hidden");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("overflow-hidden");
     }
 
     function wireDemoModal() {
-      document.querySelectorAll('[data-demo-close="1"]').forEach(el => {
-        el.addEventListener('click', hideDemoModal);
+      document.querySelectorAll('[data-demo-close="1"]').forEach((el) => {
+        el.addEventListener("click", hideDemoModal);
       });
 
-      document.addEventListener('keydown', (e) => {
-        if (e.key !== 'Escape') return;
-        const modal = document.getElementById('demoModal');
-        if (modal && !modal.classList.contains('hidden')) hideDemoModal();
-      });
+      document.getElementById("demo-start-btn")?.addEventListener("click", demoStart);
+      document.getElementById("demo-next-btn")?.addEventListener("click", demoNext);
+      document.getElementById("demo-reset-btn")?.addEventListener("click", demoReset);
+      document.getElementById("demo-skip-btn")?.addEventListener("click", demoSkip);
+      document.getElementById("demo-restart-btn")?.addEventListener("click", demoStart);
+      document.getElementById("demo-unlock-btn")?.addEventListener("click", () => { hideDemoModal(); preflightUnlock(); });
+      document.getElementById("demo-unlock-btn-2")?.addEventListener("click", () => { hideDemoModal(); preflightUnlock(); });
+      document.getElementById("demo-unlock-btn-3")?.addEventListener("click", () => { hideDemoModal(); preflightUnlock(); });
+    }
 
-      document.getElementById('demo-start-btn')?.addEventListener('click', demoStart);
-      document.getElementById('demo-next-btn')?.addEventListener('click', demoNext);
-      document.getElementById('demo-reset-btn')?.addEventListener('click', demoReset);
-      document.getElementById('demo-skip-btn')?.addEventListener('click', demoSkip);
-      document.getElementById('demo-restart-btn')?.addEventListener('click', demoStart);
-      document.getElementById('demo-unlock-btn')?.addEventListener('click', () => {
-        hideDemoModal();
-        unlockAndPlay();
-      });
-      document.getElementById('demo-unlock-btn-2')?.addEventListener('click', () => {
-        hideDemoModal();
-        unlockAndPlay();
-      });
-      document.getElementById('demo-unlock-btn-3')?.addEventListener('click', () => {
-        hideDemoModal();
-        unlockAndPlay();
+    function initElementSdk() {
+      window.elementSdk?.init?.({
+        elements: {
+          gameSubtitle: { type: "text" },
+          gameTitle: { type: "text" }
+        },
+        page: {
+          file: `about-games/${gameFile}`,
+          slug: gameSlug,
+          type: "about-game"
+        }
       });
     }
 
-    // -----------------------------
-    // Self-tests (opt-in)
-    // -----------------------------
-
-    function runSelfTests() {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('test') !== '1') return;
-
-      const errors = [];
-
-      function assert(name, condition) {
-        if (condition) return;
-        errors.push(name);
-      }
-
-      try {
-        demoReset();
-        assert('demoReset sets level to 1', document.getElementById('demo-level')?.textContent === '1');
-        assert('demoReset sets score to 0', document.getElementById('demo-score')?.textContent === '0');
-        assert('demoReset sets streak to 0', document.getElementById('demo-streak')?.textContent === '0');
-
-        demoStart();
-        assert('demoStart shows game screen', !document.getElementById('demo-game')?.classList.contains('hidden'));
-
-        demoSkip();
-        assert('demoSkip clamps score >= 0', Number(document.getElementById('demo-score')?.textContent) >= 0);
-      } catch (e) {
-        errors.push('exception: ' + (e && e.message ? e.message : String(e)));
-      }
-
-      // eslint-disable-next-line no-console
-      console.log(errors.length ? ['Self-tests FAILED:', ...errors] : ['Self-tests PASSED']);
-    }
-
-    // -----------------------------
-    // Wire up page
-    // -----------------------------
-
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById("btnUnlock")?.addEventListener("click", unlockAndPlay);
-      document.getElementById("btnUnlock2")?.addEventListener("click", unlockAndPlay);
+    document.addEventListener("DOMContentLoaded", () => {
+      initElementSdk();
+      refreshGrantStatus();
+      wireUnlockButtons();
+      wireConfirmModal();
+      wireDemoModal();
 
       document.getElementById("btnDemo")?.addEventListener("click", showDemoModal);
       document.getElementById("previewTryDemo")?.addEventListener("click", showDemoModal);
       document.getElementById("heroTryDemo")?.addEventListener("click", showDemoModal);
+    });
 
-      wireDemoModal();
-      runSelfTests();
+    window.addEventListener("pageshow", () => {
+      refreshGrantStatus();
     });
   </script>
 </body>
