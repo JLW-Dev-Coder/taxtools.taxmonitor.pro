@@ -1,28 +1,21 @@
 <!-- games/circular-230-quest.html -->
 <!doctype html>
 <html lang="en" class="h-full">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Circular 230 Quest • Play • TaxTools Arcade</title>
-  <meta name="description" content="Play Circular 230 Quest. Access is verified server-side with an active play session." />
-
-  <!-- Canonical local assets -->
-  <link rel="icon" href="/assets/favicon.ico" />
-  <link rel="stylesheet" href="/styles/site.css" />
-
-  <!-- SDKs (local) -->
+  <meta name="description" content="Play Circular 230 Quest. Access is verified server-side with an active play session."><!-- Canonical local assets -->
+  <link rel="icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/styles/site.css"><!-- SDKs (local) -->
   <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
-
-  <!-- NOTE: The following are non-canonical (remote). Keep only if /styles/site.css does NOT provide Tailwind + these fonts.
+  <script src="/_sdk/data_sdk.js"></script><!-- NOTE: The following are non-canonical (remote). Keep only if /styles/site.css does NOT provide Tailwind + these fonts.
        If you want full canonical compliance, vendor these locally and remove the remote tags.
   -->
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet" />
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;family=Fredoka+One&amp;display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
 
@@ -59,6 +52,15 @@
       0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-5px); }
       75% { transform: translateX(5px); }
+    }
+
+    @keyframes pulse-indicator {
+      0%, 100% {
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), inset 0 0 6px rgba(255, 255, 255, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.9), inset 0 0 8px rgba(255, 255, 255, 0.5);
+      }
     }
 
     .animate-float { animation: float 3s ease-in-out infinite; }
@@ -128,73 +130,77 @@
     /* Keep the site header/footer readable on game pages (without touching in-game <header> tags). */
     body > header,
     body > footer {
-      background: rgba(2, 6, 23, 0.90) !important;
-      border-color: rgba(30, 58, 138, 0.35) !important;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%) !important;
+      border-color: rgba(30, 58, 138, 0.5) !important;
       color: #fff !important;
+      backdrop-filter: blur(8px) !important;
     }
 
     body { box-sizing: border-box; }
+
+    /* Status badge styling */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+      border: 2px solid rgba(16, 185, 129, 0.35);
+      border-radius: 14px;
+      padding: 12px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .status-badge:hover {
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.15), inset 0 1px 3px rgba(255, 255, 255, 0.15);
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), inset 0 0 6px rgba(255, 255, 255, 0.3);
+      animation: pulse-indicator 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .status-text {
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+    }
   </style>
-</head>
-<body class="h-full font-body bg-slate-950 text-white">
-  <!-- PARTIAL:header -->
-
-  <!-- partials/topbar.html (inlined for game mode) -->
+ </head>
+ <body class="h-full font-body bg-slate-950 text-white"><!-- PARTIAL:header --> <!-- partials/topbar.html (inlined for game mode) -->
   <div class="border-b border-blue-900/40 bg-navy/60 text-white">
-    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-3">
-
-      <!-- Left: Context -->
-      <div class="flex items-center gap-3">
-        <div class="hidden sm:flex items-center gap-2 text-xs text-blue-300">
-          <a href="/index.html" class="hover:text-white transition">Home</a>
-          <span class="opacity-60">/</span>
-          <span id="topbar-context" class="text-blue-200">Games</span>
-        </div>
-
-        <div class="sm:hidden text-xs text-blue-300">
-          <span id="topbar-context-mobile" class="text-blue-200">Games</span>
-        </div>
-
-        <span class="hidden md:inline-flex items-center rounded-full border border-blue-900/50 bg-blue-950/10 px-3 py-1 text-xs font-semibold text-blue-200">
-          Educational only
-        </span>
-      </div>
-
-      <!-- Right: Player + Tokens + Actions -->
-      <div class="flex items-center gap-3">
-        <div class="hidden md:flex items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2">
-          <span class="text-xs font-semibold text-blue-300">Tokens</span>
-          <span id="topbar-token-balance" class="text-sm font-bold text-white">—</span>
-        </div>
-
-        <div class="hidden lg:flex items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2">
-          <span class="text-xs font-semibold text-blue-300">Status</span>
-          <span id="topbar-status" class="text-xs text-blue-200">Checking session…</span>
-        </div>
-
-        <!-- Actions (alphabetical) -->
-        <button id="topbar-cart" type="button" class="inline-flex items-center justify-center rounded-lg border border-blue-900/50 bg-blue-950/10 px-3 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition" aria-label="Open cart">
-          Cart
-          <span id="topbar-cart-count" class="ml-2 hidden rounded-full bg-blue-500 px-2 py-0.5 text-xs font-bold text-white">0</span>
-        </button>
-
-        <button id="topbar-signin" type="button" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-3 py-2 text-sm font-semibold text-white hover:from-blue-400 hover:to-blue-500 transition">
-          Sign in
-        </button>
-
-        <button id="topbar-signout" type="button" class="hidden inline-flex items-center justify-center rounded-lg border border-blue-900/50 bg-blue-950/10 px-3 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
-          Sign out
-        </button>
-      </div>
-
+   <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-3"><!-- Left: Context -->
+    <div class="flex items-center gap-3">
+     <div class="hidden sm:flex items-center gap-2 text-xs text-blue-300"><a href="/index.html" class="hover:text-white transition">Home</a> <span class="opacity-60">/</span> <span id="topbar-context" class="text-blue-200">Games</span>
+     </div>
+     <div class="sm:hidden text-xs text-blue-300"><span id="topbar-context-mobile" class="text-blue-200">Games</span>
+     </div><span class="hidden md:inline-flex items-center rounded-full border border-blue-900/50 bg-blue-950/10 px-3 py-1 text-xs font-semibold text-blue-200"> Educational only </span>
+    </div><!-- Right: Player + Tokens + Actions -->
+    <div class="flex items-center gap-3">
+     <div class="hidden md:flex items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2"><span class="text-xs font-semibold text-blue-300">Tokens</span> <span id="topbar-token-balance" class="text-sm font-bold text-white">—</span>
+     </div>
+     <div class="hidden lg:flex items-center gap-2 rounded-xl border border-blue-900/40 bg-blue-950/10 px-3 py-2"><span class="text-xs font-semibold text-blue-300">Status</span> <span id="topbar-status" class="text-xs text-blue-200">Checking session…</span>
+     </div><!-- Actions (alphabetical) --> <button id="topbar-cart" type="button" class="inline-flex items-center justify-center rounded-lg border border-blue-900/50 bg-blue-950/10 px-3 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition" aria-label="Open cart"> Cart <span id="topbar-cart-count" class="ml-2 hidden rounded-full bg-blue-500 px-2 py-0.5 text-xs font-bold text-white">0</span> </button> <button id="topbar-signin" type="button" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-3 py-2 text-sm font-semibold text-white hover:from-blue-400 hover:to-blue-500 transition"> Sign in </button> <button id="topbar-signout" type="button" class="hidden inline-flex items-center justify-center rounded-lg border border-blue-900/50 bg-blue-950/10 px-3 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition"> Sign out </button>
     </div>
-
-    <!-- Small-screen: status row -->
-    <div class="mx-auto max-w-7xl px-6 pb-3 md:hidden">
-      <p id="topbar-status-mobile" class="text-xs text-blue-300">Checking session…</p>
-    </div>
+   </div><!-- Small-screen: status row -->
+   <div class="mx-auto max-w-7xl px-6 pb-3 md:hidden">
+    <p id="topbar-status-mobile" class="text-xs text-blue-300">Checking session…</p>
+   </div>
   </div>
-
   <script>
     (function () {
       // Topbar is UI-only. No API calls here.
@@ -256,110 +262,80 @@
     })();
   </script>
   <main class="mx-auto max-w-7xl px-6 py-6">
-    <div class="flex items-start gap-6">
-
-      <!-- partials/sidebar.html (inlined for game mode) -->
-      <aside class="hidden lg:block lg:w-72 xl:w-80">
-        <div class="sticky top-24">
-
-          <!-- Player Card -->
-          <div class="rounded-2xl border border-blue-900/40 bg-blue-950/10 p-5 text-white shadow-2xl">
-            <div class="flex items-center justify-between gap-3">
-              <div>
-                <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Player</div>
-                <div id="sidebar-player" class="mt-1 text-sm font-semibold text-white">Signed in</div>
-              </div>
-              <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-navy font-bold">TM</div>
-            </div>
-
-            <div class="mt-4 grid grid-cols-2 gap-3">
-              <div class="rounded-xl border border-blue-900/40 bg-navy/40 p-3">
-                <div class="text-[11px] font-semibold uppercase tracking-wide text-blue-300">Tokens</div>
-                <div id="sidebar-token-balance" class="mt-1 text-lg font-bold text-white">—</div>
-              </div>
-              <div class="rounded-xl border border-blue-900/40 bg-navy/40 p-3">
-                <div class="text-[11px] font-semibold uppercase tracking-wide text-blue-300">Streak</div>
-                <div id="sidebar-streak" class="mt-1 text-lg font-bold text-white">—</div>
-              </div>
-            </div>
-
-            <p id="sidebar-status" class="mt-4 text-xs text-blue-300">Ready.</p>
-
-            <div class="mt-4 grid gap-2">
-              <!-- Alphabetical -->
-              <a href="/index.html#games" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white hover:from-blue-400 hover:to-blue-500 transition">Browse games</a>
-              <a href="/help-center.html" class="inline-flex items-center justify-center rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">Help Center</a>
-            </div>
-
-            <div class="mt-4 h-px w-full bg-blue-900/40"></div>
-
-            <div class="mt-4">
-              <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Quick actions</div>
-              <div class="mt-2 grid gap-2">
-                <!-- Alphabetical -->
-                <button id="sidebar-open-cart" type="button" class="inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
-                  <span>Cart</span>
-                  <span class="text-blue-300">→</span>
-                </button>
-                <a href="https://taxmonitor.pro" class="inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
-                  <span>Get real help</span>
-                  <span class="text-blue-300">→</span>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Search + Filters -->
-          <div class="mt-6 rounded-2xl border border-blue-900/40 bg-blue-950/10 p-5 text-white">
-            <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Find a game</div>
-
-            <label class="mt-3 block">
-              <span class="sr-only">Search games</span>
-              <input
-                id="sidebar-search"
-                type="search"
-                inputmode="search"
-                autocomplete="off"
-                placeholder="Search…"
-                class="w-full rounded-lg border border-blue-900/40 bg-navy/50 px-3 py-2 text-sm text-white placeholder:text-blue-300/70 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-              />
-            </label>
-
-            <div class="mt-4">
-              <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Categories</div>
-              <div class="mt-2 grid gap-2">
-                <!-- Alphabetical -->
-                <button data-filter="all" type="button" class="sidebar-filter inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
-                  <span>All</span><span class="text-blue-300">→</span>
-                </button>
-                <button data-filter="compliance" type="button" class="sidebar-filter inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
-                  <span>Compliance</span><span class="text-blue-300">→</span>
-                </button>
-                <button data-filter="payments" type="button" class="sidebar-filter inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
-                  <span>Payments</span><span class="text-blue-300">→</span>
-                </button>
-                <button data-filter="transcripts" type="button" class="sidebar-filter inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">
-                  <span>Transcripts</span><span class="text-blue-300">→</span>
-                </button>
-              </div>
-              <p class="mt-2 text-xs text-blue-300">These are UI filters only (no API calls in the sidebar partial).</p>
-            </div>
-          </div>
-
-          <!-- Keep it light: one nudge, not a novel -->
-          <div class="mt-6 rounded-2xl border border-blue-900/40 bg-blue-950/10 p-5 text-white">
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">Tip</div>
-                <div class="mt-1 text-sm text-blue-100">Short games win. Pick one, finish it, repeat.</div>
-              </div>
-              <span class="text-blue-300">★</span>
-            </div>
-          </div>
-
+   <div class="flex items-start gap-6"><!-- partials/sidebar.html (inlined for game mode) -->
+    <aside class="hidden lg:block lg:w-72 xl:w-80">
+     <div class="sticky top-24"><!-- Player Card -->
+      <div class="rounded-2xl border border-blue-900/40 bg-blue-950/10 p-5 text-white shadow-2xl">
+       <div class="flex items-center justify-between gap-3">
+        <div>
+         <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">
+          Player
+         </div>
+         <div id="sidebar-player" class="mt-1 text-sm font-semibold text-white">
+          Signed in
+         </div>
         </div>
-
-        <script>
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-navy font-bold">
+         TM
+        </div>
+       </div>
+       <div class="mt-4 grid grid-cols-2 gap-3">
+        <div class="rounded-xl border border-blue-900/40 bg-navy/40 p-3">
+         <div class="text-[11px] font-semibold uppercase tracking-wide text-blue-300">
+          Tokens
+         </div>
+         <div id="sidebar-token-balance" class="mt-1 text-lg font-bold text-white">
+          —
+         </div>
+        </div>
+        <div class="rounded-xl border border-blue-900/40 bg-navy/40 p-3">
+         <div class="text-[11px] font-semibold uppercase tracking-wide text-blue-300">
+          Streak
+         </div>
+         <div id="sidebar-streak" class="mt-1 text-lg font-bold text-white">
+          —
+         </div>
+        </div>
+       </div>
+       <p id="sidebar-status" class="mt-4 text-xs text-blue-300">Ready.</p>
+       <div class="mt-4 grid gap-2"><!-- Alphabetical --> <a href="/index.html#games" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white hover:from-blue-400 hover:to-blue-500 transition">Browse games</a> <a href="/help-center.html" class="inline-flex items-center justify-center rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition">Help Center</a>
+       </div>
+       <div class="mt-4 h-px w-full bg-blue-900/40"></div>
+       <div class="mt-4">
+        <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">
+         Quick actions
+        </div>
+        <div class="mt-2 grid gap-2"><!-- Alphabetical --> <button id="sidebar-open-cart" type="button" class="inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition"> <span>Cart</span> <span class="text-blue-300">→</span> </button> <a href="https://taxmonitor.pro" class="inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition"> <span>Get real help</span> <span class="text-blue-300">→</span> </a>
+        </div>
+       </div>
+      </div><!-- Search + Filters -->
+      <div class="mt-6 rounded-2xl border border-blue-900/40 bg-blue-950/10 p-5 text-white">
+       <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">
+        Find a game
+       </div><label class="mt-3 block"> <span class="sr-only">Search games</span> <input id="sidebar-search" type="search" inputmode="search" autocomplete="off" placeholder="Search…" class="w-full rounded-lg border border-blue-900/40 bg-navy/50 px-3 py-2 text-sm text-white placeholder:text-blue-300/70 focus:outline-none focus:ring-2 focus:ring-blue-500/40"> </label>
+       <div class="mt-4">
+        <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">
+         Categories
+        </div>
+        <div class="mt-2 grid gap-2"><!-- Alphabetical --> <button data-filter="all" type="button" class="sidebar-filter inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition"> <span>All</span><span class="text-blue-300">→</span> </button> <button data-filter="compliance" type="button" class="sidebar-filter inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition"> <span>Compliance</span><span class="text-blue-300">→</span> </button> <button data-filter="payments" type="button" class="sidebar-filter inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition"> <span>Payments</span><span class="text-blue-300">→</span> </button> <button data-filter="transcripts" type="button" class="sidebar-filter inline-flex items-center justify-between rounded-lg border border-blue-900/60 bg-blue-950/10 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-950/20 transition"> <span>Transcripts</span><span class="text-blue-300">→</span> </button>
+        </div>
+        <p class="mt-2 text-xs text-blue-300">These are UI filters only (no API calls in the sidebar partial).</p>
+       </div>
+      </div><!-- Keep it light: one nudge, not a novel -->
+      <div class="mt-6 rounded-2xl border border-blue-900/40 bg-blue-950/10 p-5 text-white">
+       <div class="flex items-start justify-between gap-3">
+        <div>
+         <div class="text-xs font-semibold uppercase tracking-wide text-blue-300">
+          Tip
+         </div>
+         <div class="mt-1 text-sm text-blue-100">
+          Short games win. Pick one, finish it, repeat.
+         </div>
+        </div><span class="text-blue-300">★</span>
+       </div>
+      </div>
+     </div>
+     <script>
           (function () {
             // Sidebar is presentation-first. No API calls here.
             // Pages can optionally wire these IDs to their own logic.
@@ -385,213 +361,155 @@
             });
           })();
         </script>
-      </aside>
-
-      <section class="min-w-0 flex-1">
-        <!-- Status line required by Canonical UX safety -->
-        <div class="pb-4 flex justify-center">
-          <div class="inline-flex items-center gap-2 rounded-full border border-blue-900/40 bg-blue-950/20 px-4 py-2 text-sm">
-            <span class="font-semibold text-white">Access:</span>
-            <span id="status" class="text-white/70 text-center"></span>
-          </div>
-        </div>
-
-        <div id="app" class="h-[calc(100vh-220px)] w-full overflow-auto custom-scrollbar rounded-2xl" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);">
-
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="h-full w-full flex items-center justify-center">
-      <div class="text-center">
+    </aside>
+    <section class="min-w-0 flex-1"><!-- Status line required by Canonical UX safety -->
+     <div class="pb-4 flex justify-center">
+      <div class="status-badge">
+       <div class="status-indicator"></div><span id="status" class="status-text">Checking access…</span>
+      </div>
+     </div>
+     <div id="app" class="h-[calc(100vh-220px)] w-full overflow-auto custom-scrollbar rounded-2xl" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);"><!-- Loading Screen -->
+      <div id="loading-screen" class="h-full w-full flex items-center justify-center">
+       <div class="text-center">
         <div class="w-16 h-16 border-4 border-indigo-300 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
         <p class="text-white text-lg">Loading your adventure...</p>
-      </div>
-    </div>
-
-    <!-- Main Menu -->
-    <div id="main-menu" class="hidden h-full w-full p-4 md:p-8">
-      <div class="max-w-6xl mx-auto">
-
-        <!-- Header -->
+       </div>
+      </div><!-- Main Menu -->
+      <div id="main-menu" class="hidden h-full w-full p-4 md:p-8">
+       <div class="max-w-6xl mx-auto"><!-- Header -->
         <header class="text-center mb-8 animate-slide-up">
-          <h1 id="game-title" class="font-display text-4xl md:text-6xl text-white mb-2 drop-shadow-lg">🏛️ Circular 230 Quest</h1>
-          <p id="welcome-text" class="text-indigo-200 text-lg md:text-xl">Master the Rules of Practice Before the IRS!</p>
-        </header>
-
-        <!-- Avatar Selection -->
+         <h1 id="game-title" class="font-display text-4xl md:text-6xl text-white mb-2 drop-shadow-lg">🏛️ Circular 230 Quest</h1>
+         <p id="welcome-text" class="text-indigo-200 text-lg md:text-xl">Master the Rules of Practice Before the IRS!</p>
+        </header><!-- Avatar Selection -->
         <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 animate-slide-up" style="animation-delay: 0.1s;">
-          <h2 class="font-display text-2xl text-white mb-4 text-center">Choose Your Tax Pro Avatar</h2>
-          <div id="avatar-selection" class="flex flex-wrap justify-center gap-4"></div>
-        </div>
-
-        <!-- Progress Overview -->
+         <h2 class="font-display text-2xl text-white mb-4 text-center">Choose Your Tax Pro Avatar</h2>
+         <div id="avatar-selection" class="flex flex-wrap justify-center gap-4"></div>
+        </div><!-- Progress Overview -->
         <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 animate-slide-up" style="animation-delay: 0.2s;">
-          <h2 class="font-display text-2xl text-white mb-4 text-center">📊 Your Progress</h2>
-          <div class="flex flex-wrap justify-center items-center gap-8">
-            <div class="text-center">
-              <div class="relative w-32 h-32 flex items-center justify-center">
-                <svg class="w-32 h-32 transform -rotate-90 absolute">
-                  <circle cx="64" cy="64" r="56" stroke="rgba(255,255,255,0.2)" stroke-width="8" fill="none" />
-                  <circle id="progress-circle" class="progress-ring" cx="64" cy="64" r="56" stroke="#10b981" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="352" />
-                </svg>
-                <span id="progress-percent" class="text-3xl font-bold text-white relative z-10">0%</span>
-              </div>
-              <p class="text-indigo-200 mt-2">Overall Mastery</p>
-            </div>
-            <div class="text-center">
-              <div class="text-4xl font-bold text-yellow-400" id="total-points">0</div>
-              <p class="text-indigo-200">Total Points</p>
-            </div>
-            <div class="text-center">
-              <div class="text-4xl font-bold text-emerald-400" id="badges-earned">0/5</div>
-              <p class="text-indigo-200">Badges Earned</p>
-            </div>
+         <h2 class="font-display text-2xl text-white mb-4 text-center">📊 Your Progress</h2>
+         <div class="flex flex-wrap justify-center items-center gap-8">
+          <div class="text-center">
+           <div class="relative w-32 h-32 flex items-center justify-center">
+            <svg class="w-32 h-32 transform -rotate-90 absolute"><circle cx="64" cy="64" r="56" stroke="rgba(255,255,255,0.2)" stroke-width="8" fill="none" /> <circle id="progress-circle" class="progress-ring" cx="64" cy="64" r="56" stroke="#10b981" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="352" />
+            </svg><span id="progress-percent" class="text-3xl font-bold text-white relative z-10">0%</span>
+           </div>
+           <p class="text-indigo-200 mt-2">Overall Mastery</p>
           </div>
-        </div>
-
-        <!-- Zone Map -->
+          <div class="text-center">
+           <div class="text-4xl font-bold text-yellow-400" id="total-points">
+            0
+           </div>
+           <p class="text-indigo-200">Total Points</p>
+          </div>
+          <div class="text-center">
+           <div class="text-4xl font-bold text-emerald-400" id="badges-earned">
+            0/5
+           </div>
+           <p class="text-indigo-200">Badges Earned</p>
+          </div>
+         </div>
+        </div><!-- Zone Map -->
         <div class="mb-8 animate-slide-up" style="animation-delay: 0.3s;">
-          <h2 class="font-display text-2xl text-white mb-6 text-center">🗺️ Explore the Zones</h2>
-          <div id="zone-map" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        </div>
-
-        <!-- Badges Display -->
+         <h2 class="font-display text-2xl text-white mb-6 text-center">🗺️ Explore the Zones</h2>
+         <div id="zone-map" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div><!-- Badges Display -->
         <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 animate-slide-up" style="animation-delay: 0.4s;">
-          <h2 class="font-display text-2xl text-white mb-4 text-center">🏆 Badge Collection</h2>
-          <div id="badges-display" class="flex flex-wrap justify-center gap-6"></div>
+         <h2 class="font-display text-2xl text-white mb-4 text-center">🏆 Badge Collection</h2>
+         <div id="badges-display" class="flex flex-wrap justify-center gap-6"></div>
         </div>
-      </div>
-    </div>
-
-    <!-- Quiz Screen -->
-    <div id="quiz-screen" class="hidden h-full w-full p-4 md:p-8 overflow-auto">
-      <div class="max-w-3xl mx-auto">
-
-        <!-- Quiz Header -->
-        <div class="flex items-center justify-between mb-6">
-          <button id="back-to-menu" class="flex items-center gap-2 text-white hover:text-indigo-200 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-            Back to Map
-          </button>
-
-          <div class="flex items-center gap-4">
-            <div class="bg-white/20 rounded-full px-4 py-2">
-              <span class="text-white font-semibold">Question <span id="current-question">1</span>/<span id="total-questions">5</span></span>
-            </div>
-            <div class="bg-yellow-500/20 rounded-full px-4 py-2">
-              <span class="text-yellow-300 font-semibold">⭐ <span id="quiz-score">0</span></span>
-            </div>
+       </div>
+      </div><!-- Quiz Screen -->
+      <div id="quiz-screen" class="hidden h-full w-full p-4 md:p-8 overflow-auto">
+       <div class="max-w-3xl mx-auto"><!-- Quiz Header -->
+        <div class="flex items-center justify-between mb-6"><button id="back-to-menu" class="flex items-center gap-2 text-white hover:text-indigo-200 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg> Back to Map </button>
+         <div class="flex items-center gap-4">
+          <div class="bg-white/20 rounded-full px-4 py-2"><span class="text-white font-semibold">Question <span id="current-question">1</span>/<span id="total-questions">5</span></span>
           </div>
-        </div>
-
-        <!-- Zone Info Banner -->
+          <div class="bg-yellow-500/20 rounded-full px-4 py-2"><span class="text-yellow-300 font-semibold">⭐ <span id="quiz-score">0</span></span>
+          </div>
+         </div>
+        </div><!-- Zone Info Banner -->
         <div id="zone-banner" class="rounded-2xl p-4 mb-6 text-center">
-          <h2 id="zone-title" class="font-display text-2xl text-white"></h2>
-          <p id="zone-subtitle" class="text-white/80"></p>
-        </div>
-
-        <!-- Question Card -->
+         <h2 id="zone-title" class="font-display text-2xl text-white"></h2>
+         <p id="zone-subtitle" class="text-white/80"></p>
+        </div><!-- Question Card -->
         <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 mb-6 animate-slide-up">
-          <div class="mb-6">
-            <span id="question-type" class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold mb-4"></span>
-            <h3 id="question-text" class="text-xl md:text-2xl font-bold text-gray-800"></h3>
+         <div class="mb-6"><span id="question-type" class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold mb-4"></span>
+          <h3 id="question-text" class="text-xl md:text-2xl font-bold text-gray-800"></h3>
+         </div>
+         <div id="options-container" class="space-y-3"></div><!-- Feedback Section -->
+         <div id="feedback-section" class="hidden mt-6 p-4 rounded-xl">
+          <div class="flex items-start gap-3"><span id="feedback-icon" class="text-3xl"></span>
+           <div>
+            <h4 id="feedback-title" class="font-bold text-lg"></h4>
+            <p id="feedback-explanation" class="text-gray-600 mt-1"></p>
+           </div>
           </div>
-
-          <div id="options-container" class="space-y-3"></div>
-
-          <!-- Feedback Section -->
-          <div id="feedback-section" class="hidden mt-6 p-4 rounded-xl">
-            <div class="flex items-start gap-3">
-              <span id="feedback-icon" class="text-3xl"></span>
-              <div>
-                <h4 id="feedback-title" class="font-bold text-lg"></h4>
-                <p id="feedback-explanation" class="text-gray-600 mt-1"></p>
-              </div>
-            </div>
-          </div>
+         </div>
+        </div><!-- Next Button -->
+        <div class="text-center"><button id="next-question" class="hidden bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105"> Next Question → </button>
         </div>
-
-        <!-- Next Button -->
-        <div class="text-center">
-          <button id="next-question" class="hidden bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105">
-            Next Question →
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Results Screen -->
-    <div id="results-screen" class="hidden h-full w-full p-4 md:p-8 overflow-auto">
-      <div class="max-w-2xl mx-auto text-center">
+       </div>
+      </div><!-- Results Screen -->
+      <div id="results-screen" class="hidden h-full w-full p-4 md:p-8 overflow-auto">
+       <div class="max-w-2xl mx-auto text-center">
         <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 animate-bounce-in">
-          <div id="results-icon" class="text-8xl mb-4"></div>
-          <h2 id="results-title" class="font-display text-4xl text-white mb-4"></h2>
-          <p id="results-message" class="text-indigo-200 text-xl mb-8"></p>
-
-          <div class="flex justify-center gap-8 mb-8">
-            <div class="text-center">
-              <div id="final-score" class="text-5xl font-bold text-yellow-400"></div>
-              <p class="text-indigo-200">Points Earned</p>
-            </div>
-            <div class="text-center">
-              <div id="correct-answers" class="text-5xl font-bold text-emerald-400"></div>
-              <p class="text-indigo-200">Correct Answers</p>
-            </div>
+         <div id="results-icon" class="text-8xl mb-4"></div>
+         <h2 id="results-title" class="font-display text-4xl text-white mb-4"></h2>
+         <p id="results-message" class="text-indigo-200 text-xl mb-8"></p>
+         <div class="flex justify-center gap-8 mb-8">
+          <div class="text-center">
+           <div id="final-score" class="text-5xl font-bold text-yellow-400"></div>
+           <p class="text-indigo-200">Points Earned</p>
           </div>
-
-          <!-- Badge Earned -->
-          <div id="badge-earned-section" class="hidden mb-8">
-            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl p-6 animate-pulse-glow">
-              <h3 class="font-display text-2xl text-white mb-2">🎉 Badge Earned!</h3>
-              <div id="earned-badge-display" class="text-6xl my-4"></div>
-              <p id="earned-badge-name" class="text-white font-semibold"></p>
-            </div>
+          <div class="text-center">
+           <div id="correct-answers" class="text-5xl font-bold text-emerald-400"></div>
+           <p class="text-indigo-200">Correct Answers</p>
           </div>
-
-          <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <button id="retry-quiz" class="bg-white/20 text-white font-bold py-3 px-6 rounded-xl hover:bg-white/30 transition-all">🔄 Try Again</button>
-            <button id="back-to-map" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:shadow-xl transition-all">🗺️ Back to Map</button>
+         </div><!-- Badge Earned -->
+         <div id="badge-earned-section" class="hidden mb-8">
+          <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl p-6 animate-pulse-glow">
+           <h3 class="font-display text-2xl text-white mb-2">🎉 Badge Earned!</h3>
+           <div id="earned-badge-display" class="text-6xl my-4"></div>
+           <p id="earned-badge-name" class="text-white font-semibold"></p>
           </div>
+         </div>
+         <div class="flex flex-col sm:flex-row justify-center gap-4"><button id="retry-quiz" class="bg-white/20 text-white font-bold py-3 px-6 rounded-xl hover:bg-white/30 transition-all">🔄 Try Again</button> <button id="back-to-map" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:shadow-xl transition-all">🗺️ Back to Map</button>
+         </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Certification Screen -->
-    <div id="certification-screen" class="hidden h-full w-full p-4 md:p-8 overflow-auto">
-      <div class="max-w-3xl mx-auto text-center">
+       </div>
+      </div><!-- Certification Screen -->
+      <div id="certification-screen" class="hidden h-full w-full p-4 md:p-8 overflow-auto">
+       <div class="max-w-3xl mx-auto text-center">
         <div class="bg-gradient-to-br from-yellow-400/20 to-orange-500/20 backdrop-blur-sm rounded-3xl p-8 border-4 border-yellow-400/50 animate-bounce-in">
-          <div class="text-8xl mb-4">🎓</div>
-          <h2 class="font-display text-4xl md:text-5xl text-white mb-4">Congratulations!</h2>
-          <p class="text-indigo-200 text-xl mb-6">You've mastered all sections of Circular 230!</p>
-
-          <div class="bg-white rounded-2xl p-8 mb-8 shadow-2xl">
-            <div class="border-8 border-double border-indigo-600 rounded-xl p-6">
-              <h3 class="font-display text-3xl text-indigo-800 mb-4">Certificate of Mastery</h3>
-              <p class="text-gray-600 mb-4">This certifies that</p>
-              <p class="font-display text-2xl text-indigo-600 mb-4">Tax Professional</p>
-              <p class="text-gray-600 mb-4">has successfully completed</p>
-              <p class="font-bold text-xl text-gray-800 mb-4">31 CFR § 10 - Circular 230 Quest</p>
-              <div class="flex justify-center gap-4 mt-6">
-                <span class="text-4xl">🏆</span>
-                <span class="text-4xl">⭐</span>
-                <span class="text-4xl">🎖️</span>
-              </div>
-            </div>
+         <div class="text-8xl mb-4">
+          🎓
+         </div>
+         <h2 class="font-display text-4xl md:text-5xl text-white mb-4">Congratulations!</h2>
+         <p class="text-indigo-200 text-xl mb-6">You've mastered all sections of Circular 230!</p>
+         <div class="bg-white rounded-2xl p-8 mb-8 shadow-2xl">
+          <div class="border-8 border-double border-indigo-600 rounded-xl p-6">
+           <h3 class="font-display text-3xl text-indigo-800 mb-4">Certificate of Mastery</h3>
+           <p class="text-gray-600 mb-4">This certifies that</p>
+           <p class="font-display text-2xl text-indigo-600 mb-4">Tax Professional</p>
+           <p class="text-gray-600 mb-4">has successfully completed</p>
+           <p class="font-bold text-xl text-gray-800 mb-4">31 CFR § 10 - Circular 230 Quest</p>
+           <div class="flex justify-center gap-4 mt-6"><span class="text-4xl">🏆</span> <span class="text-4xl">⭐</span> <span class="text-4xl">🎖️</span>
+           </div>
           </div>
-
-          <button id="close-certification" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105">
-            Continue Your Journey
-          </button>
+         </div><button id="close-certification" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105"> Continue Your Journey </button>
         </div>
+       </div>
       </div>
-    </div>
-        </div>
-      </section>
-
-    </div>
-  </main>
-
-  <!-- PARTIAL:footer -->
-
+     </div>
+    </section>
+   </div>
+  </main><!-- PARTIAL:footer -->
   <script>
+    // ... [Rest of your JavaScript remains exactly the same] ...
     const API_BASE = "https://tools-api.taxmonitor.pro";
     const GAME_SLUG = "circular-230-quest";
     const GAME_FILE = "circular-230-quest.html";
@@ -1529,5 +1447,5 @@
       redirectToAbout();
     });
   </script>
-</body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d7bcfea365127c7',t:'MTc3Mjc0MTkzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
