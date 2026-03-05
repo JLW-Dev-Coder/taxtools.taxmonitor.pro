@@ -725,6 +725,74 @@ async function paypalVerifyWebhookSignature(env, request, webhookEvent) {
   return json(request, env, { checkoutUrl, sessionId }, 201);
 }
 
+async function handleCheckoutSessions(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
+
+  const item = typeof body.item === "string" ? body.item.trim() : "";
+  const quantity = body.quantity == null ? 1 : Number(body.quantity);
+
+  if (!item) return badRequest(request, env, "item is required");
+  if (item.startsWith("price_")) return badRequest(request, env, "Frontend must send internal item SKU, not provider ID");
+  if (!(item in SKU_TOKEN_COUNTS)) return badRequest(request, env, "Unknown item");
+  if (!Number.isInteger(quantity) || quantity < 1) return badRequest(request, env, "quantity must be a positive integer");
+  if (quantity > 1) return badRequest(request, env, "quantity > 1 is not allowed");
+
+  const amountUsd = SKU_USD_AMOUNTS[item];
+  if (!amountUsd) return json(request, env, { error: "server_misconfigured", message: "Missing PayPal amount configuration" }, 500);
+
+  await dbAccountEnsure(env, { accountId: auth.accountId, email: auth.email });
+
+  let accessToken;
+  try {
+    accessToken = await paypalGetAccessToken(env);
+  } catch (err) {
+    return json(request, env, { error: "server_misconfigured", message: String(err?.message || err) }, 500);
+  }
+
+  const { cancel_url, success_url } = buildCheckoutReturnUrls(request);
+  const idempotencyKey = String(request.headers.get("Idempotency-Key") || "").trim() || `checkout:${auth.accountId}:${item}`;
+
+  let created;
+  try {
+    created = await paypalCreateOrder({
+      accessToken,
+      amountUsd,
+      cancel_url,
+      env,
+      metadata: {
+        accountId: auth.accountId,
+        description: `TaxTools token pack: ${item}`,
+        idempotencyKey,
+      },
+      success_url,
+    });
+  } catch (err) {
+    return json(request, env, { error: "paypal_error", message: String(err?.message || err) }, 502);
+  }
+
+  const { checkoutUrl, orderId } = created;
+  const sessionId = orderId;
+
+  const tokens = SKU_TOKEN_COUNTS[item];
+
+  await r2PutJson(env, keyOrder(sessionId), {
+    accountId: auth.accountId,
+    amountUsd,
+    createdAt: nowIso(),
+    provider: "paypal",
+    sku: item,
+    tokens,
+  });
+
+  return json(request, env, { checkoutUrl, sessionId }, 201);
+}
+
 async function handleCheckoutStatus(request, env) {
   if (request.method !== "GET") return methodNotAllowed(request, env);
 
@@ -1206,7 +1274,7 @@ async function handleAuthStart(request, env) {
     httpMetadata: { contentType: "application/json" },
   });
 
-  const baseUrl = String(env.TAXTOOLS_AUTH_BASE_URL || "https://tools-api.taxmonitor.pro").replace(/\/\/+$/g, "");
+  const baseUrl = String(env.TAXTOOLS_AUTH_BASE_URL || "https://tools-api.taxmonitor.pro").replace(/\/+$/g, "");
   const link = `${baseUrl}/v1/auth/complete?token=${encodeURIComponent(token)}`;
 
   try {
@@ -1266,7 +1334,7 @@ async function handleAuthComplete(request, env) {
   await r2PutJson(env, keySession(sessionId), session);
   await env.R2_TAXTOOLS.delete(keyLoginToken(token));
 
-  const appOrigin = String(env.TAXTOOLS_APP_ORIGIN || "https://taxtools.taxmonitor.pro").replace(/\/\/+$/g, "");
+  const appOrigin = String(env.TAXTOOLS_APP_ORIGIN || "https://taxtools.taxmonitor.pro").replace(/\/+$/g, "");
   const location = `${appOrigin}${redirect}`;
 
   const headers = new Headers({ Location: location });
