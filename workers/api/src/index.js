@@ -1163,30 +1163,21 @@ async function handleTokensSpend(request, env) {
     grant: { expiresAt: grant.expiresAt, grantId: grant.grantId, slug: grant.slug, spent: grant.spent },
   };
 
-  // Transaction:
-  // - insert ledger row (dedupe)
-  // - attempt guarded balance decrement
-  // - insert play grant
-  // - update ledger metadata_json with response
-  const insertLedger = env.DB.prepare(
-    "INSERT INTO token_ledger (id, account_id, delta, reason, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?)"
-  ).bind(ledgerId, auth.accountId, -amount, reason, null, now);
+  // D1 does not allow manual SQL transaction statements (BEGIN/COMMIT/ROLLBACK/SAVEPOINT).
+  // Pattern:
+  // 1) Insert ledger row first (idempotency gate)
+  // 2) Guarded balance decrement
+  // 3) Insert play grant
+  // 4) Persist response into ledger metadata_json
 
-  const updateBalance = env.DB.prepare(
-    "UPDATE accounts SET balance = balance - ?, updated_at = ? WHERE account_id = ? AND balance >= ?"
-  ).bind(amount, now, auth.accountId, amount);
+  const insertLedger = await env.DB.prepare(
+    "INSERT INTO token_ledger (id, account_id, delta, reason, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?) " +
+      "ON CONFLICT(id) DO NOTHING"
+  )
+    .bind(ledgerId, auth.accountId, -amount, reason, null, now)
+    .run();
 
-  const insertGrant = env.DB.prepare(
-    "INSERT INTO play_grants (grant_id, account_id, slug, expires_at, expires_at_ms, spent, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
-  ).bind(grantId, auth.accountId, slug, grant.expiresAt, grant.expiresAtMs, amount, now);
-
-  const updateLedgerMeta = env.DB.prepare("UPDATE token_ledger SET metadata_json = ? WHERE id = ?");
-
-  const rows = await env.DB.batch([env.DB.prepare("BEGIN"), insertLedger, updateBalance, insertGrant, env.DB.prepare("COMMIT")]);
-
-  // rows[1] = insertLedger result, rows[2] = updateBalance result
-  const insertedLedgerChanges = rows?.[1]?.meta?.changes || 0;
-  const balanceChanges = rows?.[2]?.meta?.changes || 0;
+  const insertedLedgerChanges = insertLedger?.meta?.changes || 0;
 
   // If ledger didn't insert, someone already spent with that idempotency key.
   if (insertedLedgerChanges === 0) {
@@ -1202,17 +1193,40 @@ async function handleTokensSpend(request, env) {
     return json(request, env, { error: "idempotency_conflict", message: "Spend already processed" }, 409);
   }
 
-  // If balance update didn't happen, insufficient funds. Roll back the ledger+grant we inserted.
-  if (balanceChanges === 0) {
-    await env.DB.batch([
-      env.DB.prepare("BEGIN"),
-      env.DB.prepare("DELETE FROM play_grants WHERE grant_id = ?").bind(grantId),
-      env.DB.prepare("DELETE FROM token_ledger WHERE id = ?").bind(ledgerId),
-      env.DB.prepare("COMMIT"),
-    ]);
+  const balanceUpdate = await env.DB.prepare(
+    "UPDATE accounts SET balance = balance - ?, updated_at = ? WHERE account_id = ? AND balance >= ?"
+  )
+    .bind(amount, now, auth.accountId, amount)
+    .run();
 
+  const balanceChanges = balanceUpdate?.meta?.changes || 0;
+
+  // If balance update didn't happen, insufficient funds. Compensate by removing ledger row.
+  if (balanceChanges === 0) {
+    await env.DB.prepare("DELETE FROM token_ledger WHERE id = ?").bind(ledgerId).run();
     const balance = await dbAccountGetBalance(env, auth.accountId);
     return json(request, env, { balance, error: "insufficient_balance" }, 402);
+  }
+
+  try {
+    await env.DB.prepare(
+      "INSERT INTO play_grants (grant_id, account_id, slug, expires_at, expires_at_ms, spent, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    )
+      .bind(grantId, auth.accountId, slug, grant.expiresAt, grant.expiresAtMs, amount, now)
+      .run();
+  } catch (err) {
+    // Best-effort compensation: refund balance and remove ledger entry.
+    await env.DB.prepare("UPDATE accounts SET balance = balance + ?, updated_at = ? WHERE account_id = ?")
+      .bind(amount, now, auth.accountId)
+      .run();
+    await env.DB.prepare("DELETE FROM token_ledger WHERE id = ?").bind(ledgerId).run();
+
+    return json(
+      request,
+      env,
+      { error: "grant_insert_failed", message: String(err?.message || err || "Failed to create grant") },
+      500
+    );
   }
 
   const balance = await dbAccountGetBalance(env, auth.accountId);
