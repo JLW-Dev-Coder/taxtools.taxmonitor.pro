@@ -1,502 +1,476 @@
 <!-- games/irs-tax-detective.html -->
 <!doctype html>
 <html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IRS Detective Game</title>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IRS Detective Game</title>
 
-  <link rel="icon" href="/assets/favicon.ico">
-  <link rel="stylesheet" href="/styles/site.css">
+<link rel="icon" href="/assets/favicon.ico" />
+<link rel="stylesheet" href="/styles/site.css" />
 
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="/_sdk/element_sdk.js"></script>
+<script src="/_sdk/data_sdk.js"></script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&amp;family=Poppins:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            title: ['Fredoka One', 'system-ui', 'sans-serif'],
-            sans: ['Poppins', 'system-ui', 'sans-serif'],
-          },
-          colors: {
-            detective: '#1a1a2e',
-            glow: '#00d4ff',
-            success: '#00ff41',
-            danger: '#ff006e',
-            warning: '#ffd60a',
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    * { box-sizing: border-box; }
-    body { box-sizing: border-box; }
-
-    .game-bg {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .game-bg::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image:
-        radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(0, 255, 65, 0.05) 0%, transparent 50%);
-      pointer-events: none;
-      animation: pulse-glow 6s ease-in-out infinite;
-    }
-
-    @keyframes pulse-glow {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
-    }
-
-    .card-reveal {
-      animation: card-flip 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-
-    @keyframes card-flip {
-      0% { transform: rotateY(0deg) scale(0.8); opacity: 0; }
-      50% { transform: rotateY(90deg); }
-      100% { transform: rotateY(0deg) scale(1); opacity: 1; }
-    }
-
-    .pulse-score {
-      animation: score-pulse 0.5s ease-out;
-    }
-
-    @keyframes score-pulse {
-      0% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .bounce-in {
-      animation: bounce-in-anim 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes bounce-in-anim {
-      0% { transform: scale(0); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .glitch {
-      animation: glitch-effect 0.3s;
-    }
-
-    @keyframes glitch-effect {
-      0% { transform: translate(2px, 0); }
-      25% { transform: translate(-2px, 0); }
-      50% { transform: translate(2px, 0); }
-      75% { transform: translate(-2px, 0); }
-      100% { transform: translate(0, 0); }
-    }
-
-    .neon-text {
-      text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 30px #00d4ff;
-    }
-
-    .success-glow {
-      animation: success-glow-anim 0.6s ease-out;
-    }
-
-    @keyframes success-glow-anim {
-      0% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.7); }
-      100% { box-shadow: 0 0 0 20px rgba(0, 255, 65, 0); }
-    }
-
-    /* Gate UI without changing your game styling */
-    .tm-gatebar {
-      position: sticky;
-      top: 0;
-      z-index: 60;
-      background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-    }
-  </style>
- </head>
- <body class="h-full font-sans text-white">
-  <!-- PARTIAL:header -->
-
-  <div id="tm-gatebar" class="tm-gatebar">
-    <div class="mx-auto max-w-5xl px-6 py-3 text-sm text-white/80">
-      <span class="font-semibold text-white">Access:</span>
-      <span id="tm-status" class="ml-2">Checking…</span>
-    </div>
-  </div>
-
-  <div class="h-full w-full overflow-auto game-bg" id="tm-game-root" aria-busy="true">
-   <div class="w-full h-full p-4 md:p-8"><!-- Header -->
-    <header class="text-center mb-8 relative z-10">
-     <h1 id="game_title" class="font-title text-4xl md:text-5xl neon-text mb-2">🕵️ IRS Detective</h1>
-     <p class="text-glow text-sm md:text-base">Decode the mystery of your refund offset!</p>
-    </header><!-- Score & Level Display -->
-    <div class="flex justify-center gap-4 mb-8 relative z-10">
-     <div class="bg-detective/60 border-2 border-glow rounded-lg px-6 py-3 backdrop-blur-sm">
-      <div class="text-xs text-glow/80 mb-1">
-       SCORE
-      </div>
-      <div id="score-display" class="text-2xl font-bold text-success">
-       0
-      </div>
-     </div>
-     <div class="bg-detective/60 border-2 border-glow rounded-lg px-6 py-3 backdrop-blur-sm">
-      <div class="text-xs text-glow/80 mb-1" id="level_label">
-       LEVEL
-      </div>
-      <div id="level-display" class="text-2xl font-bold text-glow">
-       1/4
-      </div>
-     </div>
-     <div class="bg-detective/60 border-2 border-glow rounded-lg px-6 py-3 backdrop-blur-sm">
-      <div class="text-xs text-glow/80 mb-1">
-       STREAK
-      </div>
-      <div id="streak-display" class="text-2xl font-bold text-warning">
-       0
-      </div>
-     </div>
-    </div><!-- Game Content -->
-    <main class="max-w-2xl mx-auto relative z-10"><!-- Start Screen -->
-     <div id="start-screen" class="text-center mb-8">
-      <div class="bg-detective/60 border-2 border-glow rounded-lg p-8 backdrop-blur-sm bounce-in">
-       <p class="text-lg mb-6 leading-relaxed">Your refund disappeared! Help Detective IRS solve the case by matching IRS codes to their meanings. Each correct match earns points!</p><button id="start-btn" class="bg-glow text-detective font-bold py-3 px-8 rounded-lg text-lg hover:bg-success hover:shadow-lg transition-all transform hover:scale-105"> START INVESTIGATION 🔍 </button>
-      </div>
-     </div><!-- Game Screen -->
-     <div id="game-screen" class="hidden"><!-- Question -->
-      <div class="bg-detective/60 border-2 border-glow rounded-lg p-6 mb-6 backdrop-blur-sm">
-       <div class="text-glow text-sm font-bold mb-2">
-        CODE IDENTIFICATION
-       </div>
-       <div id="question" class="text-2xl md:text-3xl font-title">
-        What does code 826 mean?
-       </div>
-      </div><!-- Answer Cards -->
-      <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"><!-- Cards generated by JS -->
-      </div><!-- Feedback -->
-      <div id="feedback" class="hidden bg-detective/60 border-2 rounded-lg p-4 backdrop-blur-sm mb-4">
-       <div id="feedback-text" class="text-center font-bold text-lg"></div>
-      </div><!-- Navigation -->
-      <div class="flex gap-4 justify-center"><button id="next-btn" class="hidden bg-success text-detective font-bold py-2 px-6 rounded-lg hover:shadow-lg transition-all"> NEXT CASE → </button> <button id="skip-btn" class="bg-danger text-white font-bold py-2 px-6 rounded-lg hover:shadow-lg transition-all"> SKIP (-100 PTS) </button>
-      </div>
-     </div><!-- Results Screen -->
-     <div id="results-screen" class="hidden text-center">
-      <div class="bg-detective/60 border-2 border-glow rounded-lg p-8 backdrop-blur-sm bounce-in">
-       <div class="text-4xl mb-4">
-        🎉
-       </div>
-       <h2 class="text-3xl font-title text-success mb-2">INVESTIGATION COMPLETE!</h2>
-       <p class="text-xl text-glow mb-6">Final Score: <span id="final-score" class="font-bold">0</span></p>
-       <p id="result-message" class="text-base mb-8 leading-relaxed"></p><button id="restart-btn" class="bg-glow text-detective font-bold py-3 px-8 rounded-lg text-lg hover:bg-success hover:shadow-lg transition-all transform hover:scale-105"> NEW INVESTIGATION 🔍 </button>
-      </div>
-     </div>
-    </main>
-   </div>
-  </div>
-
-  <!-- PARTIAL:footer -->
-
-  <script>
-    const defaultConfig = {
-      game_title: "🕵️ IRS Detective",
-      level_label: "LEVEL"
-    };
-
-    // Game data
-    const gameData = [
-      {
-        code: "826",
-        question: "What does code 826 mean?",
-        answers: [
-          { text: "Overpayment transferred to another tax period", correct: true },
-          { text: "Refund applied to non-IRS debt", correct: false },
-          { text: "Notice issued (check your mail)", correct: false }
-        ]
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        title: ['Fredoka One','system-ui','sans-serif'],
+        sans: ['Poppins','system-ui','sans-serif'],
       },
-      {
-        code: "820",
-        question: "What does code 820 mean?",
-        answers: [
-          { text: "Refund applied to non-IRS debt", correct: false },
-          { text: "Credit transferred to another tax period", correct: true },
-          { text: "Overpayment transferred to another tax period", correct: false }
-        ]
-      },
-      {
-        code: "898",
-        question: "What does code 898 mean?",
-        answers: [
-          { text: "Notice issued (check your mail)", correct: false },
-          { text: "Overpayment transferred to another tax period", correct: false },
-          { text: "Refund applied to non-IRS debt", correct: true }
-        ]
-      },
-      {
-        code: "971",
-        question: "What does code 971 mean?",
-        answers: [
-          { text: "Notice issued (check your mail)", correct: true },
-          { text: "Credit transferred to another tax period", correct: false },
-          { text: "Refund applied to non-IRS debt", correct: false }
-        ]
+      colors: {
+        detective:'#1a1a2e',
+        glow:'#00d4ff',
+        success:'#00ff41',
+        danger:'#ff006e',
+        warning:'#ffd60a'
       }
-    ];
-
-    let gameState = {
-      currentQuestion: 0,
-      score: 0,
-      streak: 0,
-      answered: false,
-      correctAnswer: null
-    };
-
-    function shuffleArray(arr) {
-      return [...arr].sort(() => Math.random() - 0.5);
     }
+  }
+}
+</script>
 
-    function startGame() {
-      gameState = {
-        currentQuestion: 0,
-        score: 0,
-        streak: 0,
-        answered: false,
-        correctAnswer: null
-      };
-      document.getElementById('start-screen').classList.add('hidden');
-      document.getElementById('game-screen').classList.remove('hidden');
-      document.getElementById('results-screen').classList.add('hidden');
-      displayQuestion();
-    }
+<style>
+*{box-sizing:border-box}
+body{box-sizing:border-box}
 
-    function displayQuestion() {
-      const currentQ = gameData[gameState.currentQuestion];
-      document.getElementById('question').textContent = currentQ.question;
+html,body{background:#020617}
 
-      const container = document.getElementById('cards-container');
-      container.innerHTML = '';
+.game-bg{
+background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+position:relative;
+overflow:hidden
+}
 
-      const shuffledAnswers = shuffleArray(currentQ.answers);
+.game-bg::before{
+content:'';
+position:absolute;
+top:0;left:0;right:0;bottom:0;
+background-image:
+radial-gradient(circle at 20% 50%,rgba(0,212,255,0.05) 0%,transparent 50%),
+radial-gradient(circle at 80% 80%,rgba(0,255,65,0.05) 0%,transparent 50%);
+pointer-events:none;
+animation:pulse-glow 6s ease-in-out infinite
+}
 
-      shuffledAnswers.forEach((answer) => {
-        const card = document.createElement('button');
-        card.className = 'bg-detective/60 border-2 border-glow hover:border-success rounded-lg p-4 backdrop-blur-sm card-reveal text-left transition-all hover:shadow-lg transform hover:scale-105';
-        card.textContent = answer.text;
-        card.onclick = () => selectAnswer(answer, card);
-        container.appendChild(card);
-      });
+@keyframes pulse-glow{0%,100%{opacity:.5}50%{opacity:1}}
 
-      document.getElementById('feedback').classList.add('hidden');
-      document.getElementById('next-btn').classList.add('hidden');
-      gameState.answered = false;
-    }
+.card-reveal{animation:card-flip .6s cubic-bezier(.68,-.55,.265,1.55)}
 
-    function selectAnswer(answer, cardElement) {
-      if (gameState.answered) return;
+@keyframes card-flip{
+0%{transform:rotateY(0) scale(.8);opacity:0}
+50%{transform:rotateY(90deg)}
+100%{transform:rotateY(0) scale(1);opacity:1}
+}
 
-      gameState.answered = true;
-      gameState.correctAnswer = answer.correct;
+.pulse-score{animation:score-pulse .5s ease-out}
 
-      const feedback = document.getElementById('feedback');
-      const feedbackText = document.getElementById('feedback-text');
+@keyframes score-pulse{0%{transform:scale(1.2)}100%{transform:scale(1)}}
 
-      if (answer.correct) {
-        cardElement.classList.add('success-glow');
-        cardElement.classList.add('border-success');
-        cardElement.classList.add('bg-success/10');
+.bounce-in{animation:bounce-in-anim .6s cubic-bezier(.34,1.56,.64,1)}
 
-        gameState.score += 250;
-        gameState.streak += 1;
+@keyframes bounce-in-anim{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
 
-        feedbackText.textContent = '✅ CORRECT! +250 PTS';
-        feedbackText.className = 'text-success text-lg font-bold';
-      } else {
-        cardElement.classList.add('glitch');
-        cardElement.classList.add('border-danger');
-        cardElement.classList.add('bg-danger/10');
+.glitch{animation:glitch-effect .3s}
 
-        gameState.streak = 0;
+@keyframes glitch-effect{0%{transform:translate(2px,0)}25%{transform:translate(-2px,0)}50%{transform:translate(2px,0)}75%{transform:translate(-2px,0)}100%{transform:translate(0,0)}}
 
-        feedbackText.textContent = '❌ INCORRECT! Try the next one.';
-        feedbackText.className = 'text-danger text-lg font-bold';
-      }
+.neon-text{text-shadow:0 0 10px #00d4ff,0 0 20px #00d4ff,0 0 30px #00d4ff}
 
-      feedback.classList.remove('hidden');
-      updateUI();
+.success-glow{animation:success-glow-anim .6s ease-out}
 
-      setTimeout(() => {
-        if (gameState.currentQuestion < gameData.length - 1) {
-          document.getElementById('next-btn').classList.remove('hidden');
-        } else {
-          endGame();
-        }
-      }, 1000);
-    }
+@keyframes success-glow-anim{0%{box-shadow:0 0 0 0 rgba(0,255,65,.7)}100%{box-shadow:0 0 0 20px rgba(0,255,65,0)}}
 
-    function nextQuestion() {
-      gameState.currentQuestion += 1;
-      displayQuestion();
-    }
+.custom-scrollbar::-webkit-scrollbar{width:8px}
+.custom-scrollbar::-webkit-scrollbar-track{background:rgba(255,255,255,.1);border-radius:4px}
+.custom-scrollbar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.3);border-radius:4px}
 
-    function skipQuestion() {
-      if (gameState.answered) return;
+@keyframes pulse-indicator{
+0%,100%{box-shadow:0 0 12px rgba(16,185,129,.6),inset 0 0 6px rgba(255,255,255,.3)}
+50%{box-shadow:0 0 20px rgba(16,185,129,.9),inset 0 0 8px rgba(255,255,255,.5)}
+}
 
-      gameState.score = Math.max(0, gameState.score - 100);
-      gameState.streak = 0;
+.status-badge{
+display:inline-flex;
+align-items:center;
+gap:12px;
+background:linear-gradient(135deg,rgba(16,185,129,.08) 0%,rgba(6,182,212,.08) 100%);
+border:2px solid rgba(16,185,129,.35);
+border-radius:14px;
+padding:12px 20px;
+font-size:15px;
+font-weight:600;
+letter-spacing:.3px;
+box-shadow:0 4px 20px rgba(16,185,129,.1),inset 0 1px 2px rgba(255,255,255,.1);
+transition:all .3s ease
+}
 
-      const feedback = document.getElementById('feedback');
-      const feedbackText = document.getElementById('feedback-text');
-      feedbackText.textContent = '⏭️ SKIPPED -100 PTS';
-      feedbackText.className = 'text-warning text-lg font-bold';
-      feedback.classList.remove('hidden');
+.status-badge:hover{
+border-color:rgba(16,185,129,.5);
+box-shadow:0 6px 24px rgba(16,185,129,.15),inset 0 1px 3px rgba(255,255,255,.15)
+}
 
-      gameState.answered = true;
-      updateUI();
+.status-indicator{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+width:12px;height:12px;
+background:linear-gradient(135deg,#10b981,#06b6d4);
+border-radius:50%;
+box-shadow:0 0 12px rgba(16,185,129,.6),inset 0 0 6px rgba(255,255,255,.3);
+animation:pulse-indicator 2s ease-in-out infinite;
+flex-shrink:0
+}
 
-      setTimeout(() => {
-        if (gameState.currentQuestion < gameData.length - 1) {
-          gameState.currentQuestion += 1;
-          displayQuestion();
-        } else {
-          endGame();
-        }
-      }, 1000);
-    }
+.status-text{
+background:linear-gradient(135deg,#10b981 0%,#06b6d4 100%);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+background-clip:text;
+font-weight:600
+}
+</style>
+</head>
 
-    function endGame() {
-      document.getElementById('game-screen').classList.add('hidden');
-      document.getElementById('results-screen').classList.remove('hidden');
+<body class="h-full font-sans">
 
-      document.getElementById('final-score').textContent = gameState.score;
+<!-- PARTIAL:header -->
 
-      let message = '';
-      if (gameState.score >= 900) {
-        message = '🏆 DETECTIVE ELITE! You\'ve mastered IRS codes. Time to check that real transcript!';
-      } else if (gameState.score >= 700) {
-        message = '🎯 SOLID DETECTIVE! You know your codes. Ready to decode your real refund?';
-      } else if (gameState.score >= 500) {
-        message = '🕵️ RISING DETECTIVE! You\'re getting the hang of it. Practice makes perfect!';
-      } else {
-        message = '📚 KEEP LEARNING! Every detective starts somewhere. Try again!';
-      }
+<!-- Status line required by Canonical UX safety -->
+<div class="mx-auto max-w-6xl px-6 pt-4 pb-4 flex justify-center">
+<div class="status-badge">
+<span class="status-indicator" aria-hidden="true"></span>
+<span id="status" class="status-text">Checking access…</span>
+</div>
+</div>
 
-      document.getElementById('result-message').textContent = message;
-    }
+<div id="app" class="h-full w-full overflow-auto custom-scrollbar game-bg" style="padding-bottom:6rem;">
 
-    function updateUI() {
-      document.getElementById('score-display').textContent = gameState.score;
-      document.getElementById('level-display').textContent = `${gameState.currentQuestion + 1}/${gameData.length}`;
-      document.getElementById('streak-display').textContent = gameState.streak;
-    }
+<div id="tm-game-root" class="w-full h-full p-4 md:p-8" aria-busy="true">
 
-    function onConfigChange(config) {
-      document.getElementById('game_title').textContent = config.game_title || defaultConfig.game_title;
-      document.getElementById('level_label').textContent = config.level_label || defaultConfig.level_label;
-    }
+<header class="text-center mb-8 relative z-10">
+<h1 id="game_title" class="font-title text-4xl md:text-5xl neon-text mb-2 text-white">🕵️ IRS Detective</h1>
+<p class="text-glow text-sm md:text-base text-white">Decode the mystery of your refund offset!</p>
+</header>
 
-    function mapToCapabilities() {
-      return {
-        recolorables: [],
-        borderables: [],
-        fontEditable: undefined,
-        fontSizeable: undefined
-      };
-    }
+<div class="flex justify-center gap-4 mb-8 relative z-10">
 
-    function mapToEditPanelValues(config) {
-      return new Map([
-        ["game_title", config.game_title || defaultConfig.game_title],
-        ["level_label", config.level_label || defaultConfig.level_label]
-      ]);
-    }
+<div class="bg-detective/60 border-2 border-glow rounded-lg px-6 py-3 backdrop-blur-sm">
+<div class="text-xs text-glow/80 mb-1">SCORE</div>
+<div id="score-display" class="text-2xl font-bold text-success">0</div>
+</div>
 
-    // Event listeners
-    document.getElementById('start-btn').addEventListener('click', startGame);
-    document.getElementById('next-btn').addEventListener('click', nextQuestion);
-    document.getElementById('skip-btn').addEventListener('click', skipQuestion);
-    document.getElementById('restart-btn').addEventListener('click', startGame);
+<div class="bg-detective/60 border-2 border-glow rounded-lg px-6 py-3 backdrop-blur-sm">
+<div class="text-xs text-glow/80 mb-1" id="level_label">LEVEL</div>
+<div id="level-display" class="text-2xl font-bold text-glow">1/4</div>
+</div>
 
-    // Initialize SDK
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange,
-        mapToCapabilities,
-        mapToEditPanelValues
-      });
-    }
-  </script>
+<div class="bg-detective/60 border-2 border-glow rounded-lg px-6 py-3 backdrop-blur-sm">
+<div class="text-xs text-glow/80 mb-1">STREAK</div>
+<div id="streak-display" class="text-2xl font-bold text-warning">0</div>
+</div>
 
-  <script>
-    // Tooling: server-side access gate (same pattern as other games)
-    const API_BASE = "https://tools-api.taxmonitor.pro";
-    const accessSlug = "irs-tax-detective";
-    const aboutPath = "irs-tax-detective.html";
+</div>
 
-    function setGateStatus(msg) {
-      const el = document.getElementById("tm-status");
-      if (el) el.textContent = msg || "";
-    }
+<main class="max-w-2xl mx-auto relative z-10">
 
-    async function apiGet(path) {
-      const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
-      return { res, json: await res.json().catch(() => ({})) };
-    }
+<div id="start-screen" class="text-center mb-8">
+<div class="bg-detective/60 border-2 border-glow rounded-lg p-8 backdrop-blur-sm bounce-in">
+<p class="text-lg mb-6 leading-relaxed text-white">Your refund disappeared! Help Detective IRS solve the case by matching IRS codes to their meanings. Each correct match earns points!</p>
 
-    function lockStartButton(locked) {
-      const btn = document.getElementById('start-btn');
-      if (!btn) return;
-      btn.disabled = !!locked;
-      btn.classList.toggle('opacity-60', !!locked);
-      btn.classList.toggle('cursor-not-allowed', !!locked);
-    }
+<button id="start-btn" disabled class="bg-glow text-detective font-bold py-3 px-8 rounded-lg text-lg hover:bg-success hover:shadow-lg transition-all transform hover:scale-105 opacity-60 cursor-not-allowed">START INVESTIGATION 🔍</button>
+</div>
+</div>
 
-    async function bootGate() {
-      lockStartButton(true);
-      setGateStatus("Checking session…");
+<div id="game-screen" class="hidden">
 
-      const me = await apiGet("/v1/auth/me");
-      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-        window.location.href = "/about-games/" + aboutPath;
-        return;
-      }
+<div class="bg-detective/60 border-2 border-glow rounded-lg p-6 mb-6 backdrop-blur-sm">
+<div class="text-glow text-sm font-bold mb-2">CODE IDENTIFICATION</div>
+<div id="question" class="text-2xl md:text-3xl font-title text-white">What does code 826 mean?</div>
+</div>
 
-      setGateStatus("Loading token balance…");
-      await apiGet("/v1/tokens/balance");
+<div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"></div>
 
-      setGateStatus("Verifying access grant…");
-      const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(accessSlug));
-      if (!access.res.ok || !access.json || access.json.allowed !== true) {
-        window.location.href = "/about-games/" + aboutPath;
-        return;
-      }
+<div id="feedback" class="hidden bg-detective/60 border-2 rounded-lg p-4 backdrop-blur-sm mb-4">
+<div id="feedback-text" class="text-center font-bold text-lg"></div>
+</div>
 
-      const expiresAt = access.json.expiresAt || "";
-      setGateStatus(expiresAt ? ("Granted until " + expiresAt) : "Access granted");
-      lockStartButton(false);
-      const root = document.getElementById('tm-game-root');
-      if (root) root.setAttribute('aria-busy', 'false');
-    }
+<div class="flex gap-4 justify-center">
+<button id="next-btn" class="hidden bg-success text-detective font-bold py-2 px-6 rounded-lg hover:shadow-lg transition-all">NEXT CASE →</button>
+<button id="skip-btn" class="bg-danger text-white font-bold py-2 px-6 rounded-lg hover:shadow-lg transition-all">SKIP (-100 PTS)</button>
+</div>
 
-    bootGate().catch(() => {
-      setGateStatus("Error loading game. Redirecting…");
-      window.location.href = "/about-games/" + aboutPath;
-    });
-  </script>
- </body>
+</div>
+
+<div id="results-screen" class="hidden text-center">
+<div class="bg-detective/60 border-2 border-glow rounded-lg p-8 backdrop-blur-sm bounce-in">
+<div class="text-4xl mb-4">🎉</div>
+<h2 class="text-3xl font-title text-success mb-2">INVESTIGATION COMPLETE!</h2>
+<p class="text-xl text-glow mb-6">Final Score: <span id="final-score" class="font-bold">0</span></p>
+<p id="result-message" class="text-base mb-8 leading-relaxed"></p>
+
+<button id="restart-btn" class="bg-glow text-detective font-bold py-3 px-8 rounded-lg text-lg hover:bg-success hover:shadow-lg transition-all transform hover:scale-105">NEW INVESTIGATION 🔍</button>
+</div>
+</div>
+
+</main>
+
+</div>
+</div>
+
+<!-- PARTIAL:footer -->
+
+<script>
+
+const ABOUT_URL = "/about-games/" + "irs-tax-detective.html";
+const API_BASE = "https://tools-api.taxmonitor.pro";
+const GAME_FILE = "irs-tax-detective.html";
+const GAME_SLUG = "irs-tax-detective";
+
+function setStatus(msg){
+const el=document.getElementById("status");
+if(el) el.textContent=msg||"";
+}
+
+async function apiGet(path){
+const res=await fetch(API_BASE+path,{method:"GET",credentials:"include"});
+return{res,json:await res.json().catch(()=>({}))};
+}
+
+async function endRun(result){
+await fetch(API_BASE+"/v1/games/end",{
+method:"POST",
+credentials:"include",
+headers:{"content-type":"application/json"},
+body:JSON.stringify({result,slug:GAME_SLUG})
+}).catch(()=>{});
+}
+
+function redirectToAbout(){
+window.location.href=ABOUT_URL;
+}
+
+async function gateAccess(){
+setStatus("Checking session…");
+
+const me=await apiGet("/v1/auth/me");
+if(!me.res.ok||!me.json||me.json.isAuthenticated===false){redirectToAbout();return false}
+
+setStatus("Loading token balance…");
+await apiGet("/v1/tokens/balance");
+
+setStatus("Verifying access…");
+const access=await apiGet("/v1/games/access?slug="+encodeURIComponent(GAME_SLUG));
+
+if(!access.res.ok||!access.json||access.json.allowed!==true){redirectToAbout();return false}
+
+setStatus("Access granted.");
+return true;
+}
+
+function unlockStart(){
+const btn=document.getElementById("start-btn");
+if(!btn) return;
+btn.disabled=false;
+btn.classList.remove("opacity-60","cursor-not-allowed");
+}
+
+</script>
+
+<script>
+
+const defaultConfig={
+ game_title:"🕵️ IRS Detective",
+ level_label:"LEVEL"
+};
+
+const gameData=[
+{code:"826",question:"What does code 826 mean?",answers:[{text:"Overpayment transferred to another tax period",correct:true},{text:"Refund applied to non-IRS debt",correct:false},{text:"Notice issued (check your mail)",correct:false}]},
+{code:"820",question:"What does code 820 mean?",answers:[{text:"Refund applied to non-IRS debt",correct:false},{text:"Credit transferred to another tax period",correct:true},{text:"Overpayment transferred to another tax period",correct:false}]},
+{code:"898",question:"What does code 898 mean?",answers:[{text:"Notice issued (check your mail)",correct:false},{text:"Overpayment transferred to another tax period",correct:false},{text:"Refund applied to non-IRS debt",correct:true}]},
+{code:"971",question:"What does code 971 mean?",answers:[{text:"Notice issued (check your mail)",correct:true},{text:"Credit transferred to another tax period",correct:false},{text:"Refund applied to non-IRS debt",correct:false}]}
+];
+
+let gameState={currentQuestion:0,score:0,streak:0,answered:false,correctAnswer:null};
+
+function shuffleArray(arr){return[...arr].sort(()=>Math.random()-.5)}
+
+function startGame(){
+ gameState={currentQuestion:0,score:0,streak:0,answered:false,correctAnswer:null};
+ document.getElementById('start-screen').classList.add('hidden');
+ document.getElementById('game-screen').classList.remove('hidden');
+ document.getElementById('results-screen').classList.add('hidden');
+ displayQuestion();
+}
+
+function displayQuestion(){
+ const currentQ=gameData[gameState.currentQuestion];
+ document.getElementById('question').textContent=currentQ.question;
+
+ const container=document.getElementById('cards-container');
+ container.innerHTML='';
+
+ const shuffledAnswers=shuffleArray(currentQ.answers);
+
+ shuffledAnswers.forEach(answer=>{
+ const card=document.createElement('button');
+ card.className='bg-detective/60 border-2 border-glow hover:border-success rounded-lg p-4 backdrop-blur-sm card-reveal text-left transition-all hover:shadow-lg transform hover:scale-105';
+ card.textContent=answer.text;
+ card.onclick=()=>selectAnswer(answer,card);
+ container.appendChild(card);
+ });
+
+ document.getElementById('feedback').classList.add('hidden');
+ document.getElementById('next-btn').classList.add('hidden');
+ gameState.answered=false;
+}
+
+function selectAnswer(answer,cardElement){
+ if(gameState.answered) return;
+
+ gameState.answered=true;
+ gameState.correctAnswer=answer.correct;
+
+ const feedback=document.getElementById('feedback');
+ const feedbackText=document.getElementById('feedback-text');
+
+ if(answer.correct){
+ cardElement.classList.add('success-glow','border-success','bg-success/10');
+ gameState.score+=250;
+ gameState.streak+=1;
+ feedbackText.textContent='✅ CORRECT! +250 PTS';
+ feedbackText.className='text-success text-lg font-bold';
+ }else{
+ cardElement.classList.add('glitch','border-danger','bg-danger/10');
+ gameState.streak=0;
+ feedbackText.textContent='❌ INCORRECT! Try the next one.';
+ feedbackText.className='text-danger text-lg font-bold';
+ }
+
+ feedback.classList.remove('hidden');
+ updateUI();
+
+ setTimeout(()=>{
+ if(gameState.currentQuestion<gameData.length-1){
+ document.getElementById('next-btn').classList.remove('hidden');
+ }else{
+ endGame();
+ }
+ },1000);
+}
+
+function nextQuestion(){
+ gameState.currentQuestion+=1;
+ displayQuestion();
+}
+
+function skipQuestion(){
+ if(gameState.answered) return;
+
+ gameState.score=Math.max(0,gameState.score-100);
+ gameState.streak=0;
+
+ const feedback=document.getElementById('feedback');
+ const feedbackText=document.getElementById('feedback-text');
+ feedbackText.textContent='⏭️ SKIPPED -100 PTS';
+ feedbackText.className='text-warning text-lg font-bold';
+ feedback.classList.remove('hidden');
+
+ gameState.answered=true;
+ updateUI();
+
+ setTimeout(()=>{
+ if(gameState.currentQuestion<gameData.length-1){
+ gameState.currentQuestion+=1;
+ displayQuestion();
+ }else{
+ endGame();
+ }
+ },1000);
+}
+
+async function endGame(){
+ document.getElementById('game-screen').classList.add('hidden');
+ document.getElementById('results-screen').classList.remove('hidden');
+
+ document.getElementById('final-score').textContent=gameState.score;
+
+ let message='';
+ if(gameState.score>=900){
+ message='🏆 DETECTIVE ELITE! You\'ve mastered IRS codes. Time to check that real transcript!';
+ }else if(gameState.score>=700){
+ message='🎯 SOLID DETECTIVE! You know your codes. Ready to decode your real refund?';
+ }else if(gameState.score>=500){
+ message='🕵️ RISING DETECTIVE! You\'re getting the hang of it. Practice makes perfect!';
+ }else{
+ message='📚 KEEP LEARNING! Every detective starts somewhere. Try again!';
+ }
+
+ document.getElementById('result-message').textContent=message;
+
+ await endRun('completed');
+}
+
+function updateUI(){
+ document.getElementById('score-display').textContent=gameState.score;
+ document.getElementById('level-display').textContent=`${gameState.currentQuestion+1}/${gameData.length}`;
+ document.getElementById('streak-display').textContent=gameState.streak;
+}
+
+function onConfigChange(config){
+ document.getElementById('game_title').textContent=config.game_title||defaultConfig.game_title;
+ document.getElementById('level_label').textContent=config.level_label||defaultConfig.level_label;
+}
+
+function mapToCapabilities(){return{recolorables:[],borderables:[],fontEditable:undefined,fontSizeable:undefined}}
+
+function mapToEditPanelValues(config){
+ return new Map([
+ ['game_title',config.game_title||defaultConfig.game_title],
+ ['level_label',config.level_label||defaultConfig.level_label]
+ ]);
+}
+
+ document.getElementById('start-btn').addEventListener('click',startGame);
+ document.getElementById('next-btn').addEventListener('click',nextQuestion);
+ document.getElementById('skip-btn').addEventListener('click',skipQuestion);
+ document.getElementById('restart-btn').addEventListener('click',startGame);
+
+ if(window.elementSdk){
+ window.elementSdk.init({defaultConfig,onConfigChange,mapToCapabilities,mapToEditPanelValues});
+ }
+
+function initializeApp(){
+unlockStart();
+const root=document.getElementById('tm-game-root');
+if(root) root.setAttribute('aria-busy','false');
+}
+
+</script>
+
+<script>
+
+(async()=>{
+const ok=await gateAccess();
+if(!ok){
+setStatus('Access denied. Redirecting…');
+redirectToAbout();
+return;
+}
+initializeApp();
+})().catch(()=>{
+setStatus('Error loading game. Redirecting…');
+redirectToAbout();
+});
+
+</script>
+
+</body>
 </html>
-
