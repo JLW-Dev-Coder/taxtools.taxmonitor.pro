@@ -218,7 +218,8 @@ function buildSessionCookies({ accountId, email, sessionId }) {
   const maxAgeSec = Math.floor(SESSION_TTL_MS / 1000);
   return [
     buildCookie(COOKIE_NAMES.session, sessionId, { httpOnly: true, maxAgeSec }),
-    buildCookie(COOKIE_NAMES.accountId, accountId, { httpOnly: false, maxAgeSec }),    buildCookie(COOKIE_NAMES.email, email, { httpOnly: false, maxAgeSec }),
+    buildCookie(COOKIE_NAMES.accountId, accountId, { httpOnly: false, maxAgeSec }),
+    buildCookie(COOKIE_NAMES.email, email, { httpOnly: false, maxAgeSec }),
   ];
 }
 
