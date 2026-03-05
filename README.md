@@ -1,6 +1,6 @@
 # README.md — TaxTools.Tax Monitor Pro (Games + Tokens)
 
-A conversion-focused interactive taxpayer games arcade that routes serious users to **[[https://taxmonitor.pro](https://taxmonitor.pro)**](https://taxmonitor.pro]%28https://taxmonitor.pro%29**) for monitoring and representation.
+A conversion-focused interactive taxpayer games arcade that routes serious users to **[[https://taxmonitor.pro](https://taxmonitor.pro)**] for monitoring and representation.
 
 ---
 
@@ -1609,3 +1609,4 @@ Notes:
 * The Worker route is configured to serve `tools-api.taxmonitor.pro/*`. fileciteturn0file2
 
 ---
+
