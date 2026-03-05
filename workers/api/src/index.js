@@ -1200,7 +1200,7 @@ async function handleAuthStart(request, env) {
     httpMetadata: { contentType: "application/json" },
   });
 
-  const baseUrl = String(env.TAXTOOLS_AUTH_BASE_URL || "https://tools-api.taxmonitor.pro").replace(/\/+$/g, "");
+  const baseUrl = String(env.TAXTOOLS_AUTH_BASE_URL || "https://tools-api.taxmonitor.pro").replace(/\/\/+$/g, "");
   const link = `${baseUrl}/v1/auth/complete?token=${encodeURIComponent(token)}`;
 
   try {
@@ -1216,6 +1216,79 @@ async function handleAuthStart(request, env) {
   }
 
   return json(request, env, { ok: true }, 200);
+}
+
+async function handleAuthComplete(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const url = new URL(request.url);
+  const token = String(url.searchParams.get("token") || "").trim();
+  if (!token) return badRequest(request, env, "token is required");
+
+  const rec = await r2GetJson(env, keyLoginToken(token));
+  if (!rec) return json(request, env, { error: "invalid_or_expired", message: "Login link is invalid or expired" }, 400);
+
+  const expMs = Date.parse(String(rec.expiresAt || ""));
+  if (!Number.isFinite(expMs) || expMs <= Date.now()) {
+    await env.R2_TAXTOOLS.delete(keyLoginToken(token));
+    return json(request, env, { error: "invalid_or_expired", message: "Login link is invalid or expired" }, 400);
+  }
+
+  const email = String(rec.email || "").trim().toLowerCase();
+  if (!isValidEmail(email)) {
+    await env.R2_TAXTOOLS.delete(keyLoginToken(token));
+    return json(request, env, { error: "invalid_or_expired", message: "Login link is invalid or expired" }, 400);
+  }
+
+  const redirect = isSafeRedirect(rec.redirect) ? String(rec.redirect).trim() : "/";
+
+  // Reuse existing account id if present, otherwise create one.
+  const existingAccountId = getCookie(request, COOKIE_NAMES.accountId);
+  const accountId = String(existingAccountId || "").trim() || `acct_${crypto.randomUUID()}`;
+
+  await dbAccountEnsure(env, { accountId, email });
+
+  const sessionId = randomId("sess");
+  const session = {
+    accountId,
+    createdAt: nowIso(),
+    email,
+    expiresAt: asIso(Date.now() + SESSION_TTL_MS),
+    sessionId,
+  };
+
+  await r2PutJson(env, keySession(sessionId), session);
+  await env.R2_TAXTOOLS.delete(keyLoginToken(token));
+
+  const appOrigin = String(env.TAXTOOLS_APP_ORIGIN || "https://taxtools.taxmonitor.pro").replace(/\/\/+$/g, "");
+  const location = `${appOrigin}${redirect}`;
+
+  const headers = new Headers({ Location: location });
+  for (const c of buildSessionCookies({ accountId, email, sessionId })) headers.append("Set-Cookie", c);
+
+  // Browser redirect. Not CORS.
+  return new Response(null, { status: 302, headers });
+}
+
+async function handleAuthMe(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  return json(request, env, { accountId: auth.accountId, email: auth.email }, 200);
+}
+
+async function handleAuthLogout(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const sessionId = getCookie(request, COOKIE_NAMES.session);
+  if (sessionId) await env.R2_TAXTOOLS.delete(keySession(sessionId));
+
+  // Use the standard JSON helper for body + CORS, then append cookies safely.
+  const res = json(request, env, { ok: true }, 200);
+  for (const c of clearCookies()) res.headers.append("Set-Cookie", c);
+  return res;
 }
 
 /* ------------------------------------------
