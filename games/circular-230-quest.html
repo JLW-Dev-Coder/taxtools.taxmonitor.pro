@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Circular 230 Quest • Play • TaxTools Arcade</title>
-  <meta name="description" content="Play Circular 230 Quest. Access is verified server-side with an active play grant." />
+  <meta name="description" content="Play Circular 230 Quest. Access is verified server-side with an active play session." />
 
   <!-- Canonical local assets -->
   <link rel="icon" href="/assets/favicon.ico" />
@@ -352,6 +352,15 @@
       return { res, json };
     }
 
+    async function endRun(result) {
+      await fetch(API_BASE + "/v1/games/end", {
+        method: "POST",
+        credentials: "include",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ result, slug: GAME_SLUG })
+      }).catch(() => {});
+    }
+
     function redirectToAbout() {
       window.location.href = ABOUT_URL;
     }
@@ -367,7 +376,7 @@
       setStatus("Loading token balance…");
       await apiGet("/v1/tokens/balance");
 
-      setStatus("Verifying access grant…");
+      setStatus("Verifying access…");
       const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(GAME_SLUG));
       if (!access.res.ok || !access.json || access.json.allowed !== true) {
         redirectToAbout();
@@ -1129,6 +1138,7 @@
       }
 
       showScreen('results-screen');
+      await endRun(earnedBadge ? 'completed' : 'lost');
       await saveProgress(zone.id, appState.quizScore, earnedBadge);
     }
 
