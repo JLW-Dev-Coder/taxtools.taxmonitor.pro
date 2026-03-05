@@ -218,8 +218,7 @@ function buildSessionCookies({ accountId, email, sessionId }) {
   const maxAgeSec = Math.floor(SESSION_TTL_MS / 1000);
   return [
     buildCookie(COOKIE_NAMES.session, sessionId, { httpOnly: true, maxAgeSec }),
-    buildCookie(COOKIE_NAMES.accountId, accountId, { httpOnly: false, maxAgeSec }),
-    buildCookie(COOKIE_NAMES.email, encodeURIComponent(email), { httpOnly: false, maxAgeSec }),
+    buildCookie(COOKIE_NAMES.accountId, accountId, { httpOnly: false, maxAgeSec }),    buildCookie(COOKIE_NAMES.email, email, { httpOnly: false, maxAgeSec }),
   ];
 }
 
@@ -1140,8 +1139,7 @@ async function handleHelpTickets(request, env) {
 
     const created = await clickupCreateSupportTask(env, {
       subject,
-      description: descriptionLines.join("
-"),
+      description: descriptionLines.join("\n"),
     });
 
     if (created?.taskId) {
@@ -1160,28 +1158,6 @@ async function handleHelpTickets(request, env) {
 
   // Page expects supportId/support_id. Give it all three to be safe.
   return json(request, env, { supportId, support_id: supportId, ticket_id: supportId }, 201);
-}
-
-async function handleTokensBalance(request, env) {
-  if (request.method !== "POST") return methodNotAllowed(request, env);
-
-  const body = await parseJson(request);
-  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
-
-  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
-  const subject = typeof body.subject === "string" ? body.subject.trim() : "";
-  const message = typeof body.message === "string" ? body.message.trim() : "";
-
-  if (!email) return badRequest(request, env, "email is required");
-  if (!subject) return badRequest(request, env, "subject is required");
-  if (!message) return badRequest(request, env, "message is required");
-
-  const ticketId = `sup_${crypto.randomUUID()}`;
-  const createdAt = nowIso();
-
-  state.helpTickets.set(ticketId, { email, latestUpdate: createdAt, message, status: "open", subject });
-
-  return json(request, env, { ticket_id: ticketId }, 201);
 }
 
 async function handleTokensBalance(request, env) {
