@@ -603,7 +603,7 @@
         const meRes = await fetch(TOOLS_API_ENDPOINTS.authMe, { credentials: 'include' });
         const meData = await meRes.json().catch(() => ({}));
 
-        isSignedIn = !!meData?.isAuthenticated;
+        isSignedIn = !!(meData?.accountId || meData?.email);
         userEmail = meData?.email || null;
 
         // Header partial can optionally show email in #user-email.
