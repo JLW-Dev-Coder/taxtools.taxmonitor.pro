@@ -6,14 +6,14 @@
   "preview_urls": false,
   "observability": { "enabled": true },
   "assets": { "directory": "./dist" },
-  "migrations_dir": "workers/api/migrations",
   "compatibility_flags": ["nodejs_compat"],
   "routes": ["tools-api.taxmonitor.pro/*"],
   "d1_databases": [
     {
       "binding": "DB",
       "database_id": "e43ad11a-dd66-42fc-b162-b96a7295a079",
-      "database_name": "tax-tools-tax-monitor"
+      "database_name": "tax-tools-tax-monitor",
+      "migrations_dir": "workers/api/migrations"
     }
   ]
 }
