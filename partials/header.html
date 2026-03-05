@@ -299,49 +299,60 @@ fetch(API+"/v1/auth/logout",{method:"POST",credentials:"include"})
 });
 }
 
-async function hydrate(){
+function showLoggedOut(){
+if(login) login.classList.remove("hidden");
+if(loginMobile) loginMobile.classList.remove("hidden");
 
-try{
+if(account) account.classList.add("hidden");
+if(accountMobile) accountMobile.classList.add("hidden");
 
-var r=await fetch(API+"/v1/auth/me",{credentials:"include"});
-var d=await r.json();
-
-if(!r.ok||!d.isAuthenticated){
-
-login.classList.remove("hidden");
-loginMobile.classList.remove("hidden");
-return;
-
+if(token) token.classList.add("hidden");
+if(tokenMobile) tokenMobile.classList.add("hidden");
 }
 
-var user=d.email||"";
+function showLoggedIn(user){
+if(email) email.textContent=user;
+if(emailMenu) emailMenu.textContent=user;
+if(emailMobile) emailMobile.textContent=user;
 
-email.textContent=user;
-emailMenu.textContent=user;
-emailMobile.textContent=user;
+if(login) login.classList.add("hidden");
+if(loginMobile) loginMobile.classList.add("hidden");
 
-login.classList.add("hidden");
-loginMobile.classList.add("hidden");
-
-account.classList.remove("hidden");
-accountMobile.classList.remove("hidden");
+if(account) account.classList.remove("hidden");
+if(accountMobile) accountMobile.classList.remove("hidden");
 
 wireSignout(signout);
 wireSignout(signoutMobile);
+}
+
+async function hydrate(){
+try{
+var r=await fetch(API+"/v1/auth/me",{credentials:"include"});
+if(!r.ok){ showLoggedOut(); return; }
+
+var d=await r.json();
+var user=(d && d.email) ? String(d.email) : "";
+var accountId=(d && d.accountId) ? String(d.accountId) : "";
+
+if(!user || !accountId){ showLoggedOut(); return; }
+
+showLoggedIn(user);
 
 var t=await fetch(API+"/v1/tokens/balance",{credentials:"include"});
+if(!t.ok) return;
+
 var td=await t.json();
+var b=(td && typeof td.balance !== "undefined") ? td.balance : 0;
 
-var b=td.balance||0;
+if(balance) balance.textContent=b;
+if(balanceMobile) balanceMobile.textContent=b;
 
-balance.textContent=b;
-balanceMobile.textContent=b;
+if(token) token.classList.remove("hidden");
+if(tokenMobile) tokenMobile.classList.remove("hidden");
 
-token.classList.remove("hidden");
-tokenMobile.classList.remove("hidden");
-
-}catch(e){}
-
+}catch(e){
+showLoggedOut();
+}
 }
 
 hydrate();
