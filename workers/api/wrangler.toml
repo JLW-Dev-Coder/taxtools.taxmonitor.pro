@@ -15,6 +15,11 @@ database_id = "e43ad11a-dd66-42fc-b162-b96a7295a079"
 binding = "R2_TAXTOOLS"
 bucket_name = "taxtools-taxmonitor-pro"
 
+[observability]
+[observability.logs]
+enabled = false
+invocation_logs = true
+
 [vars]
 
 # Auth
@@ -44,6 +49,7 @@ PAYPAL_CLIENT_ID = "AV2m6CB9YJrSFXZl8SLkdMqHNkoQfRwbTIQNUTlXfIjnPMOfdik_2kPqGWbY
 PAYPAL_WEBHOOK_ID = "6G067419132359413"
 PAYPAL_ENV = "sandbox"
 PAYPAL_WEBHOOKS_ENABLED = "true"
+
 
 
 
