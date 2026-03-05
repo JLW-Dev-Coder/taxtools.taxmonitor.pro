@@ -595,6 +595,49 @@
     <!-- PARTIAL:footer -->
   </div>
 
+  <!-- Confirm Spend Modal -->
+  <div id="confirmModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/60" data-confirm-close="1"></div>
+
+    <div class="absolute inset-4 md:inset-10 lg:inset-16 bg-white rounded-3xl overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <div>
+          <p class="text-muted text-sm">Confirm spend</p>
+          <h3 class="text-xl font-bold text-navy">Spend <span id="modalCost">8</span> tokens to unlock?</h3>
+        </div>
+        <button id="btnCloseModal" type="button" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" data-confirm-close="1" aria-label="Close">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-auto p-6">
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-4">
+          <p class="text-green-900 text-sm"><strong>Session behavior:</strong> This spend creates an active play session that stays valid until you complete or lose, so reloads don’t charge you again while the session is active.</p>
+        </div>
+
+        <div class="mt-5 grid md:grid-cols-2 gap-4">
+          <div class="bg-surface rounded-2xl p-5">
+            <p class="text-navy font-semibold">Game</p>
+            <p class="text-muted text-sm">IRS Notice Jackpot</p>
+          </div>
+          <div class="bg-surface rounded-2xl p-5">
+            <p class="text-navy font-semibold">Cost</p>
+            <p class="text-muted text-sm"><span id="modalCost2">8</span> tokens</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-gray-200 bg-surface flex items-center justify-end gap-3">
+        <button id="btnCancelSpend" type="button" class="bg-white hover:bg-gray-50 text-navy font-semibold px-6 py-3 rounded-xl border border-gray-200 transition-all">
+          Cancel
+        </button>
+        <button id="btnConfirmSpend" type="button" class="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-xl btn-shadow transition-all hover:scale-105">
+          Confirm spend (8 tokens)
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Demo Modal -->
   <div id="demo-modal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/80" data-demo-close="1"></div>
@@ -923,8 +966,25 @@
       window.location.href = "/games/" + gameFile;
     }
 
-    async function unlockAndPlay() {
-      // This is only called when we are in "locked" mode.
+    function showConfirmModal() {
+      document.getElementById("modalCost").textContent = String(tokenCost);
+      document.getElementById("modalCost2").textContent = String(tokenCost);
+      document.getElementById("btnConfirmSpend").textContent = `Confirm spend (${tokenCost} tokens)`;
+
+      const modal = document.getElementById("confirmModal");
+      modal.classList.remove("hidden");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function hideConfirmModal() {
+      const modal = document.getElementById("confirmModal");
+      modal.classList.add("hidden");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    async function preflightUnlock() {
       setStatus("Checking session…");
 
       const me = await apiGet("/v1/auth/me");
@@ -946,7 +1006,13 @@
         return;
       }
 
+      setStatus("Ready. Confirm spend to unlock.");
+      showConfirmModal();
+    }
+
+    async function confirmSpendAndRedirect() {
       setStatus("Confirming token spend…");
+
       const spend = await apiPost("/v1/tokens/spend", {
         amount: tokenCost,
         idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
@@ -955,12 +1021,29 @@
       });
 
       if (!spend.res.ok) {
+        hideConfirmModal();
         setStatus("Spend failed. Please try again.");
         return;
       }
 
+      hideConfirmModal();
       setStatus("Unlocked. Redirecting…");
       window.location.href = "/games/" + gameFile;
+    }
+
+    function wireConfirmModal() {
+      document.querySelectorAll('[data-confirm-close="1"]').forEach((el) => {
+        el.addEventListener("click", hideConfirmModal);
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        const modal = document.getElementById("confirmModal");
+        if (modal && !modal.classList.contains("hidden")) hideConfirmModal();
+      });
+
+      document.getElementById("btnConfirmSpend")?.addEventListener("click", confirmSpendAndRedirect);
+      document.getElementById("btnCancelSpend")?.addEventListener("click", hideConfirmModal);
     }
 
     function wireUnlockButtons() {
@@ -978,7 +1061,7 @@
             return;
           }
 
-          await unlockAndPlay();
+          preflightUnlock();
         });
       });
     }
@@ -992,6 +1075,8 @@
 
       // Wire buttons through the Resume/Unlock logic
       wireUnlockButtons();
+
+      wireConfirmModal();
 
       wireDemoButtons();
     });
