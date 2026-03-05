@@ -14,6 +14,7 @@
  * - GET  /v1/checkout/status?session_id=
  * - POST /v1/checkout/sessions
  * - GET  /v1/games/access?slug=
+ * - POST /v1/games/end
  * - GET  /v1/help/status?ticket_id=
  * - POST /v1/help/tickets
  * - GET  /v1/tokens/balance (alias: /v1/arcade/tokens)
@@ -41,7 +42,8 @@ const CORS_MAX_AGE_SECONDS = "86400";
 const LOGIN_TOKEN_TTL_MS = 15 * 60 * 1000;
 const SESSION_TTL_MS = 14 * 24 * 60 * 60 * 1000;
 
-const PLAY_GRANT_WINDOW_MS = 30 * 60 * 1000;
+const PLAY_GRANT_WINDOW_MS = 30 * 60 * 1000; // legacy time-window gating (kept for backward compatibility)
+const PLAY_GRANT_ABANDONED_CUTOFF_MS = 7 * 24 * 60 * 60 * 1000; // run-to-completion safety cutoff
 
 const VALID_GAME_SLUGS = new Set([
   "circular-230-quest",
@@ -322,17 +324,73 @@ async function dbAccountGetBalance(env, accountId) {
   return Number.isFinite(bal) ? bal : 0;
 }
 
+async function dbPlayGrantsColumns(env) {
+  requireDb(env);
+
+  // Cache schema lookup per isolate.
+  if (state.playGrantsColumns && state.playGrantsColumns.size) return state.playGrantsColumns;
+
+  const cols = new Set();
+  const res = await env.DB.prepare("PRAGMA table_info(play_grants)").all();
+  const rows = Array.isArray(res?.results) ? res.results : [];
+  for (const r of rows) {
+    const name = r?.name ? String(r.name) : "";
+    if (name) cols.add(name);
+  }
+
+  state.playGrantsColumns = cols;
+  return cols;
+}
+
 async function dbGrantGetActive(env, { accountId, nowMs, slug }) {
   requireDb(env);
+
+  const cols = await dbPlayGrantsColumns(env);
+
+  // Preferred: run-to-completion gating.
+  if (cols.has("ended_at")) {
+    const cutoffIso = asIso(nowMs - PLAY_GRANT_ABANDONED_CUTOFF_MS);
+
+    const row = await env.DB.prepare(
+      "SELECT grant_id, created_at, ended_at, result, slug, spent " +
+        "FROM play_grants " +
+        "WHERE account_id = ? AND slug = ? AND ended_at IS NULL AND created_at >= ? " +
+        "ORDER BY created_at DESC LIMIT 1"
+    )
+      .bind(accountId, slug, cutoffIso)
+      .first();
+
+    if (!row) return null;
+
+    return {
+      createdAt: row?.created_at ? String(row.created_at) : null,
+      endedAt: row?.ended_at ? String(row.ended_at) : null,
+      grantId: row?.grant_id ? String(row.grant_id) : null,
+      result: row?.result ? String(row.result) : null,
+      slug,
+      spent: Number(row?.spent) || 0,
+    };
+  }
+
+  // Fallback: legacy time-window gating.
   const row = await env.DB.prepare(
-    "SELECT expires_at FROM play_grants WHERE account_id = ? AND slug = ? AND expires_at_ms > ? " +
+    "SELECT grant_id, expires_at, expires_at_ms, slug, spent " +
+      "FROM play_grants " +
+      "WHERE account_id = ? AND slug = ? AND expires_at_ms > ? " +
       "ORDER BY expires_at_ms DESC LIMIT 1"
   )
     .bind(accountId, slug, nowMs)
     .first();
 
-  const expiresAt = row?.expires_at ? String(row.expires_at) : null;
-  return expiresAt;
+  if (!row) return null;
+
+  return {
+    expiresAt: row?.expires_at ? String(row.expires_at) : null,
+    expiresAtMs: Number(row?.expires_at_ms) || null,
+    grantId: row?.grant_id ? String(row.grant_id) : null,
+    slug,
+    spent: Number(row?.spent) || 0,
+  };
 }
 
 /* ------------------------------------------
@@ -909,10 +967,73 @@ async function handleGamesAccess(request, env) {
   const slug = (url.searchParams.get("slug") || "").trim();
   if (!slug || !VALID_GAME_SLUGS.has(slug)) return badRequest(request, env, "slug is invalid");
 
-  const expiresAt = await dbGrantGetActive(env, { accountId: auth.accountId, nowMs: Date.now(), slug });
-  if (!expiresAt) return json(request, env, { allowed: false, expiresAt: null, slug }, 200);
+  const grant = await dbGrantGetActive(env, { accountId: auth.accountId, nowMs: Date.now(), slug });
+  if (!grant) return json(request, env, { allowed: false, grant: null, slug }, 200);
 
-  return json(request, env, { allowed: true, expiresAt, slug }, 200);
+  return json(
+    request,
+    env,
+    {
+      allowed: true,
+      grant: {
+        createdAt: grant.createdAt || null,
+        endedAt: grant.endedAt || null,
+        expiresAt: grant.expiresAt || null,
+        grantId: grant.grantId || null,
+        result: grant.result || null,
+        slug: grant.slug,
+        spent: grant.spent,
+      },
+      slug,
+    },
+    200
+  );
+}
+
+async function handleGamesEnd(request, env) {
+  if (request.method !== "POST") return methodNotAllowed(request, env);
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  const body = await parseJson(request);
+  if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
+
+  const slug = typeof body.slug === "string" ? body.slug.trim() : "";
+  const result = typeof body.result === "string" ? body.result.trim().toLowerCase() : "";
+
+  if (!slug || !VALID_GAME_SLUGS.has(slug)) return badRequest(request, env, "slug is invalid");
+  if (!(result === "completed" || result === "lost")) return badRequest(request, env, "result must be completed|lost");
+
+  const cols = await dbPlayGrantsColumns(env);
+  if (!cols.has("ended_at")) {
+    return json(
+      request,
+      env,
+      {
+        error: "server_misconfigured",
+        message: "play_grants table is missing ended_at/result columns (run-to-completion gating requires a schema migration)",
+      },
+      500
+    );
+  }
+
+  const now = nowIso();
+  const cutoffIso = asIso(Date.now() - PLAY_GRANT_ABANDONED_CUTOFF_MS);
+
+  const upd = await env.DB.prepare(
+    "UPDATE play_grants SET ended_at = ?, result = ? " +
+      "WHERE grant_id = (" +
+      "  SELECT grant_id FROM play_grants " +
+      "  WHERE account_id = ? AND slug = ? AND ended_at IS NULL AND created_at >= ? " +
+      "  ORDER BY created_at DESC LIMIT 1" +
+      ")"
+  )
+    .bind(now, result, auth.accountId, slug, cutoffIso)
+    .run();
+
+  const changes = upd?.meta?.changes || 0;
+  return json(request, env, { ok: true, updated: changes > 0 }, 200);
 }
 
 async function handleHealth(request, env) {
@@ -1149,18 +1270,35 @@ async function handleTokensSpend(request, env) {
   }
 
   const grantId = crypto.randomUUID();
-  const expiresAtMs = Date.now() + PLAY_GRANT_WINDOW_MS;
+
+  // Run-to-completion gating:
+  // - Active session is defined by endedAt == null.
+  // - We keep a long-lived expiresAt for legacy clients + abandoned-session cleanup.
+  const nowMs = Date.now();
+  const expiresAtMs = nowMs + PLAY_GRANT_ABANDONED_CUTOFF_MS;
+
   const grant = {
+    createdAt: asIso(nowMs),
+    endedAt: null,
     expiresAt: asIso(expiresAtMs),
     expiresAtMs,
     grantId,
+    result: null,
     slug,
     spent: amount,
   };
 
   const response = {
     balance: 0,
-    grant: { expiresAt: grant.expiresAt, grantId: grant.grantId, slug: grant.slug, spent: grant.spent },
+    grant: {
+      createdAt: grant.createdAt,
+      endedAt: grant.endedAt,
+      expiresAt: grant.expiresAt,
+      grantId: grant.grantId,
+      result: grant.result,
+      slug: grant.slug,
+      spent: grant.spent,
+    },
   };
 
   // D1 does not allow manual SQL transaction statements (BEGIN/COMMIT/ROLLBACK/SAVEPOINT).
@@ -1209,11 +1347,24 @@ async function handleTokensSpend(request, env) {
   }
 
   try {
-    await env.DB.prepare(
-      "INSERT INTO play_grants (grant_id, account_id, slug, expires_at, expires_at_ms, spent, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
-    )
-      .bind(grantId, auth.accountId, slug, grant.expiresAt, grant.expiresAtMs, amount, now)
-      .run();
+    const cols = await dbPlayGrantsColumns(env);
+
+    // Insert play grant/session.
+    if (cols.has("ended_at")) {
+      await env.DB.prepare(
+        "INSERT INTO play_grants (grant_id, account_id, slug, created_at, ended_at, result, expires_at, expires_at_ms, spent) " +
+          "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+      )
+        .bind(grantId, auth.accountId, slug, grant.createdAt, null, null, grant.expiresAt, grant.expiresAtMs, amount)
+        .run();
+    } else {
+      // Legacy schema fallback.
+      await env.DB.prepare(
+        "INSERT INTO play_grants (grant_id, account_id, slug, expires_at, expires_at_ms, spent, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+      )
+        .bind(grantId, auth.accountId, slug, grant.expiresAt, grant.expiresAtMs, amount, now)
+        .run();
+    }
   } catch (err) {
     // Best-effort compensation: refund balance and remove ledger entry.
     await env.DB.prepare("UPDATE accounts SET balance = balance + ?, updated_at = ? WHERE account_id = ?")
@@ -1232,7 +1383,9 @@ async function handleTokensSpend(request, env) {
   const balance = await dbAccountGetBalance(env, auth.accountId);
   response.balance = balance;
 
-  await updateLedgerMeta.bind(JSON.stringify(response), ledgerId).run();
+  await env.DB.prepare("UPDATE token_ledger SET metadata_json = ? WHERE id = ?")
+    .bind(JSON.stringify(response), ledgerId)
+    .run();
 
   return json(request, env, response, 200);
 }
@@ -1469,6 +1622,7 @@ export default {
       if (path === "/v1/checkout/sessions") return handleCheckoutSessions(request, env);
       if (path === "/v1/checkout/status") return handleCheckoutStatus(request, env);
       if (path === "/v1/games/access") return handleGamesAccess(request, env);
+      if (path === "/v1/games/end") return handleGamesEnd(request, env);
       if (path === "/v1/help/status") return handleHelpStatus(request, env);
       if (path === "/v1/help/tickets") return handleHelpTickets(request, env);
       if (path === "/v1/tokens/balance") return handleTokensBalance(request, env);
