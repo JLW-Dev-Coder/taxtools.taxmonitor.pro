@@ -799,7 +799,7 @@ async function handleAuthStart(request, env) {
     httpMetadata: { contentType: "application/json" },
   });
 
-  const baseUrl = String(env.TAXTOOLS_AUTH_BASE_URL || "https://tools-api.taxmonitor.pro").replace(/\/+$\/g, "");
+  const baseUrl = String(env.TAXTOOLS_AUTH_BASE_URL || "https://tools-api.taxmonitor.pro").replace(/\\/+$/g, "");
   const link = `${baseUrl}/v1/auth/complete?token=${encodeURIComponent(token)}`;
 
   try {
