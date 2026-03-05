@@ -1360,24 +1360,10 @@
     });
 
     // Critical: when navigating back from the game, browsers may restore this page from BFCache
-    // without re-running DOMContentLoaded. pageshow catches that.
-    window.addEventListener('pageshow', () => {
-      refreshGrantStatus();
-    });
-
-      document.getElementById("previewTryDemo")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        showDemoModal();
-      });
-
-      wireConfirmModal();
-      wireDemoModal();
-
-      document.getElementById('heroTryDemo')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        scrollToPreview();
-      });
-    });
+// without re-running DOMContentLoaded. pageshow catches that.
+window.addEventListener('pageshow', () => {
+  refreshGrantStatus();
+});
   </script>
 </body>
 </html>
