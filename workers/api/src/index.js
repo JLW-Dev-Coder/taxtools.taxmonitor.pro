@@ -261,6 +261,10 @@ function keyReceiptCaptureCompleted(orderId) {
   return `receipts/paypal/${orderId}/capture.completed.json`;
 }
 
+function keyReceiptCaptureFailed(orderId) {
+  return `receipts/paypal/${orderId}/capture.failed.json`;
+}
+
 function keyReceiptSignatureFailed(orderId) {
   return `receipts/paypal/${orderId}/signature.failed.json`;
 }
@@ -566,6 +570,24 @@ async function paypalGetAccessToken(env) {
   return token;
 }
 
+async function paypalCaptureOrder(env, orderId) {
+  const accessToken = await paypalGetAccessToken(env);
+
+  const res = await fetch(
+    `${paypalApiBase(env)}/v2/checkout/orders/${encodeURIComponent(orderId)}/capture`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const data = await res.json().catch(() => null);
+  return { ok: res.ok, status: res.status, data };
+}
+
 function buildCheckoutReturnUrls(request) {
   const defaultAllow = "https://taxtools.taxmonitor.pro";
 
@@ -719,6 +741,68 @@ async function paypalVerifyWebhookSignature(env, request, webhookEvent) {
   if (status === "SUCCESS") return { ok: true };
 
   return { ok: false, reason: "verification_failed", detail: data || null };
+}
+
+async function paypalApplyCaptureCompleted(env, { event, eventType, orderId }) {
+  if (orderId === "unknown") {
+    await r2PutJson(env, keyReceiptUnmapped(orderId), { at: nowIso(), event, reason: "missing_order_id" });
+    return { ok: true, ignored: true, reason: "missing_order_id" };
+  }
+
+  // Receipt first (durable record)
+  const receiptKey = keyReceiptCaptureCompleted(orderId);
+  if (await r2Exists(env, receiptKey)) return { ok: true, deduped: true };
+
+  const order = await r2GetJson(env, keyOrder(orderId));
+  if (!order?.accountId || !Number.isInteger(order?.tokens) || order.tokens <= 0) {
+    await r2PutJson(env, keyReceiptUnmapped(orderId), {
+      at: nowIso(),
+      event,
+      order: order || null,
+      reason: "missing_order_mapping_or_tokens",
+    });
+    return { ok: true, ignored: true, reason: "missing_order_mapping_or_tokens" };
+  }
+
+  const accountId = String(order.accountId);
+  const tokens = Number(order.tokens);
+  const sku = String(order.sku || "");
+  const now = nowIso();
+
+  await dbAccountEnsure(env, { accountId, email: null });
+
+  const ledgerId = `paypal:capture:${orderId}`;
+
+  // Dedup via ledger primary key
+  const inserted = await env.DB.prepare(
+    "INSERT INTO token_ledger (id, account_id, delta, reason, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?) " +
+      "ON CONFLICT(id) DO NOTHING"
+  )
+    .bind(ledgerId, accountId, tokens, "paypal_capture_completed", JSON.stringify({ orderId, sku, tokens }), now)
+    .run();
+
+  const changes = inserted?.meta?.changes || 0;
+
+  if (changes > 0) {
+    await env.DB.prepare("UPDATE accounts SET balance = balance + ?, updated_at = ? WHERE account_id = ?")
+      .bind(tokens, now, accountId)
+      .run();
+  }
+
+  const balanceAfter = await dbAccountGetBalance(env, accountId);
+
+  await r2PutJson(env, receiptKey, {
+    accountId,
+    at: nowIso(),
+    balanceAfter,
+    event,
+    eventType,
+    orderId,
+    sku,
+    tokens,
+  });
+
+  return { ok: true, balanceAfter, credited: changes > 0 };
 }
 
 async function handleCheckoutSessions(request, env) {
@@ -1173,69 +1257,51 @@ async function handlePayPalWebhook(request, env) {
       await r2PutJson(env, keyReceiptApproved(orderId), { at: nowIso(), event: parsed, eventType, orderId });
     } else {
       await r2PutJson(env, keyReceiptUnmapped(orderId), { at: nowIso(), event: parsed, reason: "missing_order_id" });
+      return json(request, env, { ok: true, ignored: true }, 200);
     }
-    return json(request, env, { ok: true }, 200);
+
+    // Option A: capture immediately on APPROVED.
+    let capture;
+    try {
+      capture = await paypalCaptureOrder(env, orderId);
+    } catch (err) {
+      await r2PutJson(env, keyReceiptCaptureFailed(orderId), {
+        at: nowIso(),
+        error: String(err?.message || err || "capture_error"),
+        eventType,
+        orderId,
+      });
+      return json(request, env, { ok: true, capture: "failed" }, 200);
+    }
+
+    const captureStatus = String(capture?.data?.status || "").toUpperCase();
+    if (!capture.ok || captureStatus !== "COMPLETED") {
+      await r2PutJson(env, keyReceiptCaptureFailed(orderId), {
+        at: nowIso(),
+        capture: { ok: capture.ok, status: capture.status, data: capture.data },
+        eventType,
+        orderId,
+        reason: !capture.ok ? "capture_http_error" : "capture_not_completed",
+      });
+      return json(request, env, { ok: true, capture: captureStatus || "unknown" }, 200);
+    }
+
+    // Capture is completed: reuse the same credit path as PAYMENT.CAPTURE.COMPLETED.
+    await paypalApplyCaptureCompleted(env, {
+      event: {
+        approvedEvent: parsed,
+        capture: capture.data,
+        source: "paypal_capture_api",
+      },
+      eventType: "PAYMENT.CAPTURE.COMPLETED",
+      orderId,
+    });
+
+    return json(request, env, { ok: true, capture: "COMPLETED" }, 200);
   }
 
   if (eventType === "PAYMENT.CAPTURE.COMPLETED") {
-    if (orderId === "unknown") {
-      await r2PutJson(env, keyReceiptUnmapped(orderId), { at: nowIso(), event: parsed, reason: "missing_order_id" });
-      return json(request, env, { ok: true, ignored: true }, 200);
-    }
-
-    // Receipt first (durable record)
-    const receiptKey = keyReceiptCaptureCompleted(orderId);
-    if (await r2Exists(env, receiptKey)) return json(request, env, { ok: true, deduped: true }, 200);
-
-    const order = await r2GetJson(env, keyOrder(orderId));
-    if (!order?.accountId || !Number.isInteger(order?.tokens) || order.tokens <= 0) {
-      await r2PutJson(env, keyReceiptUnmapped(orderId), {
-        at: nowIso(),
-        event: parsed,
-        order: order || null,
-        reason: "missing_order_mapping_or_tokens",
-      });
-      return json(request, env, { ok: true, ignored: true }, 200);
-    }
-
-    const accountId = String(order.accountId);
-    const tokens = Number(order.tokens);
-    const sku = String(order.sku || "");
-    const now = nowIso();
-
-    await dbAccountEnsure(env, { accountId, email: null });
-
-    const ledgerId = `paypal:capture:${orderId}`;
-
-    // Dedup via ledger primary key
-    const inserted = await env.DB.prepare(
-      "INSERT INTO token_ledger (id, account_id, delta, reason, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?) " +
-        "ON CONFLICT(id) DO NOTHING"
-    )
-      .bind(ledgerId, accountId, tokens, "paypal_capture_completed", JSON.stringify({ orderId, sku, tokens }), now)
-      .run();
-
-    const changes = inserted?.meta?.changes || 0;
-
-    if (changes > 0) {
-      await env.DB.prepare("UPDATE accounts SET balance = balance + ?, updated_at = ? WHERE account_id = ?")
-        .bind(tokens, now, accountId)
-        .run();
-    }
-
-    const balanceAfter = await dbAccountGetBalance(env, accountId);
-
-    await r2PutJson(env, receiptKey, {
-      accountId,
-      at: nowIso(),
-      balanceAfter,
-      event: parsed,
-      eventType,
-      orderId,
-      sku,
-      tokens,
-    });
-
+    await paypalApplyCaptureCompleted(env, { event: parsed, eventType, orderId });
     return json(request, env, { ok: true }, 200);
   }
 
@@ -1406,5 +1472,3 @@ export default {
     }
   },
 };
-
-  
