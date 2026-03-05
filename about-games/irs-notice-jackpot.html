@@ -883,7 +883,48 @@
       setStatus("Purchase confirmed. Add more tokens to play.");
     }
 
+    function setUnlockMode(mode) {
+      const btns = [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean);
+      const labels = {
+        locked: `Unlock & Play (${tokenCost} tokens)`,
+        resume: "Resume Play",
+      };
+
+      btns.forEach((b) => {
+        b.textContent = labels[mode] || labels.locked;
+        b.dataset.mode = mode;
+      });
+    }
+
+    async function refreshGrantStatus() {
+      // Never auto-spend. Only check if an active session exists.
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok) {
+        setUnlockMode("locked");
+        setStatus("");
+        return { allowed: false };
+      }
+
+      const access = await apiGet(`/v1/games/access?slug=${encodeURIComponent(gameSlug)}`);
+      const allowed = !!(access.res.ok && access.json && access.json.allowed);
+
+      if (allowed) {
+        setUnlockMode("resume");
+        setStatus("Active session detected. You can resume without spending tokens.");
+        return { allowed: true };
+      }
+
+      setUnlockMode("locked");
+      setStatus("");
+      return { allowed: false };
+    }
+
+    function resumePlay() {
+      window.location.href = "/games/" + gameFile;
+    }
+
     async function unlockAndPlay() {
+      // This is only called when we are in "locked" mode.
       setStatus("Checking session…");
 
       const me = await apiGet("/v1/auth/me");
@@ -922,271 +963,42 @@
       window.location.href = "/games/" + gameFile;
     }
 
-    document.getElementById("btnUnlock")?.addEventListener("click", unlockAndPlay);
-    document.getElementById("btnUnlock2")?.addEventListener("click", unlockAndPlay);
+    function wireUnlockButtons() {
+      const btn1 = document.getElementById("btnUnlock");
+      const btn2 = document.getElementById("btnUnlock2");
 
-    // Demo data
-    const demoQuestions = [
-      {
-        clue: "Annual reminder that you have an unpaid balance due for a specific tax year, with potential levy warning.",
-        correct: "CP71C",
-        options: ["CP71C", "CP27", "CP2000"],
-        explain: "CP71C is an annual balance-due reminder and may include levy warnings if ignored.",
-        letter: "This is a sample notice preview. In real life, this type of notice relates to an unpaid balance for a prior year."
-      },
-      {
-        clue: "Proposed changes to your tax return because the income or payment information doesn't match records.",
-        correct: "CP2000",
-        options: ["CP14", "CP2000", "CP40"],
-        explain: "CP2000 proposes changes because third-party info doesn't match what was reported.",
-        letter: "This is a sample CP2000-style preview. It typically explains the mismatch and proposed adjustment."
-      }
-    ];
-
-    let demoIndex = 0;
-    let demoLocked = false;
-    let demoWins = 0;
-    let lastPickedIndex = null;
-
-    function closeDemo() {
-      const modal = document.getElementById('demo-modal');
-      if (!modal) return;
-      modal.classList.add('hidden');
-      modal.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('overflow-hidden');
-    }
-
-    function openDemo() {
-      const modal = document.getElementById('demo-modal');
-      if (!modal) return;
-      demoIndex = 0;
-      demoLocked = false;
-      demoWins = 0;
-      renderDemo();
-      modal.classList.remove('hidden');
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('overflow-hidden');
-    }
-
-    function setDemoLights(on) {
-      for (let i = 1; i <= 5; i++) {
-        const el = document.getElementById(`demoLight${i}`);
-        if (!el) continue;
-        el.classList.toggle('light-on', !!on);
-        el.style.animation = on ? 'flash 0.8s infinite' : '';
-      }
-    }
-
-    function spawnDemoCoins() {
-      const container = document.getElementById('coin-container-demo');
-      if (!container) return;
-      container.innerHTML = '';
-
-      for (let i = 0; i < 14; i++) {
-        const coin = document.createElement('div');
-        coin.className = 'coin';
-        coin.style.left = `${Math.random() * 100}%`;
-        coin.style.animationDelay = `${Math.random() * 0.4}s`;
-        container.appendChild(coin);
-      }
-
-      setTimeout(() => { container.innerHTML = ''; }, 2600);
-    }
-
-    function renderDemo() {
-      const q = demoQuestions[demoIndex];
-
-      const clue = document.getElementById('demoClue');
-      const progress = document.getElementById('demoProgress');
-      const winsEl = document.getElementById('demoWins');
-      const feedback = document.getElementById('demoFeedback');
-      const banner = document.getElementById('demoResultBanner');
-      const explain = document.getElementById('demoExplain');
-      const next = document.getElementById('demoNext');
-      const letter = document.getElementById('demoLetter');
-      const slot = document.getElementById('demo-slot-machine');
-      const spinBtn = document.getElementById('demoSpinBtn');
-
-      if (clue) clue.textContent = q.clue;
-      if (progress) progress.textContent = String(demoIndex + 1);
-      if (winsEl) winsEl.textContent = String(demoWins);
-
-      // Set reels (options)
-      const r1 = document.getElementById('demoReel1');
-      const r2 = document.getElementById('demoReel2');
-      const r3 = document.getElementById('demoReel3');
-      if (r1) r1.textContent = q.options[0];
-      if (r2) r2.textContent = q.options[1];
-      if (r3) r3.textContent = q.options[2];
-
-      // Reset UI state
-      feedback?.classList.add('hidden');
-      next?.classList.add('hidden');
-      letter?.classList.add('hidden');
-      if (banner) banner.textContent = '';
-      if (explain) explain.textContent = '';
-      if (slot) slot.classList.remove('pulse-glow', 'shake');
-      setDemoLights(false);
-
-      // Spin button
-      if (spinBtn) {
-        spinBtn.disabled = false;
-        spinBtn.textContent = '🎰 SPIN! 🎰';
-      }
-
-      // Allow picking again
-      demoLocked = false;
-      lastPickedIndex = null;
-    }
-
-    function showDemoLetter(q) {
-      const letter = document.getElementById('demoLetter');
-      const ln = document.getElementById('demoLetterNotice');
-      const lb = document.getElementById('demoLetterBody');
-      if (ln) ln.textContent = q.correct;
-      if (lb) lb.textContent = q.letter;
-      letter?.classList.remove('hidden');
-    }
-
-    function pickDemo(optionIndex) {
-      if (demoLocked) return;
-      demoLocked = true;
-
-      const q = demoQuestions[demoIndex];
-      const selected = q.options[optionIndex];
-      const ok = selected === q.correct;
-
-      const slot = document.getElementById('demo-slot-machine');
-      const feedback = document.getElementById('demoFeedback');
-      const banner = document.getElementById('demoResultBanner');
-      const explain = document.getElementById('demoExplain');
-      const next = document.getElementById('demoNext');
-      const spinBtn = document.getElementById('demoSpinBtn');
-
-      setDemoLights(true);
-      feedback?.classList.remove('hidden');
-
-      if (ok) {
-        demoWins++;
-        document.getElementById('demoWins') && (document.getElementById('demoWins').textContent = String(demoWins));
-
-        if (banner) {
-          banner.textContent = '🎉 WINNER! 🎉';
-          banner.className = 'slot-font text-4xl mb-2 text-yellow-400';
-        }
-        if (explain) explain.textContent = `Correct! ${q.correct} is the right answer. ${q.explain}`;
-
-        slot?.classList.add('pulse-glow');
-        spawnDemoCoins();
-        showDemoLetter(q);
-
-        if (demoIndex < 1) next?.classList.remove('hidden');
-        if (spinBtn) {
-          spinBtn.disabled = true;
-          spinBtn.textContent = '🎰 LOCKED 🎰';
-        }
-
-        setTimeout(() => slot?.classList.remove('pulse-glow'), 2200);
-      } else {
-        if (banner) {
-          banner.textContent = '❌ MISS! ❌';
-          banner.className = 'slot-font text-4xl mb-2 text-red-400';
-        }
-        if (explain) explain.textContent = `Try again. Correct answer: ${q.correct}. ${q.explain}`;
-
-        slot?.classList.add('shake');
-        setTimeout(() => slot?.classList.remove('shake'), 500);
-
-        // Let them try again on the same spin
-        demoLocked = false;
-        if (spinBtn) {
-          spinBtn.disabled = false;
-          spinBtn.textContent = '🎰 SPIN AGAIN! 🎰';
-        }
-      }
-    }
-
-    function nextSpin() {
-      if (demoIndex < 1) {
-        demoIndex++;
-        renderDemo();
-      }
-    }
-
-    function resetDemo() {
-      demoIndex = 0;
-      demoWins = 0;
-      renderDemo();
-    }
-
-    function scrollToUnlock() {
-      const unlock = document.getElementById('btnUnlock');
-      if (!unlock) return;
-      unlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      unlock.classList.add('ring-4', 'ring-accent/30');
-      setTimeout(() => unlock.classList.remove('ring-4', 'ring-accent/30'), 1400);
-    }
-
-    function wireDemoButtons() {
-      document.querySelectorAll('[data-demo-open="notice-jackpot"]').forEach(el => {
-        el.addEventListener('click', (e) => {
+      [btn1, btn2].filter(Boolean).forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
           e.preventDefault();
-          openDemo();
+
+          // Re-check right before action (covers back-button + BFCache).
+          const st = await refreshGrantStatus();
+          if (st.allowed) {
+            resumePlay();
+            return;
+          }
+
+          await unlockAndPlay();
         });
       });
-
-      document.querySelectorAll('[data-demo-close="1"]').forEach(el => {
-        el.addEventListener('click', closeDemo);
-      });
-
-      document.getElementById('demoNext')?.addEventListener('click', nextSpin);
-      document.getElementById('demoReset')?.addEventListener('click', resetDemo);
-
-      // Pick handlers (click reels)
-      document.querySelectorAll('[data-demo-pick]').forEach((el) => {
-        el.addEventListener('click', () => {
-          const idx = Number(el.getAttribute('data-demo-pick'));
-          if (Number.isFinite(idx)) pickDemo(idx);
-        });
-      });
-
-      // Spin button picks a random reel (keeps the "slot" vibe)
-      document.getElementById('demoSpinBtn')?.addEventListener('click', () => {
-        const idx = Math.floor(Math.random() * 3);
-        pickDemo(idx);
-      });
-
-      document.getElementById('demo-modal-unlock')?.addEventListener('click', () => {
-        closeDemo();
-        scrollToUnlock();
-      });
-
-      document.querySelectorAll('[data-scroll-unlock="1"]').forEach(el => {
-        el.addEventListener('click', (e) => {
-          e.preventDefault();
-          scrollToUnlock();
-        });
-      });
-
-      document.addEventListener('keydown', (e) => {
-        const modal = document.getElementById('demo-modal');
-        if (!modal) return;
-        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeDemo();
-      });
-
-      // Keep hero clue fresh-ish
-      const heroClues = demoQuestions.map(q => q.clue);
-      const hero = document.getElementById('heroClue');
-      if (hero && heroClues.length) {
-        const idx = Math.floor(Math.random() * heroClues.length);
-        hero.textContent = heroClues[idx];
-      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // README: on return from Stripe Checkout with ?session_id=..., confirm then refresh balance
+      // On return from Checkout with ?session_id=..., confirm then refresh balance
       handleCheckoutReturn();
+
+      // Set Unlock vs Resume state on load
+      refreshGrantStatus();
+
+      // Wire buttons through the Resume/Unlock logic
+      wireUnlockButtons();
+
       wireDemoButtons();
+    });
+
+    // BFCache safety: update state when user navigates back.
+    window.addEventListener('pageshow', () => {
+      refreshGrantStatus();
     });
   </script>
 </body>
