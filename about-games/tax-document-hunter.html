@@ -4,16 +4,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Tax Document Hunter • TaxTools</title>
   <meta name="description" content="Collect tax documents, rack up points, and level up your trophy case in this quick document-hunt game." />
 
-  <link rel="icon" href="/assets/favicon.ico" sizes="any" />
-  <link rel="shortcut icon" href="/assets/favicon.ico" />
+  <link rel="icon" href="/assets/favicon.ico" />
   <link rel="stylesheet" href="/styles/site.css" />
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -47,11 +46,11 @@
   <style>
     * { font-family: 'DM Sans', system-ui, sans-serif; }
     html { scroll-behavior: smooth; }
+    body { box-sizing: border-box; }
     .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
     .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
     .btn-shadow { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); }
 
-    /* Hero right-panel animation (subtle, game-y, no emojis) */
     .hero-panel { animation: hero-float 4.5s ease-in-out infinite; transform-origin: center; }
     @keyframes hero-float {
       0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 18px 28px rgba(0,0,0,0.25)); }
@@ -79,7 +78,6 @@
       50% { opacity: 0.5; }
     }
 
-    /* Demo: match game look (scoped) */
     .demo-font-display { font-family: 'Fredoka One', cursive; }
     .demo-font-body { font-family: 'Nunito', system-ui, sans-serif; }
 
@@ -100,37 +98,38 @@
       from { transform: translateY(20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
+    @keyframes demo-shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
 
     .demo-animate-float { animation: demo-float 3s ease-in-out infinite; }
     .demo-animate-pulse-glow { animation: demo-pulse-glow 2s ease-in-out infinite; }
     .demo-animate-bounce-in { animation: demo-bounce-in 0.5s ease-out forwards; }
     .demo-animate-slide-up { animation: demo-slide-up 0.4s ease-out forwards; }
-
-    body { box-sizing: border-box; }
+    .demo-animate-shake { animation: demo-shake 0.5s ease-in-out; }
+    .demo-quiz-option { transition: all 0.2s ease; }
+    .demo-quiz-option:hover:not(:disabled) { transform: scale(1.02); }
   </style>
-
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
 </head>
 
-<body class="h-full bg-white text-charcoal overflow-auto">
-  <div id="app" class="w-full min-h-full">
+<body class="h-full bg-white text-charcoal overflow-hidden font-dm">
+  <div id="app" class="h-full w-full overflow-auto custom-scrollbar">
 
     <!-- PARTIAL:header -->
 
-    <!-- Hero -->
     <section class="gradient-hero text-white py-16 lg:py-24">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
-
-          <!-- Content -->
           <div class="text-center lg:text-left">
             <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
               <span class="w-2 h-2 bg-accent rounded-full pulse-ring"></span>
               <span class="text-sm font-medium">Interactive Game • Instant Access</span>
             </div>
 
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Tax Document Hunter</h1>
-            <p class="text-xl md:text-2xl text-blue-100 mb-8">Collect tax documents, earn points, and build a trophy-case list you can actually use.</p>
+            <h1 id="gameTitle" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Tax Document Hunter</h1>
+            <p id="gameSubtitle" class="text-xl md:text-2xl text-blue-100 mb-8">Collect tax documents, earn points, and build a trophy-case list you can actually use.</p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <button id="btnUnlock" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105">
@@ -143,14 +142,12 @@
 
             <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
               <p class="text-blue-200 text-sm">✓ Education only • ✓ Cookie session • ✓ Token-gated unlock</p>
-              <span id="status" class="text-blue-200 text-sm"></span>
+              <div id="status"></div>
             </div>
           </div>
 
-          <!-- Illustration -->
           <div class="relative flex justify-center lg:justify-end">
             <div class="relative w-full max-w-md">
-              <!-- Game-style Preview Panel -->
               <div class="hero-panel relative rounded-3xl p-5 card-shadow border border-white/10" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(45, 27, 78, 0.82) 55%, rgba(30, 64, 175, 0.82) 100%);">
                 <div class="flex items-center justify-between mb-5">
                   <div>
@@ -255,23 +252,20 @@
                 </div>
               </div>
 
-              <!-- Corner chips -->
               <div class="absolute -top-3 -right-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(249,115,22,0.95)">
                 <p class="text-white text-sm font-bold">8 tokens</p>
                 <p class="text-white/90 text-xs">per play</p>
               </div>
               <div class="absolute -bottom-3 -left-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(29,78,216,0.95)">
-                <p class="text-white text-sm font-bold">60 min</p>
-                <p class="text-white/90 text-xs">grant window</p>
+                <p class="text-white text-sm font-bold">Run to</p>
+                <p class="text-white/90 text-xs">completion</p>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- What You’ll Learn -->
     <section id="what-youll-learn" class="py-16 lg:py-24 bg-surface">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
@@ -308,7 +302,7 @@
               </svg>
             </div>
             <h3 class="text-navy font-bold text-lg mb-2">Points logic</h3>
-            <p class="text-muted text-sm">See which categories tend to matter more (fast).</p>
+            <p class="text-muted text-sm">See which categories tend to matter more, fast.</p>
           </div>
 
           <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
@@ -324,11 +318,9 @@
       </div>
     </section>
 
-    <!-- Preview / Demo -->
     <section id="preview" class="py-16 lg:py-24 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
-
           <div class="order-2 lg:order-1">
             <div class="bg-gray-50 rounded-3xl p-6 md:p-8">
               <div class="bg-white rounded-2xl card-shadow overflow-hidden">
@@ -384,7 +376,7 @@
           <div class="order-1 lg:order-2 text-center lg:text-left">
             <span class="text-primary font-semibold text-sm uppercase tracking-wide">Preview</span>
             <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Try two demo hunts</h2>
-            <p class="text-muted text-lg mb-6">Demo mode is limited and never spends tokens. Full gameplay unlocks only after the server confirms a valid token spend.</p>
+            <p class="text-muted text-lg mb-6">Demo mode stays limited. Full gameplay unlocks only after the Worker confirms a valid token spend.</p>
 
             <ul class="space-y-4 mb-8">
               <li class="flex items-center gap-3 justify-center lg:justify-start">
@@ -401,7 +393,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span class="text-navy">Token-gated unlock (double-click safe)</span>
+                <span class="text-navy">Token-gated unlock, no auto-spend</span>
               </li>
               <li class="flex items-center gap-3 justify-center lg:justify-start">
                 <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
@@ -421,18 +413,16 @@
               Try Demo
             </button>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- How It Works -->
     <section id="how-it-works" class="py-16 lg:py-24 bg-navy text-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
           <span class="text-primary font-semibold text-sm uppercase tracking-wide">Simple Setup</span>
           <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">How It Works</h2>
-          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. Minimal drama. Server-side checks keep the rules consistent.</p>
+          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. Minimal drama. The Worker does the gate, not wishful thinking.</p>
         </div>
 
         <div class="grid md:grid-cols-3 gap-8">
@@ -445,7 +435,7 @@
               </svg>
             </div>
             <h3 class="text-xl font-bold mb-3">Sign in</h3>
-            <p class="text-blue-200">Sign in to your TaxTools account to access your game tokens securely.</p>
+            <p class="text-blue-200">Cookie session required so tokens and grants attach to your account.</p>
           </div>
 
           <div class="text-center">
@@ -455,8 +445,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 class="text-xl font-bold mb-3">Confirm token use</h3>
-            <p class="text-blue-200">We instantly confirm you have enough tokens and deduct the game cost.</p>
+            <h3 class="text-xl font-bold mb-3">Confirm spend</h3>
+            <p class="text-blue-200">You approve the spend. The Worker validates balance and idempotency.</p>
           </div>
 
           <div class="text-center">
@@ -467,14 +457,13 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 class="text-xl font-bold mb-3">Start the game</h3>
-            <p class="text-blue-200">You’re taken straight into the document hunt where each entry adds to your score and level.</p>
+            <h3 class="text-xl font-bold mb-3">Play</h3>
+            <p class="text-blue-200">You’re redirected into the game once access is granted.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FAQ -->
     <section id="faq" class="py-16 lg:py-24 bg-white">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
@@ -499,7 +488,7 @@
               <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
             <div class="faq-content hidden px-6 pb-6">
-              <p class="text-muted">When you confirm, the server verifies your balance and creates a time-limited play grant so reloads don’t charge you again during the grant window.</p>
+              <p class="text-muted">When you confirm, the Worker verifies your balance and creates an active play session for this game so reloads don’t charge you twice while the session is active.</p>
             </div>
           </div>
 
@@ -519,7 +508,7 @@
               <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
             <div class="faq-content hidden px-6 pb-6">
-              <p class="text-muted">Tokens and play grants are tied to your account, and the system uses a cookie session to verify access.</p>
+              <p class="text-muted">Tokens and play grants are tied to your account, and the Worker uses a cookie session to verify access.</p>
             </div>
           </div>
 
@@ -536,7 +525,6 @@
       </div>
     </section>
 
-    <!-- Trust + Disclaimers -->
     <section class="py-16 bg-surface">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white rounded-3xl card-shadow p-8">
@@ -559,11 +547,10 @@
       </div>
     </section>
 
-    <!-- Final CTA -->
     <section class="py-16 lg:py-24 gradient-hero text-white">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to play?</h2>
-        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend verified by the server.</p>
+        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend verified by the Worker.</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <button id="btnUnlock2" class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -575,7 +562,7 @@
         </div>
         <div class="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm rounded-full px-6 py-3">
           <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-          <span class="text-sm font-medium">Tokens are non-expiring. Grants prevent double-spend during active play.</span>
+          <span class="text-sm font-medium">Tokens are non-expiring. Sessions prevent double-spend during active play.</span>
         </div>
       </div>
     </section>
@@ -584,7 +571,6 @@
 
   </div>
 
-  <!-- Confirm Spend Modal -->
   <div id="confirmModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/60" data-confirm-close="1"></div>
 
@@ -601,7 +587,7 @@
 
       <div class="flex-1 overflow-auto p-6">
         <div class="bg-green-50 border border-green-200 rounded-2xl p-4">
-          <p class="text-green-900 text-sm"><strong>Grant behavior:</strong> This spend creates a time-limited play grant so reloads don’t charge you again during the grant window.</p>
+          <p class="text-green-900 text-sm"><strong>Session behavior:</strong> This spend creates an active play session that stays valid until you complete or lose, so reloads don’t charge you again while the session is active.</p>
         </div>
 
         <div class="mt-5 grid md:grid-cols-2 gap-4">
@@ -627,12 +613,10 @@
     </div>
   </div>
 
-  <!-- Demo Modal (limited, never spends tokens) -->
   <div id="demoModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/70" data-demo-close="1"></div>
 
     <div class="absolute inset-4 md:inset-10 lg:inset-16 rounded-3xl overflow-hidden flex flex-col border border-white/10" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.97) 0%, rgba(45, 27, 78, 0.97) 50%, rgba(30, 64, 175, 0.97) 100%);">
-
       <div class="flex items-center justify-between px-6 py-4 border-b border-white/10" style="background: rgba(255,255,255,0.06)">
         <div>
           <p class="demo-font-body text-indigo-200 text-sm">Demo mode</p>
@@ -645,17 +629,23 @@
 
       <div class="flex-1 overflow-auto p-4 md:p-8 demo-font-body">
         <div class="max-w-5xl mx-auto">
+          <div id="demo-loading" class="hidden h-full w-full flex items-center justify-center">
+            <div class="text-center">
+              <div class="w-16 h-16 border-4 border-indigo-300 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
+              <p class="text-white text-lg">Loading your demo...</p>
+            </div>
+          </div>
 
-          <div id="demo-menu" class="">
+          <div id="demo-menu" class="hidden">
             <header class="text-center mb-8 demo-animate-slide-up">
-              <h4 class="demo-font-display text-4xl md:text-5xl text-white mb-2 drop-shadow-lg">Document Hunter</h4>
+              <h1 class="demo-font-display text-4xl md:text-5xl text-white mb-2 drop-shadow-lg">Tax Document Hunter</h1>
               <p class="text-indigo-200 text-lg">Two demo hunts. No token spend.</p>
             </header>
 
             <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 demo-animate-slide-up" style="animation-delay: 0.08s;">
               <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <h5 class="demo-font-display text-2xl text-white">Demo rules</h5>
+                  <h2 class="demo-font-display text-2xl text-white">Demo rules</h2>
                   <p class="text-indigo-200">Use the same category list as the full game.</p>
                 </div>
                 <div class="flex items-center gap-3">
@@ -686,7 +676,7 @@
             </div>
 
             <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 demo-animate-slide-up" style="animation-delay: 0.16s;">
-              <h5 class="demo-font-display text-2xl text-white mb-3 text-center">What this is (and isn’t)</h5>
+              <h2 class="demo-font-display text-2xl text-white mb-3 text-center">What this is (and isn’t)</h2>
               <div class="grid md:grid-cols-3 gap-4 text-sm">
                 <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)"><p class="text-white font-semibold">Education</p><p class="text-indigo-200">Training, not advice.</p></div>
                 <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)"><p class="text-white font-semibold">No representation</p><p class="text-indigo-200">That’s separate.</p></div>
@@ -709,21 +699,21 @@
               </div>
 
               <div class="rounded-2xl p-4 mb-6 text-center bg-gradient-to-br from-orange-500 to-amber-500">
-                <h5 class="demo-font-display text-2xl text-white">Demo Hunt</h5>
+                <h2 class="demo-font-display text-2xl text-white">Demo Hunt</h2>
                 <p class="text-white/80">Pick a category to see points</p>
               </div>
 
               <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 mb-6 demo-animate-slide-up">
                 <div class="mb-6">
                   <span class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold mb-4">Category Select</span>
-                  <h6 class="text-xl md:text-2xl font-bold text-gray-800" id="demo-question"></h6>
+                  <h3 class="text-xl md:text-2xl font-bold text-gray-800" id="demo-question"></h3>
                   <p class="text-gray-500 mt-2" id="demo-subtext"></p>
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-3" id="demo-options"></div>
 
                 <div id="demo-feedback" class="hidden mt-6 p-4 rounded-xl">
-                  <h6 id="demo-feedback-title" class="font-bold text-lg"></h6>
+                  <h4 id="demo-feedback-title" class="font-bold text-lg"></h4>
                   <p id="demo-feedback-text" class="text-gray-600 mt-1"></p>
                 </div>
               </div>
@@ -738,7 +728,7 @@
             <div class="max-w-2xl mx-auto text-center">
               <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 demo-animate-bounce-in">
                 <div class="text-7xl mb-4 text-white">Demo complete</div>
-                <h5 class="demo-font-display text-4xl text-white mb-4" id="demo-results-title">You collected two demo docs</h5>
+                <h2 class="demo-font-display text-4xl text-white mb-4" id="demo-results-title">You collected two demo docs</h2>
                 <p class="text-indigo-200 text-xl mb-8" id="demo-results-message">Full play saves your collection and tracks your level.</p>
 
                 <div class="flex justify-center gap-8 mb-8">
@@ -759,7 +749,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -771,14 +760,24 @@
 
   <script>
     const API_BASE = "https://tools-api.taxmonitor.pro";
-
-    // Canonical improvements: slug without .html
-    const slug = "tax-document-hunter";
+    const gameFile = "tax-document-hunter.html";
+    const gameSlug = "tax-document-hunter";
     const tokenCost = 8;
 
     function setStatus(msg) {
       const el = document.getElementById("status");
-      if (el) el.textContent = msg || "";
+      if (el) {
+        el.className = 'text-blue-200 text-sm';
+        el.textContent = msg || "";
+      }
+    }
+
+    function setStatusHtml(html) {
+      const el = document.getElementById("status");
+      if (el) {
+        el.className = 'text-blue-200 text-sm';
+        el.innerHTML = html || "";
+      }
     }
 
     function toggleFaq(button) {
@@ -786,8 +785,8 @@
       const icon = button.querySelector('.faq-icon');
       const isOpen = !content.classList.contains('hidden');
 
-      document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
-      document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = 'rotate(0deg)');
+      document.querySelectorAll('.faq-content').forEach((c) => c.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach((i) => { i.style.transform = 'rotate(0deg)'; });
 
       if (!isOpen) {
         content.classList.remove('hidden');
@@ -827,13 +826,105 @@
       return { res, json: await res.json().catch(() => ({})) };
     }
 
+    function cleanQueryParam(name) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete(name);
+      window.history.replaceState({}, "", url.toString());
+    }
+
+    function getSessionIdFromUrl() {
+      const url = new URL(window.location.href);
+      return url.searchParams.get("session_id") || "";
+    }
+
+    async function beginLogin() {
+      setStatus("Starting sign-in…");
+      const started = await apiPost("/v1/auth/start", { returnTo: window.location.href });
+      const redirectUrl = started?.json?.redirectUrl || started?.json?.url || "";
+      if (started.res.ok && redirectUrl) {
+        window.location.href = redirectUrl;
+        return;
+      }
+      window.location.href = "/index.html";
+    }
+
+    function wireBuyButtons() {
+      document.querySelectorAll('[data-buy-item]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const item = btn.getAttribute('data-buy-item');
+          if (!item) return;
+          await beginCheckout(item);
+        });
+      });
+    }
+
+    async function beginCheckout(item) {
+      setStatus("Opening secure checkout…");
+      const payload = {
+        item,
+        quantity: 1,
+        cancelUrl: window.location.href,
+        successUrl: window.location.href
+      };
+
+      const created = await apiPost("/v1/checkout/sessions", payload);
+      const checkoutUrl = created?.json?.checkoutUrl || created?.json?.url || "";
+
+      if (!created.res.ok || !checkoutUrl) {
+        setStatus("Could not start checkout. Please try again.");
+        return;
+      }
+
+      window.location.href = checkoutUrl;
+    }
+
+    async function handleCheckoutReturn() {
+      const sessionId = getSessionIdFromUrl();
+      if (!sessionId) return;
+
+      setStatus("Confirming purchase…");
+      const statusRes = await apiGet(`/v1/checkout/status?session_id=${encodeURIComponent(sessionId)}`);
+      cleanQueryParam("session_id");
+
+      if (!statusRes.res.ok) {
+        setStatus("Purchase confirmation failed. Please refresh.");
+        return;
+      }
+
+      const bal = await apiGet("/v1/tokens/balance");
+      const balance = Number(bal.json && bal.json.balance);
+
+      if (!Number.isFinite(balance)) {
+        setStatus("Purchase confirmed, but balance did not load.");
+        return;
+      }
+
+      if (balance >= tokenCost) {
+        setStatus("Purchase confirmed. You can unlock now.");
+        return;
+      }
+
+      setStatus("Purchase confirmed. Add more tokens to play.");
+    }
+
+    function showBuyOptions() {
+      setStatusHtml(
+        `Not enough tokens. ` +
+        `<span class="inline-flex flex-wrap items-center gap-2">` +
+          `<button type="button" class="underline" data-buy-item="token_pack_small_30">Buy 30 tokens</button>` +
+          `<button type="button" class="underline" data-buy-item="token_pack_medium_80">Buy 80 tokens</button>` +
+          `<button type="button" class="underline" data-buy-item="token_pack_large_200">Buy 200 tokens</button>` +
+        `</span>`
+      );
+      wireBuyButtons();
+    }
+
     async function preflightUnlock() {
       setStatus("Checking session…");
 
       const me = await apiGet("/v1/auth/me");
       if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-        setStatus("Please sign in to continue.");
-        window.location.href = "/index.html";
+        await beginLogin();
         return;
       }
 
@@ -846,8 +937,7 @@
       }
 
       if (balance < tokenCost) {
-        setStatus("Not enough tokens. Purchase a pack to continue.");
-        window.location.href = "/index.html#pricing";
+        showBuyOptions();
         return;
       }
 
@@ -856,30 +946,24 @@
     }
 
     async function confirmSpendAndRedirect() {
-      const btn = document.getElementById('btnConfirmSpend');
-      if (btn) btn.disabled = true;
-
       setStatus("Confirming token spend…");
-
-      const idempotencyKey = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
 
       const spend = await apiPost("/v1/tokens/spend", {
         amount: tokenCost,
-        idempotencyKey,
+        idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
         reason: "arcade_play",
-        slug
+        slug: gameSlug
       });
 
       if (!spend.res.ok) {
         hideConfirmModal();
-        if (btn) btn.disabled = false;
         setStatus("Spend failed. Please try again.");
         return;
       }
 
       hideConfirmModal();
       setStatus("Unlocked. Redirecting…");
-      window.location.href = `/games/${slug}.html`;
+      window.location.href = "/games/" + gameFile;
     }
 
     function scrollToPreview() {
@@ -888,10 +972,6 @@
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Demo content derived from the real game:
-    // - Input placeholder: “W-2 Form”
-    // - Category options include Income, Deduction
-    // - Point values: Income=10, Deduction=15
     const demoHunts = [
       {
         documentType: 'W-2 Form',
@@ -903,12 +983,12 @@
         ]
       },
       {
-        documentType: 'W-2 Form',
+        documentType: '1099-NEC',
         year: '2024',
         options: [
-          { category: 'Deduction', points: 15 },
           { category: 'Business', points: 22 },
-          { category: 'Income', points: 10 }
+          { category: 'Income', points: 10 },
+          { category: 'Investment', points: 20 }
         ]
       }
     ];
@@ -920,7 +1000,7 @@
     };
 
     function demoShow(screenId) {
-      const ids = ['demo-menu', 'demo-quiz', 'demo-results'];
+      const ids = ['demo-loading', 'demo-menu', 'demo-quiz', 'demo-results'];
       ids.forEach((id) => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -934,7 +1014,12 @@
       modal.classList.remove('hidden');
       modal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('overflow-hidden');
-      resetDemo();
+
+      demoShow('demo-loading');
+      setTimeout(() => {
+        resetDemo();
+        demoShow('demo-menu');
+      }, 450);
     }
 
     function hideDemoModal() {
@@ -956,11 +1041,8 @@
       document.getElementById('demo-qnum').textContent = String(demoState.index + 1);
       document.getElementById('demo-qtotal').textContent = String(demoHunts.length);
       document.getElementById('demo-score').textContent = String(demoState.score);
-
-      const q = document.getElementById('demo-question');
-      const sub = document.getElementById('demo-subtext');
-      q.textContent = `Choose a category for “${h.documentType}”`;
-      sub.textContent = `Tax year: ${h.year}`;
+      document.getElementById('demo-question').textContent = `Choose a category for “${h.documentType}”`;
+      document.getElementById('demo-subtext').textContent = `Tax year: ${h.year}`;
 
       const feedback = document.getElementById('demo-feedback');
       const nextBtn = document.getElementById('demo-next');
@@ -970,18 +1052,16 @@
       feedback.classList.add('hidden');
       nextBtn.classList.add('hidden');
 
-      options.innerHTML = h.options.map((opt) => {
-        return `
-          <button type="button" class="w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 transition-all" data-category="${opt.category}" data-points="${opt.points}">
-            <div class="flex items-center justify-between">
-              <span class="font-semibold text-gray-800">${opt.category}</span>
-              <span class="text-gray-600">${opt.points} pts</span>
-            </div>
-          </button>
-        `;
-      }).join('');
+      options.innerHTML = h.options.map((opt) => `
+        <button type="button" class="demo-quiz-option w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 transition-all" data-category="${opt.category}" data-points="${opt.points}">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-gray-800">${opt.category}</span>
+            <span class="text-gray-600">${opt.points} pts</span>
+          </div>
+        </button>
+      `).join('');
 
-      options.querySelectorAll('button').forEach((btn) => {
+      options.querySelectorAll('.demo-quiz-option').forEach((btn) => {
         btn.addEventListener('click', () => {
           const points = Number(btn.getAttribute('data-points'));
           const category = String(btn.getAttribute('data-category'));
@@ -993,7 +1073,6 @@
     function demoGrade(category, points) {
       if (demoState.locked) return;
       demoState.locked = true;
-
       demoState.score += points;
       document.getElementById('demo-score').textContent = String(demoState.score);
       demoUpdateMenu();
@@ -1001,7 +1080,6 @@
       const feedback = document.getElementById('demo-feedback');
       feedback.classList.remove('hidden');
       feedback.className = 'mt-6 p-4 rounded-xl bg-green-100';
-
       document.getElementById('demo-feedback-title').textContent = 'Collected';
       document.getElementById('demo-feedback-title').className = 'font-bold text-lg text-green-700';
       document.getElementById('demo-feedback-text').textContent = `${category} category = ${points} points in the real game.`;
@@ -1034,7 +1112,15 @@
     }
 
     function demoAdvance() {
-      if (!demoState.locked) return;
+      if (!demoState.locked) {
+        const feedback = document.getElementById('demo-feedback');
+        feedback.classList.remove('hidden');
+        feedback.className = 'mt-6 p-4 rounded-xl bg-amber-100';
+        document.getElementById('demo-feedback-title').textContent = 'Pick an option';
+        document.getElementById('demo-feedback-title').className = 'font-bold text-lg text-amber-700';
+        document.getElementById('demo-feedback-text').textContent = 'Demo rules: clicking is still required. Humans love skipping the obvious.';
+        return;
+      }
 
       if (demoState.index < demoHunts.length - 1) {
         demoState.index += 1;
@@ -1052,8 +1138,10 @@
 
       document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
-        const modal = document.getElementById('demoModal');
-        if (modal && !modal.classList.contains('hidden')) hideDemoModal();
+        const confirmModal = document.getElementById('confirmModal');
+        const demoModal = document.getElementById('demoModal');
+        if (confirmModal && !confirmModal.classList.contains('hidden')) return;
+        if (demoModal && !demoModal.classList.contains('hidden')) hideDemoModal();
       });
 
       document.getElementById('demo-start')?.addEventListener('click', startDemo);
@@ -1061,11 +1149,7 @@
         hideDemoModal();
         preflightUnlock();
       });
-
-      document.getElementById('demo-back')?.addEventListener('click', () => {
-        demoShow('demo-menu');
-      });
-
+      document.getElementById('demo-back')?.addEventListener('click', () => { demoShow('demo-menu'); });
       document.getElementById('demo-next')?.addEventListener('click', demoAdvance);
       document.getElementById('demo-retry')?.addEventListener('click', startDemo);
       document.getElementById('demo-results-unlock')?.addEventListener('click', () => {
@@ -1075,7 +1159,7 @@
     }
 
     function wireConfirmModal() {
-      document.querySelectorAll('[data-confirm-close="1"]').forEach(el => {
+      document.querySelectorAll('[data-confirm-close="1"]').forEach((el) => {
         el.addEventListener('click', hideConfirmModal);
       });
 
@@ -1089,9 +1173,76 @@
       document.getElementById("btnCancelSpend")?.addEventListener("click", hideConfirmModal);
     }
 
+    function setUnlockMode(mode) {
+      const btns = [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean);
+      const labels = {
+        locked: `Unlock & Play (${tokenCost} tokens)`,
+        resume: 'Resume Play'
+      };
+
+      btns.forEach((btn) => {
+        btn.textContent = labels[mode] || labels.locked;
+        btn.dataset.mode = mode;
+      });
+    }
+
+    async function refreshGrantStatus() {
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok) {
+        setUnlockMode('locked');
+        setStatus('');
+        return { allowed: false };
+      }
+
+      const access = await apiGet(`/v1/games/access?slug=${encodeURIComponent(gameSlug)}`);
+      const allowed = !!(access.res.ok && access.json && access.json.allowed);
+
+      if (allowed) {
+        setUnlockMode('resume');
+        setStatus('Active session detected. You can resume without spending tokens.');
+        return { allowed: true };
+      }
+
+      setUnlockMode('locked');
+      setStatus('');
+      return { allowed: false };
+    }
+
+    function resumePlay() {
+      window.location.href = "/games/" + gameFile;
+    }
+
+    function wireUnlockButtons() {
+      [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean).forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          const st = await refreshGrantStatus();
+          if (st.allowed) {
+            setUnlockMode("resume");
+            resumePlay();
+            return;
+          }
+          preflightUnlock();
+        });
+      });
+    }
+
+    function initElementSdk() {
+      window.elementSdk?.init({
+        elements: {
+          gameSubtitle: { type: 'text' },
+          gameTitle: { type: 'text' }
+        }
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById("btnUnlock")?.addEventListener("click", preflightUnlock);
-      document.getElementById("btnUnlock2")?.addEventListener("click", preflightUnlock);
+      initElementSdk();
+      handleCheckoutReturn();
+      refreshGrantStatus();
+      wireUnlockButtons();
+      wireConfirmModal();
+      wireDemoModal();
 
       document.getElementById("btnDemo")?.addEventListener("click", (e) => {
         e.preventDefault();
@@ -1107,9 +1258,10 @@
         e.preventDefault();
         scrollToPreview();
       });
+    });
 
-      wireConfirmModal();
-      wireDemoModal();
+    window.addEventListener('pageshow', () => {
+      refreshGrantStatus();
     });
   </script>
 </body>
