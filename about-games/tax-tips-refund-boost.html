@@ -4,22 +4,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Tax Tips Refund Boost • TaxTools</title>
   <meta name="description" content="Play a fast, 20-question tax tips quiz with streak tracking and power-ups. Unlock full play with 8 tokens, verified server-side." />
 
-  <link rel="icon" href="/assets/favicon.ico" sizes="any" />
-  <link rel="shortcut icon" href="/assets/favicon.ico" />
-
+  <link rel="icon" href="/assets/favicon.ico" />
   <link rel="stylesheet" href="/styles/site.css" />
 
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js"></script>
 
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet" />
 
   <script>
     tailwind.config = {
@@ -49,12 +46,9 @@
     * { font-family: 'DM Sans', system-ui, sans-serif; }
     html { scroll-behavior: smooth; }
     body { box-sizing: border-box; }
-
     .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
     .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
     .btn-shadow { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); }
-
-    /* Hero right-panel animation (subtle, game-y, no emojis) */
     .hero-panel { animation: hero-float 4.5s ease-in-out infinite; transform-origin: center; }
     @keyframes hero-float {
       0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 18px 28px rgba(0,0,0,0.25)); }
@@ -75,26 +69,21 @@
       0%, 100% { opacity: 0.55; }
       50% { opacity: 0.9; }
     }
-
     .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     @keyframes pulse-ring {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
     }
-
-    /* Demo modal styling (match the real game look) */
     .demo-game {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #fff;
       font-family: 'Fredoka', system-ui, sans-serif;
     }
-
     .demo-card {
       background: rgba(255, 255, 255, 0.10);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.20);
     }
-
     .demo-primary {
       transition: all 0.3s ease;
       background: linear-gradient(135deg, #FFD600 0%, #FFC700 100%);
@@ -106,10 +95,14 @@
       font-size: 16px;
       cursor: pointer;
     }
-
     .demo-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(255, 215, 0, 0.35); }
     .demo-primary:active { transform: translateY(-1px); }
-
+    .demo-primary:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+      transform: none;
+      box-shadow: none;
+    }
     .demo-secondary {
       background: rgba(255, 255, 255, 0.15);
       border: 2px solid rgba(255, 255, 255, 0.30);
@@ -120,9 +113,7 @@
       transition: all 0.3s ease;
       font-weight: 700;
     }
-
     .demo-secondary:hover { background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 215, 0, 0.45); }
-
     .demo-answer {
       transition: all 0.3s ease;
       border: 3px solid rgba(255, 255, 255, 0.30);
@@ -136,25 +127,20 @@
       width: 100%;
       color: #fff;
     }
-
     .demo-answer:hover:not(.disabled) {
       border-color: rgba(255, 215, 0, 0.60);
       background: rgba(255, 215, 0, 0.12);
       transform: scale(1.01);
     }
-
     .demo-answer.correct {
       background: rgba(16, 185, 129, 0.30);
       border-color: #10b981;
     }
-
     .demo-answer.incorrect {
       background: rgba(239, 68, 68, 0.30);
       border-color: #ef4444;
     }
-
     .demo-answer.disabled { opacity: 0.7; cursor: not-allowed; }
-
     .demo-score {
       background: rgba(255, 215, 0, 0.20);
       border: 2px solid #FFD600;
@@ -163,7 +149,6 @@
       font-weight: 800;
       display: inline-block;
     }
-
     .demo-power {
       background: rgba(139, 92, 246, 0.30);
       border: 2px solid rgba(139, 92, 246, 0.60);
@@ -175,7 +160,6 @@
       color: #fff;
       opacity: 0.55;
     }
-
     .demo-streak {
       display: inline-block;
       background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
@@ -185,32 +169,75 @@
       font-size: 14px;
       margin-top: 6px;
     }
+    @keyframes pulse-indicator {
+      0%, 100% {
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), inset 0 0 6px rgba(255, 255, 255, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.9), inset 0 0 8px rgba(255, 255, 255, 0.5);
+      }
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+      border: 2px solid rgba(16, 185, 129, 0.35);
+      border-radius: 14px;
+      padding: 12px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+    .status-badge:hover {
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.15), inset 0 1px 3px rgba(255, 255, 255, 0.15);
+    }
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), inset 0 0 6px rgba(255, 255, 255, 0.3);
+      animation: pulse-indicator 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    .status-text {
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+    }
+    .status-link {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
   </style>
-
-  <!-- Demo font (real game uses Fredoka) -->
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet" />
 </head>
 
-<body class="h-full bg-white text-charcoal overflow-auto">
-  <div id="app" class="w-full min-h-full">
+<body class="h-full bg-white text-charcoal overflow-hidden font-dm">
+  <div id="app" class="h-full w-full overflow-auto custom-scrollbar">
 
     <!-- PARTIAL:header -->
 
-    <!-- Hero -->
     <section class="gradient-hero text-white py-16 lg:py-24">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
-
-          <!-- Content -->
           <div class="text-center lg:text-left">
             <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
               <span class="w-2 h-2 bg-accent rounded-full pulse-ring"></span>
               <span class="text-sm font-medium">Interactive Game • Instant Access</span>
             </div>
 
-            <p class="text-blue-100 text-lg mb-2">Benefit: Learn high-impact tax tips fast, then remember them because your score depends on it.</p>
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Tax Tips Refund Boost</h1>
-            <p class="text-xl md:text-2xl text-blue-100 mb-8">A 20-question quiz with streak tracking and power-ups (50/50 + skip). Built for quick, practical tax learning.</p>
+            <p class="text-blue-100 text-lg mb-2"></p>
+            <h1 id="game-title" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Tax Tips Refund Boost</h1>
+            <p id="game-subtitle" class="text-xl md:text-2xl text-blue-100 mb-8">A 20-question quiz with streak tracking and power-ups (50/50 + skip). Built for quick, practical tax learning.</p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <button id="btnUnlock" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105">
@@ -222,96 +249,137 @@
             </div>
 
             <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
-              <p class="text-blue-200 text-sm">Education only • Cookie session required • Token-gated unlock</p>
-              <span id="status" class="text-blue-200 text-sm"></span>
+              <p class="text-blue-200 text-sm">✓ Education only • ✓ Cookie session • ✓ Token-gated unlock</p>
+              <span id="status" class="text-blue-200 text-sm">Checking access…</span>
             </div>
           </div>
 
-          <!-- Hero Right Panel -->
           <div class="relative flex justify-center lg:justify-end">
             <div class="relative w-full max-w-md">
               <div class="hero-panel relative rounded-3xl p-5 card-shadow border border-white/10" style="background: linear-gradient(135deg, rgba(30,27,75,0.85) 0%, rgba(49,46,129,0.85) 55%, rgba(67,56,202,0.85) 100%);">
                 <div class="flex items-center justify-between mb-5">
                   <div>
-                    <h3 class="text-white font-bold text-lg">Quick Quiz Preview</h3>
-                    <p class="text-blue-200 text-sm">20 questions. Streaks. Power-ups.</p>
+                    <h3 class="text-white font-bold text-lg">Quest Map</h3>
+                    <p class="text-blue-200 text-sm">5 zones. Quizzes. Badges.</p>
                   </div>
                   <div class="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/15" style="background: rgba(255,255,255,0.10)">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h2m0 0V9m0 2h2m-9 8a7 7 0 117-7" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2m0 18l6-3m-6 3V2m6 15l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 13l-6 3" />
                     </svg>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-1 gap-3">
-                  <div class="rounded-2xl p-4 border border-white/10" style="background: rgba(255,255,255,0.08)">
-                    <p class="text-white font-semibold">Round format</p>
-                    <p class="text-white/80 text-sm">20 quick questions, score on accuracy</p>
-                  </div>
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(59,130,246,0.85) 0%, rgba(34,211,238,0.75) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">A</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Subpart A</p>
+                        <p class="text-white/80 text-sm leading-tight">Tax Basics</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Start</span>
+                    </div>
+                  </button>
 
-                  <div class="rounded-2xl p-4 border border-white/10" style="background: rgba(255,255,255,0.08)">
-                    <p class="text-white font-semibold">Streak tracking</p>
-                    <p class="text-white/80 text-sm">Build momentum with correct answers</p>
-                  </div>
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(16,185,129,0.85) 0%, rgba(20,184,166,0.75) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">B</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Subpart B</p>
+                        <p class="text-white/80 text-sm leading-tight">Credits & Deductions</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Mid</span>
+                    </div>
+                  </button>
 
                   <div class="grid grid-cols-2 gap-3">
-                    <div class="rounded-2xl p-4 border border-white/10" style="background: rgba(255,255,255,0.08)">
-                      <p class="text-white font-semibold">50/50</p>
-                      <p class="text-white/80 text-xs">Remove 2 wrong answers</p>
-                    </div>
-                    <div class="rounded-2xl p-4 border border-white/10" style="background: rgba(255,255,255,0.08)">
-                      <p class="text-white font-semibold">Skip</p>
-                      <p class="text-white/80 text-xs">Skip one question</p>
-                    </div>
+                    <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(239,68,68,0.85) 0%, rgba(244,63,94,0.75) 100%);">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                          <span class="text-white font-bold">C</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-white font-semibold leading-tight">Income</p>
+                          <p class="text-white/80 text-xs leading-tight">Reporting</p>
+                        </div>
+                      </div>
+                    </button>
+
+                    <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(168,85,247,0.85) 0%, rgba(139,92,246,0.75) 100%);">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                          <span class="text-white font-bold">D</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-white font-semibold leading-tight">Retirement</p>
+                          <p class="text-white/80 text-xs leading-tight">Limits</p>
+                        </div>
+                      </div>
+                    </button>
                   </div>
+
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(249,115,22,0.85) 0%, rgba(245,158,11,0.75) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">E</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Subpart E</p>
+                        <p class="text-white/80 text-sm leading-tight">Business Write-Offs</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Finish</span>
+                    </div>
+                  </button>
                 </div>
 
                 <div class="mt-5 grid grid-cols-3 gap-3">
                   <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">5</p>
+                    <p class="text-blue-200 text-xs">Zones</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">20</p>
+                    <p class="text-blue-200 text-xs">Questions</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
                     <p class="text-white text-lg font-bold">2</p>
-                    <p class="text-blue-200 text-xs">Demo questions</p>
-                  </div>
-                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
-                    <p class="text-white text-lg font-bold">10</p>
-                    <p class="text-blue-200 text-xs">Points per correct</p>
-                  </div>
-                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
-                    <p class="text-white text-lg font-bold">1</p>
-                    <p class="text-blue-200 text-xs">Skip per run</p>
+                    <p class="text-blue-200 text-xs">Power-ups</p>
                   </div>
                 </div>
 
                 <div class="mt-5 flex items-center justify-between">
                   <div class="flex items-center gap-2">
                     <span class="inline-flex h-2.5 w-2.5 rounded-full" style="background: rgba(16,185,129,0.95)"></span>
-                    <span class="text-blue-200 text-xs">Server-verified spend</span>
+                    <span class="text-blue-200 text-xs">Progress tracked</span>
                   </div>
                   <button type="button" id="heroTryDemo" class="text-white text-xs font-semibold px-3 py-2 rounded-xl border border-white/15 transition hover:bg-white/10">Try demo</button>
                 </div>
               </div>
 
-              <div class="absolute -top-3 -right-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(245,158,11,0.95)">
+              <div class="absolute -top-3 -right-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(249,115,22,0.95)">
                 <p class="text-white text-sm font-bold">8 tokens</p>
                 <p class="text-white/90 text-xs">per play</p>
               </div>
               <div class="absolute -bottom-3 -left-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(29,78,216,0.95)">
-                <p class="text-white text-sm font-bold">20 Qs</p>
-                <p class="text-white/90 text-xs">quick quiz</p>
+                <p class="text-white text-sm font-bold">Run to</p>
+                <p class="text-white/90 text-xs">completion</p>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- What You’ll Learn -->
     <section id="what-youll-learn" class="py-16 lg:py-24 bg-surface">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
           <span class="text-primary font-semibold text-sm uppercase tracking-wide">What You’ll Learn</span>
           <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Refund-focused tax fundamentals</h2>
-          <p class="text-muted text-lg max-w-2xl mx-auto">Four clean takeaways, because nobody needs a 19-card feature wall.</p>
+          <p class="text-muted text-lg max-w-2xl mx-auto">Four clean takeaways, because apparently humans do better with fewer shiny boxes.</p>
         </div>
 
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -335,11 +403,9 @@
       </div>
     </section>
 
-    <!-- Preview / Demo -->
     <section id="preview" class="py-16 lg:py-24 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
-
           <div class="order-2 lg:order-1">
             <div class="bg-gray-50 rounded-3xl p-6 md:p-8">
               <div class="bg-white rounded-2xl card-shadow overflow-hidden">
@@ -395,7 +461,7 @@
           <div class="order-1 lg:order-2 text-center lg:text-left">
             <span class="text-primary font-semibold text-sm uppercase tracking-wide">Preview</span>
             <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Try the first two prompts</h2>
-            <p class="text-muted text-lg mb-6">Demo mode is limited to two questions and never spends tokens. Full gameplay unlocks only after the server confirms a valid token spend.</p>
+            <p class="text-muted text-lg mb-6">Demo mode is limited to two questions and never spends tokens. Full gameplay unlocks only after the Worker confirms a valid token spend.</p>
 
             <ul class="space-y-4 mb-8">
               <li class="flex items-center gap-3 justify-center lg:justify-start">
@@ -432,18 +498,16 @@
               Try Demo
             </button>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- How It Works -->
     <section id="how-it-works" class="py-16 lg:py-24 bg-navy text-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
           <span class="text-primary font-semibold text-sm uppercase tracking-wide">Simple Setup</span>
           <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">How It Works</h2>
-          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. No local token math. The server decides what you can play.</p>
+          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. No local token guesswork. The Worker decides what you can play, because that is how reality should work.</p>
         </div>
 
         <div class="grid md:grid-cols-3 gap-8">
@@ -456,7 +520,7 @@
               </svg>
             </div>
             <h3 class="text-xl font-bold mb-3">Sign in</h3>
-            <p class="text-blue-200">Sign in to your TaxTools account to access your game tokens securely.</p>
+            <p class="text-blue-200">Cookie session required so tokens and access grants attach to your account.</p>
           </div>
 
           <div class="text-center">
@@ -466,8 +530,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 class="text-xl font-bold mb-3">Confirm token use</h3>
-            <p class="text-blue-200">We instantly confirm you have enough tokens and deduct the game cost.</p>
+            <h3 class="text-xl font-bold mb-3">Confirm spend</h3>
+            <p class="text-blue-200">You approve the spend first. Nothing charges itself just because a browser woke up confused.</p>
           </div>
 
           <div class="text-center">
@@ -478,14 +542,13 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 class="text-xl font-bold mb-3">Start the game</h3>
-            <p class="text-blue-200">You’re taken straight into the 20-question challenge.</p>
+            <h3 class="text-xl font-bold mb-3">Play</h3>
+            <p class="text-blue-200">You’re redirected into the 20-question challenge once access exists.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FAQ -->
     <section id="faq" class="py-16 lg:py-24 bg-white">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
@@ -510,7 +573,7 @@
               <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
             <div class="faq-content hidden px-6 pb-6">
-              <p class="text-muted">When you confirm, the server verifies your balance and creates a time-limited play grant so reloads don’t charge you twice during the grant window.</p>
+              <p class="text-muted">When you confirm, the Worker verifies your balance and creates an active play session so reloads don’t charge you again while the session is active.</p>
             </div>
           </div>
 
@@ -530,7 +593,17 @@
               <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
             <div class="faq-content hidden px-6 pb-6">
-              <p class="text-muted">Tokens and play grants are tied to your account, and the server uses a cookie session to verify access.</p>
+              <p class="text-muted">Tokens and play grants are tied to your account, and the Worker uses a cookie session to verify access.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">What happens if the API is unavailable?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">The page shows a temporary connection message and does not attempt any token spend until the API is reachable again.</p>
             </div>
           </div>
 
@@ -547,7 +620,6 @@
       </div>
     </section>
 
-    <!-- Trust + Disclaimers -->
     <section class="py-16 bg-surface">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white rounded-3xl card-shadow p-8">
@@ -570,11 +642,10 @@
       </div>
     </section>
 
-    <!-- Final CTA -->
     <section class="py-16 lg:py-24 gradient-hero text-white">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to play?</h2>
-        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend verified by the server.</p>
+        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend verified by the Worker.</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <button id="btnUnlock2" class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -586,23 +657,21 @@
         </div>
         <div class="inline-flex items-center gap-2" style="background: rgba(245,158,11,0.20); border-radius: 9999px; padding: 0.75rem 1.5rem;">
           <svg class="w-5 h-5" style="color: #f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-          <span class="text-sm font-medium">Tokens don’t expire. Grants prevent double-spend during active play.</span>
+          <span class="text-sm font-medium">Tokens don’t expire. Active sessions prevent double-spend during play.</span>
         </div>
       </div>
     </section>
 
     <!-- PARTIAL:footer -->
-
   </div>
 
-  <!-- Confirm Spend Modal -->
   <div id="confirmModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/60" data-confirm-close="1"></div>
 
     <div class="absolute inset-4 md:inset-10 lg:inset-16 bg-white rounded-3xl overflow-hidden flex flex-col">
       <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
         <div>
-          <p class="text-muted text-sm">Confirm token use</p>
+          <p class="text-muted text-sm">Confirm spend</p>
           <h3 class="text-xl font-bold text-navy">Spend <span id="modalCost">8</span> tokens to unlock?</h3>
         </div>
         <button id="btnCloseModal" type="button" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" data-confirm-close="1" aria-label="Close">
@@ -612,7 +681,7 @@
 
       <div class="flex-1 overflow-auto p-6">
         <div class="bg-green-50 border border-green-200 rounded-2xl p-4">
-          <p class="text-green-900 text-sm"><strong>Grant behavior:</strong> This spend creates a time-limited play grant so refreshes don’t charge you again during the grant window.</p>
+          <p class="text-green-900 text-sm"><strong>Session behavior:</strong> This spend creates an active play session that stays valid until you complete or lose, so reloads don’t charge you again while the session is active.</p>
         </div>
 
         <div class="mt-5 grid md:grid-cols-2 gap-4">
@@ -638,16 +707,14 @@
     </div>
   </div>
 
-  <!-- Demo Modal (limited to 2 questions) -->
   <div id="demoModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/70" data-demo-close="1"></div>
 
     <div class="demo-game absolute inset-4 md:inset-10 lg:inset-16 rounded-3xl overflow-hidden flex flex-col border border-white/10">
-      <!-- Header -->
       <div class="flex items-center justify-between px-6 py-4 border-b border-white/10" style="background: rgba(255,255,255,0.08)">
         <div>
           <p class="text-white/80 text-sm font-semibold">Demo</p>
-          <h3 class="text-white text-xl font-black" id="demoTitle">Tax Quest</h3>
+          <h3 class="text-white text-xl font-black" id="demoTitle">Tax Tips Refund Boost</h3>
           <p class="text-white/70 text-xs" id="demoCompany">TaxTools</p>
         </div>
         <button type="button" class="p-2 hover:bg-white/10 rounded-lg transition-colors text-white" data-demo-close="1" aria-label="Close demo">
@@ -655,11 +722,8 @@
         </button>
       </div>
 
-      <!-- Body -->
       <div class="flex-1 overflow-auto p-6">
         <div class="mx-auto w-full max-w-3xl">
-
-          <!-- HUD -->
           <div class="flex justify-between items-center mb-6">
             <div class="text-left">
               <p class="text-sm text-white/80">Question <span id="demoQIndex">1</span>/2</p>
@@ -680,16 +744,12 @@
             </div>
           </div>
 
-          <!-- Card -->
           <div class="demo-card rounded-3xl p-6 md:p-8">
             <h4 id="demoQuestion" class="text-2xl md:text-3xl font-bold leading-tight mb-6"></h4>
-
             <div id="demoOptions" class="space-y-4"></div>
-
             <div class="text-center text-sm text-white/75 mt-6">
               <p id="demoFeedbackText" class="mb-2 min-h-[1.5rem]"></p>
             </div>
-
             <button id="demoNext" type="button" class="demo-primary w-full hidden">NEXT →</button>
 
             <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -699,30 +759,64 @@
 
             <p class="mt-4 text-xs text-white/70">Educational only. Not tax advice. Not representation.</p>
           </div>
-
         </div>
       </div>
 
-      <!-- Footer -->
       <div class="px-6 py-4 border-t border-white/10" style="background: rgba(255,255,255,0.06)">
-        <p class="text-white/80 text-sm">Want the real thing? Full game unlocks only after a server-verified token spend.</p>
+        <p class="text-white/80 text-sm">Want the real thing? Full game unlocks only after a Worker-verified token spend.</p>
       </div>
     </div>
   </div>
 
   <script>
-    // Base API for TaxTools
     const API_BASE = "https://tools-api.taxmonitor.pro";
-
-    // Slug must not include .html
-    const slug = "tax-tips-refund-boost";
+    const gameFile = "tax-tips-refund-boost.html";
+    const gameSlug = "tax-tips-refund-boost";
     const tokenCost = 8;
 
     let spendInFlight = false;
+    let apiReachable = true;
+    let lastNetworkError = "";
 
     function setStatus(msg) {
       const el = document.getElementById("status");
       if (el) el.textContent = msg || "";
+    }
+
+    function setStatusHtml(html) {
+      const el = document.getElementById("status");
+      if (el) el.innerHTML = html || "";
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function isNetworkError(error) {
+      return error instanceof TypeError || /fetch/i.test(String(error && error.message || ""));
+    }
+
+    function showApiUnavailableStatus(contextLabel) {
+      const safeContext = escapeHtml(contextLabel || "service");
+      setStatusHtml(
+        `Connection issue while checking ${safeContext}. ` +
+        `This environment may block external requests. ` +
+        `<a class="status-link" href="${API_BASE}" target="_blank" rel="noreferrer">Open API</a>`
+      );
+    }
+
+    function updateButtonsDisabledState(disabled) {
+      [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2"), document.getElementById("demoUnlock")]
+        .filter(Boolean)
+        .forEach((btn) => {
+          btn.disabled = !!disabled;
+          btn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+        });
     }
 
     function toggleFaq(button) {
@@ -730,8 +824,8 @@
       const icon = button.querySelector('.faq-icon');
       const isOpen = !content.classList.contains('hidden');
 
-      document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
-      document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = 'rotate(0deg)');
+      document.querySelectorAll('.faq-content').forEach((c) => c.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach((i) => { i.style.transform = 'rotate(0deg)'; });
 
       if (!isOpen) {
         content.classList.remove('hidden');
@@ -754,44 +848,90 @@
       modal.classList.add("hidden");
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove("overflow-hidden");
+      spendInFlight = false;
+      const btn = document.getElementById("btnConfirmSpend");
+      if (btn) btn.disabled = false;
     }
 
-    async function apiGet(path) {
-      const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
-      return { res, json: await res.json().catch(() => ({})) };
+    async function apiRequest(path, options = {}, contextLabel = "service") {
+      try {
+        const res = await fetch(API_BASE + path, {
+          credentials: "include",
+          ...options
+        });
+        apiReachable = true;
+        lastNetworkError = "";
+        const json = await res.json().catch(() => ({}));
+        return { ok: true, res, json, networkError: false };
+      } catch (error) {
+        if (isNetworkError(error)) {
+          apiReachable = false;
+          lastNetworkError = String(error && error.message || error || "Failed to fetch");
+          showApiUnavailableStatus(contextLabel);
+          return {
+            ok: false,
+            res: null,
+            json: {},
+            networkError: true,
+            error
+          };
+        }
+        throw error;
+      }
     }
 
-    async function apiPost(path, body) {
-      const res = await fetch(API_BASE + path, {
+    async function apiGet(path, contextLabel) {
+      return apiRequest(path, { method: "GET" }, contextLabel);
+    }
+
+    async function apiPost(path, body, contextLabel) {
+      return apiRequest(path, {
         method: "POST",
-        credentials: "include",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(body)
-      });
-      return { res, json: await res.json().catch(() => ({})) };
+      }, contextLabel);
+    }
+
+    async function beginLogin() {
+      setStatus("Starting sign-in…");
+      const started = await apiPost("/v1/auth/start", { returnTo: window.location.href }, "sign-in");
+      if (started.networkError) return;
+      const redirectUrl = started?.json?.redirectUrl || started?.json?.url || "";
+      if (started.res && started.res.ok && redirectUrl) {
+        window.location.href = redirectUrl;
+        return;
+      }
+      setStatus("Could not start sign-in.");
+    }
+
+    function showBuyOptions() {
+      setStatusHtml(
+        `Not enough tokens. <a class="status-link" href="/index.html#pricing">Buy a token pack</a>.`
+      );
     }
 
     async function preflightUnlock() {
       setStatus("Checking session…");
 
-      const me = await apiGet("/v1/auth/me");
-      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-        setStatus("Please sign in to continue.");
-        window.location.href = "/index.html";
+      const me = await apiGet("/v1/auth/me", "your session");
+      if (me.networkError) return;
+      if (!me.res || !me.res.ok || !me.json || me.json.isAuthenticated === false) {
+        await beginLogin();
         return;
       }
 
       setStatus("Checking token balance…");
-      const bal = await apiGet("/v1/tokens/balance");
+      const bal = await apiGet("/v1/tokens/balance", "your token balance");
+      if (bal.networkError) return;
       const balance = Number(bal.json && bal.json.balance);
+
       if (!Number.isFinite(balance)) {
         setStatus("Could not load token balance.");
         return;
       }
 
       if (balance < tokenCost) {
-        setStatus("Not enough tokens. Purchase a pack to continue.");
-        window.location.href = "/index.html#pricing";
+        showBuyOptions();
         return;
       }
 
@@ -812,20 +952,77 @@
         amount: tokenCost,
         idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
         reason: "arcade_play",
-        slug: slug
-      });
+        slug: gameSlug
+      }, "token spend");
 
-      if (!spend.res.ok) {
+      if (spend.networkError) {
+        hideConfirmModal();
+        return;
+      }
+
+      if (!spend.res || !spend.res.ok) {
         hideConfirmModal();
         setStatus("Spend failed. Please try again.");
-        spendInFlight = false;
-        if (btn) btn.disabled = false;
         return;
       }
 
       hideConfirmModal();
       setStatus("Unlocked. Redirecting…");
-      window.location.href = "/games/" + slug + ".html";
+      window.location.href = "/games/" + gameFile;
+    }
+
+    function setUnlockMode(mode) {
+      const btns = [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean);
+      const labels = {
+        locked: `Unlock & Play (${tokenCost} tokens)`,
+        resume: "Resume Play"
+      };
+
+      btns.forEach((btn) => {
+        btn.textContent = labels[mode] || labels.locked;
+        btn.dataset.mode = mode;
+      });
+    }
+
+    async function refreshGrantStatus() {
+      const me = await apiGet("/v1/auth/me", "your session");
+      if (me.networkError) {
+        setUnlockMode("locked");
+        updateButtonsDisabledState(true);
+        return { allowed: false, networkError: true };
+      }
+
+      if (!me.res || !me.res.ok || !me.json || me.json.isAuthenticated === false) {
+        setUnlockMode("locked");
+        updateButtonsDisabledState(false);
+        setStatus("");
+        return { allowed: false, networkError: false };
+      }
+
+      const access = await apiGet(`/v1/games/access?slug=${encodeURIComponent(gameSlug)}`, "game access");
+      if (access.networkError) {
+        setUnlockMode("locked");
+        updateButtonsDisabledState(true);
+        return { allowed: false, networkError: true };
+      }
+
+      const allowed = !!(access.res && access.res.ok && access.json && access.json.allowed === true);
+
+      updateButtonsDisabledState(false);
+
+      if (allowed) {
+        setUnlockMode("resume");
+        setStatus("Active session detected. You can resume without spending tokens.");
+        return { allowed: true, networkError: false };
+      }
+
+      setUnlockMode("locked");
+      setStatus("");
+      return { allowed: false, networkError: false };
+    }
+
+    function resumePlay() {
+      window.location.href = "/games/" + gameFile;
     }
 
     function scrollToPreview() {
@@ -834,7 +1031,6 @@
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Demo modal (must be 2 questions from the real game)
     const demoQuestions = [
       {
         question: 'What is the standard deduction for single filers in 2025?',
@@ -857,6 +1053,10 @@
       streak: 0
     };
 
+    function getDemoSummaryText() {
+      return `Final demo score: ${demoState.score}/${demoQuestions.length}.`;
+    }
+
     function showDemoModal() {
       const modal = document.getElementById('demoModal');
       if (!modal) return;
@@ -874,24 +1074,14 @@
       document.body.classList.remove('overflow-hidden');
     }
 
-    function setDemoHeaderFromPage() {
-      const title = document.getElementById('game-title');
-      const company = document.getElementById('company-name');
-      const demoTitle = document.getElementById('demoTitle');
-      const demoCompany = document.getElementById('demoCompany');
-      if (demoTitle) demoTitle.textContent = title ? title.textContent : 'Tax Quest';
-      if (demoCompany) demoCompany.textContent = company ? company.textContent : 'TaxTools';
-    }
-
     function renderDemoQuestion() {
-      setDemoHeaderFromPage();
-
-      demoState.answered = false;
-
       const q = demoQuestions[demoState.index];
       const qIndex = demoState.index + 1;
       const total = demoQuestions.length;
 
+      demoState.answered = false;
+
+      document.getElementById('demoTitle').textContent = document.getElementById('game-title')?.textContent || 'Tax Tips Refund Boost';
       document.getElementById('demoQIndex').textContent = String(qIndex);
       document.getElementById('demoScore').textContent = String(demoState.score);
       document.getElementById('demoQuestion').textContent = q.question;
@@ -906,8 +1096,8 @@
       if (demoState.streak > 0) {
         if (streakEl) streakEl.style.display = 'inline-block';
         if (streakCount) streakCount.textContent = String(demoState.streak);
-      } else {
-        if (streakEl) streakEl.style.display = 'none';
+      } else if (streakEl) {
+        streakEl.style.display = 'none';
       }
 
       const nextBtn = document.getElementById('demoNext');
@@ -915,12 +1105,9 @@
 
       const options = document.getElementById('demoOptions');
       if (!options) return;
+      options.innerHTML = q.options.map((opt, idx) => `<button type="button" class="demo-answer" data-idx="${idx}">${opt}</button>`).join('');
 
-      options.innerHTML = q.options.map((opt, idx) => {
-        return `<button type="button" class="demo-answer" data-idx="${idx}">${opt}</button>`;
-      }).join('');
-
-      options.querySelectorAll('.demo-answer').forEach(btn => {
+      options.querySelectorAll('.demo-answer').forEach((btn) => {
         btn.addEventListener('click', () => {
           const selected = Number(btn.getAttribute('data-idx'));
           gradeDemo(selected);
@@ -934,7 +1121,6 @@
 
       const q = demoQuestions[demoState.index];
       const isCorrect = selectedIndex === q.correct;
-
       const buttons = document.querySelectorAll('#demoOptions .demo-answer');
 
       if (isCorrect) {
@@ -966,8 +1152,8 @@
       if (demoState.streak > 0) {
         if (streakEl) streakEl.style.display = 'inline-block';
         if (streakCount) streakCount.textContent = String(demoState.streak);
-      } else {
-        if (streakEl) streakEl.style.display = 'none';
+      } else if (streakEl) {
+        streakEl.style.display = 'none';
       }
     }
 
@@ -992,82 +1178,131 @@
       }
 
       document.getElementById('demoQuestion').textContent = 'Demo complete. Ready to unlock the full 20-question quiz?';
-      document.getElementById('demoFeedbackText').textContent = `Final demo score: ${demoState.score}/2.`;
-
+      document.getElementById('demoFeedbackText').textContent = getDemoSummaryText();
       const options = document.getElementById('demoOptions');
       if (options) options.innerHTML = '';
-
       const nextBtn = document.getElementById('demoNext');
       if (nextBtn) nextBtn.classList.add('hidden');
-
       const streakEl = document.getElementById('demoStreak');
       if (streakEl) streakEl.style.display = 'none';
     }
 
     function wireDemoModal() {
-      document.querySelectorAll('[data-demo-close="1"]').forEach(el => {
+      document.querySelectorAll('[data-demo-close="1"]').forEach((el) => {
         el.addEventListener('click', hideDemoModal);
       });
 
       document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
-        const modal = document.getElementById('demoModal');
-        if (modal && !modal.classList.contains('hidden')) hideDemoModal();
+        const demoModal = document.getElementById('demoModal');
+        if (demoModal && !demoModal.classList.contains('hidden')) hideDemoModal();
       });
 
       document.getElementById('demoReset')?.addEventListener('click', resetDemo);
       document.getElementById('demoNext')?.addEventListener('click', advanceDemo);
-
-      document.getElementById('demoUnlock')?.addEventListener('click', () => {
+      document.getElementById('demoUnlock')?.addEventListener('click', async () => {
         hideDemoModal();
-        preflightUnlock();
+        const state = await refreshGrantStatus();
+        if (state.allowed) {
+          resumePlay();
+          return;
+        }
+        if (!state.networkError) {
+          preflightUnlock();
+        }
       });
     }
 
     function wireConfirmModal() {
-      document.querySelectorAll('[data-confirm-close="1"]').forEach(el => {
-        el.addEventListener('click', () => {
-          spendInFlight = false;
-          const btn = document.getElementById('btnConfirmSpend');
-          if (btn) btn.disabled = false;
-          hideConfirmModal();
-        });
+      document.querySelectorAll('[data-confirm-close="1"]').forEach((el) => {
+        el.addEventListener('click', hideConfirmModal);
       });
 
       document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
-        const modal = document.getElementById('confirmModal');
-        if (modal && !modal.classList.contains('hidden')) {
-          spendInFlight = false;
-          const btn = document.getElementById('btnConfirmSpend');
-          if (btn) btn.disabled = false;
-          hideConfirmModal();
-        }
+        const confirmModal = document.getElementById('confirmModal');
+        if (confirmModal && !confirmModal.classList.contains('hidden')) hideConfirmModal();
       });
 
       document.getElementById('btnConfirmSpend')?.addEventListener('click', confirmSpendAndRedirect);
-      document.getElementById('btnCancelSpend')?.addEventListener('click', () => {
-        spendInFlight = false;
-        const btn = document.getElementById('btnConfirmSpend');
-        if (btn) btn.disabled = false;
-        hideConfirmModal();
+      document.getElementById('btnCancelSpend')?.addEventListener('click', hideConfirmModal);
+    }
+
+    function wireUnlockButtons() {
+      [document.getElementById('btnUnlock'), document.getElementById('btnUnlock2')].filter(Boolean).forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const state = await refreshGrantStatus();
+          if (state.allowed) {
+            resumePlay();
+            return;
+          }
+          if (!state.networkError) {
+            preflightUnlock();
+          }
+        });
       });
     }
 
-    function runInlineTests() {
-      try {
-        console.assert(API_BASE === 'https://tools-api.taxmonitor.pro', 'API_BASE must be the expected origin');
-        console.assert(demoQuestions.length === 2, 'Demo must have exactly 2 questions');
-        console.assert(demoQuestions.every(q => Array.isArray(q.options) && q.options.length === 4), 'Each demo question must have 4 options');
-        console.assert(Number.isInteger(tokenCost) && tokenCost === 8, 'tokenCost must be 8');
-      } catch (e) {
-        console.warn('Inline tests failed:', e);
-      }
+    function initElementSdk() {
+      window.elementSdk?.init({
+        elements: {
+          companyName: { selector: '#demoCompany', type: 'text' },
+          gameSubtitle: { selector: '#game-subtitle', type: 'text' },
+          gameTitle: { selector: '#game-title', type: 'text' }
+        },
+        page: {
+          slug: gameSlug,
+          type: 'about-game'
+        }
+      });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('btnUnlock')?.addEventListener('click', preflightUnlock);
-      document.getElementById('btnUnlock2')?.addEventListener('click', preflightUnlock);
+    function runLocalSelfTests() {
+      const tests = [];
+
+      tests.push({
+        name: 'required ids exist',
+        pass: !!document.getElementById('app') && !!document.getElementById('status') && !!document.getElementById('btnUnlock') && !!document.getElementById('btnUnlock2') && !!document.getElementById('confirmModal')
+      });
+
+      tests.push({
+        name: 'demo question count is 2',
+        pass: demoQuestions.length === 2
+      });
+
+      tests.push({
+        name: 'demo summary text reflects score',
+        pass: (() => {
+          const prior = demoState.score;
+          demoState.score = 1;
+          const ok = getDemoSummaryText() === 'Final demo score: 1/2.';
+          demoState.score = prior;
+          return ok;
+        })()
+      });
+
+      tests.push({
+        name: 'network errors recognized',
+        pass: isNetworkError(new TypeError('Failed to fetch')) === true
+      });
+
+      tests.push({
+        name: 'escapeHtml sanitizes angle brackets',
+        pass: escapeHtml('<demo>') === '&lt;demo&gt;'
+      });
+
+      window.__aboutGameSelfTests = tests;
+      window.__aboutGameSelfTestsPassed = tests.every((test) => test.pass);
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      setStatus('Checking access…');
+      initElementSdk();
+      runLocalSelfTests();
+      wireConfirmModal();
+      wireDemoModal();
+      wireUnlockButtons();
 
       document.getElementById('btnDemo')?.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1084,12 +1319,11 @@
         scrollToPreview();
       });
 
-      wireConfirmModal();
-      wireDemoModal();
+      await refreshGrantStatus();
+    });
 
-      runInlineTests();
-
-      setStatus('');
+    window.addEventListener('pageshow', () => {
+      refreshGrantStatus();
     });
   </script>
 </body>
