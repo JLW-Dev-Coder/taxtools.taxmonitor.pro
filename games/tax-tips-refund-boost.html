@@ -158,6 +158,29 @@
       border-color: rgba(255, 215, 0, 0.5);
     }
 
+    .game-shell {
+      margin: 0 auto;
+      max-width: 1120px;
+      width: 100%;
+    }
+
+    .question-shell {
+      margin: 0 auto;
+      max-width: 920px;
+      width: 100%;
+    }
+
+    .answer-btn {
+      width: 100%;
+      max-width: 220px;
+    }
+
+    .answers-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
     .answer-btn {
       background: rgba(255, 255, 255, 0.08);
       border: 3px solid rgba(255, 255, 255, 0.3);
@@ -312,7 +335,8 @@
     </div>
 
     <div id="game-screen" class="screen hidden min-h-full flex-col p-6">
-      <div class="mb-8 flex items-center justify-between">
+      <div class="game-shell">
+        <div class="mb-8 flex items-start justify-between gap-6">
         <div class="text-left">
           <p class="text-sm opacity-80">Question <span id="question-number">1</span>/20</p>
           <div class="mt-2 h-2 w-48 rounded-full bg-white bg-opacity-20">
@@ -332,15 +356,16 @@
         </div>
       </div>
 
-      <div class="mb-8 flex flex-1 flex-col justify-center">
-        <h2 id="question-text" class="mb-8 text-3xl font-bold leading-tight"></h2>
-        <div id="answers-container" class="space-y-4"></div>
-      </div>
+      <div class="question-shell mb-8 flex flex-1 flex-col justify-center">
+          <h2 id="question-text" class="mb-8 text-3xl font-bold leading-tight"></h2>
+          <div id="answers-container" class="answers-grid"></div>
+        </div>
 
-      <div class="text-center text-sm opacity-70">
+        <div class="question-shell text-center text-sm opacity-70">
         <p id="feedback-text" class="mb-4 h-6"></p>
       </div>
       <button id="next-btn" class="button-primary hidden">NEXT QUESTION →</button>
+      </div>
     </div>
 
     <div id="results-screen" class="screen hidden min-h-full flex-col items-center justify-center px-6 text-center">
