@@ -327,7 +327,6 @@ async function dbAccountGetBalance(env, accountId) {
 async function dbPlayGrantsColumns(env) {
   requireDb(env);
 
-  // Cache schema lookup per isolate.
   if (state.playGrantsColumns && state.playGrantsColumns.size) return state.playGrantsColumns;
 
   const cols = new Set();
@@ -347,7 +346,6 @@ async function dbGrantGetActive(env, { accountId, nowMs, slug }) {
 
   const cols = await dbPlayGrantsColumns(env);
 
-  // Preferred: run-to-completion gating.
   if (cols.has("ended_at")) {
     const cutoffIso = asIso(nowMs - PLAY_GRANT_ABANDONED_CUTOFF_MS);
 
@@ -372,7 +370,6 @@ async function dbGrantGetActive(env, { accountId, nowMs, slug }) {
     };
   }
 
-  // Fallback: legacy time-window gating.
   const row = await env.DB.prepare(
     "SELECT grant_id, expires_at, expires_at_ms, slug, spent " +
       "FROM play_grants " +
@@ -536,7 +533,6 @@ async function clickupCreateSupportTask(env, { description, subject }) {
   const token = String(env.CLICKUP_API_TOKEN || "").trim();
   const listId = String(env.CLICKUP_SUPPORT_LIST_ID || "").trim();
 
-  // Not configured? Cool. Ticket still exists in R2.
   if (!token || !listId) return null;
 
   const res = await fetch(`https://api.clickup.com/api/v2/list/${encodeURIComponent(listId)}/task`, {
@@ -546,8 +542,8 @@ async function clickupCreateSupportTask(env, { description, subject }) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      name: subject || "Support ticket",
       description: description || "",
+      name: subject || "Support ticket",
     }),
   });
 
@@ -678,6 +674,11 @@ function buildCheckoutReturnUrls(request) {
 
 async function paypalCreateOrder({ accessToken, amountUsd, cancel_url, success_url, env, metadata }) {
   const body = {
+    application_context: {
+      cancel_url,
+      return_url: success_url,
+      user_action: "PAY_NOW",
+    },
     intent: "CAPTURE",
     purchase_units: [
       {
@@ -686,15 +687,10 @@ async function paypalCreateOrder({ accessToken, amountUsd, cancel_url, success_u
           value: String(amountUsd),
         },
         custom_id: metadata?.accountId || undefined,
-        invoice_id: metadata?.idempotencyKey || undefined,
         description: metadata?.description || undefined,
+        invoice_id: metadata?.idempotencyKey || undefined,
       },
     ],
-    application_context: {
-      user_action: "PAY_NOW",
-      return_url: success_url,
-      cancel_url: cancel_url,
-    },
   };
 
   const res = await fetch(`${paypalApiBase(env)}/v2/checkout/orders`, {
@@ -768,8 +764,8 @@ async function paypalVerifyWebhookSignature(env, request, webhookEvent) {
     transmission_id: headers.transmission_id,
     transmission_sig: headers.transmission_sig,
     transmission_time: headers.transmission_time,
-    webhook_id: webhookId,
     webhook_event: webhookEvent,
+    webhook_id: webhookId,
   };
 
   const base = String(env.PAYPAL_ENV || "").trim().toLowerCase() === "live"
@@ -792,7 +788,7 @@ async function paypalVerifyWebhookSignature(env, request, webhookEvent) {
 
   const data = await res.json().catch(() => null);
   if (!res.ok) {
-    return { ok: false, reason: "paypal_verify_http_error", detail: { status: res.status, data } };
+    return { ok: false, reason: "paypal_verify_http_error", detail: { data, status: res.status } };
   }
 
   const status = String(data?.verification_status || "").toUpperCase();
@@ -807,7 +803,6 @@ async function paypalApplyCaptureCompleted(env, { event, eventType, orderId }) {
     return { ok: true, ignored: true, reason: "missing_order_id" };
   }
 
-  // Receipt first (durable record)
   const receiptKey = keyReceiptCaptureCompleted(orderId);
   if (await r2Exists(env, receiptKey)) return { ok: true, deduped: true };
 
@@ -831,7 +826,6 @@ async function paypalApplyCaptureCompleted(env, { event, eventType, orderId }) {
 
   const ledgerId = `paypal:capture:${orderId}`;
 
-  // Dedup via ledger primary key
   const inserted = await env.DB.prepare(
     "INSERT INTO token_ledger (id, account_id, delta, reason, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?) " +
       "ON CONFLICT(id) DO NOTHING"
@@ -860,7 +854,7 @@ async function paypalApplyCaptureCompleted(env, { event, eventType, orderId }) {
     tokens,
   });
 
-  return { ok: true, balanceAfter, credited: changes > 0 };
+  return { balanceAfter, credited: changes > 0, ok: true };
 }
 
 async function handleCheckoutSessions(request, env) {
@@ -916,7 +910,6 @@ async function handleCheckoutSessions(request, env) {
 
   const { checkoutUrl, orderId } = created;
   const sessionId = orderId;
-
   const tokens = SKU_TOKEN_COUNTS[item];
 
   await r2PutJson(env, keyOrder(sessionId), {
@@ -1093,17 +1086,15 @@ async function handleHelpTickets(request, env) {
   const body = await parseJson(request);
   if (!body || typeof body !== "object") return badRequest(request, env, "Invalid JSON body");
 
-  // Required (page supplies these)
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
-  const subject = typeof body.subject === "string" ? body.subject.trim() : "";
   const message = typeof body.message === "string" ? body.message.trim() : "";
+  const subject = typeof body.subject === "string" ? body.subject.trim() : "";
 
   if (!email) return badRequest(request, env, "email is required");
   if (!subject) return badRequest(request, env, "subject is required");
   if (!message) return badRequest(request, env, "message is required");
   if (!isValidEmail(email)) return badRequest(request, env, "Invalid email");
 
-  // Optional fields from your page payload
   const category = typeof body.category === "string" ? body.category.trim() : "";
   const eventId = typeof body.eventId === "string" ? body.eventId.trim() : "";
   const issueType = typeof body.issueType === "string" ? body.issueType.trim() : "";
@@ -1113,7 +1104,6 @@ async function handleHelpTickets(request, env) {
   const tokenId = typeof body.tokenId === "string" ? body.tokenId.trim() : "";
   const relatedOrderId = typeof body.relatedOrderId === "string" ? body.relatedOrderId.trim() : "";
 
-  // UTM fields (optional)
   const utm_campaign = typeof body.utm_campaign === "string" ? body.utm_campaign.trim() : "";
   const utm_content = typeof body.utm_content === "string" ? body.utm_content.trim() : "";
   const utm_medium = typeof body.utm_medium === "string" ? body.utm_medium.trim() : "";
@@ -1125,49 +1115,36 @@ async function handleHelpTickets(request, env) {
   const updatedAt = createdAt;
 
   const ticket = {
-    // Canonical ids
-    supportId,
-    ticket_id: supportId,
-
-    // Core
-    email,
-    subject,
-    message,
-    status: "open",
-
-    // Audit timestamps
-    createdAt,
-    updatedAt,
-    latestUpdate: createdAt,
-
-    // Optional metadata from form
     category,
+    clickupTaskId: null,
+    clickupUrl: null,
+    createdAt,
+    email,
     eventId,
     issueType,
+    latestUpdate: createdAt,
+    message,
     name,
     priority,
-    urgency,
-    tokenId,
     relatedOrderId,
-
-    // Optional marketing
+    status: "open",
+    subject,
+    supportId,
+    ticket_id: supportId,
+    tokenId,
+    updatedAt,
+    urgency,
     utm_campaign,
     utm_content,
     utm_medium,
     utm_source,
     utm_term,
-
-    // ClickUp projection
-    clickupTaskId: null,
-    clickupUrl: null,
   };
 
-  // 1) Persist source-of-truth to R2
   await env.R2_TAXTOOLS.put(keySupportTicket(supportId), JSON.stringify(ticket), {
     httpMetadata: { contentType: "application/json" },
   });
 
-  // 2) Best-effort ClickUp projection (do NOT fail the ticket if ClickUp fails)
   try {
     const descriptionLines = [
       `Support ID: ${supportId}`,
@@ -1195,8 +1172,8 @@ async function handleHelpTickets(request, env) {
     ];
 
     const created = await clickupCreateSupportTask(env, {
-      subject,
       description: descriptionLines.join("\n"),
+      subject,
     });
 
     if (created?.taskId) {
@@ -1213,7 +1190,6 @@ async function handleHelpTickets(request, env) {
     // swallow on purpose
   }
 
-  // Page expects supportId/support_id. Give it all three to be safe.
   return json(request, env, { supportId, support_id: supportId, ticket_id: supportId }, 201);
 }
 
@@ -1253,7 +1229,6 @@ async function handleTokensSpend(request, env) {
   const ledgerId = `spend:${auth.accountId}:${idempotencyKey}`;
   const now = nowIso();
 
-  // If already processed, return stored response.
   const existing = await env.DB.prepare("SELECT metadata_json FROM token_ledger WHERE id = ?")
     .bind(ledgerId)
     .first();
@@ -1270,10 +1245,6 @@ async function handleTokensSpend(request, env) {
   }
 
   const grantId = crypto.randomUUID();
-
-  // Run-to-completion gating:
-  // - Active session is defined by endedAt == null.
-  // - We keep a long-lived expiresAt for legacy clients + abandoned-session cleanup.
   const nowMs = Date.now();
   const expiresAtMs = nowMs + PLAY_GRANT_ABANDONED_CUTOFF_MS;
 
@@ -1301,13 +1272,6 @@ async function handleTokensSpend(request, env) {
     },
   };
 
-  // D1 does not allow manual SQL transaction statements (BEGIN/COMMIT/ROLLBACK/SAVEPOINT).
-  // Pattern:
-  // 1) Insert ledger row first (idempotency gate)
-  // 2) Guarded balance decrement
-  // 3) Insert play grant
-  // 4) Persist response into ledger metadata_json
-
   const insertLedger = await env.DB.prepare(
     "INSERT INTO token_ledger (id, account_id, delta, reason, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?) " +
       "ON CONFLICT(id) DO NOTHING"
@@ -1317,7 +1281,6 @@ async function handleTokensSpend(request, env) {
 
   const insertedLedgerChanges = insertLedger?.meta?.changes || 0;
 
-  // If ledger didn't insert, someone already spent with that idempotency key.
   if (insertedLedgerChanges === 0) {
     const again = await env.DB.prepare("SELECT metadata_json FROM token_ledger WHERE id = ?").bind(ledgerId).first();
     const parsed = (() => {
@@ -1339,7 +1302,6 @@ async function handleTokensSpend(request, env) {
 
   const balanceChanges = balanceUpdate?.meta?.changes || 0;
 
-  // If balance update didn't happen, insufficient funds. Compensate by removing ledger row.
   if (balanceChanges === 0) {
     await env.DB.prepare("DELETE FROM token_ledger WHERE id = ?").bind(ledgerId).run();
     const balance = await dbAccountGetBalance(env, auth.accountId);
@@ -1349,7 +1311,6 @@ async function handleTokensSpend(request, env) {
   try {
     const cols = await dbPlayGrantsColumns(env);
 
-    // Insert play grant/session.
     if (cols.has("ended_at")) {
       await env.DB.prepare(
         "INSERT INTO play_grants (grant_id, account_id, slug, created_at, ended_at, result, expires_at, expires_at_ms, spent) " +
@@ -1358,7 +1319,6 @@ async function handleTokensSpend(request, env) {
         .bind(grantId, auth.accountId, slug, grant.createdAt, null, null, grant.expiresAt, grant.expiresAtMs, amount)
         .run();
     } else {
-      // Legacy schema fallback.
       await env.DB.prepare(
         "INSERT INTO play_grants (grant_id, account_id, slug, expires_at, expires_at_ms, spent, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
       )
@@ -1366,7 +1326,6 @@ async function handleTokensSpend(request, env) {
         .run();
     }
   } catch (err) {
-    // Best-effort compensation: refund balance and remove ledger entry.
     await env.DB.prepare("UPDATE accounts SET balance = balance + ?, updated_at = ? WHERE account_id = ?")
       .bind(amount, now, auth.accountId)
       .run();
@@ -1394,7 +1353,7 @@ async function handlePayPalWebhook(request, env) {
   if (request.method !== "POST") return methodNotAllowed(request, env);
 
   const enabled = String(env.PAYPAL_WEBHOOKS_ENABLED || "").trim().toLowerCase() === "true";
-  if (!enabled) return json(request, env, { ok: true, skipped: true, reason: "webhooks_disabled" }, 200);
+  if (!enabled) return json(request, env, { ok: true, reason: "webhooks_disabled", skipped: true }, 200);
 
   const { raw, parsed } = await parseRawJson(request);
   if (!parsed) return badRequest(request, env, "Invalid JSON body");
@@ -1408,15 +1367,15 @@ async function handlePayPalWebhook(request, env) {
       at: nowIso(),
       detail: verified.detail,
       eventType: eventType || null,
-      reason: verified.reason,
       raw: raw || null,
+      reason: verified.reason,
     });
-    return json(request, env, { ok: false, error: "signature_verification_failed" }, 401);
+    return json(request, env, { error: "signature_verification_failed", ok: false }, 401);
   }
 
   if (!eventType) {
     await r2PutJson(env, keyReceiptUnmapped(orderId), { at: nowIso(), event: parsed, reason: "missing_event_type" });
-    return json(request, env, { ok: true, ignored: true }, 200);
+    return json(request, env, { ignored: true, ok: true }, 200);
   }
 
   if (eventType === "CHECKOUT.ORDER.APPROVED") {
@@ -1424,10 +1383,9 @@ async function handlePayPalWebhook(request, env) {
       await r2PutJson(env, keyReceiptApproved(orderId), { at: nowIso(), event: parsed, eventType, orderId });
     } else {
       await r2PutJson(env, keyReceiptUnmapped(orderId), { at: nowIso(), event: parsed, reason: "missing_order_id" });
-      return json(request, env, { ok: true, ignored: true }, 200);
+      return json(request, env, { ignored: true, ok: true }, 200);
     }
 
-    // Option A: capture immediately on APPROVED.
     let capture;
     try {
       capture = await paypalCaptureOrder(env, orderId);
@@ -1438,22 +1396,21 @@ async function handlePayPalWebhook(request, env) {
         eventType,
         orderId,
       });
-      return json(request, env, { ok: true, capture: "failed" }, 200);
+      return json(request, env, { capture: "failed", ok: true }, 200);
     }
 
     const captureStatus = String(capture?.data?.status || "").toUpperCase();
     if (!capture.ok || captureStatus !== "COMPLETED") {
       await r2PutJson(env, keyReceiptCaptureFailed(orderId), {
         at: nowIso(),
-        capture: { ok: capture.ok, status: capture.status, data: capture.data },
+        capture: { data: capture.data, ok: capture.ok, status: capture.status },
         eventType,
         orderId,
         reason: !capture.ok ? "capture_http_error" : "capture_not_completed",
       });
-      return json(request, env, { ok: true, capture: captureStatus || "unknown" }, 200);
+      return json(request, env, { capture: captureStatus || "unknown", ok: true }, 200);
     }
 
-    // Capture is completed: reuse the same credit path as PAYMENT.CAPTURE.COMPLETED.
     await paypalApplyCaptureCompleted(env, {
       event: {
         approvedEvent: parsed,
@@ -1464,7 +1421,7 @@ async function handlePayPalWebhook(request, env) {
       orderId,
     });
 
-    return json(request, env, { ok: true, capture: "COMPLETED" }, 200);
+    return json(request, env, { capture: "COMPLETED", ok: true }, 200);
   }
 
   if (eventType === "PAYMENT.CAPTURE.COMPLETED") {
@@ -1472,7 +1429,7 @@ async function handlePayPalWebhook(request, env) {
     return json(request, env, { ok: true }, 200);
   }
 
-  return json(request, env, { ok: true, ignored: true }, 200);
+  return json(request, env, { ignored: true, ok: true }, 200);
 }
 
 /* ------------------------------------------
@@ -1544,8 +1501,6 @@ async function handleAuthComplete(request, env) {
   }
 
   const redirect = isSafeRedirect(rec.redirect) ? String(rec.redirect).trim() : "/";
-
-  // Reuse existing account id if present, otherwise create one.
   const existingAccountId = getCookie(request, COOKIE_NAMES.accountId);
   const accountId = String(existingAccountId || "").trim() || `acct_${crypto.randomUUID()}`;
 
@@ -1571,8 +1526,7 @@ async function handleAuthComplete(request, env) {
     headers.append("Set-Cookie", c);
   }
 
-  // Browser redirect. Not CORS.
-  return new Response(null, { status: 302, headers });
+  return new Response(null, { headers, status: 302 });
 }
 
 async function handleAuthMe(request, env) {
@@ -1590,10 +1544,99 @@ async function handleAuthLogout(request, env) {
   const sessionId = getCookie(request, COOKIE_NAMES.session);
   if (sessionId) await env.R2_TAXTOOLS.delete(keySession(sessionId));
 
-  // Use the standard JSON helper for body + CORS, then append cookies safely.
   const res = json(request, env, { ok: true }, 200);
   for (const c of clearCookies(cookieDomain(env))) res.headers.append("Set-Cookie", c);
   return res;
+}
+
+/* ------------------------------------------
+ * Dev handlers
+ * ------------------------------------------ */
+
+async function handleDevLogin(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+  if (!isDevEnabled(env)) return forbidden(request, env, "Dev routes are disabled");
+
+  const url = new URL(request.url);
+  const email = String(url.searchParams.get("email") || "").trim().toLowerCase();
+  const redirect = String(url.searchParams.get("redirect") || "/").trim();
+
+  if (!isValidEmail(email)) return badRequest(request, env, "email is required");
+  if (!isSafeRedirect(redirect)) return badRequest(request, env, "Invalid redirect (must be a relative path)");
+
+  const existingAccountId = getCookie(request, COOKIE_NAMES.accountId);
+  const accountId = String(existingAccountId || "").trim() || `acct_${crypto.randomUUID()}`;
+
+  await dbAccountEnsure(env, { accountId, email });
+
+  const sessionId = randomId("sess");
+  const session = {
+    accountId,
+    createdAt: nowIso(),
+    email,
+    expiresAt: asIso(Date.now() + SESSION_TTL_MS),
+    sessionId,
+  };
+
+  await r2PutJson(env, keySession(sessionId), session);
+
+  const appOrigin = String(env.TAXTOOLS_APP_ORIGIN || "https://taxtools.taxmonitor.pro").replace(/\/+$/g, "");
+  const location = `${appOrigin}${redirect}`;
+
+  const headers = new Headers({ Location: location });
+  for (const c of buildSessionCookies({ accountId, cookieDomain: cookieDomain(env), email, sessionId })) {
+    headers.append("Set-Cookie", c);
+  }
+
+  return new Response(null, { headers, status: 302 });
+}
+
+async function handleDevMint(request, env) {
+  if (request.method !== "GET") return methodNotAllowed(request, env);
+  if (!isDevEnabled(env)) return forbidden(request, env, "Dev routes are disabled");
+
+  const auth = await getAuthContext(request, env);
+  if (!auth.isAuthenticated || !auth.accountId) return unauthorized(request, env);
+
+  const url = new URL(request.url);
+  const amount = Number(url.searchParams.get("amount"));
+
+  if (!Number.isInteger(amount) || amount <= 0) {
+    return badRequest(request, env, "amount must be a positive integer");
+  }
+
+  await dbAccountEnsure(env, { accountId: auth.accountId, email: auth.email });
+
+  const now = nowIso();
+  const ledgerId = `dev:mint:${auth.accountId}:${crypto.randomUUID()}`;
+
+  await env.DB.prepare(
+    "INSERT INTO token_ledger (id, account_id, delta, reason, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?)"
+  )
+    .bind(
+      ledgerId,
+      auth.accountId,
+      amount,
+      "dev_mint",
+      JSON.stringify({ amount, mintedAt: now }),
+      now
+    )
+    .run();
+
+  await env.DB.prepare("UPDATE accounts SET balance = balance + ?, updated_at = ? WHERE account_id = ?")
+    .bind(amount, now, auth.accountId)
+    .run();
+
+  const balance = await dbAccountGetBalance(env, auth.accountId);
+
+  return json(request, env, {
+    accountId: auth.accountId,
+    amount,
+    balance,
+    email: auth.email,
+    ledgerId,
+    ok: true,
+  }, 200);
 }
 
 /* ------------------------------------------
@@ -1605,7 +1648,7 @@ export default {
     try {
       const url = new URL(request.url);
 
-      if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: withCors(request, env) });
+      if (request.method === "OPTIONS") return new Response(null, { headers: withCors(request, env), status: 204 });
       if (!env.R2_TAXTOOLS) return json(request, env, { error: "server_misconfigured", message: "Missing R2_TAXTOOLS binding" }, 500);
       if (!env.DB) return json(request, env, { error: "server_misconfigured", message: "Missing D1 binding DB" }, 500);
 
