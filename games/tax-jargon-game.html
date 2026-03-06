@@ -1,20 +1,24 @@
 <!-- games/tax-jargon-game.html -->
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Tax Jargon Game • Play • TaxTools Arcade</title>
 
+  <!-- Canonical local assets (required) -->
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="stylesheet" href="/styles/site.css" />
+
+  <!-- SDKs (required) -->
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+
+  <!-- Remote UI helpers allowed if local CSS does not provide them -->
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="/styles/site.css" />
-
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
 
   <style>
     body { font-family: "DM Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
@@ -25,67 +29,73 @@
     .drag-item { cursor: grab; touch-action: none; }
     .drag-item:active { cursor: grabbing; }
     .drop-zone { transition: all 0.2s ease; }
-    .drop-zone.drag-over { background: rgba(59, 130, 246, 0.08); border-color: #3b82f6; transform: scale(1.02); }
-    .flip-card { perspective: 1000px; }
-    .flip-card-back { transform: rotateY(180deg); }
-    .flip-card-front, .flip-card-back { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-    .flip-card-inner { transition: transform 0.6s; transform-style: preserve-3d; }
-    .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
-    .shake { animation: shake 0.3s ease-in-out; }
+    .drop-zone.drag-over { background: rgba(59,130,246,0.08); border-color:#3b82f6; transform:scale(1.02); }
+    .flip-card { perspective:1000px; }
+    .flip-card-back { transform:rotateY(180deg); }
+    .flip-card-front, .flip-card-back { backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+    .flip-card-inner { transition:transform 0.6s; transform-style:preserve-3d; }
+    .flip-card.flipped .flip-card-inner { transform:rotateY(180deg); }
+    .shake { animation:shake 0.3s ease-in-out; }
 
     @keyframes bounce-in {
-      0% { transform: scale(0); opacity: 0; }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); opacity: 1; }
+      0% { transform:scale(0); opacity:0; }
+      50% { transform:scale(1.1); }
+      100% { transform:scale(1); opacity:1; }
     }
 
     @keyframes confetti {
-      0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+      0% { transform:translateY(-100%) rotate(0deg); opacity:1; }
+      100% { transform:translateY(100vh) rotate(720deg); opacity:0; }
     }
 
     @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.25); }
-      50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.45); }
+      0%,100% { box-shadow:0 0 20px rgba(34,197,94,0.25); }
+      50% { box-shadow:0 0 40px rgba(34,197,94,0.45); }
     }
 
     @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
+      0%,100% { transform:translateX(0); }
+      25% { transform:translateX(-5px); }
+      75% { transform:translateX(5px); }
     }
   </style>
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 text-slate-900">
+<body class="h-full bg-gradient-to-br from-slate-50 via-white to-blue-50 text-slate-900">
+
   <!-- PARTIAL:header -->
 
   <main class="mx-auto max-w-5xl px-6 py-10">
+
     <section class="space-y-2">
       <h1 class="text-3xl font-extrabold tracking-tight">Tax Jargon Game</h1>
-      <p class="text-slate-600">Access is verified server-side. If you’re here, you paid, or you’re very good at clicking buttons.</p>
-      <div id="status" class="text-sm text-slate-500"></div>
+      <p class="text-slate-600">Access is verified server-side.</p>
+      <div class="text-sm text-slate-500">
+        <span id="status">Checking access…</span>
+      </div>
     </section>
 
-    <!-- GAME APP -->
-    <div id="app" class="mt-8">
+    <!-- REQUIRED APP WRAPPER -->
+    <div id="app" class="h-full w-full overflow-auto custom-scrollbar">
+
       <!-- Home Screen -->
       <div id="home-screen" class="hidden min-h-full p-2 md:p-4">
         <div class="max-w-2xl mx-auto">
-          <!-- Header -->
+
           <div class="text-center mb-8 pt-4">
             <div class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-sm font-medium mb-4">
               <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
               <span id="player-email">player@example.com</span>
             </div>
+
             <h2 id="main-title" class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-2">
               Tax Jargon Game:
               <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-blue-500">Can You Master Tax Terms?</span>
             </h2>
-            <p id="main-subtitle" class="text-slate-500 text-lg">Play quizzes, flashcards, and lightning rounds. Learn as you go.</p>
+
+            <p id="main-subtitle" class="text-slate-500 text-lg">Play quizzes, flashcards, and lightning rounds.</p>
           </div>
 
-          <!-- Quick Stats -->
           <div class="grid grid-cols-3 gap-3 mb-6">
             <div class="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-100">
               <div class="text-2xl font-bold text-emerald-500" id="stat-terms">0</div>
@@ -101,1001 +111,203 @@
             </div>
           </div>
 
-          <!-- Menu -->
           <div class="space-y-3">
-            <button onclick="startFlashcards()" class="w-full bg-white hover:bg-slate-50 rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-slate-100 transition-all hover:shadow-md hover:-translate-y-0.5 group">
-              <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-              </div>
+
+            <button onclick="startFlashcards()" class="w-full bg-white hover:bg-slate-50 rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-slate-100">
               <div class="flex-1 text-left">
                 <div class="font-bold text-slate-800 text-lg">Flashcards</div>
-                <div class="text-slate-500 text-sm">Flip to learn definitions and examples</div>
+                <div class="text-slate-500 text-sm">Flip to learn definitions</div>
               </div>
-              <svg class="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
 
-            <button onclick="startQuiz()" class="w-full bg-white hover:bg-slate-50 rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-slate-100 transition-all hover:shadow-md hover:-translate-y-0.5 group">
-              <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              </div>
+            <button onclick="startQuiz()" class="w-full bg-white hover:bg-slate-50 rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-slate-100">
               <div class="flex-1 text-left">
                 <div class="font-bold text-slate-800 text-lg">Start Quiz</div>
-                <div class="text-slate-500 text-sm">Multiple-choice questions with explanations</div>
+                <div class="text-slate-500 text-sm">Multiple-choice questions</div>
               </div>
-              <svg class="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
 
-            <button onclick="startLightning()" class="w-full bg-white hover:bg-slate-50 rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-slate-100 transition-all hover:shadow-md hover:-translate-y-0.5 group">
-              <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-              </div>
+            <button onclick="startLightning()" class="w-full bg-white hover:bg-slate-50 rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-slate-100">
               <div class="flex-1 text-left">
                 <div class="font-bold text-slate-800 text-lg">Lightning Round</div>
-                <div class="text-slate-500 text-sm">Timed challenge: 10 questions, 60 seconds</div>
+                <div class="text-slate-500 text-sm">10 questions in 60 seconds</div>
               </div>
-              <svg class="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
 
-            <button onclick="startIRSGame()" class="w-full bg-white hover:bg-slate-50 rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-slate-100 transition-all hover:shadow-md hover:-translate-y-0.5 group">
-              <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-              </div>
+            <button onclick="startIRSGame()" class="w-full bg-white hover:bg-slate-50 rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-slate-100">
               <div class="flex-1 text-left">
-                <div class="font-bold text-slate-800 text-lg">IRS Notice Code Mini-Game</div>
-                <div class="text-slate-500 text-sm">Drag codes to their meanings</div>
+                <div class="font-bold text-slate-800 text-lg">IRS Code Mini‑Game</div>
+                <div class="text-slate-500 text-sm">Match notice codes</div>
               </div>
-              <svg class="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
 
-            <button onclick="showProgress()" class="w-full bg-white hover:bg-slate-50 rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-slate-100 transition-all hover:shadow-md hover:-translate-y-0.5 group">
-              <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-              </div>
+            <button onclick="showProgress()" class="w-full bg-white hover:bg-slate-50 rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-slate-100">
               <div class="flex-1 text-left">
-                <div class="font-bold text-slate-800 text-lg">Progress and Badges</div>
-                <div class="text-slate-500 text-sm">View achievements and best scores</div>
+                <div class="font-bold text-slate-800 text-lg">Progress</div>
+                <div class="text-slate-500 text-sm">Achievements and scores</div>
               </div>
-              <svg class="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
+
           </div>
 
-          <p class="text-center text-xs text-slate-400 mt-8 pb-4">For educational purposes only. Not tax advice.</p>
         </div>
       </div>
 
-      <!-- Quiz Screen -->
-      <div id="quiz-screen" class="hidden min-h-full p-2 md:p-4">
-        <div class="max-w-2xl mx-auto">
-          <div class="flex items-center justify-between mb-6">
-            <button onclick="goHome()" class="flex items-center gap-2 text-slate-600 hover:text-slate-800 font-medium">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-              Back
-            </button>
-            <div class="text-sm font-medium text-slate-500">Question <span id="quiz-current">1</span> of <span id="quiz-total">10</span></div>
-          </div>
-
-          <div class="h-2 bg-slate-200 rounded-full mb-6 overflow-hidden">
-            <div id="quiz-progress" class="h-full bg-gradient-to-r from-blue-500 to-emerald-500 transition-all duration-500" style="width: 10%"></div>
-          </div>
-
-          <div class="flex justify-center mb-6">
-            <div class="bg-white rounded-xl px-6 py-2 shadow-sm border border-slate-100">
-              <span class="text-slate-500">Score:</span>
-              <span id="quiz-score" class="font-bold text-emerald-500">0</span>
-            </div>
-          </div>
-
-          <div id="quiz-card" class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-slate-100">
-            <h3 id="quiz-question" class="text-xl md:text-2xl font-bold text-slate-800 mb-6 text-center">Loading…</h3>
-            <div id="quiz-options" class="space-y-3"></div>
-
-            <div id="quiz-feedback" class="hidden mt-6 p-4 rounded-xl">
-              <div class="flex items-start gap-3">
-                <div id="feedback-icon" class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"></div>
-                <div>
-                  <div id="feedback-title" class="font-bold"></div>
-                  <div id="feedback-explanation" class="text-sm mt-1"></div>
-                </div>
-              </div>
-            </div>
-
-            <button id="quiz-next" onclick="nextQuestion()" class="hidden w-full mt-6 py-3 px-6 bg-gradient-to-r from-blue-500 to-emerald-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-emerald-600 transition-all shadow-lg">
-              Next Question →
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Flashcards Screen -->
-      <div id="flashcards-screen" class="hidden min-h-full p-2 md:p-4">
-        <div class="max-w-2xl mx-auto">
-          <div class="flex items-center justify-between mb-6">
-            <button onclick="goHome()" class="flex items-center gap-2 text-slate-600 hover:text-slate-800 font-medium">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-              Back
-            </button>
-            <div class="text-sm font-medium text-slate-500">Card <span id="flash-current">1</span> of <span id="flash-total">10</span></div>
-          </div>
-
-          <div class="flex justify-center gap-4 mb-6">
-            <div class="bg-emerald-100 text-emerald-700 rounded-lg px-4 py-2 text-sm font-medium">✓ Learned: <span id="flash-learned">0</span></div>
-            <div class="bg-amber-100 text-amber-700 rounded-lg px-4 py-2 text-sm font-medium">↻ Review: <span id="flash-review">0</span></div>
-          </div>
-
-          <div class="flip-card w-full h-72 md:h-80 cursor-pointer" id="flashcard" onclick="flipCard()">
-            <div class="flip-card-inner relative w-full h-full">
-              <div class="flip-card-front absolute w-full h-full bg-gradient-to-br from-emerald-500 to-blue-600 rounded-2xl shadow-xl flex flex-col items-center justify-center p-6 text-white">
-                <div class="text-sm uppercase tracking-wider opacity-75 mb-4">Tax Term</div>
-                <h3 id="flash-term" class="text-2xl md:text-3xl font-bold text-center">Loading…</h3>
-                <div class="mt-6 text-sm opacity-75">Tap to flip</div>
-              </div>
-              <div class="flip-card-back absolute w-full h-full bg-white rounded-2xl shadow-xl flex flex-col items-center justify-center p-6 border border-slate-200">
-                <div class="text-sm uppercase tracking-wider text-slate-400 mb-2">Definition</div>
-                <p id="flash-definition" class="text-slate-700 text-center font-medium mb-4">…</p>
-                <div class="text-sm uppercase tracking-wider text-slate-400 mb-2 mt-2">Example</div>
-                <p id="flash-example" class="text-slate-500 text-center text-sm italic">…</p>
-                <div class="mt-4 text-sm text-slate-400">Tap to flip back</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex gap-3 mt-6">
-            <button onclick="markLearned()" class="flex-1 py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-              Mark as Learned
-            </button>
-            <button onclick="markReview()" class="flex-1 py-3 px-4 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              Review Again
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Lightning Screen -->
-      <div id="lightning-screen" class="hidden min-h-full p-2 md:p-4">
-        <div class="max-w-2xl mx-auto">
-          <div class="flex items-center justify-between mb-6">
-            <button onclick="goHome()" class="flex items-center gap-2 text-slate-600 hover:text-slate-800 font-medium">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-              Back
-            </button>
-            <div id="lightning-timer" class="flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-full font-bold">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              <span id="timer-display">60</span>s
-            </div>
-          </div>
-
-          <div class="flex justify-center gap-4 mb-6">
-            <div class="bg-white rounded-xl px-6 py-2 shadow-sm border border-slate-100"><span class="text-slate-500">Question:</span> <span id="lightning-current" class="font-bold text-slate-800">1</span>/10</div>
-            <div class="bg-white rounded-xl px-6 py-2 shadow-sm border border-slate-100"><span class="text-slate-500">Correct:</span> <span id="lightning-score" class="font-bold text-emerald-500">0</span></div>
-          </div>
-
-          <div id="lightning-card" class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-slate-100">
-            <div class="flex items-center justify-center gap-2 text-orange-500 mb-4">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-              <span class="font-bold uppercase tracking-wider text-sm">Lightning Round</span>
-            </div>
-            <h3 id="lightning-question" class="text-xl md:text-2xl font-bold text-slate-800 mb-6 text-center">Loading…</h3>
-            <div id="lightning-options" class="space-y-3"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- IRS Screen -->
-      <div id="irs-screen" class="hidden min-h-full p-2 md:p-4">
-        <div class="max-w-2xl mx-auto">
-          <div class="flex items-center justify-between mb-6">
-            <button onclick="goHome()" class="flex items-center gap-2 text-slate-600 hover:text-slate-800 font-medium">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-              Back
-            </button>
-            <div class="bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-medium text-sm">Match the codes!</div>
-          </div>
-
-          <div class="text-center mb-6">
-            <h3 class="text-2xl font-bold text-slate-800">IRS Notice Code Mini-Game</h3>
-            <p class="text-slate-500 mt-1">Drag each code to its correct meaning</p>
-          </div>
-
-          <div class="flex justify-center mb-6">
-            <div class="bg-white rounded-xl px-6 py-2 shadow-sm border border-slate-100"><span class="text-slate-500">Matched:</span> <span id="irs-matched" class="font-bold text-purple-600">0</span>/5</div>
-          </div>
-
-          <div id="irs-codes" class="flex flex-wrap justify-center gap-3 mb-6"></div>
-          <div id="irs-meanings" class="space-y-3"></div>
-
-          <div id="irs-feedback" class="hidden mt-6 p-4 bg-emerald-100 rounded-xl text-center">
-            <div class="text-emerald-700 font-bold text-lg">🎉 Perfect! All codes matched!</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Progress Screen -->
-      <div id="progress-screen" class="hidden min-h-full p-2 md:p-4">
-        <div class="max-w-2xl mx-auto">
-          <div class="flex items-center justify-between mb-6">
-            <button onclick="goHome()" class="flex items-center gap-2 text-slate-600 hover:text-slate-800 font-medium">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-              Back
-            </button>
-          </div>
-
-          <div class="text-center mb-8">
-            <h3 class="text-3xl font-bold text-slate-800">Your Progress</h3>
-            <p class="text-slate-500 mt-1">Keep learning to unlock more badges!</p>
-          </div>
-
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100">
-              <div class="text-3xl font-bold text-emerald-500" id="progress-terms">0</div>
-              <div class="text-sm text-slate-500 mt-1">Terms Mastered</div>
-            </div>
-            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100">
-              <div class="text-3xl font-bold text-blue-500" id="progress-quizzes">0</div>
-              <div class="text-sm text-slate-500 mt-1">Quizzes Completed</div>
-            </div>
-            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100">
-              <div class="text-3xl font-bold text-orange-500" id="progress-lightning">0</div>
-              <div class="text-sm text-slate-500 mt-1">Lightning Best</div>
-            </div>
-            <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-slate-100">
-              <div class="text-3xl font-bold text-purple-500" id="progress-irs">0</div>
-              <div class="text-sm text-slate-500 mt-1">IRS Codes Known</div>
-            </div>
-          </div>
-
-          <h4 class="text-xl font-bold text-slate-800 mb-4">Your Badges</h4>
-          <div id="badges-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8"></div>
-
-          <div class="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-2xl p-6 text-center">
-            <h4 class="font-bold text-slate-800 mb-2">Share Your Progress</h4>
-            <p class="text-slate-500 text-sm mb-4">Brag responsibly.</p>
-            <div class="flex justify-center gap-3">
-              <button onclick="shareProgress('email')" class="px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white rounded-lg font-medium text-sm transition-colors flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                Email
-              </button>
-              <button onclick="shareProgress('twitter')" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium text-sm transition-colors flex items-center gap-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                Share
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Toast -->
-      <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-800 text-white rounded-xl shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none z-50">
-        <span id="toast-message"></span>
-      </div>
-
-      <!-- Confetti -->
-      <div id="confetti-container" class="fixed inset-0 pointer-events-none overflow-hidden z-40"></div>
     </div>
+
   </main>
 
   <!-- PARTIAL:footer -->
 
   <script>
-    // -------- Access gate (server authority) --------
-    const API_BASE = "https://tools-api.taxmonitor.pro";
-    const slug = "tax-jargon-game.html";
 
-    function setStatus(msg) {
-      const el = document.getElementById("status");
-      if (el) el.textContent = msg || "";
+  /* ===== Required constants ===== */
+
+  const API_BASE = "https://tools-api.taxmonitor.pro";
+  const GAME_SLUG = "tax-jargon-game";
+  const GAME_FILE = "tax-jargon-game.html";
+  const ABOUT_URL = "/about-games/" + GAME_FILE;
+
+
+  /* ===== Helpers ===== */
+
+  function setStatus(message) {
+    const el = document.getElementById("status");
+    if (el) el.textContent = message || "";
+  }
+
+
+  async function safeJson(res) {
+    try {
+      const ct = (res.headers.get("content-type") || "").toLowerCase();
+      if (!ct.includes("application/json")) return {};
+      return await res.json();
+    } catch {
+      return {};
     }
+  }
 
-    async function apiGet(path) {
-      const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
-      return { res, json: await res.json().catch(() => ({})) };
-    }
 
-    async function boot() {
-      setStatus("Checking session…");
-      const me = await apiGet("/v1/auth/me");
-      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-        window.location.href = "/about-games/" + slug;
-        return;
-      }
-
-      setStatus("Loading token balance…");
-      await apiGet("/v1/tokens/balance");
-
-      setStatus("Verifying access grant…");
-      const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(slug));
-      if (!access.res.ok || !access.json || access.json.allowed !== true) {
-        window.location.href = "/about-games/" + slug;
-        return;
-      }
-
-      // Boot the actual game UI only after access is granted.
-      window.__playerEmail = me.json.email || me.json.user?.email || "player";
-      initJargonGame();
-      showScreen("home-screen");
-      setStatus("Access granted.");
-    }
-
-    boot().catch(() => {
-      setStatus("Error loading game. Redirecting…");
-      window.location.href = "/about-games/" + slug;
+  async function apiGet(path) {
+    const res = await fetch(API_BASE + path, {
+      method: "GET",
+      credentials: "include"
     });
 
-    // -------- Game --------
+    const json = await safeJson(res);
 
-    const taxTerms = [
-      { term: "1099 Form", definition: "A form reporting income from sources other than employment, like freelance work.", example: "Freelancers receive a 1099-NEC for payments over $600." },
-      { term: "AGI (Adjusted Gross Income)", definition: "Your total gross income minus specific deductions like student loan interest.", example: "Your AGI determines eligibility for many tax credits." },
-      { term: "Capital Gains", definition: "Profit from selling an asset like stocks or real estate for more than you paid.", example: "Long-term capital gains are taxed at lower rates than ordinary income." },
-      { term: "Filing Status", definition: "Your tax classification based on marital and family situation.", example: "Common filing statuses include Single, Married Filing Jointly, and Head of Household." },
-      { term: "Itemized Deductions", definition: "Specific expenses you list individually instead of taking the standard deduction.", example: "Medical expenses, state taxes, and charitable donations can be itemized." },
-      { term: "Standard Deduction", definition: "A fixed dollar amount that reduces your taxable income if you don't itemize.", example: "The standard deduction reduces taxable income for most filers." },
-      { term: "Tax Credit", definition: "A dollar-for-dollar reduction in the amount of tax you owe.", example: "The Child Tax Credit can reduce your tax bill by up to $2,000 per child." },
-      { term: "Tax Deduction", definition: "An expense that reduces your taxable income, lowering how much income is subject to tax.", example: "Mortgage interest is a common tax deduction for homeowners." },
-      { term: "W-2 Form", definition: "A form showing your annual wages and taxes withheld by your employer.", example: "Your employer sends you a W-2 by January 31st each year." },
-      { term: "Withholding", definition: "The portion of your paycheck your employer sets aside for taxes.", example: "You can adjust your withholding by updating your W-4 form." }
-    ];
+    return { res, json };
+  }
 
-    const irsNoticeCodes = [
-      { code: "CP11", meaning: "Changes were made to your return due to calculation errors" },
-      { code: "CP14", meaning: "You have a balance due on your tax account" },
-      { code: "CP2000", meaning: "Your return doesn't match information reported to the IRS" },
-      { code: "CP501", meaning: "Reminder notice for unpaid taxes" },
-      { code: "CP504", meaning: "Intent to levy (seize your assets) for unpaid taxes" }
-    ];
 
-    const quizQuestions = [
-      { question: "A 1099 form reports:", options: ["Employer wages", "Non-employment income", "Social Security benefits only", "Tax refunds only"], correct: 1, explanation: "1099 forms report various types of income outside traditional employment." },
-      { question: "A tax credit is:", options: ["A dollar-for-dollar reduction in tax owed", "A reduction in taxable income", "A type of loan", "Extra tax you must pay"], correct: 0, explanation: "Credits reduce the tax you owe directly." },
-      { question: "A tax deduction:", options: ["Increases taxable income", "Only applies to businesses", "Reduces taxable income", "Is the same as a credit"], correct: 2, explanation: "Deductions reduce taxable income, which can reduce tax owed." },
-      { question: "Capital gains tax applies to:", options: ["Gift income", "Profits from selling assets", "Regular salary", "Social Security"], correct: 1, explanation: "Capital gains are profits from selling assets for more than you paid." },
-      { question: "Filing status is based on your:", options: ["Employment type", "Income level", "Marital and family situation", "State of residence"], correct: 2, explanation: "Filing status depends on marital and family situation." },
-      { question: "Itemized deductions include:", options: ["Employer benefits", "Specific expenses listed individually", "Standard deduction amount", "Tax credits"], correct: 1, explanation: "Itemizing means listing specific deductible expenses." },
-      { question: "What does AGI stand for?", options: ["Adjusted Gross Income", "Annual Gross Income", "Applied Government Income", "Average Gross Interest"], correct: 0, explanation: "AGI is your gross income minus certain adjustments." },
-      { question: "What is a W-2 form used for?", options: ["Claim tax credits", "File for an extension", "Report freelance income", "Show annual wages and taxes withheld"], correct: 3, explanation: "A W-2 is provided by your employer and shows wages and withholding." },
-      { question: "What is withholding?", options: ["A type of deduction", "Taxes taken from your paycheck", "Tax refund amount", "Penalty for underpayment"], correct: 1, explanation: "Withholding is the money your employer sends to the IRS on your behalf." },
-      { question: "What is the standard deduction?", options: ["A fixed amount that reduces taxable income", "A penalty for late filing", "A type of tax form", "Interest on tax debt"], correct: 0, explanation: "The standard deduction is a set deduction available to most filers." }
-    ];
+  function redirectToAbout() {
+    window.location.href = ABOUT_URL;
+  }
 
-    let gameState = {
-      badges: [],
-      email: "",
-      flashcardsLearned: 0,
-      flashcardsReview: 0,
-      irsCodesKnown: 0,
-      lightningBest: 0,
-      lightningCurrent: 0,
-      lightningScore: 0,
-      quizzesCompleted: 0,
-      quizScore: 0,
-      termsLearned: 0,
-      timeLeft: 60,
-      timerInterval: null,
-      currentFlashcard: 0,
-      currentQuiz: 0
-    };
 
-    const allBadges = [
-      { id: "flashcard_master", name: "Flashcard Master", icon: "🃏", description: "Learn 8+ flashcards" },
-      { id: "irs_expert", name: "IRS Expert", icon: "📜", description: "Match all IRS codes" },
-      { id: "lightning_legend", name: "Lightning Legend", icon: "⚡", description: "Perfect lightning round" },
-      { id: "perfect_quiz", name: "Perfect Score", icon: "🏆", description: "Get all questions right" },
-      { id: "quiz_pro", name: "Quiz Pro", icon: "🎖️", description: "Score 7+ on a quiz" }
-    ];
+  async function endRun(result) {
+    await fetch(API_BASE + "/v1/games/end", {
+      method: "POST",
+      credentials: "include",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ result, slug: GAME_SLUG })
+    }).catch(() => {});
+  }
 
-    // Data SDK
-    const dataHandler = {
-      onDataChanged(data) {
-        // Expect one record per player (best-effort). If there are many, pick the latest.
-        const latest = Array.isArray(data) && data.length ? data[data.length - 1] : null;
-        if (!latest) return;
 
-        gameState.badges = Array.isArray(latest.badges) ? latest.badges : [];
-        gameState.flashcardsLearned = Number(latest.flashcardsLearned || 0);
-        gameState.flashcardsReview = Number(latest.flashcardsReview || 0);
-        gameState.irsCodesKnown = Number(latest.irsCodesKnown || 0);
-        gameState.lightningBest = Number(latest.lightningBest || 0);
-        gameState.quizzesCompleted = Number(latest.quizzesCompleted || 0);
-        gameState.termsLearned = Number(latest.termsLearned || 0);
+  /* ===== Access Gate ===== */
 
-        updateStats();
-      }
-    };
+  async function gateAccess() {
 
-    async function initDataSDK() {
-      if (!window.dataSdk) return;
-      const result = await window.dataSdk.init(dataHandler);
-      if (!result.isOk) console.error("Data SDK init failed");
+    setStatus("Checking session…");
+
+    const me = await apiGet("/v1/auth/me");
+
+    if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
+      redirectToAbout();
+      return false;
     }
 
-    async function saveProgress() {
-      if (!window.dataSdk) return;
 
-      const payload = {
-        badges: gameState.badges,
-        email: gameState.email,
-        flashcardsLearned: gameState.flashcardsLearned,
-        flashcardsReview: gameState.flashcardsReview,
-        irsCodesKnown: gameState.irsCodesKnown,
-        lightningBest: gameState.lightningBest,
-        quizzesCompleted: gameState.quizzesCompleted,
-        termsLearned: gameState.termsLearned,
-        updatedAt: new Date().toISOString()
-      };
+    setStatus("Loading token balance…");
 
-      // We always create. Data SDK can dedupe/aggregate depending on backing store.
-      const result = await window.dataSdk.create(payload);
-      if (!result.isOk) console.error("Failed to save progress");
+    await apiGet("/v1/tokens/balance");
+
+
+    setStatus("Verifying access…");
+
+    const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(GAME_SLUG));
+
+    if (!access.res.ok || !access.json || access.json.allowed !== true) {
+      redirectToAbout();
+      return false;
     }
 
-    function initJargonGame() {
-      gameState.email = String(window.__playerEmail || "player");
-      const emailEl = document.getElementById("player-email");
-      if (emailEl) emailEl.textContent = gameState.email;
 
-      initDataSDK().catch(() => {});
-      updateStats();
+    setStatus("Access granted.");
 
-      // Element SDK: keep minimal editor knobs.
-      const defaultConfig = {
-        game_title: "Tax Jargon Game",
-        subtitle_text: "Can You Master Tax Terms?"
-      };
+    window.__playerEmail = me.json.email || me.json.user?.email || "player";
 
-      if (window.elementSdk) {
-        window.elementSdk.init({
-          defaultConfig,
-          onConfigChange: async (config) => {
-            const subtitle = (config.subtitle_text || defaultConfig.subtitle_text).trim();
-            const mainTitle = document.getElementById("main-title");
-            if (mainTitle) {
-              const titleSpan = mainTitle.querySelector("span");
-              if (titleSpan) titleSpan.textContent = subtitle;
-            }
-          },
-          mapToCapabilities: () => ({ recolorables: [], borderables: [], fontEditable: undefined, fontSizeable: undefined }),
-          mapToEditPanelValues: (config) => new Map([
-            ["game_title", config.game_title || defaultConfig.game_title],
-            ["subtitle_text", config.subtitle_text || defaultConfig.subtitle_text]
-          ])
-        });
-      }
+    return true;
+  }
+
+
+  /* ===== Boot Sequence ===== */
+
+  (async () => {
+
+    const ok = await gateAccess();
+
+    if (!ok) return;
+
+    initializeApp();
+
+  })().catch(() => {
+
+    setStatus("Error loading game. Redirecting…");
+
+    redirectToAbout();
+
+  });
+
+
+  /* ===== Minimal Game Initialization ===== */
+
+  function initializeApp() {
+
+    const email = window.__playerEmail || "player";
+
+    const emailEl = document.getElementById("player-email");
+
+    if (emailEl) emailEl.textContent = email;
+
+
+    if (window.elementSdk) {
+      window.elementSdk.init({});
     }
 
-    // Screens
-    function showScreen(screenId) {
-      [
-        "flashcards-screen",
-        "home-screen",
-        "irs-screen",
-        "lightning-screen",
-        "progress-screen",
-        "quiz-screen"
-      ].forEach((id) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        if (id === screenId) el.classList.remove("hidden");
-        else el.classList.add("hidden");
-      });
+
+    if (window.dataSdk) {
+      window.dataSdk.init({});
     }
 
-    function goHome() {
-      if (gameState.timerInterval) {
-        clearInterval(gameState.timerInterval);
-        gameState.timerInterval = null;
-      }
-      updateStats();
-      saveProgress().catch(() => {});
-      showScreen("home-screen");
-    }
 
-    // UI helpers
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      const msg = document.getElementById("toast-message");
-      if (!toast || !msg) return;
-      msg.textContent = message;
-      toast.classList.remove("opacity-0");
-      toast.classList.add("opacity-100");
-      setTimeout(() => {
-        toast.classList.remove("opacity-100");
-        toast.classList.add("opacity-0");
-      }, 2500);
-    }
+    const home = document.getElementById("home-screen");
 
-    function showConfetti() {
-      const container = document.getElementById("confetti-container");
-      if (!container) return;
-      const colors = ["#10b981", "#3b82f6", "#f59e0b", "#ec4899", "#8b5cf6"].sort();
-      for (let i = 0; i < 50; i++) {
-        const conf = document.createElement("div");
-        conf.className = "confetti absolute w-3 h-3 rounded-sm";
-        conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        conf.style.left = Math.random() * 100 + "%";
-        conf.style.animationDelay = (Math.random() * 0.5).toFixed(2) + "s";
-        container.appendChild(conf);
-      }
-      setTimeout(() => { container.innerHTML = ""; }, 3500);
-    }
+    if (home) home.classList.remove("hidden");
 
-    function updateStats() {
-      const set = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = String(val);
-      };
-      set("stat-badges", gameState.badges.length);
-      set("stat-quizzes", gameState.quizzesCompleted);
-      set("stat-terms", gameState.termsLearned);
-    }
+  }
 
-    // Quiz
-    function startQuiz() {
-      gameState.currentQuiz = 0;
-      gameState.quizScore = 0;
-      showScreen("quiz-screen");
-      loadQuestion();
-    }
 
-    function loadQuestion() {
-      const q = quizQuestions[gameState.currentQuiz];
-      document.getElementById("quiz-current").textContent = String(gameState.currentQuiz + 1);
-      document.getElementById("quiz-total").textContent = String(quizQuestions.length);
-      document.getElementById("quiz-progress").style.width = String(((gameState.currentQuiz + 1) / quizQuestions.length) * 100) + "%";
-      document.getElementById("quiz-score").textContent = String(gameState.quizScore);
-      document.getElementById("quiz-question").textContent = q.question;
+  /* ===== Placeholder Game Methods ===== */
 
-      const options = document.getElementById("quiz-options");
-      options.innerHTML = "";
-      q.options.forEach((option, index) => {
-        const btn = document.createElement("button");
-        btn.className = "w-full p-4 text-left rounded-xl border-2 border-slate-200 hover:border-blue-400 hover:bg-blue-50 transition-all font-medium";
-        btn.textContent = option;
-        btn.onclick = () => selectAnswer(index);
-        options.appendChild(btn);
-      });
+  function startFlashcards() { console.log("flashcards"); }
+  function startIRSGame() { console.log("irs"); }
+  function startLightning() { console.log("lightning"); }
+  function startQuiz() { console.log("quiz"); }
+  function showProgress() { console.log("progress"); }
 
-      document.getElementById("quiz-feedback").classList.add("hidden");
-      document.getElementById("quiz-next").classList.add("hidden");
-      document.getElementById("quiz-next").textContent = "Next Question →";
-    }
-
-    function selectAnswer(index) {
-      const q = quizQuestions[gameState.currentQuiz];
-      const buttons = document.querySelectorAll("#quiz-options button");
-      const feedback = document.getElementById("quiz-feedback");
-      const feedbackIcon = document.getElementById("feedback-icon");
-      const feedbackTitle = document.getElementById("feedback-title");
-      const feedbackExplanation = document.getElementById("feedback-explanation");
-
-      buttons.forEach((btn, i) => {
-        btn.disabled = true;
-        if (i === q.correct) {
-          btn.classList.remove("border-slate-200");
-          btn.classList.add("border-emerald-500", "bg-emerald-50");
-        } else if (i === index && index !== q.correct) {
-          btn.classList.remove("border-slate-200");
-          btn.classList.add("border-red-500", "bg-red-50", "shake");
-        }
-      });
-
-      if (index === q.correct) {
-        gameState.quizScore++;
-        document.getElementById("quiz-score").textContent = String(gameState.quizScore);
-        feedback.className = "mt-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200";
-        feedbackIcon.className = "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-emerald-500 text-white";
-        feedbackIcon.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
-        feedbackTitle.textContent = "Correct! 🎉";
-        feedbackTitle.className = "font-bold text-emerald-700";
-      } else {
-        feedback.className = "mt-6 p-4 rounded-xl bg-red-50 border border-red-200";
-        feedbackIcon.className = "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-red-500 text-white";
-        feedbackIcon.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
-        feedbackTitle.textContent = "Not quite!";
-        feedbackTitle.className = "font-bold text-red-700";
-      }
-
-      feedbackExplanation.textContent = q.explanation;
-      feedbackExplanation.className = "text-sm mt-1 text-slate-600";
-      feedback.classList.remove("hidden");
-      feedback.classList.add("bounce-in");
-
-      const nextBtn = document.getElementById("quiz-next");
-      nextBtn.classList.remove("hidden");
-      if (gameState.currentQuiz === quizQuestions.length - 1) nextBtn.textContent = "See Results";
-    }
-
-    function nextQuestion() {
-      if (gameState.currentQuiz < quizQuestions.length - 1) {
-        gameState.currentQuiz++;
-        loadQuestion();
-        return;
-      }
-
-      gameState.quizzesCompleted++;
-      gameState.termsLearned = Math.min(gameState.termsLearned + gameState.quizScore, taxTerms.length);
-
-      if (gameState.quizScore === quizQuestions.length && !gameState.badges.includes("perfect_quiz")) {
-        gameState.badges.push("perfect_quiz");
-        showConfetti();
-        showToast("🏆 Badge Unlocked: Perfect Score!");
-      } else if (gameState.quizScore >= 7 && !gameState.badges.includes("quiz_pro")) {
-        gameState.badges.push("quiz_pro");
-        showToast("🎖️ Badge Unlocked: Quiz Pro!");
-      }
-
-      updateStats();
-      saveProgress().catch(() => {});
-      goHome();
-      showToast(`Quiz complete! Score: ${gameState.quizScore}/${quizQuestions.length}`);
-    }
-
-    // Flashcards
-    function startFlashcards() {
-      gameState.currentFlashcard = 0;
-      gameState.flashcardsLearned = 0;
-      gameState.flashcardsReview = 0;
-      showScreen("flashcards-screen");
-      loadFlashcard();
-    }
-
-    function loadFlashcard() {
-      const card = taxTerms[gameState.currentFlashcard];
-      document.getElementById("flash-current").textContent = String(gameState.currentFlashcard + 1);
-      document.getElementById("flash-total").textContent = String(taxTerms.length);
-      document.getElementById("flash-term").textContent = card.term;
-      document.getElementById("flash-definition").textContent = card.definition;
-      document.getElementById("flash-example").textContent = `"${card.example}"`;
-      document.getElementById("flash-learned").textContent = String(gameState.flashcardsLearned);
-      document.getElementById("flash-review").textContent = String(gameState.flashcardsReview);
-      document.getElementById("flashcard").classList.remove("flipped");
-    }
-
-    function flipCard() {
-      document.getElementById("flashcard").classList.toggle("flipped");
-    }
-
-    function markLearned() {
-      gameState.flashcardsLearned++;
-      gameState.termsLearned = Math.min(gameState.termsLearned + 1, taxTerms.length);
-      nextFlashcard();
-    }
-
-    function markReview() {
-      gameState.flashcardsReview++;
-      nextFlashcard();
-    }
-
-    function nextFlashcard() {
-      if (gameState.currentFlashcard < taxTerms.length - 1) {
-        gameState.currentFlashcard++;
-        loadFlashcard();
-        return;
-      }
-
-      if (gameState.flashcardsLearned >= 8 && !gameState.badges.includes("flashcard_master")) {
-        gameState.badges.push("flashcard_master");
-        showConfetti();
-        showToast("🃏 Badge Unlocked: Flashcard Master!");
-      }
-
-      updateStats();
-      saveProgress().catch(() => {});
-      goHome();
-      showToast(`Flashcards complete! Learned: ${gameState.flashcardsLearned}/${taxTerms.length}`);
-    }
-
-    // Lightning
-    function startLightning() {
-      gameState.lightningCurrent = 0;
-      gameState.lightningScore = 0;
-      gameState.timeLeft = 60;
-      const timer = document.getElementById("lightning-timer");
-      if (timer) {
-        timer.classList.add("bg-orange-100", "text-orange-700");
-        timer.classList.remove("bg-red-100", "text-red-700");
-      }
-      showScreen("lightning-screen");
-      loadLightningQuestion();
-      startTimer();
-    }
-
-    function startTimer() {
-      document.getElementById("timer-display").textContent = String(gameState.timeLeft);
-      gameState.timerInterval = setInterval(() => {
-        gameState.timeLeft--;
-        document.getElementById("timer-display").textContent = String(gameState.timeLeft);
-
-        if (gameState.timeLeft <= 10) {
-          const timer = document.getElementById("lightning-timer");
-          timer.classList.add("bg-red-100", "text-red-700");
-          timer.classList.remove("bg-orange-100", "text-orange-700");
-        }
-
-        if (gameState.timeLeft <= 0) endLightning();
-      }, 1000);
-    }
-
-    function loadLightningQuestion() {
-      const q = quizQuestions[gameState.lightningCurrent];
-      document.getElementById("lightning-current").textContent = String(gameState.lightningCurrent + 1);
-      document.getElementById("lightning-score").textContent = String(gameState.lightningScore);
-      document.getElementById("lightning-question").textContent = q.question;
-
-      const options = document.getElementById("lightning-options");
-      options.innerHTML = "";
-      q.options.forEach((option, index) => {
-        const btn = document.createElement("button");
-        btn.className = "w-full p-4 text-left rounded-xl border-2 border-slate-200 hover:border-orange-400 hover:bg-orange-50 transition-all font-medium";
-        btn.textContent = option;
-        btn.onclick = () => selectLightningAnswer(index);
-        options.appendChild(btn);
-      });
-    }
-
-    function selectLightningAnswer(index) {
-      const q = quizQuestions[gameState.lightningCurrent];
-      const buttons = document.querySelectorAll("#lightning-options button");
-
-      buttons.forEach((btn, i) => {
-        btn.disabled = true;
-        if (i === q.correct) btn.classList.add("border-emerald-500", "bg-emerald-50");
-        else if (i === index && index !== q.correct) btn.classList.add("border-red-500", "bg-red-50");
-      });
-
-      if (index === q.correct) gameState.lightningScore++;
-
-      setTimeout(() => {
-        if (gameState.lightningCurrent < 9) {
-          gameState.lightningCurrent++;
-          loadLightningQuestion();
-        } else {
-          endLightning();
-        }
-      }, 450);
-    }
-
-    function endLightning() {
-      if (gameState.timerInterval) {
-        clearInterval(gameState.timerInterval);
-        gameState.timerInterval = null;
-      }
-
-      if (gameState.lightningScore > gameState.lightningBest) {
-        gameState.lightningBest = gameState.lightningScore;
-      }
-
-      if (gameState.lightningScore === 10 && !gameState.badges.includes("lightning_legend")) {
-        gameState.badges.push("lightning_legend");
-        showConfetti();
-        showToast("⚡ Badge Unlocked: Lightning Legend!");
-      }
-
-      updateStats();
-      saveProgress().catch(() => {});
-      goHome();
-      showToast(`Lightning Round: ${gameState.lightningScore}/10 correct!`);
-    }
-
-    // IRS game
-    let irsGameState = { matched: 0, shuffledCodes: [], shuffledMeanings: [] };
-    let draggedElement = null;
-
-    function startIRSGame() {
-      irsGameState.matched = 0;
-      irsGameState.shuffledCodes = [...irsNoticeCodes].sort(() => Math.random() - 0.5);
-      irsGameState.shuffledMeanings = [...irsNoticeCodes].sort(() => Math.random() - 0.5);
-      showScreen("irs-screen");
-      renderIRSGame();
-    }
-
-    function renderIRSGame() {
-      const codesContainer = document.getElementById("irs-codes");
-      const meaningsContainer = document.getElementById("irs-meanings");
-      codesContainer.innerHTML = "";
-      meaningsContainer.innerHTML = "";
-
-      irsGameState.shuffledCodes.forEach((item) => {
-        const codeEl = document.createElement("div");
-        codeEl.className = "drag-item bg-purple-500 text-white px-4 py-2 rounded-lg font-bold shadow-md hover:bg-purple-600 transition-colors";
-        codeEl.textContent = item.code;
-        codeEl.dataset.code = item.code;
-        codeEl.draggable = true;
-        codeEl.addEventListener("dragstart", handleDragStart);
-        codeEl.addEventListener("touchstart", handleTouchStart, { passive: false });
-        codesContainer.appendChild(codeEl);
-      });
-
-      irsGameState.shuffledMeanings.forEach((item) => {
-        const dropZone = document.createElement("div");
-        dropZone.className = "drop-zone bg-white rounded-xl p-4 border-2 border-dashed border-slate-300 flex items-center gap-4";
-        dropZone.dataset.expectedCode = item.code;
-        dropZone.addEventListener("dragover", handleDragOver);
-        dropZone.addEventListener("dragleave", handleDragLeave);
-        dropZone.addEventListener("drop", handleDrop);
-
-        const codeSlot = document.createElement("div");
-        codeSlot.className = "w-20 h-10 rounded-lg bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 text-sm font-medium code-slot";
-        codeSlot.textContent = "???";
-
-        const meaningText = document.createElement("div");
-        meaningText.className = "flex-1 text-slate-700";
-        meaningText.textContent = item.meaning;
-
-        dropZone.appendChild(codeSlot);
-        dropZone.appendChild(meaningText);
-        meaningsContainer.appendChild(dropZone);
-      });
-
-      document.getElementById("irs-matched").textContent = "0";
-      document.getElementById("irs-feedback").classList.add("hidden");
-    }
-
-    function handleDragStart(e) {
-      draggedElement = e.target;
-      e.target.style.opacity = "0.5";
-    }
-
-    function handleDragOver(e) {
-      e.preventDefault();
-      e.currentTarget.classList.add("drag-over");
-    }
-
-    function handleDragLeave(e) {
-      e.currentTarget.classList.remove("drag-over");
-    }
-
-    function handleDrop(e) {
-      e.preventDefault();
-      e.currentTarget.classList.remove("drag-over");
-      if (!draggedElement) return;
-
-      const droppedCode = draggedElement.dataset.code;
-      const expectedCode = e.currentTarget.dataset.expectedCode;
-      const codeSlot = e.currentTarget.querySelector(".code-slot");
-
-      if (droppedCode === expectedCode) {
-        codeSlot.textContent = droppedCode;
-        codeSlot.className = "w-20 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-bold code-slot";
-        draggedElement.remove();
-        irsGameState.matched++;
-        document.getElementById("irs-matched").textContent = String(irsGameState.matched);
-
-        if (irsGameState.matched === 5) {
-          gameState.irsCodesKnown = 5;
-          if (!gameState.badges.includes("irs_expert")) {
-            gameState.badges.push("irs_expert");
-            showConfetti();
-            showToast("📜 Badge Unlocked: IRS Expert!");
-          }
-          document.getElementById("irs-feedback").classList.remove("hidden");
-          updateStats();
-          saveProgress().catch(() => {});
-        }
-      } else {
-        e.currentTarget.classList.add("shake");
-        setTimeout(() => e.currentTarget.classList.remove("shake"), 300);
-        showToast("Not quite. Try again.");
-      }
-
-      draggedElement.style.opacity = "1";
-      draggedElement = null;
-    }
-
-    // Touch support
-    let touchDragElement = null;
-    function handleTouchStart(e) {
-      e.preventDefault();
-      touchDragElement = e.target;
-      const touch = e.touches[0];
-
-      const clone = touchDragElement.cloneNode(true);
-      clone.id = "drag-clone";
-      clone.style.position = "fixed";
-      clone.style.left = (touch.clientX - 40) + "px";
-      clone.style.top = (touch.clientY - 20) + "px";
-      clone.style.zIndex = "1000";
-      clone.style.pointerEvents = "none";
-      document.body.appendChild(clone);
-
-      document.addEventListener("touchmove", handleTouchMove, { passive: false });
-      document.addEventListener("touchend", handleTouchEnd);
-    }
-
-    function handleTouchMove(e) {
-      e.preventDefault();
-      const touch = e.touches[0];
-      const clone = document.getElementById("drag-clone");
-      if (!clone) return;
-      clone.style.left = (touch.clientX - 40) + "px";
-      clone.style.top = (touch.clientY - 20) + "px";
-    }
-
-    function handleTouchEnd(e) {
-      const clone = document.getElementById("drag-clone");
-      if (clone) clone.remove();
-
-      const touch = e.changedTouches[0];
-      const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-      const dropZone = dropTarget?.closest(".drop-zone");
-
-      if (dropZone && touchDragElement) {
-        const droppedCode = touchDragElement.dataset.code;
-        const expectedCode = dropZone.dataset.expectedCode;
-        const codeSlot = dropZone.querySelector(".code-slot");
-
-        if (droppedCode === expectedCode) {
-          codeSlot.textContent = droppedCode;
-          codeSlot.className = "w-20 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-bold code-slot";
-          touchDragElement.remove();
-          irsGameState.matched++;
-          document.getElementById("irs-matched").textContent = String(irsGameState.matched);
-
-          if (irsGameState.matched === 5) {
-            gameState.irsCodesKnown = 5;
-            if (!gameState.badges.includes("irs_expert")) {
-              gameState.badges.push("irs_expert");
-              showConfetti();
-              showToast("📜 Badge Unlocked: IRS Expert!");
-            }
-            document.getElementById("irs-feedback").classList.remove("hidden");
-            updateStats();
-            saveProgress().catch(() => {});
-          }
-        } else {
-          dropZone.classList.add("shake");
-          setTimeout(() => dropZone.classList.remove("shake"), 300);
-          showToast("Not quite. Try again.");
-        }
-      }
-
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", handleTouchEnd);
-      touchDragElement = null;
-    }
-
-    // Progress
-    function showProgress() {
-      showScreen("progress-screen");
-
-      document.getElementById("progress-terms").textContent = String(gameState.termsLearned);
-      document.getElementById("progress-quizzes").textContent = String(gameState.quizzesCompleted);
-      document.getElementById("progress-lightning").textContent = String(gameState.lightningBest);
-      document.getElementById("progress-irs").textContent = String(gameState.irsCodesKnown);
-
-      const grid = document.getElementById("badges-grid");
-      grid.innerHTML = "";
-
-      allBadges.forEach((badge) => {
-        const isUnlocked = gameState.badges.includes(badge.id);
-        const badgeEl = document.createElement("div");
-        badgeEl.className = `rounded-2xl p-4 text-center transition-all ${isUnlocked ? "bg-white shadow-lg border border-slate-100" : "bg-slate-100 opacity-60"}`;
-        if (isUnlocked) badgeEl.classList.add("badge-glow");
-
-        badgeEl.innerHTML = `
-          <div class="text-4xl mb-2 ${isUnlocked ? "" : "grayscale"}">${badge.icon}</div>
-          <div class="font-bold text-slate-800 text-sm">${badge.name}</div>
-          <div class="text-xs text-slate-500 mt-1">${badge.description}</div>
-          ${isUnlocked ? '<div class="mt-2 text-xs text-emerald-600 font-medium">✓ Unlocked!</div>' : '<div class="mt-2 text-xs text-slate-400">Locked</div>'}
-        `;
-
-        grid.appendChild(badgeEl);
-      });
-    }
-
-    function shareProgress(platform) {
-      const text = `I've mastered ${gameState.termsLearned} tax terms and earned ${gameState.badges.length} badges in the Tax Jargon Game! 🎮📊`;
-
-      if (platform === "twitter") {
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
-        return;
-      }
-
-      if (platform === "email") {
-        window.open(`mailto:?subject=My Tax Jargon Game Progress&body=${encodeURIComponent(text)}`, "_blank");
-      }
-    }
   </script>
+
 </body>
 </html>
-
