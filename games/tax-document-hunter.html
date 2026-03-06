@@ -5,13 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tax Quest: The Document Hunter</title>
+  <meta name="description" content="Play Tax Document Hunter. Access is verified server-side with an active play session.">
 
-  <link rel="icon" href="/assets/favicon.ico">
+  <link rel="icon" href="/assets/favicon.ico" />
   <link rel="stylesheet" href="/styles/site.css" />
 
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,10 +23,10 @@
       theme: {
         extend: {
           colors: {
-            gold: '#fbbf24',
-            neon: '#00ff88',
             darkpurple: '#2d1b4e',
-            gamebg: '#0f172a'
+            gamebg: '#0f172a',
+            gold: '#fbbf24',
+            neon: '#00ff88'
           },
           fontFamily: {
             quest: ['Fredoka', 'system-ui', 'sans-serif'],
@@ -39,40 +40,46 @@
   <style>
     html, body { height: 100%; }
     * { font-family: 'Space Grotesk', system-ui, sans-serif; }
-    body { box-sizing: border-box; background: linear-gradient(135deg, #0f172a 0%, #1a1a3e 50%, #2d1b4e 100%); }
+    html, body { background: linear-gradient(135deg, #0f172a 0%, #1a1a3e 50%, #2d1b4e 100%); color: #fff; }
+    body { box-sizing: border-box; }
 
     .game-card {
       background: rgba(15, 23, 42, 0.8);
       border: 2px solid #fbbf24;
       box-shadow: 0 0 20px rgba(251, 191, 36, 0.2), inset 0 0 20px rgba(0, 255, 136, 0.05);
     }
+
     .glow-text { text-shadow: 0 0 10px #fbbf24, 0 0 20px rgba(251, 191, 36, 0.5); }
     .neon-glow { text-shadow: 0 0 10px #00ff88, 0 0 20px rgba(0, 255, 136, 0.5); }
 
     .btn-collect {
       background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
       border: none;
-      transition: all 0.3s ease;
       font-weight: 700;
+      transition: all 0.3s ease;
     }
+
     .btn-collect:hover {
-      transform: scale(1.05);
       box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+      transform: scale(1.05);
     }
 
     .pulse-glow { animation: pulseGlow 2s infinite; }
+
     @keyframes pulseGlow {
       0%, 100% { box-shadow: 0 0 10px rgba(251, 191, 36, 0.3); }
       50% { box-shadow: 0 0 30px rgba(251, 191, 36, 0.6); }
     }
 
     .document-item { animation: slideIn 0.5s ease-out forwards; }
+
     @keyframes slideIn {
       from { opacity: 0; transform: translateX(-20px); }
       to { opacity: 1; transform: translateX(0); }
     }
 
     .point-pop { animation: pointFloat 1s ease-out forwards; }
+
     @keyframes pointFloat {
       0% { opacity: 1; transform: translateY(0); }
       100% { opacity: 0; transform: translateY(-30px); }
@@ -84,138 +91,199 @@
       -webkit-text-fill-color: transparent;
       font-weight: 700;
     }
+
+    @keyframes pulse-indicator {
+      0%, 100% {
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), inset 0 0 6px rgba(255, 255, 255, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.9), inset 0 0 8px rgba(255, 255, 255, 0.5);
+      }
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+      border: 2px solid rgba(16, 185, 129, 0.35);
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      padding: 12px 20px;
+      transition: all 0.3s ease;
+    }
+
+    .status-badge:hover {
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.15), inset 0 1px 3px rgba(255, 255, 255, 0.15);
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), inset 0 0 6px rgba(255, 255, 255, 0.3);
+      animation: pulse-indicator 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .status-text {
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.3);
+      border-radius: 4px;
+    }
   </style>
 </head>
 
-<body class="h-full overflow-auto">
+<body class="h-full">
   <!-- PARTIAL:header -->
 
-  <div class="w-full min-h-full flex flex-col">
-    <!-- Game Header -->
-    <header class="bg-gradient-to-r from-darkpurple to-purple-900 border-b-4 border-gold sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-20">
-          <div class="flex items-center gap-3">
-            <div class="text-4xl">🎮</div>
-            <div>
-              <h1 id="game-title" class="text-2xl font-bold text-gold glow-text font-quest">TAX QUEST</h1>
-              <p class="text-sm text-neon neon-glow">The Document Hunter</p>
-            </div>
-          </div>
+  <div class="mx-auto max-w-7xl px-4 pt-4 pb-4 flex justify-center sm:px-6 lg:px-8">
+    <div class="status-badge">
+      <span class="status-indicator" aria-hidden="true"></span>
+      <span id="status" class="status-text">Checking access…</span>
+    </div>
+  </div>
 
-          <div class="flex gap-8 items-center">
-            <div class="text-center">
-              <p class="text-xs text-gray-300 uppercase tracking-widest">Total Score</p>
-              <p id="total-score" class="text-3xl font-bold text-gold glow-text">0</p>
-            </div>
-            <div class="text-center">
-              <p class="text-xs text-gray-300 uppercase tracking-widest">Documents Collected</p>
-              <p id="doc-count" class="text-3xl font-bold text-neon neon-glow">0</p>
-            </div>
-            <div class="text-center">
-              <p class="text-xs text-gray-300 uppercase tracking-widest">Current Level</p>
-              <p id="level-display" class="text-3xl font-bold level-badge">ROOKIE</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- Main Game Area -->
-    <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Gate status -->
-      <div class="mb-6">
-        <div id="status" class="text-sm text-gray-300"></div>
-      </div>
-
-      <!-- Quest Description -->
-      <div class="game-card rounded-2xl p-8 mb-8 text-center">
-        <h2 class="text-3xl font-bold text-gold glow-text mb-3">🏆 Your Quest Awaits!</h2>
-        <p class="text-white text-lg mb-4">Hunt down missing tax documents and collect precious points. Choose your documents wisely and unlock amazing rewards!</p>
-        <div class="flex justify-center gap-4 flex-wrap">
-          <span class="bg-gold/20 text-gold px-4 py-2 rounded-lg font-bold">💰 Income: 10 pts</span>
-          <span class="bg-neon/20 text-neon px-4 py-2 rounded-lg font-bold">📋 Deduction: 15 pts</span>
-          <span class="bg-purple-500/20 text-purple-300 px-4 py-2 rounded-lg font-bold">🎯 Rare: 25+ pts</span>
-        </div>
-      </div>
-
-      <div class="grid lg:grid-cols-3 gap-8">
-        <!-- Document Hunter Form -->
-        <div class="lg:col-span-1">
-          <div class="game-card rounded-2xl p-6 sticky top-24">
-            <h3 class="text-xl font-bold text-gold glow-text mb-6 text-center">⚔️ Hunt for Documents</h3>
-            <form id="hunt-form" class="space-y-4">
+  <div id="app" class="h-full w-full overflow-auto custom-scrollbar">
+    <div class="w-full min-h-full flex flex-col">
+      <header class="bg-gradient-to-r from-darkpurple to-purple-900 border-b-4 border-gold sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex items-center justify-between h-20">
+            <div class="flex items-center gap-3">
+              <div class="text-4xl">🎮</div>
               <div>
-                <label class="block text-neon text-sm font-bold mb-2">📄 Document Type</label>
-                <input type="text" id="doc-name" placeholder="e.g., W-2 Form" class="w-full bg-slate-900 border-2 border-gold rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-neon" autocomplete="off">
-              </div>
-              <div>
-                <label class="block text-neon text-sm font-bold mb-2">🏷️ Category</label>
-                <select id="doc-category" class="w-full bg-slate-900 border-2 border-gold rounded-lg px-4 py-2 text-white focus:outline-none focus:border-neon">
-                  <option value="Business">💼 Business</option>
-                  <option value="Charitable">❤️ Charitable</option>
-                  <option value="Deduction">📋 Deduction</option>
-                  <option value="Education">🎓 Education</option>
-                  <option value="Freelance">🎨 Freelance Work</option>
-                  <option value="Housing">🏠 Housing</option>
-                  <option value="Income">💵 Income</option>
-                  <option value="Investment">📈 Investment</option>
-                  <option value="Medical">⚕️ Medical</option>
-                  <option value="Other">❓ Other</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-neon text-sm font-bold mb-2">📅 Tax Year</label>
-                <input type="text" id="doc-year" placeholder="2024" class="w-full bg-slate-900 border-2 border-gold rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-neon" inputmode="numeric" autocomplete="off">
-              </div>
-              <button type="submit" id="hunt-btn" class="w-full btn-collect text-white px-6 py-3 rounded-lg font-bold text-lg">
-                🎯 COLLECT DOCUMENT
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <!-- Trophy Case -->
-        <div class="lg:col-span-2">
-          <div class="game-card rounded-2xl p-6">
-            <h3 class="text-2xl font-bold text-gold glow-text mb-6">🏅 Your Trophy Collection</h3>
-            <div id="documents-list" class="space-y-3 max-h-96 overflow-y-auto pr-2">
-              <div id="empty-quest" class="text-center py-12">
-                <div class="text-5xl mb-4">📦</div>
-                <p class="text-gray-400 font-bold text-lg">No documents collected yet...</p>
-                <p class="text-gray-500">Start hunting on the left! Each document earns you points!</p>
+                <h1 id="game-title" class="text-2xl font-bold text-gold glow-text font-quest">TAX QUEST</h1>
+                <p class="text-sm text-neon neon-glow">The Document Hunter</p>
               </div>
             </div>
-          </div>
 
-          <!-- Achievements -->
-          <div class="game-card rounded-2xl p-6 mt-6">
-            <h3 class="text-xl font-bold text-neon neon-glow mb-4">⭐ Achievement Milestones</h3>
-            <div class="grid grid-cols-3 gap-4">
-              <div class="text-center p-4 bg-slate-900/50 rounded-lg border border-gold/30">
-                <div class="text-3xl mb-2">🥉</div>
-                <p class="text-sm text-gold">BRONZE</p>
-                <p class="text-xs text-gray-400">50 Points</p>
+            <div class="flex gap-8 items-center">
+              <div class="text-center">
+                <p class="text-xs text-gray-300 uppercase tracking-widest">Total Score</p>
+                <p id="total-score" class="text-3xl font-bold text-gold glow-text">0</p>
               </div>
-              <div class="text-center p-4 bg-slate-900/50 rounded-lg border border-gold/30">
-                <div class="text-3xl mb-2">🥈</div>
-                <p class="text-sm text-neon">SILVER</p>
-                <p class="text-xs text-gray-400">150 Points</p>
+              <div class="text-center">
+                <p class="text-xs text-gray-300 uppercase tracking-widest">Current Level</p>
+                <p id="level-display" class="text-3xl font-bold level-badge">ROOKIE</p>
               </div>
-              <div class="text-center p-4 bg-slate-900/50 rounded-lg border border-gold/30">
-                <div class="text-3xl mb-2">🥇</div>
-                <p class="text-sm text-yellow-300">GOLD</p>
-                <p class="text-xs text-gray-400">300 Points</p>
+              <div class="text-center">
+                <p class="text-xs text-gray-300 uppercase tracking-widest">Documents Collected</p>
+                <p id="doc-count" class="text-3xl font-bold text-neon neon-glow">0</p>
               </div>
             </div>
           </div>
         </div>
+      </header>
+
+      <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+        <div class="game-card rounded-2xl p-8 mb-8 text-center">
+          <h2 class="text-3xl font-bold text-gold glow-text mb-3">🏆 Your Quest Awaits!</h2>
+          <p class="text-white text-lg mb-4">Hunt down missing tax documents and collect precious points. Choose your documents wisely and unlock amazing rewards!</p>
+          <div class="flex justify-center gap-4 flex-wrap">
+            <span class="bg-gold/20 text-gold px-4 py-2 rounded-lg font-bold">💰 Income: 10 pts</span>
+            <span class="bg-neon/20 text-neon px-4 py-2 rounded-lg font-bold">📋 Deduction: 15 pts</span>
+            <span class="bg-purple-500/20 text-purple-300 px-4 py-2 rounded-lg font-bold">🎯 Rare: 25+ pts</span>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-1">
+            <div class="game-card rounded-2xl p-6 sticky top-24">
+              <h3 class="text-xl font-bold text-gold glow-text mb-6 text-center">⚔️ Hunt for Documents</h3>
+              <form id="hunt-form" class="space-y-4">
+                <div>
+                  <label class="block text-neon text-sm font-bold mb-2">📄 Document Type</label>
+                  <input type="text" id="doc-name" placeholder="e.g., W-2 Form" class="w-full bg-slate-900 border-2 border-gold rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-neon" autocomplete="off">
+                </div>
+                <div>
+                  <label class="block text-neon text-sm font-bold mb-2">🏷️ Category</label>
+                  <select id="doc-category" class="w-full bg-slate-900 border-2 border-gold rounded-lg px-4 py-2 text-white focus:outline-none focus:border-neon">
+                    <option value="Business">💼 Business</option>
+                    <option value="Charitable">❤️ Charitable</option>
+                    <option value="Deduction">📋 Deduction</option>
+                    <option value="Education">🎓 Education</option>
+                    <option value="Freelance">🎨 Freelance Work</option>
+                    <option value="Housing">🏠 Housing</option>
+                    <option value="Income">💵 Income</option>
+                    <option value="Investment">📈 Investment</option>
+                    <option value="Medical">⚕️ Medical</option>
+                    <option value="Other">❓ Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-neon text-sm font-bold mb-2">📅 Tax Year</label>
+                  <input type="text" id="doc-year" placeholder="2024" class="w-full bg-slate-900 border-2 border-gold rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-neon" inputmode="numeric" autocomplete="off">
+                </div>
+                <button type="submit" id="hunt-btn" class="w-full btn-collect text-white px-6 py-3 rounded-lg font-bold text-lg">
+                  🎯 COLLECT DOCUMENT
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2">
+            <div class="game-card rounded-2xl p-6">
+              <h3 class="text-2xl font-bold text-gold glow-text mb-6">🏅 Your Trophy Collection</h3>
+              <div id="documents-list" class="space-y-3 max-h-96 overflow-y-auto pr-2">
+                <div id="empty-quest" class="text-center py-12">
+                  <div class="text-5xl mb-4">📦</div>
+                  <p class="text-gray-400 font-bold text-lg">No documents collected yet...</p>
+                  <p class="text-gray-500">Start hunting on the left! Each document earns you points!</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="game-card rounded-2xl p-6 mt-6">
+              <h3 class="text-xl font-bold text-neon neon-glow mb-4">⭐ Achievement Milestones</h3>
+              <div class="grid grid-cols-3 gap-4">
+                <div class="text-center p-4 bg-slate-900/50 rounded-lg border border-gold/30">
+                  <div class="text-3xl mb-2">🥉</div>
+                  <p class="text-sm text-gold">BRONZE</p>
+                  <p class="text-xs text-gray-400">50 Points</p>
+                </div>
+                <div class="text-center p-4 bg-slate-900/50 rounded-lg border border-gold/30">
+                  <div class="text-3xl mb-2">🥈</div>
+                  <p class="text-sm text-neon">SILVER</p>
+                  <p class="text-xs text-gray-400">150 Points</p>
+                </div>
+                <div class="text-center p-4 bg-slate-900/50 rounded-lg border border-gold/30">
+                  <div class="text-3xl mb-2">🥇</div>
+                  <p class="text-sm text-yellow-300">GOLD</p>
+                  <p class="text-xs text-gray-400">300 Points</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <div id="toast" class="fixed bottom-6 right-6 bg-gold text-slate-900 px-6 py-4 rounded-xl font-bold flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <span id="toast-message">+10 Points!</span>
       </div>
-    </main>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-6 right-6 bg-gold text-slate-900 px-6 py-4 rounded-xl font-bold flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-      <span id="toast-message">+10 Points!</span>
     </div>
   </div>
 
@@ -223,9 +291,23 @@
 
   <script>
     const API_BASE = "https://tools-api.taxmonitor.pro";
-    const slug = "tax-document-hunter.html";
+    const GAME_SLUG = "tax-document-hunter";
+    const GAME_FILE = "tax-document-hunter.html";
+    const ABOUT_URL = "/about-games/" + GAME_FILE;
 
-    // Game Configuration
+    const defaultConfig = {
+      game_title: 'TAX QUEST',
+      level_name: 'ROOKIE'
+    };
+
+    const levels = [
+      { name: 'EXPERT', minPoints: 150 },
+      { name: 'HUNTER', minPoints: 50 },
+      { name: 'LEGEND', minPoints: 300 },
+      { name: 'ROOKIE', minPoints: 0 },
+      { name: 'TAX MASTER', minPoints: 500 }
+    ].sort((a, b) => a.minPoints - b.minPoints);
+
     const pointValues = {
       Business: 22,
       Charitable: 18,
@@ -239,34 +321,81 @@
       Other: 8
     };
 
-    const levels = [
-      { name: 'ROOKIE', minPoints: 0 },
-      { name: 'HUNTER', minPoints: 50 },
-      { name: 'EXPERT', minPoints: 150 },
-      { name: 'LEGEND', minPoints: 300 },
-      { name: 'TAX MASTER', minPoints: 500 }
-    ];
-
-    // Game State
     let gameState = {
-      totalScore: 0,
+      currentLevel: 'ROOKIE',
       documentsCollected: [],
-      currentLevel: 'ROOKIE'
-    };
-
-    const defaultConfig = {
-      game_title: 'TAX QUEST',
-      level_name: 'ROOKIE'
+      runEnded: false,
+      totalScore: 0
     };
 
     function setStatus(msg) {
-      const el = document.getElementById("status");
-      if (el) el.textContent = msg || "";
+      const el = document.getElementById('status');
+      if (el) el.textContent = msg || '';
+    }
+
+    async function safeJson(res) {
+      try {
+        const ct = (res.headers.get('content-type') || '').toLowerCase();
+        if (!ct.includes('application/json')) return {};
+        return await res.json();
+      } catch {
+        return {};
+      }
     }
 
     async function apiGet(path) {
-      const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
-      return { res, json: await res.json().catch(() => ({})) };
+      const res = await fetch(API_BASE + path, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      const json = await safeJson(res);
+      return { res, json };
+    }
+
+    async function endRun(result) {
+      if (gameState.runEnded) return;
+      gameState.runEnded = true;
+      await fetch(API_BASE + '/v1/games/end', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ result, slug: GAME_SLUG })
+      }).catch(() => {});
+    }
+
+    function redirectToAbout() {
+      window.location.href = ABOUT_URL;
+    }
+
+    async function gateAccess() {
+      setStatus('Checking session…');
+      const me = await apiGet('/v1/auth/me');
+      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
+        redirectToAbout();
+        return false;
+      }
+
+      setStatus('Loading token balance…');
+      await apiGet('/v1/tokens/balance');
+
+      setStatus('Verifying access…');
+      const access = await apiGet('/v1/games/access?slug=' + encodeURIComponent(GAME_SLUG));
+      if (!access.res.ok || !access.json || access.json.allowed !== true) {
+        redirectToAbout();
+        return false;
+      }
+
+      setStatus('Access granted.');
+      return true;
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
     }
 
     function recomputeTotals() {
@@ -276,8 +405,8 @@
       }, 0);
 
       gameState.totalScore = total;
-      document.getElementById('total-score').textContent = String(gameState.totalScore);
       document.getElementById('doc-count').textContent = String((gameState.documentsCollected || []).length);
+      document.getElementById('total-score').textContent = String(gameState.totalScore);
       updateLevel();
     }
 
@@ -294,8 +423,8 @@
     function showToast(points, docName) {
       const toast = document.getElementById('toast');
       const toastMessage = document.getElementById('toast-message');
-      const safeName = (docName || '').toString().trim() || 'Document';
       const p = Number(points) || 0;
+      const safeName = (docName || '').toString().trim() || 'Document';
 
       toastMessage.textContent = p === 0
         ? safeName
@@ -333,8 +462,8 @@
       };
 
       container.innerHTML = gameState.documentsCollected.map((doc, idx) => {
-        const points = Number(doc.points) || pointValues[doc.category] || 8;
         const categoryEmoji = categoryEmojiMap[doc.category] || '📄';
+        const points = Number(doc.points) || pointValues[doc.category] || 8;
         const safeId = String(doc.__backendId || doc.id || '');
 
         return `
@@ -359,23 +488,14 @@
       });
     }
 
-    function escapeHtml(s) {
-      return String(s ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-    }
-
     async function handleHunt(e) {
       e.preventDefault();
 
       const btn = document.getElementById('hunt-btn');
       btn.disabled = true;
 
-      const docName = (document.getElementById('doc-name').value || '').trim();
       const category = document.getElementById('doc-category').value;
+      const docName = (document.getElementById('doc-name').value || '').trim();
       const year = (document.getElementById('doc-year').value || '').trim();
 
       if (!docName) {
@@ -391,18 +511,16 @@
       }
 
       const points = pointValues[category] || 8;
-
       const newDoc = {
-        id: Date.now().toString(),
+        collected_at: new Date().toISOString(),
         document_name: docName,
+        id: Date.now().toString(),
         category: category,
-        year: year,
         points: points,
-        collected_at: new Date().toISOString()
+        year: year
       };
 
       const result = await window.dataSdk.create(newDoc);
-
       if (result.isOk) {
         document.getElementById('hunt-form').reset();
         showToast(points, docName);
@@ -434,15 +552,16 @@
     };
 
     async function initDataSDK() {
+      if (!window.dataSdk) return;
       const result = await window.dataSdk.init(dataHandler);
       if (!result.isOk) {
         console.error('Failed to initialize Data SDK');
       }
     }
 
-    function initElementSDK() {
+    async function initElementSDK() {
       if (!window.elementSdk) return;
-      window.elementSdk.init({
+      await window.elementSdk.init({
         defaultConfig,
         onConfigChange: async (config) => {
           document.getElementById('game-title').textContent = config.game_title || defaultConfig.game_title;
@@ -460,37 +579,26 @@
       });
     }
 
-    function initGame() {
+    function bindEvents() {
       document.getElementById('hunt-form').addEventListener('submit', handleHunt);
-      initElementSDK();
-      initDataSDK();
+      window.addEventListener('beforeunload', () => {
+        void endRun('lost');
+      });
     }
 
-    async function boot() {
-      setStatus('Checking session…');
-      const me = await apiGet('/v1/auth/me');
-      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-        window.location.href = '/about-games/' + slug;
-        return;
-      }
-
-      setStatus('Loading token balance…');
-      await apiGet('/v1/tokens/balance');
-
-      setStatus('Verifying access grant…');
-      const access = await apiGet('/v1/games/access?slug=' + encodeURIComponent(slug));
-      if (!access.res.ok || !access.json || access.json.allowed !== true) {
-        window.location.href = '/about-games/' + slug;
-        return;
-      }
-
-      setStatus('Access granted.');
-      initGame();
+    async function initializeApp() {
+      await initElementSDK();
+      await initDataSDK();
+      bindEvents();
     }
 
-    boot().catch(() => {
+    (async () => {
+      const ok = await gateAccess();
+      if (!ok) return;
+      await initializeApp();
+    })().catch(() => {
       setStatus('Error loading game. Redirecting…');
-      window.location.href = '/about-games/' + slug;
+      redirectToAbout();
     });
   </script>
 </body>
