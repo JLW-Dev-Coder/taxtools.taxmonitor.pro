@@ -7,14 +7,12 @@
   <title>Tax Deadline Master • TaxTools</title>
   <meta name="description" content="Learn the major IRS and federal tax deadlines through a fast, replayable 10-question challenge with scoring and streaks." />
 
-  <link rel="icon" href="/assets/favicon.ico" sizes="any" />
-  <link rel="shortcut icon" href="/assets/favicon.ico" />
-
+  <link rel="icon" href="/assets/favicon.ico" />
   <link rel="stylesheet" href="/styles/site.css" />
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -52,7 +50,6 @@
     .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
     .btn-shadow { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); }
 
-    /* Hero right-panel animation (subtle, game-y, no emojis) */
     .hero-panel { animation: hero-float 4.5s ease-in-out infinite; transform-origin: center; }
     @keyframes hero-float {
       0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 18px 28px rgba(0,0,0,0.25)); }
@@ -79,7 +76,6 @@
       50% { opacity: 0.5; }
     }
 
-    /* Demo: match game look (scoped) */
     .demo-font-display { font-family: 'Fredoka One', cursive; }
     .demo-font-body { font-family: 'Nunito', system-ui, sans-serif; }
 
@@ -119,25 +115,22 @@
   </style>
 </head>
 
-<body class="h-full bg-white text-charcoal overflow-auto">
-  <div id="app" class="w-full min-h-full">
+<body class="h-full bg-white text-charcoal overflow-hidden font-dm">
+  <div id="app" class="h-full w-full overflow-auto custom-scrollbar">
 
     <!-- PARTIAL:header -->
 
-    <!-- Hero -->
     <section class="gradient-hero text-white py-16 lg:py-24">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
-
-          <!-- Content -->
           <div class="text-center lg:text-left">
             <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
               <span class="w-2 h-2 bg-accent rounded-full pulse-ring"></span>
               <span class="text-sm font-medium">Interactive Game • Instant Access</span>
             </div>
 
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Tax Deadline Master</h1>
-            <p class="text-xl md:text-2xl text-blue-100 mb-8">A 10-question challenge to help you remember major IRS and federal tax deadlines with scoring and streaks.</p>
+            <h1 id="gameTitle" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Tax Deadline Master</h1>
+            <p id="gameSubtitle" class="text-xl md:text-2xl text-blue-100 mb-8">A 10-question challenge to help you remember major IRS and federal tax deadlines with scoring and streaks.</p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <button id="btnUnlock" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105">
@@ -150,14 +143,12 @@
 
             <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
               <p class="text-blue-200 text-sm">✓ Educational only • ✓ Cookie session • ✓ Token-gated unlock</p>
-              <span id="status" class="text-blue-200 text-sm"></span>
+              <div id="status"></div>
             </div>
           </div>
 
-          <!-- Hero Right Panel -->
           <div class="relative flex justify-center lg:justify-end">
             <div class="relative w-full max-w-md">
-
               <div class="hero-panel relative rounded-3xl p-5 card-shadow border border-white/10" style="background: linear-gradient(135deg, rgba(15,39,71,0.88) 0%, rgba(29,78,216,0.78) 55%, rgba(16,185,129,0.78) 100%);">
                 <div class="flex items-center justify-between mb-5">
                   <div>
@@ -245,24 +236,20 @@
                 </div>
               </div>
 
-              <!-- Corner chips -->
               <div class="absolute -top-3 -right-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(249,115,22,0.95)">
                 <p class="text-white text-sm font-bold">8 tokens</p>
                 <p class="text-white/90 text-xs">per play</p>
               </div>
               <div class="absolute -bottom-3 -left-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(29,78,216,0.95)">
-                <p class="text-white text-sm font-bold">60 min</p>
-                <p class="text-white/90 text-xs">grant window</p>
+                <p class="text-white text-sm font-bold">Run to</p>
+                <p class="text-white/90 text-xs">completion</p>
               </div>
-
             </div>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- What You’ll Learn -->
     <section id="what-youll-learn" class="py-16 lg:py-24 bg-surface">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
@@ -292,11 +279,9 @@
       </div>
     </section>
 
-    <!-- Demo / Preview -->
     <section id="preview" class="py-16 lg:py-24 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
-
           <div class="order-2 lg:order-1">
             <div class="bg-gray-50 rounded-3xl p-6 md:p-8">
               <div class="bg-white rounded-2xl card-shadow overflow-hidden">
@@ -352,7 +337,7 @@
           <div class="order-1 lg:order-2 text-center lg:text-left">
             <span class="text-primary font-semibold text-sm uppercase tracking-wide">Preview</span>
             <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Try two real prompts</h2>
-            <p class="text-muted text-lg mb-6">Demo mode stays limited and never spends tokens. Full gameplay unlocks only after the server confirms a valid spend.</p>
+            <p class="text-muted text-lg mb-6">Demo mode stays limited and never spends tokens. Full gameplay unlocks only after the Worker confirms a valid spend.</p>
 
             <ul class="space-y-4 mb-8">
               <li class="flex items-center gap-3 justify-center lg:justify-start">
@@ -389,18 +374,16 @@
               Try Demo
             </button>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- How It Works -->
     <section id="how-it-works" class="py-16 lg:py-24 bg-navy text-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
           <span class="text-primary font-semibold text-sm uppercase tracking-wide">Simple Setup</span>
           <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">How It Works</h2>
-          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. Minimal drama.</p>
+          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. Minimal drama. The Worker does the gate, not wishful thinking.</p>
         </div>
 
         <div class="grid md:grid-cols-3 gap-8">
@@ -413,7 +396,7 @@
               </svg>
             </div>
             <h3 class="text-xl font-bold mb-3">Sign in</h3>
-            <p class="text-blue-200">Sign in to your TaxTools account to access your game tokens securely.</p>
+            <p class="text-blue-200">Cookie session required so tokens and play access attach to your account.</p>
           </div>
 
           <div class="text-center">
@@ -423,8 +406,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 class="text-xl font-bold mb-3">Confirm token use</h3>
-            <p class="text-blue-200">We confirm you have enough tokens and deduct the game cost.</p>
+            <h3 class="text-xl font-bold mb-3">Confirm spend</h3>
+            <p class="text-blue-200">You approve the spend first. No auto-charge nonsense.</p>
           </div>
 
           <div class="text-center">
@@ -435,14 +418,13 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 class="text-xl font-bold mb-3">Start the game</h3>
-            <p class="text-blue-200">You’re taken straight into the 10-round challenge.</p>
+            <h3 class="text-xl font-bold mb-3">Play</h3>
+            <p class="text-blue-200">You’re redirected into the game once access is granted.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FAQ -->
     <section id="faq" class="py-16 lg:py-24 bg-white">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
@@ -467,7 +449,7 @@
               <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
             <div class="faq-content hidden px-6 pb-6">
-              <p class="text-muted">When you confirm, we verify your balance and create a time-limited play grant for this game so reloading doesn’t charge you twice during the grant window.</p>
+              <p class="text-muted">When you confirm, the Worker verifies your balance and creates an active play session for this game so reloading doesn’t charge you twice while the session is active.</p>
             </div>
           </div>
 
@@ -487,7 +469,7 @@
               <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
             <div class="faq-content hidden px-6 pb-6">
-              <p class="text-muted">Tokens and play grants are tied to your account, and we use a cookie session to verify access.</p>
+              <p class="text-muted">Tokens and play grants are tied to your account, and the Worker uses a cookie session to verify access.</p>
             </div>
           </div>
 
@@ -504,7 +486,6 @@
       </div>
     </section>
 
-    <!-- Trust + Disclaimers -->
     <section class="py-16 bg-surface">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white rounded-3xl card-shadow p-8">
@@ -527,11 +508,10 @@
       </div>
     </section>
 
-    <!-- Final CTA -->
     <section class="py-16 lg:py-24 gradient-hero text-white">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to play?</h2>
-        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend confirmed by the server. Active grants prevent duplicate charges during the play window.</p>
+        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend verified by the Worker.</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <button id="btnUnlock2" class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -543,7 +523,7 @@
         </div>
         <div class="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm rounded-full px-6 py-3">
           <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-          <span class="text-sm font-medium">Tokens don’t expire. Grants prevent duplicate charges during active play.</span>
+          <span class="text-sm font-medium">Tokens don’t expire. Sessions prevent double-spend during active play.</span>
         </div>
       </div>
     </section>
@@ -552,7 +532,6 @@
 
   </div>
 
-  <!-- Confirm Spend Modal -->
   <div id="confirmModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/60" data-confirm-close="1"></div>
 
@@ -569,7 +548,7 @@
 
       <div class="flex-1 overflow-auto p-6">
         <div class="bg-green-50 border border-green-200 rounded-2xl p-4">
-          <p class="text-green-900 text-sm"><strong>Grant behavior:</strong> This spend creates a time-limited play grant so reloads don’t charge you again during the grant window.</p>
+          <p class="text-green-900 text-sm"><strong>Session behavior:</strong> This spend creates an active play session that stays valid until you complete or lose, so reloads don’t charge you again while the session is active.</p>
         </div>
 
         <div class="mt-5 grid md:grid-cols-2 gap-4">
@@ -595,12 +574,10 @@
     </div>
   </div>
 
-  <!-- Demo Modal (limited to 2 questions, styled like game) -->
   <div id="demoModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/70" data-demo-close="1"></div>
 
     <div class="absolute inset-4 md:inset-10 lg:inset-16 rounded-3xl overflow-hidden flex flex-col border border-white/10" style="background: linear-gradient(135deg, rgba(30,58,95,0.97) 0%, rgba(59,130,246,0.97) 50%, rgba(16,185,129,0.97) 100%);">
-
       <div class="flex items-center justify-between px-6 py-4 border-b border-white/10" style="background: rgba(255,255,255,0.06)">
         <div>
           <p class="demo-font-body text-blue-100 text-sm">Demo mode</p>
@@ -613,7 +590,6 @@
 
       <div class="flex-1 overflow-auto p-4 md:p-8 demo-font-body">
         <div class="max-w-6xl mx-auto">
-
           <div id="demo-loading" class="hidden h-full w-full flex items-center justify-center">
             <div class="text-center">
               <div class="w-16 h-16 border-4 border-blue-200 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
@@ -738,7 +714,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -750,14 +725,24 @@
 
   <script>
     const API_BASE = "https://tools-api.taxmonitor.pro";
-
-    // Canonical: slug does NOT include .html
-    const slug = "tax-deadline-master";
+    const gameFile = "tax-deadline-master.html";
+    const gameSlug = "tax-deadline-master";
     const tokenCost = 8;
 
     function setStatus(msg) {
       const el = document.getElementById("status");
-      if (el) el.textContent = msg || "";
+      if (el) {
+        el.className = "text-blue-200 text-sm";
+        el.textContent = msg || "";
+      }
+    }
+
+    function setStatusHtml(html) {
+      const el = document.getElementById("status");
+      if (el) {
+        el.className = "text-blue-200 text-sm";
+        el.innerHTML = html || "";
+      }
     }
 
     function toggleFaq(button) {
@@ -806,13 +791,23 @@
       return { res, json: await res.json().catch(() => ({})) };
     }
 
+    async function beginLogin() {
+      setStatus("Starting sign-in…");
+      const started = await apiPost("/v1/auth/start", { returnTo: window.location.href });
+      const redirectUrl = started?.json?.redirectUrl || started?.json?.url || "";
+      if (started.res.ok && redirectUrl) {
+        window.location.href = redirectUrl;
+        return;
+      }
+      window.location.href = "/index.html";
+    }
+
     async function preflightUnlock() {
       setStatus("Checking session…");
 
       const me = await apiGet("/v1/auth/me");
       if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-        setStatus("Please sign in to continue.");
-        window.location.href = "/index.html";
+        await beginLogin();
         return;
       }
 
@@ -825,8 +820,7 @@
       }
 
       if (balance < tokenCost) {
-        setStatus("Not enough tokens. Purchase a pack to continue.");
-        window.location.href = "/index.html#pricing";
+        setStatusHtml('Not enough tokens. <a class="underline" href="/index.html#pricing">Buy more tokens</a>.');
         return;
       }
 
@@ -834,36 +828,17 @@
       showConfirmModal();
     }
 
-    let spendInFlight = false;
-
     async function confirmSpendAndRedirect() {
-      if (spendInFlight) return;
-      spendInFlight = true;
-
-      const btn = document.getElementById("btnConfirmSpend");
-      const originalText = btn ? btn.textContent : "";
-      if (btn) {
-        btn.disabled = true;
-        btn.classList.add('opacity-70', 'cursor-not-allowed');
-        btn.textContent = "Confirming…";
-      }
-
       setStatus("Confirming token spend…");
 
       const spend = await apiPost("/v1/tokens/spend", {
         amount: tokenCost,
         idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
         reason: "arcade_play",
-        slug
+        slug: gameSlug
       });
 
       if (!spend.res.ok) {
-        spendInFlight = false;
-        if (btn) {
-          btn.disabled = false;
-          btn.classList.remove('opacity-70', 'cursor-not-allowed');
-          btn.textContent = originalText;
-        }
         hideConfirmModal();
         setStatus("Spend failed. Please try again.");
         return;
@@ -871,7 +846,7 @@
 
       hideConfirmModal();
       setStatus("Unlocked. Redirecting…");
-      window.location.href = "/games/" + slug + ".html";
+      window.location.href = "/games/" + gameFile;
     }
 
     function scrollToPreview() {
@@ -880,7 +855,6 @@
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Demo modal: EXACTLY 2 questions from the real game page
     const demoQuestions = [
       {
         type: 'Multiple Choice',
@@ -891,7 +865,7 @@
       },
       {
         type: 'Multiple Choice',
-        question: "What's the estimated tax payment deadline for Q1?",
+        question: "What’s the estimated tax payment deadline for Q1?",
         options: ['April 15', 'January 15', 'March 15', 'February 15'],
         correct: 0,
         explanation: 'Q1 estimated tax payments are due April 15.'
@@ -1129,9 +1103,77 @@
       document.getElementById("btnCancelSpend")?.addEventListener("click", hideConfirmModal);
     }
 
+    function setUnlockMode(mode) {
+      const btns = [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean);
+      const labels = {
+        locked: `Unlock & Play (${tokenCost} tokens)`,
+        resume: 'Resume Play'
+      };
+
+      btns.forEach((b) => {
+        b.innerHTML = labels[mode] || labels.locked;
+        b.dataset.mode = mode;
+      });
+    }
+
+    async function refreshGrantStatus() {
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok) {
+        setUnlockMode('locked');
+        setStatus("");
+        return { allowed: false };
+      }
+
+      const access = await apiGet(`/v1/games/access?slug=${encodeURIComponent(gameSlug)}`);
+      const allowed = !!(access.res.ok && access.json && access.json.allowed);
+
+      if (allowed) {
+        setUnlockMode('resume');
+        setStatus('Active session detected. You can resume without spending tokens.');
+        return { allowed: true };
+      }
+
+      setUnlockMode('locked');
+      setStatus('');
+      return { allowed: false };
+    }
+
+    function resumePlay() {
+      window.location.href = "/games/" + gameFile;
+    }
+
+    function wireUnlockButtons() {
+      const btn1 = document.getElementById("btnUnlock");
+      const btn2 = document.getElementById("btnUnlock2");
+
+      [btn1, btn2].filter(Boolean).forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+
+          const st = await refreshGrantStatus();
+          if (st.allowed) {
+            resumePlay();
+            return;
+          }
+
+          preflightUnlock();
+        });
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById("btnUnlock")?.addEventListener("click", preflightUnlock);
-      document.getElementById("btnUnlock2")?.addEventListener("click", preflightUnlock);
+      window.elementSdk?.init?.({
+        elements: {
+          gameSubtitle: { type: 'text' },
+          gameTitle: { type: 'text' }
+        },
+        page: {
+          slug: 'about-games/tax-deadline-master'
+        }
+      });
+
+      refreshGrantStatus();
+      wireUnlockButtons();
 
       document.getElementById("btnDemo")?.addEventListener("click", (e) => {
         e.preventDefault();
@@ -1155,6 +1197,10 @@
 
       wireConfirmModal();
       wireDemoModal();
+    });
+
+    window.addEventListener('pageshow', () => {
+      refreshGrantStatus();
     });
   </script>
 </body>
