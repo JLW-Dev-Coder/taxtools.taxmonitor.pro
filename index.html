@@ -503,6 +503,7 @@
       authMe: `${TOOLS_API_BASE}/v1/auth/me`,
       checkoutCreate: `${TOOLS_API_BASE}/v1/checkout/sessions`,
       checkoutStatus: `${TOOLS_API_BASE}/v1/checkout/status`,
+      gamesAccess: `${TOOLS_API_BASE}/v1/games/access`,
       tokensBalance: `${TOOLS_API_BASE}/v1/tokens/balance`
     };
 
@@ -526,7 +527,6 @@
       icon && icon.classList.toggle('rotate-180');
     }
 
-    // Mobile menu toggle (requires your header partial to provide these IDs)
     document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
       document.getElementById('mobile-menu')?.classList.toggle('hidden');
     });
@@ -538,15 +538,12 @@
         return;
       }
 
-      // FIX: redirect to login instead of just toasting.
       if (!isSignedIn || !userEmail) {
         const next = `${location.pathname}${location.hash || '#token-packs'}`;
         location.href = `/login.html?redirect=${encodeURIComponent(next)}`;
         return;
       }
 
-      // Contract: POST /v1/checkout/sessions { email, item, quantity }
-      // Frontend must never send Stripe price_ IDs.
       const payload = {
         email: userEmail,
         item: sku,
@@ -573,7 +570,7 @@
             try {
               sessionStorage.setItem(TM_LAST_CHECKOUT_SESSION_ID_KEY, String(data.sessionId));
             } catch {
-              // Non-fatal. If storage fails, user can still manually verify status.
+              // Non-fatal.
             }
           }
           location.href = data.checkoutUrl;
@@ -586,16 +583,83 @@
       }
     }
 
-    // Token + auth
     function setTokenBalance(balance) {
       tokenBalance = Number.isFinite(balance) ? balance : 0;
 
-      // Header partial should include #token-balance.
       const headerEl = document.getElementById('token-balance');
       if (headerEl) headerEl.textContent = String(tokenBalance);
 
       const inlineEl = document.getElementById('token-balance-inline');
       if (inlineEl) inlineEl.textContent = String(tokenBalance);
+    }
+
+    function resetGameResumeStates() {
+      document.querySelectorAll('.tool-card[data-game-file]').forEach((card) => {
+        card.classList.remove('ring-2', 'ring-action/20');
+
+        const badge = card.querySelector('[data-resume-badge]');
+        if (badge) badge.remove();
+
+        const cta = card.querySelector('[data-cta-row] a:last-child');
+        if (!cta) return;
+
+        cta.textContent = 'Buy tokens';
+        cta.setAttribute('href', '#token-packs');
+        cta.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+        cta.classList.add('bg-action', 'hover:bg-blue-700', 'text-white');
+      });
+    }
+
+    function applyGameResumeState(card, slug, expiresAt) {
+      if (!card) return;
+
+      card.classList.add('ring-2', 'ring-action/20');
+
+      const costBadge = card.querySelector('.text-xs.font-semibold');
+      if (costBadge && !card.querySelector('[data-resume-badge]')) {
+        const resumeBadge = document.createElement('span');
+        resumeBadge.setAttribute('data-resume-badge', 'true');
+        resumeBadge.className = 'text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-lg';
+        resumeBadge.textContent = 'Resume play';
+        costBadge.parentNode.appendChild(resumeBadge);
+      }
+
+      const cta = card.querySelector('[data-cta-row] a:last-child');
+      if (!cta) return;
+
+      cta.textContent = 'Resume play';
+      cta.setAttribute('href', `/games/${slug}`);
+      cta.classList.remove('bg-action', 'hover:bg-blue-700');
+      cta.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
+
+      if (expiresAt) {
+        cta.setAttribute('title', `Resume available until ${expiresAt}`);
+      }
+    }
+
+    async function refreshGameResumeStates() {
+      resetGameResumeStates();
+
+      if (!isSignedIn) return;
+
+      const cards = Array.from(document.querySelectorAll('.tool-card[data-game-file]'));
+      await Promise.all(cards.map(async (card) => {
+        const slug = (card.getAttribute('data-game-file') || '').trim();
+        if (!slug) return;
+
+        try {
+          const res = await fetch(
+            `${TOOLS_API_ENDPOINTS.gamesAccess}?slug=${encodeURIComponent(slug)}`,
+            { credentials: 'include' }
+          );
+          const data = await res.json().catch(() => ({}));
+          if (res.ok && data?.allowed) {
+            applyGameResumeState(card, slug, data?.expiresAt || '');
+          }
+        } catch {
+          // Best-effort.
+        }
+      }));
     }
 
     async function refreshAuthAndBalance() {
@@ -606,12 +670,12 @@
         isSignedIn = !!(meData?.accountId || meData?.email);
         userEmail = meData?.email || null;
 
-        // Header partial can optionally show email in #user-email.
         const emailEl = document.getElementById('user-email');
         if (emailEl) emailEl.textContent = userEmail || '';
 
         if (!isSignedIn) {
           setTokenBalance(0);
+          resetGameResumeStates();
           return;
         }
 
@@ -620,12 +684,55 @@
         setTokenBalance(Number(balData?.balance || 0));
       } catch {
         isSignedIn = false;
-        userEmail = null;
-        setTokenBalance(0);
+      userEmail = null;
+      resetGameResumeStates();
+      setTokenBalance(0);
       }
     }
 
-    // Header partial hook-ups (optional)
+    async function pollCheckoutAndRefreshBalance(sessionId) {
+      const maxAttempts = 10;
+      const delayMs = 1500;
+
+      for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+        let statusData = null;
+
+        try {
+          const statusRes = await fetch(
+            `${TOOLS_API_ENDPOINTS.checkoutStatus}?session_id=${encodeURIComponent(sessionId)}`,
+            { credentials: 'include' }
+          );
+          statusData = await statusRes.json().catch(() => ({}));
+        } catch {
+          statusData = null;
+        }
+
+        if (statusData?.status === 'complete' || statusData?.paymentStatus === 'paid') {
+          if (typeof statusData.balance === 'number') {
+            setTokenBalance(Number(statusData.balance || 0));
+          } else {
+            await refreshAuthAndBalance();
+          }
+
+          try {
+            sessionStorage.removeItem(TM_LAST_CHECKOUT_SESSION_ID_KEY);
+          } catch {
+            // Non-fatal.
+          }
+
+          showToast('Payment complete. Balance refreshed.');
+          return;
+        }
+
+        if (attempt < maxAttempts) {
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
+        }
+      }
+
+      await refreshAuthAndBalance();
+      showToast('Payment recorded check finished. Balance may update in a moment.');
+    }
+
     document.getElementById('signin-btn')?.addEventListener('click', () => {
       location.href = '/login.html';
     });
@@ -637,7 +744,7 @@
           credentials: 'include'
         });
       } catch {
-        // Best-effort. If logout fails, we still clear UI state.
+        // Best-effort.
       }
 
       isSignedIn = false;
@@ -646,13 +753,8 @@
       showToast('Signed out.');
     });
 
-    // Init
     (async () => {
       const url = new URL(location.href);
-
-      const paypalStatus = url.searchParams.get('paypal');
-
-      // FIX: PayPal sometimes returns only PayerID (no token). We store sessionId before redirecting.
       const storedSessionId = (() => {
         try {
           return sessionStorage.getItem(TM_LAST_CHECKOUT_SESSION_ID_KEY) || '';
@@ -661,46 +763,24 @@
         }
       })();
 
-      // PayPal returns token=ORDERID, Worker accepts it as alias to session_id.
-      // Also allow storedSessionId when paypal=success but token is missing.
       const sessionId =
         url.searchParams.get('session_id') ||
         url.searchParams.get('token') ||
-        (paypalStatus === 'success' ? storedSessionId : '');
+        storedSessionId;
 
-      // If we just returned from checkout, confirm status then refresh balance.
+      await refreshAuthAndBalance();
+      await refreshGameResumeStates();
+
       if (sessionId) {
-        try {
-          await fetch(`${TOOLS_API_ENDPOINTS.checkoutStatus}?session_id=${encodeURIComponent(sessionId)}`, {
-            credentials: 'include'
-          });
-          showToast('Payment status checked. Refreshing balance...');
-        } catch {
-          showToast('Could not verify checkout status.');
-        }
-
-        // Clean the URL so refreshes don’t keep re-checking.
         url.searchParams.delete('paypal');
         url.searchParams.delete('session_id');
         url.searchParams.delete('token');
         history.replaceState({}, document.title, url.toString());
 
-        try {
-          sessionStorage.removeItem(TM_LAST_CHECKOUT_SESSION_ID_KEY);
-        } catch {
-          // Non-fatal.
-        }
-      }
-
-      await refreshAuthAndBalance();
-
-      if (sessionId) {
-        showToast('Balance refreshed.');
+        await pollCheckoutAndRefreshBalance(sessionId);
       }
     })();
 
-    // Safety: Stripe Checkout Session URLs (checkout.stripe.com/c/pay/...) are single-use/short-lived.
-    // If someone accidentally pastes one into the page, block it so we don't ship a broken buy flow.
     document.querySelectorAll('a[href^="https://checkout.stripe.com/"]').forEach((a) => {
       a.setAttribute('href', '#token-packs');
       a.addEventListener('click', (e) => {
@@ -709,7 +789,6 @@
       });
     });
 
-    // Toast
     function showToast(message) {
       const toast = document.getElementById('toast');
       const msg = document.getElementById('toast-message');
