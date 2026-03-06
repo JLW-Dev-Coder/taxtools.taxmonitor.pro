@@ -610,8 +610,11 @@
       });
     }
 
-    function applyGameResumeState(card, slug, expiresAt) {
+    function applyGameResumeState(card, gameFile, expiresAt) {
       if (!card) return;
+
+      const slug = String(gameFile || '').replace(/\.html$/i, '');
+      if (!slug) return;
 
       card.classList.add('ring-2', 'ring-action/20');
 
@@ -628,7 +631,7 @@
       if (!cta) return;
 
       cta.textContent = 'Resume play';
-      cta.setAttribute('href', `/games/${slug}`);
+      cta.setAttribute('href', `/games/${gameFile}`);
       cta.classList.remove('bg-action', 'hover:bg-blue-700');
       cta.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
 
@@ -644,17 +647,18 @@
 
       const cards = Array.from(document.querySelectorAll('.tool-card[data-game-file]'));
       await Promise.all(cards.map(async (card) => {
-        const slug = (card.getAttribute('data-game-file') || '').trim();
-        if (!slug) return;
+        const gameFile = (card.getAttribute('data-game-file') || '').trim();
+        const gameSlug = gameFile.replace(/\.html$/i, '');
+        if (!gameSlug) return;
 
         try {
           const res = await fetch(
-            `${TOOLS_API_ENDPOINTS.gamesAccess}?slug=${encodeURIComponent(slug)}`,
+            `${TOOLS_API_ENDPOINTS.gamesAccess}?slug=${encodeURIComponent(gameSlug)}`,
             { credentials: 'include' }
           );
           const data = await res.json().catch(() => ({}));
           if (res.ok && data?.allowed) {
-            applyGameResumeState(card, slug, data?.expiresAt || '');
+            applyGameResumeState(card, gameFile, data?.expiresAt || '');
           }
         } catch {
           // Best-effort.
@@ -749,6 +753,7 @@
 
       isSignedIn = false;
       userEmail = null;
+      resetGameResumeStates();
       setTokenBalance(0);
       showToast('Signed out.');
     });
