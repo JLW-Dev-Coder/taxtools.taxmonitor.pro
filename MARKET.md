@@ -2,7 +2,7 @@
 
 ## Offer
 
-$1 interactive taxpayer tools (instant access) with a clear upsell path to higher-touch help on https://taxmonitor.pro.
+Token-based interactive taxpayer tools (instant access) with a clear upsell path to higher-touch help on https://taxmonitor.pro.
 
 ## Audience
 
