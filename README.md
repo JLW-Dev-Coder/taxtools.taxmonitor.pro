@@ -1,314 +1,189 @@
-# Tax Tools Tax Monitor Pro (TTTMP)
+# Tax Tools Arcade (TTTMP)
 
-## Table of Contents
+# Table of Contents
 
-* [1. Overview](#1-overview)
-* [2. Key Features](#2-key-features)
-* [3. Architecture Overview](#3-architecture-overview)
-* [4. Ecosystem Integration](#4-ecosystem-integration)
-* [5. Repository Structure](#5-repository-structure)
-* [6. Environment Setup](#6-environment-setup)
-* [7. Deployment](#7-deployment)
-* [8. Contracts or Data Model](#8-contracts-or-data-model)
-* [9. Development Standards](#9-development-standards)
-* [10. Integrations](#10-integrations)
-* [11. Security and Secrets](#11-security-and-secrets)
-* [12. Contribution Guidelines](#12-contribution-guidelines)
-* [13. License](#13-license)
-
----
-
-# 1. Overview
-
-Tax Tools Arcade is the **interactive tool layer** of the tax professional ecosystem.
-
-It provides browser-based tools designed to:
-
-* educate taxpayers
-* diagnose tax situations
-* generate discovery traffic
-* consume purchased tool tokens
-* connect taxpayers to professionals in the directory
-
-The platform intentionally sits **before professional engagement**, allowing taxpayers to explore tools while creating demand for professional services.
-
-The system operates using **Cloudflare Workers**, **R2 canonical storage**, and **contract-driven APIs**.
-
-This repository contains the application logic, front-end tool interfaces, and Worker routes required to execute tools and record usage events.
+* [Overview](#overview-1)
+* [Key Features](#key-features-1)
+* [Architecture Overview](#architecture-overview-1)
+* [Ecosystem Role](#ecosystem-role-1)
+* [Worker Routes](#worker-routes-1)
+* [Canonical Storage](#canonical-storage-1)
+* [Repository Structure](#repository-structure-1)
+* [Environment Setup](#environment-setup-1)
+* [Deployment](#deployment-1)
+* [Contracts or Data Model](#contracts-or-data-model-1)
+* [Development Standards](#development-standards-1)
+* [Integrations](#integrations-1)
+* [Security and Secrets](#security-and-secrets-1)
+* [Contribution Guidelines](#contribution-guidelines-1)
+* [License](#license-1)
 
 ---
 
-# 2. Key Features
+# Overview
 
-Major capabilities include:
+Tax Tools Arcade provides **interactive tax education tools** designed to generate discovery traffic and guide users toward diagnostic services and professional engagement.
 
-* browser-based tax diagnostic tools
-* contract-driven tool execution APIs
+The platform acts as the **top of the ecosystem funnel**.
+
+---
+
+# Key Features
+
+Capabilities include:
+
+* interactive tax tools
+* tax diagnostic utilities
+* token-based tool execution
 * tool session tracking
-* token consumption for tool usage
-* canonical tool usage storage
-* integration with professional discovery
-
-Tools are designed to remain **educational and diagnostic**, not advisory.
-
-This preserves compliance while still generating professional demand.
+* tool usage analytics
+* educational tax resources
 
 ---
 
-# 3. Architecture Overview
+# Architecture Overview
 
-The platform uses a **worker-centric architecture** running at the edge.
-
-Core principles:
-
-* canonical records stored in R2
-* stateless API Workers
-* contract validation before writes
-* token verification before tool execution
-
-Major system components include:
+The system runs on:
 
 * Cloudflare Workers
-* R2 object storage
-* static tool interfaces
-* token verification APIs
-* ecosystem discovery integrations
+* R2 canonical storage
+* D1 query indexes
+* static frontend applications
 
-Workers handle execution, validation, and storage while the front-end remains static.
-
-This architecture supports **low latency, high scalability, and strict contract enforcement**.
+Tools are executed through a token-based access system.
 
 ---
 
-# 4. Ecosystem Integration
+# Ecosystem Role
 
-Tax Tools Arcade operates as part of a four-platform ecosystem.
+Tax Tools Arcade generates discovery traffic and early user engagement.
 
-Platforms and roles (alphabetical):
-
-| Platform               | Role                                         |
-| ---------------------- | -------------------------------------------- |
-| Tax Monitor Pro        | professional discovery and taxpayer matching |
-| Tax Tools Arcade       | taxpayer education and discovery traffic     |
-| Transcript Tax Monitor | transcript diagnostics                       |
-| Virtual Launch Pro     | professional infrastructure                  |
-
-Discovery flow:
+Flow:
 
 ```
 Tax Tools Arcade
-→ Transcript Tax Monitor
-→ Tax Monitor Pro
-→ Virtual Launch Pro
+→ attracts users
+
+Transcript Tax Monitor
+→ provides transcript diagnostics
+
+Tax Monitor Pro
+→ connects users with professionals
+
+Virtual Launch Pro
+→ manages professional infrastructure
 ```
-
-This structure allows:
-
-* educational discovery
-* diagnostic insight
-* professional connection
-* infrastructure support
-
-The tools intentionally act as the **entry point for taxpayers**.
 
 ---
 
-# 5. Repository Structure
+# Worker Routes
 
-Typical directory layout:
+Tool execution
 
 ```
-/app
-/assets
-/contracts
-/pages
-/partials
-/site
-/workers
+POST /v1/tools/{tool_slug}/run
 ```
 
-Descriptions:
+Tool sessions
 
-| Directory    | Purpose                              |
-| ------------ | ------------------------------------ |
-| `/app`       | authenticated application interfaces |
-| `/assets`    | shared visual resources              |
-| `/contracts` | JSON API contracts                   |
-| `/pages`     | onboarding and workflow pages        |
-| `/partials`  | reusable UI components               |
-| `/site`      | public marketing pages               |
-| `/workers`   | Cloudflare Worker APIs               |
+```
+GET  /v1/tool-sessions/{session_id}
+POST /v1/tool-sessions
+```
 
-Each tool interface typically lives in `/site` or `/pages` while execution occurs through Worker routes.
+Token verification
 
-Repository layout follows the canonical README structure defined for platform repositories .
+```
+GET /vlp/v1/tokens/{account_id}/tools
+```
 
 ---
 
-# 6. Environment Setup
-
-Required software:
-
-* Git
-* Node.js
-* Wrangler CLI
-
-Setup steps:
-
-1. Clone the repository
-2. Install dependencies
-3. Configure environment variables
-4. Run local development server
-
-Example commands:
-
-```
-git clone <repository>
-cd repo
-npm install
-wrangler dev
-```
-
-Workers can be tested locally using Wrangler.
-
----
-
-# 7. Deployment
-
-Deployment occurs through **Cloudflare Workers**.
-
-Typical deployment command:
-
-```
-wrangler deploy
-```
-
-Configuration is defined in `wrangler.toml`.
-
-Deployment includes:
-
-* Worker API routes
-* R2 bindings
-* environment variables
-* compatibility configuration
-
-Workers are deployed globally to the Cloudflare edge network.
-
----
-
-# 8. Contracts or Data Model
-
-Tax Tools Arcade uses **contract-driven APIs**.
-
-Contracts define how tool execution requests are validated and processed.
-
-Typical pipeline:
-
-1. tool request received
-2. contract validation
-3. token verification
-4. canonical record written to R2
-5. usage event recorded
-6. response returned
-
-Example canonical storage:
+# Canonical Storage
 
 ```
 /r2/tool_sessions/{session_id}.json
 /r2/tool_usage/{event_id}.json
 ```
 
-These records support:
+---
 
-* analytics
-* token tracking
-* usage auditing
+# Repository Structure
 
-The contract-driven model ensures consistency across all ecosystem services.
+```
+/games
+/site
+/assets
+/partials
+/workers
+```
 
 ---
 
-# 9. Development Standards
+# Environment Setup
 
-Development standards follow the canonical repository rules.
+Required tools:
 
-Key principles:
-
-* alphabetical route documentation
-* canonical Worker comment headers
-* contract-first API design
-* deny-by-default routing
-* minimal Worker edits for safety
-
-Workers should always list inbound routes and invariants using the canonical header format .
-
-Section dividers inside Worker files follow the standardized format.
+* Git
+* Node.js
+* Wrangler
 
 ---
 
-# 10. Integrations
+# Deployment
 
-Primary integrations include:
+```
+wrangler deploy
+```
 
-* Cloudflare infrastructure
-* Stripe payments
+---
+
+# Contracts or Data Model
+
+All tool executions must follow defined API contracts.
+
+Contracts validate:
+
+* tool inputs
+* token access
+* session identifiers
+
+---
+
+# Development Standards
+
+Standards include:
+
+* contract-driven APIs
+* canonical Worker headers
+* R2-first writes
+
+---
+
+# Integrations
+
+Integrations include:
+
 * Virtual Launch Pro token APIs
-
-Token verification occurs through the VLP token system.
-
-Example token verification request:
-
-```
-GET /vlp/v1/tokens/{account_id}/tools
-```
-
-This ensures tools only execute when valid tokens are available.
+* Cloudflare infrastructure
 
 ---
 
-# 11. Security and Secrets
+# Security and Secrets
 
-Secrets must never be committed to the repository.
-
-Sensitive values are stored using Wrangler secret management.
-
-Examples include:
-
-* API tokens
-* OAuth secrets
-* Stripe webhook secrets
-
-Secrets are configured using:
-
-```
-wrangler secret put <NAME>
-```
-
-Workers access secrets through environment bindings.
+Secrets handled through Wrangler secret management.
 
 ---
 
-# 12. Contribution Guidelines
+# Contribution Guidelines
 
-Recommended workflow:
-
-1. create branch
-2. implement changes
-3. test locally
-4. submit pull request
-
-All changes must preserve:
-
-* contract compatibility
-* Worker route stability
-* canonical storage structure
-
-Breaking API changes should always be versioned.
+Standard Git workflow.
 
 ---
 
-# 13. License
+# License
 
-This repository is proprietary software owned and maintained by the Virtual Launch Pro platform.
+Proprietary.
 
-Unauthorized redistribution or modification is not permitted.
+---
+
