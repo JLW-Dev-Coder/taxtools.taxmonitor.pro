@@ -1,9 +1,5 @@
 # Tax Tools Tax Monitor Pro (TTTMP)
 
-Interactive tax education and diagnostic tools that operate inside the Tax Monitor ecosystem.
-
-TTTMP aka Tax Tools Arcade provides browser-based tools that help taxpayers understand their tax situations before engaging a professional. The tools generate discovery traffic, consume tokens, and connect users to professionals through the ecosystem platforms.
-
 ---
 
 # Table of Contents
