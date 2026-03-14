@@ -1,7 +1,5 @@
 # Tax Tools Tax Monitor Pro (TTTMP)
 
----
-
 # Table of Contents
 
 * [1. Overview](#1-overview)
