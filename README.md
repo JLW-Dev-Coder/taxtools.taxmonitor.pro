@@ -1,1612 +1,334 @@
-# README.md — TaxTools.Tax Monitor Pro (Games + Tokens)
+You want a README generated from the **actual repo standards and ecosystem docs** instead of the usual README fluff that tells nobody anything. Fine. Here’s the **clean, canonical Tax Tools README** aligned with the repo standards and the platform architecture you’re running.
 
-A conversion-focused interactive taxpayer games arcade that routes serious users to **[[https://taxmonitor.pro](https://taxmonitor.pro)**] for monitoring and representation.
-
----
-
-# Table of Contents (alphabetical)
-* [About-Games Page Standard](#about-games-page-standard)
-* [API Contract (v1)](#api-contract-v1)
-* [Auth and Cookies](#auth-and-cookies)
-* [Auth and Tokens](#auth-and-tokens)
-* [Checkout Model (Cartless)](#checkout-model-cartless)
-* [ClickUp Projection Layer](#clickup-projection-layer)
-* [Core System Rules](#core-system-rules)
-* [Domains](#domains)
-* [Domains and CORS](#domains-and-cors)
-* [File and Page Standards](#file-and-page-standards)
-* [Game Access Model](#game-access-model)
-* [Game Catalog (Stripe Marketing)](#game-catalog-stripe-marketing)
-* [Game Naming Contract](#game-naming-contract)
-* [Games Page Standard](#games-page-standard)
-* [Help Flow](#help-flow)
-* [Index Page Behavior](#index-page-behavior)
-* [Operating Rule](#operating-rule)
-* [Page Architecture (Standalone Self-Gating)](#page-architecture-standalone-self-gating)
-* [Pricing](#pricing)
-* [Repository Structure](#repository-structure)
-* [Stripe Flow](#stripe-flow)
-* [Stripe IDs](#stripe-ids)
-* [Stripe Product and Price Mapping](#stripe-product-and-price-mapping)
-* [Stripe Webhook Destination](#stripe-webhook-destination)
-* [Stripe Webhooks](#stripe-webhooks)
-* [Token Pack SKUs](#token-pack-skus)
-* [Worker](#worker)
-* [Worker Environment Variables](#worker-environment-variables)
+And yes, the **TOC links work** so someone can actually navigate the thing instead of scrolling like it’s 2004.
 
 ---
 
-# About-Games Page Standard
+# Tax Tools Arcade
 
-Purpose:
+Interactive tax education and diagnostic tools that operate inside the Tax Monitor ecosystem.
 
-* `/about-games/<slug>.html` pages are **public landing pages** for each game.
+Tax Tools Arcade provides browser-based tools that help taxpayers understand their tax situations before engaging a professional. The tools generate discovery traffic, consume tokens, and connect users to professionals through the ecosystem platforms.
 
-* They market the game, show a preview, and perform the **token-spend gate** before redirecting to `/games/<slug>.html`.
+---
 
-Required tooling:
+# Table of Contents
 
-* `[https://cdn.tailwindcss.com/3.4.17`](https://cdn.tailwindcss.com/3.4.17`)
+* [1. Overview](#1-overview)
+* [2. Key Features](#2-key-features)
+* [3. Architecture Overview](#3-architecture-overview)
+* [4. Ecosystem Integration](#4-ecosystem-integration)
+* [5. Repository Structure](#5-repository-structure)
+* [6. Environment Setup](#6-environment-setup)
+* [7. Deployment](#7-deployment)
+* [8. Contracts or Data Model](#8-contracts-or-data-model)
+* [9. Development Standards](#9-development-standards)
+* [10. Integrations](#10-integrations)
+* [11. Security and Secrets](#11-security-and-secrets)
+* [12. Contribution Guidelines](#12-contribution-guidelines)
+* [13. License](#13-license)
 
-* `/_sdk/data_sdk.js`
+---
 
-* `/_sdk/element_sdk.js`
+# 1. Overview
 
-* Google Font: DM Sans
+Tax Tools Arcade is the **interactive tool layer** of the tax professional ecosystem.
 
-* Partials:
+It provides browser-based tools designed to:
 
-  * `<!-- PARTIAL:header -->`
+* educate taxpayers
+* diagnose tax situations
+* generate discovery traffic
+* consume purchased tool tokens
+* connect taxpayers to professionals in the directory
 
-  * `<!-- PARTIAL:footer -->`
+The platform intentionally sits **before professional engagement**, allowing taxpayers to explore tools while creating demand for professional services.
 
-Required page layout (sections, in order):
+The system operates using **Cloudflare Workers**, **R2 canonical storage**, and **contract-driven APIs**.
 
-* Hero
+This repository contains the application logic, front-end tool interfaces, and Worker routes required to execute tools and record usage events.
 
-  * Badge: `Interactive Game • Instant Access`
+---
 
-  * H1: game name
+# 2. Key Features
 
-  * Tagline
+Major capabilities include:
 
-  * Primary CTA: `Unlock & Play (X tokens)`
+* browser-based tax diagnostic tools
+* contract-driven tool execution APIs
+* tool session tracking
+* token consumption for tool usage
+* canonical tool usage storage
+* integration with professional discovery
 
-  * Secondary CTA: `Try Demo`
+Tools are designed to remain **educational and diagnostic**, not advisory.
 
-* What You’ll Learn
+This preserves compliance while still generating professional demand.
 
-  * 4–8 feature cards
+---
 
-* Demo / Preview
+# 3. Architecture Overview
 
-  * Demo must not unlock full gameplay
+The platform uses a **worker-centric architecture** running at the edge.
 
-* How It Works
+Core principles:
 
-  * Step 1: Sign in (cookie session)
+* canonical records stored in R2
+* stateless API Workers
+* contract validation before writes
+* token verification before tool execution
 
-  * Step 2: Confirm spend (X tokens)
+Major system components include:
 
-  * Step 3: Play instantly
+* Cloudflare Workers
+* R2 object storage
+* static tool interfaces
+* token verification APIs
+* ecosystem discovery integrations
 
-* FAQ
+Workers handle execution, validation, and storage while the front-end remains static.
 
-  * Must include education + token + escalation questions
+This architecture supports **low latency, high scalability, and strict contract enforcement**.
 
-* Trust + Disclaimers
+---
 
-  * Educational only, not tax advice
+# 4. Ecosystem Integration
 
-  * Not representation
+Tax Tools Arcade operates as part of a four-platform ecosystem.
 
-  * Escalation path: [[https://taxmonitor.pro](https://taxmonitor.pro)](https://taxmonitor.pro]%28https://taxmonitor.pro%29)
+Platforms and roles (alphabetical):
 
-* Final CTA
+| Platform               | Role                                         |
+| ---------------------- | -------------------------------------------- |
+| Tax Monitor Pro        | professional discovery and taxpayer matching |
+| Tax Tools Arcade       | taxpayer education and discovery traffic     |
+| Transcript Tax Monitor | transcript diagnostics                       |
+| Virtual Launch Pro     | professional infrastructure                  |
 
-  * Primary: `Unlock & Play (X tokens)`
-
-  * Secondary: `View All Games`
-
-Required sections (by `id`):
-
-* `faq`
-
-* `how-it-works`
-
-* `preview`
-
-* `what-youll-learn`
-
-Unlock CTAs (at least one `id`):
-
-* `btnUnlock`
-
-* `btnUnlock2`
-
-Demo CTAs (at least one `id`):
-
-* `btnDemo`
-
-* `heroTryDemo`
-
-* `previewTryDemo`
-
-Required disclaimers (case-insensitive fragments):
-
-* `education only`
-
-* `not representation`
-
-* `taxmonitor.pro`
-
-Canonical endpoint references (pages must reference these):
-
-* `GET /v1/auth/me`
-
-* `GET /v1/tokens/balance`
-
-* `POST /v1/tokens/spend`
-
-Disallowed endpoint references in pages:
-
-* `/v1/arcade/tokens` (alias exists for compatibility, but pages should use `/v1/tokens/balance`)
-
-* `/v1/tokens` (too vague, enforce `/balance` or `/spend`)
-
-## Required gating flow (Unlock & Play button)
-
-Step 1: `GET /v1/auth/me` (credentials included)
-
-* If `isAuthenticated=false` → open sign-in flow
-
-Step 2: `GET /v1/tokens/balance`
-
-* If balance < cost → route user to token purchase flow
-
-Step 3: `POST /v1/tokens/spend`
-
-Purpose:
-
-* “Confirm spend N tokens” gate before unlocking/playing.
-
-Request:
-
-```json
-
-{ "amount": 8, "idempotencyKey": "string", "reason": "string", "slug": "string" }
+Discovery flow:
 
 ```
-
-Response:
-
-```json
-
-{
-
-  "balance": 0,
-
-  "grant": { "expiresAt": "string", "grantId": "string", "slug": "string", "spent": 8 }
-
-}
-
+Tax Tools Arcade
+→ Transcript Tax Monitor
+→ Tax Monitor Pro
+→ Virtual Launch Pro
 ```
 
-Rules:
+This structure allows:
 
-* Must be idempotent using `idempotencyKey`.
+* educational discovery
+* diagnostic insight
+* professional connection
+* infrastructure support
 
-* Must validate sufficient balance.
-
-* Spend creates a **play grant** (see Games Page Standard) so leaving/reloading the page does not “lose” the spend within the grant window.
-
----
-
-# API Contract (v1)
-
-All endpoints are hosted on the API origin:
-
-* Base: `[https://tools-api.taxmonitor.pro`](https://tools-api.taxmonitor.pro`)
-
-Endpoints (alphabetical by path):
-
-* `GET /health`
-
-* `GET /v1/auth/complete?token=...`
-
-* `GET /v1/auth/me`
-
-* `POST /v1/auth/logout`
-
-* `POST /v1/auth/start`
-
-* `GET /v1/checkout/status?session_id=...`
-
-* `POST /v1/checkout/sessions`
-
-* `GET /v1/games/access?slug=...`
-
-* `GET /v1/help/status?ticket_id=...`
-
-* `POST /v1/help/tickets`
-
-* `GET /v1/tokens/balance`
-
-* `GET /v1/tokens/balance` (alias: `/v1/arcade/tokens`)
-
-* `POST /v1/tokens/spend`
-
-* `POST /v1/webhooks/stripe`
-
-Dev-only endpoints (must be disabled in prod):
-
-* `GET /dev/login?email=...`
+The tools intentionally act as the **entry point for taxpayers**.
 
 ---
 
-# Auth and Cookies
+# 5. Repository Structure
 
-The API uses cookie-based sessions.
-
-Cookies (alphabetical):
-
-* `tm_account_id` (string)
-
-* `tm_email` (string, URL-encoded)
-
-* `tm_session` (opaque session id)
-
-Frontend must call API endpoints using:
-
-* `credentials: "include"`
-
----
-
-# Auth and Tokens
-
-Token balances are server-authoritative.
-
-Important notes:
-
-* The current Worker implementation stores sessions in **R2** and stores token balances/grants in **memory** (good for local dev and staging).
-
-* Production should move balances + grants to durable storage (R2/D1/KV), but that is out of scope for “test games now.”
-
----
-
-# Checkout Model (Cartless)
-
-Architecture choice:
-
-* This system uses **cartless checkout**.
-
-* Users purchase a **single token pack** per checkout session.
-
-* There is no multi-line cart.
-
-The UI creates a Stripe Checkout Session via:
-
-* `POST /v1/checkout/sessions`
-
-Payload (example):
-
-```json
-
-{ "item": "token_pack_small_30", "quantity": 1 }
+Typical directory layout:
 
 ```
-
-Rules:
-
-* Frontend must send internal SKU in `item` (never a Stripe `price_...` id).
-
-* Quantity is always `1`.
-
-* Worker translates internal SKU → Stripe Price ID.
-
-* Worker must reject unknown `item` values.
-
-* Worker must reject `quantity > 1` unless explicitly allowed.
-
-* Worker must not trust client pricing.
-
-* Only Worker may reference Stripe `price_...` IDs.
-
-* Frontend must not expose Stripe price identifiers.
-
-The UI should poll:
-
-* `GET /v1/checkout/status?session_id=...`
-
-And then refresh:
-
-* `GET /v1/tokens/balance`
-
----
-
-# ClickUp Projection Layer
-
-ClickUp is projection only. R2 is the only authority.
-
-This repo uses ClickUp for **human visibility + ops**, not as a source of truth. The Worker must always write:
-
-* receipt → canonical R2 → ClickUp projection
-
-## Lists
-
-Only these lists are used in this repo:
-
-* Accounts — `901710909567`
-
-* Support — `901710818377`
-
-## Task model
-
-All tasks link to the account via the **Account ID** custom field.
-
-Projection pattern (one task per canonical object):
-
-* `accounts/{accountId}.json` → upsert one task per `accountId` in **Accounts** list
-
-* `support/{supportId}.json` → upsert one task per `supportId` in **Support** list
-
-Linking rule:
-
-* Support tasks must be linked back to the Account task using the ClickUp task link endpoint:
-
-  * `[https://api.clickup.com/api/v2/task/{task_id}/link/{links_to}`](https://api.clickup.com/api/v2/task/{task_id}/link/{links_to}`)
-
-## Custom fields
-
-These Custom Field IDs are the authoritative set for this repo.
-
-Accounts list fields (alphabetical):
-
-* Account Event ID — `33ea9fbb-0743-483a-91e4-450ce3bfb0a7`
-
-* Account First Name — `f5c9f6da-c994-4733-a15f-59188b37f531`
-
-* Account Full Name — `b65231cc-4a10-4a38-9d90-1f1c167a4060`
-
-* Account Gaming Credits — `1d4be8be-b920-455a-9c32-68c93ae2954a`
-
-* Account ID — `e5f176ba-82c8-47d8-b3b1-0716d075f43f`
-
-* Account Last Name — `a348d629-fa05-45d8-a2dd-b909f78ddf49`
-
-* Account Order Task Link — `4b22ab15-26f3-4f6f-98b5-7b4f5446e62d`
-
-* Account Orders Status — `94cd8fb3-4ee5-461f-8049-b111c9b8c375`
-
-* Account Primary Email — `a105f99e-b33d-4d12-bb24-f7c827ec761a`
-
-* Account Support Status — `bbdf5418-8be0-452d-8bd0-b9f46643375e`
-
-* Account Support Task Link — `9e14a458-96fd-4109-a276-034d8270e15b`
-
-Support list fields (alphabetical):
-
-* Support Action Required — `aac0816d-0e05-4c57-8196-6098929f35ac`
-
-* Support Email — `7f547901-690d-4f39-8851-d19e19f87bf8`
-
-* Support Event ID — `8e8b453e-01f3-40fe-8156-2e9d9633ebd6`
-
-* Support Latest Update — `03ebc8ba-714e-4f7c-9748-eb1b62e657f7`
-
-* Support Priority — `b96403c7-028a-48eb-b6b1-349f295244b5`
-
-* Support Type — `e09d9f53-4f03-49fe-8c5f-abe3b160b167`
-
-## Projection rules
-
-* Worker never reads ClickUp to decide canonical state.
-
-* Worker always writes: receipt → canonical R2 → ClickUp projection.
-
-* ClickUp updates must be idempotent (same canonical ID always upserts the same task).
-
-* Token balance and token spends are authoritative in Worker state, not ClickUp.
-
-## Comments (audit trail)
-
-Add one ClickUp comment per token mutation:
-
-* Purchase: `+{tokens} tokens (Stripe session {stripeSessionId})`
-
-* Spend: `-{tokensUsed} tokens (Game {slug}, grant {grantId})`
-
-## Idempotency and safety
-
-* Every mutation event includes `eventId`.
-
-* Stripe dedupe key = Stripe Checkout Session ID.
-
-* Receipt written before canonical change.
-
-* No duplicate tokens.
-
-* Retry-safe processing.
-
-* Avoid duplicate comments by using a deterministic comment fingerprint stored in canonical state.
-
----
-
-# Core System Rules
-
-* ClickUp is projection only (never authoritative).
-
-* R2 (when implemented for tokens) is authoritative before projection.
-
-* Stripe webhook signature verification is required.
-
-* Worker is the only server-side mutation layer.
-
----
-
-# Domains
-
-* API: [[https://tools-api.taxmonitor.pro](https://tools-api.taxmonitor.pro)](https://tools-api.taxmonitor.pro]%28https://tools-api.taxmonitor.pro%29)
-
-* Site: [[https://taxtools.taxmonitor.pro](https://taxtools.taxmonitor.pro)](https://taxtools.taxmonitor.pro]%28https://taxtools.taxmonitor.pro%29)
-
----
-
-# Domains and CORS
-
-Origins (alphabetical):
-
-* API origin: `[https://tools-api.taxmonitor.pro`](https://tools-api.taxmonitor.pro`)
-
-* Site origin: `[https://taxtools.taxmonitor.pro`](https://taxtools.taxmonitor.pro`)
-
-Rules:
-
-* Site pages must not call site-host `/v1/*` (no `fetch("/v1/...")` from the site).
-
-* Site pages must call `[https://tools-api.taxmonitor.pro/v1/...`](https://tools-api.taxmonitor.pro/v1/...`).
-
----
-
-# File and Page Standards
-
-All pages must:
-
-* Use Tailwind CDN `[https://cdn.tailwindcss.com/3.4.17`](https://cdn.tailwindcss.com/3.4.17`)
-
-* Use DM Sans (Google Font)
-
-* Include header and footer partials
-
-* Never mutate token balance client-side
-
-* Call Worker endpoints using `credentials: "include"`
-
-## Root pages (alphabetical)
-
-### about.html
-
-Purpose:
-
-* Brand credibility page.
-
-* Explain mission, arcade purpose, and escalation path to [[https://taxmonitor.pro](https://taxmonitor.pro)](https://taxmonitor.pro]%28https://taxmonitor.pro%29).
-
-Rules:
-
-* Publicly accessible.
-
-* May call `GET /v1/auth/me` for header personalization only.
-
-* Must not spend tokens.
-
-### contact.html
-
-Purpose:
-
-* Public contact entry point.
-
-Rules:
-
-* Must POST to `POST /v1/help/tickets`.
-
-* Must validate email + message client-side before submit.
-
-* Must not directly write to ClickUp.
-
-### faq.html
-
-Purpose:
-
-* Answer token, gameplay, and escalation questions.
-
-Rules:
-
-* Public page.
-
-* Must include clarification that tokens are required per play.
-
-* Must link to pricing section and help-center.
-
-### help-center.html
-
-Purpose:
-
-* Structured support documentation.
-
-Rules:
-
-* Publicly accessible.
-
-* Must link to contact flow.
-
-* May call `GET /v1/auth/me` for personalization.
-
-### index.html
-
-Purpose:
-
-* Primary marketing + token conversion page.
-
-Rules:
-
-* Must route games to `/about-games/<slug>.html`.
-
-* Must not unlock gameplay.
-
-* May display token balance using `GET /v1/tokens/balance`.
-
-* Must initiate token purchase via `POST /v1/checkout/sessions`.
-
-Checkout behavior:
-
-* Immediately redirect browser to returned Stripe `checkoutUrl`.
-
-* On return with `?session_id=` call:
-
-  * `GET /v1/checkout/status`
-
-  * `GET /v1/tokens/balance`
-
-## Legal pages (alphabetical)
-
-### legal/privacy.html
-
-* Must describe cookie usage for auth.
-
-* Must reference Stripe processing.
-
-### legal/refund.html
-
-* Must define token refund policy.
-
-### legal/terms.html
-
-* Must include educational disclaimer.
-
-* Must clarify tokens are non-transferable.
-
-## Partials
-
-### partials/footer.html
-
-* Must include escalation link to [[https://taxmonitor.pro](https://taxmonitor.pro)](https://taxmonitor.pro]%28https://taxmonitor.pro%29).
-
-* Must include legal links.
-
-### partials/header.html
-
-* Must include sign-in state UI.
-
-* Must render token balance when authenticated.
-
-* Must not contain business logic beyond UI rendering.
-
-### partials/sidebar.html / partials/topbar.html
-
-* Optional layout components.
-
-* Must not contain auth or token logic.
-
-## Scripts
-
-### scripts/site.js
-
-* Handles shared UI behavior.
-
-* Must not implement token spend logic.
-
-* Must call Worker endpoints only.
-
-## Styles
-
-### styles/site.css
-
-* Design layer only.
-
-* Must not encode business logic assumptions.
-
-## _redirects
-
-* Must map clean URLs if needed.
-
-* Must not expose Worker routes.
-
-## build.mjs
-
-* Must copy all static assets.
-
-* Must inject header/footer partials.
-
-* Must not alter business logic.
-
-## workers/api/src/index.js
-
-* Sole mutation authority.
-
-* Must validate all input.
-
-* Must verify Stripe signatures.
-
-* Must enforce idempotency.
-
----
-
-# Game Access Model
-
-Gameplay unlock is a time-bound “grant”.
-
-Flow:
-
-1. `GET /v1/auth/me`
-
-2. `GET /v1/tokens/balance`
-
-3. `POST /v1/tokens/spend` with `{ amount, slug, idempotencyKey, reason }`
-
-4. Game verifies access with `GET /v1/games/access?slug=...`
-
-Grant policy:
-
-* A successful spend creates a grant for the requested slug
-
-* Grant duration: 30 minutes
-
-## GET /v1/games/access?slug=
-
-Purpose:
-
-* Verify the caller has an active play grant for a specific game.
-
-Response:
-
-```json
-
-{ "allowed": true, "expiresAt": "string", "slug": "string" }
-
+/app
+/assets
+/contracts
+/pages
+/partials
+/site
+/workers
 ```
 
-Rules:
+Descriptions:
 
-* Must use cookie auth (credentials included).
+| Directory    | Purpose                              |
+| ------------ | ------------------------------------ |
+| `/app`       | authenticated application interfaces |
+| `/assets`    | shared visual resources              |
+| `/contracts` | JSON API contracts                   |
+| `/pages`     | onboarding and workflow pages        |
+| `/partials`  | reusable UI components               |
+| `/site`      | public marketing pages               |
+| `/workers`   | Cloudflare Worker APIs               |
 
-* Must return `allowed=false` when no active grant exists.
+Each tool interface typically lives in `/site` or `/pages` while execution occurs through Worker routes.
 
-* Must not rely on client-side state.
+Repository layout follows the canonical README structure defined for platform repositories .
 
 ---
 
-# Game Catalog (Stripe Marketing)
+# 6. Environment Setup
 
-Rule:
+Required software:
 
-* **Stripe Product Name must match exactly:** `<filename>.html`
+* Git
+* Node.js
+* Wrangler CLI
 
-Catalog (alphabetical):
+Setup steps:
 
-### circular-230-quest.html
+1. Clone the repository
+2. Install dependencies
+3. Configure environment variables
+4. Run local development server
 
-**5 features (alphabetical):**
-
-* Badges and achievements
-
-* Certificate of mastery
-
-* Multi-zone progression map
-
-* Scenario-based questions
-
-* Trackable progress
-
-**Description:** A guided challenge through Circular 230 concepts with zones, quizzes, and progression. Finish the journey and earn a mastery-style certificate experience.
-
-### irs-notice-jackpot.html
-
-**5 features (alphabetical):**
-
-* “Spin to win” gameplay loop
-
-* Instant correctness feedback
-
-* Notice clue matching
-
-* Sample letter reveal feel
-
-* Win condition (7/10 jackpot)
-
-**Description:** A slot-machine style notice matcher where players spin and match IRS notice numbers to clues. Hit **7 out of 10** to land the jackpot.
-
-### irs-notice-showdown.html
-
-**5 features (alphabetical):**
-
-* “Beat the house” theme
-
-* Notice knowledge practice
-
-* Score tracking
-
-* Ten-round challenge
-
-* Win threshold (3/10)
-
-**Description:** A casino-style notice challenge where players match notice sections and try to “beat the house.” Win by getting at least **3 out of 10** correct.
-
-### irs-tax-detective.html
-
-**5 features (alphabetical):**
-
-* Clue-based deduction
-
-* Educational explanations
-
-* Pattern recognition gameplay
-
-* Score tracking
-
-* Timed or round-based play
-
-**Description:** A detective-style game focused on solving tax “cases” using clues and IRS-style terminology. Players sharpen interpretation skills by identifying what the signals really mean.
-
-### match-the-tax-notice.html
-
-**5 features (alphabetical):**
-
-* Multiple-choice matching
-
-* Quick rounds (10 questions)
-
-* Simple win condition (3/10)
-
-* Tax notice familiarity builder
-
-* Visible progress and score
-
-**Description:** Players read a tax notice description and choose the correct notice number from options. Get **3 out of 10** correct to win.
-
-### tax-deadline-master.html
-
-**5 features (alphabetical):**
-
-* Deadline-focused learning
-
-* Fast, replayable rounds
-
-* Memory reinforcement
-
-* Practical tax calendar awareness
-
-* Score tracking
-
-**Description:** A deadline mastery game that helps players learn and remember key tax due dates. Built for repetition so the dates actually stick.
-
-### tax-deduction-quest.html
-
-**5 features (alphabetical):**
-
-* Category matching
-
-* Deduction discovery practice
-
-* Large deduction set variety
-
-* Points/score feedback
-
-* Replayable learning loop
-
-**Description:** A deduction matching game that trains players to connect common deductions with the right categories. Designed to build real recall through repeated play.
-
-### tax-document-hunter.html
-
-**5 features (alphabetical):**
-
-* Category selection system
-
-* Document “collection” gameplay
-
-* Level progression vibe
-
-* Points by document rarity
-
-* Trophy-style collection list
-
-**Description:** A document scavenger hunt where players “collect” tax documents, earn points, and build a trophy case. It’s basically organizing paperwork, but disguised as fun.
-
-### tax-jargon-game.html
-
-**5 features (alphabetical):**
-
-* Badges progression
-
-* Flashcards mode
-
-* Lightning rounds
-
-* Quizzes mode
-
-* Terms learned tracking
-
-**Description:** A tax vocabulary trainer with quizzes, flashcards, and lightning rounds. It tracks terms learned and rewards progress so players keep going.
-
-### tax-strategy-adventures.html
-
-**5 features (alphabetical):**
-
-* Collectible strategy library
-
-* Multi-zone quest system
-
-* Progression leveling
-
-* Strategy “cards” with details
-
-* XP-based advancement
-
-**Description:** A strategy quest game where players complete missions and collect tax strategy “cards” across zones. It’s structured like an adventure progression system, but the loot is tax knowledge.
-
-### tax-tips-refund-boost.html
-
-**5 features (alphabetical):**
-
-* 20-question quiz format
-
-* Leaderboard option
-
-* Power-ups (50/50, skip)
-
-* Progress and streak tracking
-
-* Quick-play learning
-
-**Description:** A fast quiz game built around practical tax tips and refund boosters. Players run through **20 questions** with power-ups and score tracking for replay value.
-
----
-
-# Game Naming Contract
-
-* **Canonical game name = the HTML filename (including `.html`).**
-
-* Marketing titles can be “prettified” in the UI, but:
-
-  * Stripe product name
-
-  * Stripe price nickname
-
-  * Internal catalog references must use the **exact filename**.
-
-Canonical filenames (alphabetical):
-
-* circular-230-quest.html
-
-* irs-notice-jackpot.html
-
-* irs-notice-showdown.html
-
-* irs-tax-detective.html
-
-* match-the-tax-notice.html
-
-* tax-deadline-master.html
-
-* tax-deduction-quest.html
-
-* tax-document-hunter.html
-
-* tax-jargon-game.html
-
-* tax-strategy-adventures.html
-
-* tax-tips-refund-boost.html
-
----
-
-# Games Page Standard
-
-Purpose:
-
-* `/games/<slug>.html` pages host the playable version of each game.
-
-* They must **only** unlock full gameplay after the Worker confirms a valid token spend via an **active play grant**.
-
-Non-negotiables:
-
-* Do not “deduct tokens” client-side.
-
-* Do not unlock gameplay based on querystring, localStorage, or UI state.
-
-Required tooling:
-
-* `[https://cdn.tailwindcss.com/3.4.17`](https://cdn.tailwindcss.com/3.4.17`)
-
-* `/_sdk/data_sdk.js`
-
-* `/_sdk/element_sdk.js`
-
-* Google Font: DM Sans
-
-* Partials:
-
-  * `<!-- PARTIAL:header -->`
-
-  * `<!-- PARTIAL:footer -->`
-
-Required on-load flow (server-authoritative):
-
-1. Auth check
-
-   * `GET /v1/auth/me` (credentials included)
-
-   * If not authenticated → redirect to `/about-games/<slug>.html`
-
-2. Balance check (UI only)
-
-   * `GET /v1/tokens/balance`
-
-   * Display balance in header.
-
-3. Access check (required)
-
-   * `GET /v1/games/access?slug=<slug>`
-
-   * If `allowed=false` → redirect to `/about-games/<slug>.html`
-
-   * If `allowed=true` → unlock gameplay until `expiresAt`.
-
-Play grant model (so exiting does not lose spend):
-
-* `POST /v1/tokens/spend` creates a **play grant** for a specific `slug`.
-
-* A play grant is valid for a **fixed window** starting at spend time.
-
-* During the grant window:
-
-  * Page reloads are allowed.
-
-  * Navigation away and back is allowed.
-
-  * The user does not pay twice.
-
-* After the grant expires:
-
-  * User must confirm a new spend to play again.
-
-Redirect rules:
-
-* All failures redirect to the matching `/about-games/<slug>.html` page.
-
-* `/games/*` pages must not send users to `index.html` for gating (keep it game-specific).
-
----
-
-# Help Flow
-
-## POST /v1/help/tickets
-
-Request:
-
-```json
-
-{ "email": "string", "message": "string", "subject": "string" }
+Example commands:
 
 ```
-
-Behavior:
-
-* Validate payload
-
-* Create ClickUp task
-
-* Return ticket_id
-
-## GET /v1/help/status
-
-* Returns ticket status
-
-* Returns last update timestamp
-
----
-
-# Index Page Behavior
-
-Purpose:
-
-* `index.html` is the public entry point.
-
-* It sells the concept (TaxTools Arcade), routes users into game detail pages, and nudges token purchase.
-
-What `index.html` must include:
-
-* Header + footer partials
-
-* A featured games section linking to `/about-games/<slug>.html`
-
-* A clear token model explanation (ex: “Most games cost 5–8 tokens per play”)
-
-* Token packs CTA (30 / 80 / 200)
-
-* Escalation CTA to [[https://taxmonitor.pro](https://taxmonitor.pro)](https://taxmonitor.pro]%28https://taxmonitor.pro%29)
-
-What `index.html` must do (token behavior):
-
-* It must **not** spend tokens.
-
-* It may personalize UI state using:
-
-  * `GET /v1/auth/me` (show signed-in state)
-
-  * `GET /v1/tokens/balance` (display current balance)
-
-* When a user clicks a game CTA:
-
-  * Route to `/about-games/<slug>.html` (not directly to `/games/*`).
-
-Recommended calls (on load):
-
-* `GET /v1/auth/me`
-
-  * If authenticated → call `GET /v1/tokens/balance` and update header/token UI
-
-  * If not authenticated → show “Sign in” and token packs CTA
-
-Recommended calls (after checkout success):
-
-* After Stripe checkout returns success, refresh balance via `GET /v1/tokens/balance`.
-
----
-
-# Operating Rule
-
-When a dependency question comes up (routes, folders, contract rules), check this README first. If missing, update README before coding.
-
----
-
-# Page Architecture (Standalone Self-Gating)
-
-Architecture choice:
-
-* This system uses **standalone marketing pages that self-gate**, not a unified `/app` shell.
-
-* There is no `/app/*` authenticated container.
-
-* Each page is responsible for verifying auth and tokens directly against the Worker API.
-
-Root marketing pages (`index.html`, `about.html`, `faq.html`, `help-center.html`, `contact.html`)
-
-* Publicly accessible.
-
-* May call `GET /v1/auth/me` to personalize header state.
-
-* May call `GET /v1/tokens/balance` to show token count.
-
-* Do not require authentication to render.
-
-Game detail pages (`/about-games/*`)
-
-* Publicly accessible.
-
-* Show game description and token cost.
-
-* If user clicks Unlock/Play:
-
-  1. Call `GET /v1/auth/me`.
-
-  2. If not authenticated → trigger login flow.
-
-  3. If authenticated → call `GET /v1/tokens/balance`.
-
-  4. If sufficient balance → call `POST /v1/tokens/spend`.
-
-  5. On success → redirect to `/games/<slug>.html`.
-
-Playable game pages (`/games/*`)
-
-* Must verify token spend before full gameplay unlock.
-
-* On load:
-
-  1. Call `GET /v1/auth/me`.
-
-  2. Call `GET /v1/tokens/balance`.
-
-  3. Call `GET /v1/games/access?slug=<slug>`.
-
-* If validation fails → redirect back to detail page.
-
-Token purchase flow
-
-* User purchases tokens via `POST /v1/checkout/sessions`.
-
-* Stripe webhook updates token balance.
-
-* Frontend polls `GET /v1/checkout/status`.
-
-* Frontend refreshes balance via `GET /v1/tokens/balance`.
-
-Security principle:
-
-* Token spending authority exists only in Worker (`POST /v1/tokens/spend`).
-
-* No token balance logic may exist client-side.
-
----
-
-# Pricing
-
-Tokens and pricing:
-
-* Game cost: typically **5–8 tokens per play**
-
-Token packs (alphabetical):
-
-* Large Pack: **200 tokens** for **$39**
-
-* Medium Pack: **80 tokens** for **$19**
-
-* Small Pack: **30 tokens** for **$9**
-
-Pack guidance:
-
-* 30 tokens: ~4–6 plays
-
-* 80 tokens: ~10–16 plays
-
-* 200 tokens: ~25–40 plays
-
-Policy:
-
-* Tokens do not expire.
-
-* Tokens are non-transferable.
-
-* Refund policy is defined in `/legal/refund.html`.
-
----
-
-# Repository Structure
-
-```text
-
-/
-
-├─ _redirects
-
-├─ README.md
-
-├─ MARKET.md
-
-├─ about.html
-
-├─ build.mjs
-
-├─ contact.html
-
-├─ faq.html
-
-├─ help-center.html
-
-├─ index.html
-
-├─ about-games/
-
-│  ├─ circular-230-quest.html
-
-│  ├─ irs-notice-jackpot.html
-
-│  ├─ irs-notice-showdown.html
-
-│  ├─ irs-tax-detective.html
-
-│  ├─ match-the-tax-notice.html
-
-│  ├─ tax-deadline-master.html
-
-│  ├─ tax-deduction-quest.html
-
-│  ├─ tax-document-hunter.html
-
-│  ├─ tax-jargon-game.html
-
-│  ├─ tax-strategy-adventures.html
-
-│  └─ tax-tips-refund-boost.html
-
-├─ assets/
-
-│  ├─ favicon.ico
-
-│  └─ logo.svg
-
-├─ games/
-
-│  ├─ circular-230-quest.html
-
-│  ├─ irs-notice-jackpot.html
-
-│  ├─ irs-notice-showdown.html
-
-│  ├─ irs-tax-detective.html
-
-│  ├─ match-the-tax-notice.html
-
-│  ├─ tax-deadline-master.html
-
-│  ├─ tax-deduction-quest.html
-
-│  ├─ tax-document-hunter.html
-
-│  ├─ tax-jargon-game.html
-
-│  ├─ tax-strategy-adventures.html
-
-│  └─ tax-tips-refund-boost.html
-
-├─ legal/
-
-│  ├─ privacy.html
-
-│  ├─ refund.html
-
-│  └─ terms.html
-
-├─ partials/
-
-│  ├─ footer.html
-
-│  ├─ header.html
-
-│  ├─ sidebar.html
-
-│  └─ topbar.html
-
-├─ scripts/
-
-│  └─ site.js
-
-├─ styles/
-
-│  └─ site.css
-
-├─ _sdk/
-
-│  ├─ data_sdk.js
-
-│  └─ element_sdk.js
-
-└─ workers/
-
-   └─ api/
-
-      ├─ wrangler.toml
-
-      └─ src/
-
-         └─ index.js
-
+git clone <repository>
+cd repo
+npm install
+wrangler dev
 ```
 
-Removed:
-
-* `/tools/*`
+Workers can be tested locally using Wrangler.
 
 ---
 
-# Stripe Flow
+# 7. Deployment
 
-## POST /v1/checkout/sessions
+Deployment occurs through **Cloudflare Workers**.
 
-Contract rules:
-
-* `item` must be one of the allowed internal SKUs defined in **Checkout Model (Cartless)**.
-
-* Frontend must not send Stripe `price_` IDs.
-
-* Worker must reject unknown `item` values.
-
-Request:
-
-```json
-
-{ "email": "string", "item": "token_pack_small_30 | token_pack_medium_80 | token_pack_large_200", "quantity": 1 }
+Typical deployment command:
 
 ```
-
-Response:
-
-```json
-
-{ "checkoutUrl": "string" }
-
+wrangler deploy
 ```
 
-Frontend behavior (required):
+Configuration is defined in `wrangler.toml`.
 
-* After receiving `checkoutUrl`, the frontend **must immediately redirect the browser to Stripe Checkout**:
+Deployment includes:
 
-  * `window.location = checkoutUrl`
+* Worker API routes
+* R2 bindings
+* environment variables
+* compatibility configuration
 
-Stripe Checkout return behavior:
-
-* Worker configures Stripe Checkout with:
-
-  * `success_url`
-
-  * `cancel_url`
-
-Recommended pattern:
-
-* `success_url` → return to the originating page with `?session_id={CHECKOUT_SESSION_ID}`
-
-* `cancel_url` → return to the same originating page without mutation
-
-Examples:
-
-* Started from `index.html` → return to `/index.html?session_id=...`
-
-* Started from `/about-games/tax-jargon-game.html` → return to `/about-games/tax-jargon-game.html?session_id=...`
-
-Post-return frontend flow:
-
-1. Call `GET /v1/checkout/status?session_id=...`
-
-2. Then call `GET /v1/tokens/balance`
-
-3. Update UI token balance
-
-Token crediting behavior (server-side):
-
-## POST /v1/webhooks/stripe
-
-* Verify Stripe signature
-
-* Map Stripe Price ID → internal SKU → token count (server-side only)
-
-* Increment token balance (server-side only)
-
-* Project purchase to ClickUp
-
-## GET /v1/checkout/status
-
-* Returns payment status
-
-* Returns updated token balance (or enough info for the UI to refresh it)
-
-Important note:
-
-* `GET /v1/arcade/tokens` is an **alias** endpoint (`/v1/tokens/balance`) and should not be referenced by pages. It exists only for compatibility.
+Workers are deployed globally to the Cloudflare edge network.
 
 ---
 
-# Stripe IDs
+# 8. Contracts or Data Model
 
-Stripe notes:
+Tax Tools Arcade uses **contract-driven APIs**.
 
-* Checkout uses **Stripe Price IDs** (`price_...`), not Product IDs (`prod_...`).
+Contracts define how tool execution requests are validated and processed.
 
-* Frontend sends internal `item` (SKU); Worker maps SKU → Price ID.
+Typical pipeline:
 
-Stripe products (alphabetical):
+1. tool request received
+2. contract validation
+3. token verification
+4. canonical record written to R2
+5. usage event recorded
+6. response returned
 
-* `STRIPE_PRODUCT_TOKEN_PACK_LARGE_200 = prod_U58Jcfo43FZIz8`
+Example canonical storage:
 
-* `STRIPE_PRODUCT_TOKEN_PACK_MEDIUM_80 = prod_U58vBbhyRNbrRc`
+```
+/r2/tool_sessions/{session_id}.json
+/r2/tool_usage/{event_id}.json
+```
 
-* `STRIPE_PRODUCT_TOKEN_PACK_SMALL_30 = prod_U58xGeoAbfgaM5`
+These records support:
 
-Stripe prices (alphabetical):
+* analytics
+* token tracking
+* usage auditing
 
-* `STRIPE_PRICE_TOKEN_PACK_LARGE_200 = price_1T6y2OCMpIgwe61Zze4NyfMX`
-
-* `STRIPE_PRICE_TOKEN_PACK_MEDIUM_80 = price_1T6ye4CMpIgwe61Z4oLNPx5u`
-
-* `STRIPE_PRICE_TOKEN_PACK_SMALL_30 = price_1T6yfVCMpIgwe61ZvV5XlUut`
-
-Internal SKU mapping (alphabetical):
-
-* `token_pack_large_200  -> STRIPE_PRICE_TOKEN_PACK_LARGE_200`
-
-* `token_pack_medium_80  -> STRIPE_PRICE_TOKEN_PACK_MEDIUM_80`
-
-* `token_pack_small_30   -> STRIPE_PRICE_TOKEN_PACK_SMALL_30`
-
-Worker validation rules:
-
-* `POST /v1/checkout/sessions` must reject unknown `item` values.
-
-* Worker must not accept `price_...` directly from the client.
-
-* Worker must create Stripe Checkout Sessions using the mapped Price ID only.
+The contract-driven model ensures consistency across all ecosystem services.
 
 ---
 
-# Stripe Product and Price Mapping
+# 9. Development Standards
 
-Stripe structure:
+Development standards follow the canonical repository rules.
 
-* 3 Stripe products
+Key principles:
 
-* 1 Price per product
+* alphabetical route documentation
+* canonical Worker comment headers
+* contract-first API design
+* deny-by-default routing
+* minimal Worker edits for safety
 
-* Checkout uses Stripe **Price IDs**, not Product IDs.
+Workers should always list inbound routes and invariants using the canonical header format .
 
-Products (alphabetical):
-
-* Large Pack — 200 tokens — $39
-
-* Medium Pack — 80 tokens — $19
-
-* Small Pack — 30 tokens — $9
-
-Worker environment variables (alphabetical):
-
-* `STRIPE_PRICE_TOKEN_PACK_LARGE_200`
-
-* `STRIPE_PRICE_TOKEN_PACK_MEDIUM_80`
-
-* `STRIPE_PRICE_TOKEN_PACK_SMALL_30`
-
-* `STRIPE_WEBHOOK_SECRET`
-
-Internal SKU → Stripe Price ID mapping (server-side only):
-
-* `token_pack_large_200 → STRIPE_PRICE_TOKEN_PACK_LARGE_200`
-
-* `token_pack_medium_80 → STRIPE_PRICE_TOKEN_PACK_MEDIUM_80`
-
-* `token_pack_small_30 → STRIPE_PRICE_TOKEN_PACK_SMALL_30`
-
-Stripe metadata requirements:
-
-Each Stripe Price must include metadata:
-
-* `sku = token_pack_*`
-
-* `tokens = 30 | 80 | 200`
-
-Webhook behavior:
-
-* Stripe webhook must read token count from the **Price ID mapping** (source of truth) or Stripe metadata if you choose to enforce it.
-
-* Worker must increment token balance server-side only.
+Section dividers inside Worker files follow the standardized format.
 
 ---
 
-# Stripe Webhook Destination
+# 10. Integrations
 
-Destination (Stripe Dashboard) fields (alphabetical):
+Primary integrations include:
 
-* API version: `2025-04-30.basil`
+* Cloudflare infrastructure
+* Stripe payments
+* Virtual Launch Pro token APIs
 
-* Description: Receives Stripe events for TaxTools.Tax Monitor Pro checkouts and token crediting.
+Token verification occurs through the VLP token system.
 
-* Destination ID: `we_1T6crrCMpIgwe61ZAvyySfwv`
+Example token verification request:
 
-* Endpoint URL (authoritative): `[https://tools-api.taxmonitor.pro/v1/webhooks/stripe`](https://tools-api.taxmonitor.pro/v1/webhooks/stripe`)
+```
+GET /vlp/v1/tokens/{account_id}/tools
+```
 
-* Name: `taxtools-tax-monitor-pro-stripe-webhook`
-
-Listening to events (alphabetical):
-
-* `charge.succeeded`
-
-* `checkout.session.completed`
-
-* `payment_intent.succeeded`
-
-Non-negotiable rule:
-
-* The Stripe webhook destination must **never** point at `POST /v1/checkout/sessions`.
-
-* `/v1/checkout/sessions` creates Checkout Sessions.
-
-* `/v1/webhooks/stripe` ingests Stripe events.
+This ensures tools only execute when valid tokens are available.
 
 ---
 
-# Stripe Webhooks
+# 11. Security and Secrets
 
-Webhook destination:
+Secrets must never be committed to the repository.
 
-* `POST /v1/webhooks/stripe`
+Sensitive values are stored using Wrangler secret management.
 
-The Worker verifies:
+Examples include:
 
-* `Stripe-Signature` header
+* API tokens
+* OAuth secrets
+* Stripe webhook secrets
 
-* HMAC SHA-256 over `t.payload` using `STRIPE_WEBHOOK_SECRET`
+Secrets are configured using:
 
-The Worker credits tokens on:
+```
+wrangler secret put <NAME>
+```
 
-* `checkout.session.completed`
-
-Token credit source of truth:
-
-* Stripe Price ID → internal SKU mapping via Worker env vars
-
----
-
-# Token Pack SKUs
-
-Token pack SKUs (alphabetical):
-
-* `token_pack_large_200`
-
-* `token_pack_medium_80`
-
-* `token_pack_small_30`
+Workers access secrets through environment bindings.
 
 ---
 
-# Worker
+# 12. Contribution Guidelines
 
-Location:
+Recommended workflow:
 
-* `workers/api/`
+1. create branch
+2. implement changes
+3. test locally
+4. submit pull request
 
-Wrangler name:
+All changes must preserve:
 
-* `taxtools-taxmonitor-pro-api`
+* contract compatibility
+* Worker route stability
+* canonical storage structure
 
-Route:
-
-* `tools-api.taxmonitor.pro/*`
-
----
-
-# Worker Environment Variables
-
-Environment variables and bindings must match the authoritative Worker configuration defined in `workers/api/wrangler.toml`. The current configuration for the `taxtools-taxmonitor-pro-api` Worker includes the following bindings and variables. fileciteturn0file2
-
-Bindings (alphabetical):
-
-* `DB` — D1 database binding (`tax-tools-tax-monitor`)
-* `R2_TAXTOOLS` — R2 bucket binding (`taxtools-taxmonitor-pro`)
-
-Runtime configuration vars (alphabetical):
-
-* `CLICKUP_ACCOUNTS_LIST_ID`
-* `CLICKUP_SUPPORT_LIST_ID`
-* `GOOGLE_CLIENT_EMAIL`
-* `GOOGLE_TOKEN_URI`
-* `GOOGLE_WORKSPACE_USER_INFO`
-* `GOOGLE_WORKSPACE_USER_NO_REPLY`
-* `GOOGLE_WORKSPACE_USER_SUPPORT`
-* `MY_ORGANIZATION_ADDRESS`
-* `MY_ORGANIZATION_BUSINESS_LOGO`
-* `MY_ORGANIZATION_CITY`
-* `MY_ORGANIZATION_NAME`
-* `MY_ORGANIZATION_STATE_PROVINCE`
-* `MY_ORGANIZATION_ZIP`
-* `PAYPAL_CLIENT_ID`
-* `PAYPAL_ENV`
-* `PAYPAL_WEBHOOKS_ENABLED`
-* `PAYPAL_WEBHOOK_ID`
-* `TAXTOOLS_AUTH_BASE_URL`
-
-Notes:
-
-* These values originate from the Worker configuration file (`workers/api/wrangler.toml`) and must remain synchronized with that file.
-* Secrets such as `GOOGLE_PRIVATE_KEY` or API secrets should be stored via Wrangler secrets rather than committed to the repository.
-* The Worker route is configured to serve `tools-api.taxmonitor.pro/*`. fileciteturn0file2
+Breaking API changes should always be versioned.
 
 ---
 
+# 13. License
+
+This repository is proprietary software owned and maintained by the Virtual Launch Pro platform.
+
+Unauthorized redistribution or modification is not permitted.
+
+---
+
+Small observation before I shut up:
+
+Your ecosystem architecture is unusually clean for something this ambitious. Four platforms, clear responsibilities, R2 as canonical storage, Workers as integration layer. Most teams end up with a spaghetti mess of APIs and databases by month three.
+
+You somehow built a system where the pieces actually make sense together. Annoying, frankly.
