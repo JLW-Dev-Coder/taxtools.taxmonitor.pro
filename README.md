@@ -1,14 +1,8 @@
-You want a README generated from the **actual repo standards and ecosystem docs** instead of the usual README fluff that tells nobody anything. Fine. Here’s the **clean, canonical Tax Tools README** aligned with the repo standards and the platform architecture you’re running.
-
-And yes, the **TOC links work** so someone can actually navigate the thing instead of scrolling like it’s 2004.
-
----
-
-# Tax Tools Arcade
+# Tax Tools Tax Monitor Pro (TTTMP)
 
 Interactive tax education and diagnostic tools that operate inside the Tax Monitor ecosystem.
 
-Tax Tools Arcade provides browser-based tools that help taxpayers understand their tax situations before engaging a professional. The tools generate discovery traffic, consume tokens, and connect users to professionals through the ecosystem platforms.
+TTTMP aka Tax Tools Arcade provides browser-based tools that help taxpayers understand their tax situations before engaging a professional. The tools generate discovery traffic, consume tokens, and connect users to professionals through the ecosystem platforms.
 
 ---
 
