@@ -1,11 +1,28 @@
 {
   "name": "taxtools-taxmonitor-pro",
+  "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "audit": "node ./audit/launch-readiness.mjs",
-    "build": "node ./build.mjs",
-    "deploy": "wrangler deploy ./workers/api/src/index.js",
-    "launch": "npm run build && npm run audit && npm run deploy"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "preview": "npm run pages:build && wrangler pages dev",
+    "deploy": "npm run pages:build && wrangler pages deploy"
+  },
+  "dependencies": {
+    "next": "15.2.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.12",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5",
+    "eslint": "^8",
+    "eslint-config-next": "15.2.4"
   }
 }

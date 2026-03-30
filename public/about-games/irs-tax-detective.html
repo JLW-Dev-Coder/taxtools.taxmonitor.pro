@@ -1,0 +1,1163 @@
+<!-- about-games/irs-tax-detective.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IRS Detective • TaxTools Arcade</title>
+  <meta name="description" content="Match common IRS transaction codes to their meanings in a fast, detective-style quiz. Educational only. Token-gated play." />
+
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="stylesheet" href="/styles/site.css" />
+
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fredoka+One&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            dm: ['"DM Sans"', 'system-ui', 'sans-serif'],
+            poppins: ['Poppins', 'system-ui', 'sans-serif'],
+            title: ['Fredoka One', 'system-ui', 'sans-serif']
+          },
+          colors: {
+            action: '#1d4ed8',
+            charcoal: '#2d3748',
+            muted: '#64748b',
+            navy: '#0f2747',
+            'navy-light': '#17365f',
+            primary: '#1d4ed8',
+            'primary-dark': '#1e40af',
+            accent: '#f97316',
+            'accent-dark': '#ea580c',
+            surface: '#f8fafc',
+            warm: '#f97316',
+            detective: '#1a1a2e',
+            glow: '#00d4ff',
+            success: '#00ff41',
+            danger: '#ff006e',
+            warning: '#ffd60a'
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * { font-family: 'DM Sans', system-ui, sans-serif; }
+    html { scroll-behavior: smooth; }
+    body { box-sizing: border-box; }
+    .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
+    .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+    .btn-shadow { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); }
+    .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .hero-panel { animation: hero-float 4.5s ease-in-out infinite; transform-origin: center; }
+    @keyframes hero-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 18px 28px rgba(0,0,0,0.25)); }
+      50% { transform: translateY(-10px) rotate(0.6deg); filter: drop-shadow(0 26px 34px rgba(0,0,0,0.35)); }
+    }
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 26px;
+      pointer-events: none;
+      background: radial-gradient(600px 220px at 20% 0%, rgba(255,255,255,0.10), transparent 55%),
+                  radial-gradient(500px 260px at 80% 100%, rgba(249,115,22,0.10), transparent 60%);
+      opacity: 0.75;
+      animation: hero-glow 3.8s ease-in-out infinite;
+    }
+    @keyframes hero-glow {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 0.9; }
+    }
+
+    .game-bg {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .game-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 255, 65, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      animation: pulse-glow 6s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    .neon-text {
+      text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 30px #00d4ff;
+    }
+    .card-reveal {
+      animation: card-flip 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    @keyframes card-flip {
+      0% { transform: rotateY(0deg) scale(0.8); opacity: 0; }
+      50% { transform: rotateY(90deg); }
+      100% { transform: rotateY(0deg) scale(1); opacity: 1; }
+    }
+    .glitch { animation: glitch-effect 0.3s; }
+    @keyframes glitch-effect {
+      0% { transform: translate(2px, 0); }
+      25% { transform: translate(-2px, 0); }
+      50% { transform: translate(2px, 0); }
+      75% { transform: translate(-2px, 0); }
+      100% { transform: translate(0, 0); }
+    }
+    .success-glow {
+      animation: success-glow-anim 0.6s ease-out;
+    }
+    @keyframes success-glow-anim {
+      0% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.7); }
+      100% { box-shadow: 0 0 0 20px rgba(0, 255, 65, 0); }
+    }
+  </style>
+</head>
+
+<body class="h-full bg-white text-charcoal overflow-hidden font-dm">
+  <div id="app" class="h-full w-full overflow-auto custom-scrollbar">
+
+    <!-- PARTIAL:header -->
+
+    <!-- Hero -->
+    <section class="gradient-hero text-white py-16 lg:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+          <div class="text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <span class="w-2 h-2 bg-accent rounded-full pulse-ring"></span>
+              <span class="text-sm font-medium">Interactive Game • Instant Access</span>
+            </div>
+
+            <h1 id="gameTitle" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">IRS Detective</h1>
+            <p id="gameSubtitle" class="text-xl md:text-2xl text-blue-100 mb-8">Decode the mystery of refund offsets by matching IRS transaction codes to their meanings.</p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <button id="btnUnlock" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105" type="button">
+                Unlock &amp; Play (8 tokens)
+              </button>
+              <button id="btnDemo" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-xl border border-white/20 transition-all" type="button">
+                Try Demo
+              </button>
+            </div>
+
+            <div class="mt-6 flex flex-col gap-3 justify-center lg:justify-start items-center lg:items-start">
+              <p class="text-blue-200 text-sm">✓ Cookie session • ✓ Education only • ✓ Token-gated unlock</p>
+              <div id="status"></div>
+            </div>
+          </div>
+
+          <div class="relative flex justify-center lg:justify-end">
+            <div class="relative w-full max-w-md">
+              <div class="hero-panel relative rounded-3xl p-5 card-shadow border border-white/10" style="background: linear-gradient(135deg, rgba(30,27,75,0.85) 0%, rgba(49,46,129,0.85) 55%, rgba(67,56,202,0.85) 100%);">
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <h3 class="text-white font-bold text-lg">Case Board</h3>
+                    <p class="text-blue-200 text-sm">Codes. Choices. Clarity.</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/15" style="background: rgba(255,255,255,0.10)">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3">
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(59,130,246,0.85) 0%, rgba(34,211,238,0.75) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">820</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Credit clue</p>
+                        <p class="text-white/80 text-sm leading-tight">Transferred</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Open</span>
+                    </div>
+                  </button>
+
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(16,185,129,0.85) 0%, rgba(20,184,166,0.75) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">826</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Refund clue</p>
+                        <p class="text-white/80 text-sm leading-tight">Overpayment</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Open</span>
+                    </div>
+                  </button>
+
+                  <div class="grid grid-cols-2 gap-3">
+                    <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(239,68,68,0.85) 0%, rgba(244,63,94,0.75) 100%);">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                          <span class="text-white font-bold">Q</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-white font-semibold leading-tight">Timing</p>
+                          <p class="text-white/80 text-xs leading-tight">Round flow</p>
+                        </div>
+                      </div>
+                    </button>
+
+                    <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(168,85,247,0.85) 0%, rgba(139,92,246,0.75) 100%);">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                          <span class="text-white font-bold">S</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-white font-semibold leading-tight">Score</p>
+                          <p class="text-white/80 text-xs leading-tight">Accuracy</p>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(249,115,22,0.85) 0%, rgba(245,158,11,0.75) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">2</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Demo prompts</p>
+                        <p class="text-white/80 text-sm leading-tight">Try before unlock</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Demo</span>
+                    </div>
+                  </button>
+                </div>
+
+                <div class="mt-5 grid grid-cols-3 gap-3">
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">2</p>
+                    <p class="text-blue-200 text-xs">Demo</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">250</p>
+                    <p class="text-blue-200 text-xs">Per hit</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">Run</p>
+                    <p class="text-blue-200 text-xs">to completion</p>
+                  </div>
+                </div>
+
+                <div class="mt-5 flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="inline-flex h-2.5 w-2.5 rounded-full" style="background: rgba(16,185,129,0.95)"></span>
+                    <span class="text-blue-200 text-xs">Progress tracked</span>
+                  </div>
+                  <button type="button" id="heroTryDemo" class="text-white text-xs font-semibold px-3 py-2 rounded-xl border border-white/15 transition hover:bg-white/10">Try demo</button>
+                </div>
+              </div>
+
+              <div class="absolute -top-3 -right-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(249,115,22,0.95)">
+                <p class="text-white text-sm font-bold">8 tokens</p>
+                <p class="text-white/90 text-xs">per play</p>
+              </div>
+              <div class="absolute -bottom-3 -left-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(29,78,216,0.95)">
+                <p class="text-white text-sm font-bold">Resume</p>
+                <p class="text-white/90 text-xs">if active</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section id="what-youll-learn" class="py-16 lg:py-24 bg-surface">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">What You’ll Learn</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Practical code literacy</h2>
+          <p class="text-muted text-lg max-w-2xl mx-auto">Short rounds that teach common transcript codes without pretending the IRS is your life coach.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-navy font-bold text-lg mb-2">Clue-based deduction</h3>
+            <p class="text-muted text-sm">Practice identifying what matters and ignoring what doesn’t.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-navy font-bold text-lg mb-2">Educational explanations</h3>
+            <p class="text-muted text-sm">Learn what a code usually means in plain language.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-navy font-bold text-lg mb-2">Pattern recognition</h3>
+            <p class="text-muted text-sm">Spot recurring refund and notice patterns across codes.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-navy font-bold text-lg mb-2">Score feedback</h3>
+            <p class="text-muted text-sm">Immediate feedback round by round.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="preview" class="py-16 lg:py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+          <div class="order-2 lg:order-1">
+            <div class="bg-gray-50 rounded-3xl p-6 md:p-8">
+              <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                <div class="bg-navy px-4 py-3 flex items-center gap-3">
+                  <div class="flex gap-1.5">
+                    <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                    <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                  </div>
+                  <div class="flex-1 text-center"><span class="text-white/60 text-sm">IRS Detective (Preview)</span></div>
+                </div>
+
+                <div class="p-5">
+                  <div class="flex items-center justify-between mb-4">
+                    <p class="text-navy font-bold">Mini Demo</p>
+                    <span class="text-muted text-xs">Education only</span>
+                  </div>
+
+                  <div class="space-y-3">
+                    <div class="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border-l-4 border-primary">
+                      <div class="text-center">
+                        <p class="text-xs text-muted uppercase">Q</p>
+                        <p class="text-lg font-bold text-navy">01</p>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-navy font-semibold text-sm">What does code 826 mean?</p>
+                        <p class="text-muted text-xs">Overpayment transferred to another tax period</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-start gap-3 p-4 bg-amber-50 rounded-xl border-l-4 border-accent">
+                      <div class="text-center">
+                        <p class="text-xs text-muted uppercase">Q</p>
+                        <p class="text-lg font-bold text-navy">02</p>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-navy font-semibold text-sm">What does code 820 mean?</p>
+                        <p class="text-muted text-xs">Credit transferred to another tax period</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-5 flex justify-end">
+                    <button type="button" class="bg-gray-200 text-gray-500 px-6 py-3 rounded-xl font-semibold cursor-not-allowed" disabled title="Unlocked after token spend">
+                      Full Play (locked)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-1 lg:order-2 text-center lg:text-left">
+            <span class="text-primary font-semibold text-sm uppercase tracking-wide">Preview</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Try the first two prompts</h2>
+            <p class="text-muted text-lg mb-6">Demo mode stays limited. Full gameplay unlocks only after the Worker confirms a valid token spend.</p>
+
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-center gap-3 justify-center lg:justify-start">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-navy">Education only, not tax advice</span>
+              </li>
+              <li class="flex items-center gap-3 justify-center lg:justify-start">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-navy">Scenario-based learning</span>
+              </li>
+              <li class="flex items-center gap-3 justify-center lg:justify-start">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-navy">Token-gated unlock with resume during an active session</span>
+              </li>
+            </ul>
+
+            <button id="previewTryDemo" class="bg-navy hover:bg-navy-light text-white font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center gap-2" type="button">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Try Demo
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="py-16 lg:py-24 bg-navy text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">Simple Setup</span>
+          <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">How It Works</h2>
+          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. Minimal drama. The Worker does the gate, not wishful thinking.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-20 h-20 bg-primary/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center font-bold text-sm">1</span>
+              <svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.341A8 8 0 104.572 15.34" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Sign in</h3>
+            <p class="text-blue-200">Cookie session required so tokens and play grants attach to your account.</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-20 h-20 bg-accent/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center font-bold text-sm">2</span>
+              <svg class="w-10 h-10 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Confirm spend</h3>
+            <p class="text-blue-200">You approve the spend. The Worker validates balance and idempotency.</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-20 h-20 bg-amber-500/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center font-bold text-sm">3</span>
+              <svg class="w-10 h-10 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Play</h3>
+            <p class="text-blue-200">You’re redirected into the game once access is granted.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="py-16 lg:py-24 bg-white">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">FAQ</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="space-y-4" id="faq-container">
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" type="button" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">Do tokens expire?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">No. Tokens do not expire and are non-transferable.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" type="button" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">How does the token spend work?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">When you confirm, the Worker verifies your balance and creates an active play session so reloads do not charge you again while the session remains active.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" type="button" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">I need real help. What now?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">For monitoring or representation, use <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" type="button" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">Is this tax advice or representation?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">No. This is educational only. Representation requires a separate engagement via taxmonitor.pro.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" type="button" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">Why do I need to sign in?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">Tokens and play grants are tied to your account, and the Worker uses a cookie session to verify access.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-surface">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl card-shadow p-8">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 bg-accent/15 rounded-2xl flex items-center justify-center">
+              <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 21a9 9 0 100-18 9 9 0 000 18z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-2xl font-bold text-navy">Trust + Disclaimers</h2>
+              <ul class="mt-3 space-y-2 text-muted">
+                <li>Educational only.</li>
+                <li>Need monitoring or representation? Visit <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</li>
+                <li>Not representation.</li>
+                <li>Not tax advice.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 lg:py-24 gradient-hero text-white">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to play?</h2>
+        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend verified by the Worker.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+          <button id="btnUnlock2" class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2" type="button">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            Unlock &amp; Play (8 tokens)
+          </button>
+          <a href="/index.html" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl border border-white/20 transition-all">View All Games</a>
+        </div>
+        <div class="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm rounded-full px-6 py-3">
+          <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          <span class="text-sm font-medium">Tokens are non-expiring. Active sessions switch the page to Resume Play.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARTIAL:footer -->
+
+  </div>
+
+  <!-- Confirm Spend Modal -->
+  <div id="confirmModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/60" data-confirm-close="1"></div>
+
+    <div class="absolute inset-4 md:inset-10 lg:inset-16 bg-white rounded-3xl overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <div>
+          <p class="text-muted text-sm">Confirm spend</p>
+          <h3 class="text-xl font-bold text-navy">Spend <span id="modalCost">8</span> tokens to unlock?</h3>
+        </div>
+        <button id="btnCloseModal" type="button" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" data-confirm-close="1" aria-label="Close">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-auto p-6">
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-4">
+          <p class="text-green-900 text-sm"><strong>Session behavior:</strong> This spend creates an active play session that stays valid until you complete or lose, so reloads do not charge you again while the session remains active.</p>
+        </div>
+
+        <div class="mt-5 grid md:grid-cols-2 gap-4">
+          <div class="bg-surface rounded-2xl p-5">
+            <p class="text-navy font-semibold">Game</p>
+            <p class="text-muted text-sm">IRS Detective</p>
+          </div>
+          <div class="bg-surface rounded-2xl p-5">
+            <p class="text-navy font-semibold">Cost</p>
+            <p class="text-muted text-sm"><span id="modalCost2">8</span> tokens</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-gray-200 bg-surface flex items-center justify-end gap-3">
+        <button id="btnCancelSpend" type="button" class="bg-white hover:bg-gray-50 text-navy font-semibold px-6 py-3 rounded-xl border border-gray-200 transition-all">
+          Cancel
+        </button>
+        <button id="btnConfirmSpend" type="button" class="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-xl btn-shadow transition-all hover:scale-105">
+          Confirm spend (8 tokens)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demo Modal -->
+  <div id="demoModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/70" data-demo-close="1"></div>
+
+    <div class="absolute inset-4 md:inset-10 lg:inset-16 rounded-3xl overflow-hidden border border-white/10 game-bg">
+      <div class="relative h-full w-full overflow-auto">
+        <div class="relative z-10 p-4 md:p-8">
+          <header class="text-center mb-6">
+            <div class="flex items-center justify-between gap-4">
+              <div class="text-left">
+                <p class="text-glow text-xs font-semibold tracking-wide" style="font-family: Poppins, system-ui, sans-serif;">MINI DEMO</p>
+                <h2 class="font-title text-2xl md:text-3xl neon-text text-white" style="font-family: 'Fredoka One', system-ui, sans-serif;">IRS Detective</h2>
+                <p class="text-glow text-sm" style="font-family: Poppins, system-ui, sans-serif;">Preview only. Two questions. No token spend.</p>
+              </div>
+
+              <button type="button" class="p-2 rounded-lg border border-white/10 text-white hover:bg-white/10 transition" data-demo-close="1" aria-label="Close demo">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+          </header>
+
+          <div class="flex flex-wrap justify-center gap-3 md:gap-4 mb-6">
+            <div class="bg-detective/60 border-2 border-glow rounded-lg px-5 py-3 backdrop-blur-sm">
+              <div class="text-xs text-glow/80 mb-1" style="font-family: Poppins, system-ui, sans-serif;">SCORE</div>
+              <div id="demo-score" class="text-2xl font-bold text-success" style="font-family: Poppins, system-ui, sans-serif;">0</div>
+            </div>
+            <div class="bg-detective/60 border-2 border-glow rounded-lg px-5 py-3 backdrop-blur-sm">
+              <div class="text-xs text-glow/80 mb-1" style="font-family: Poppins, system-ui, sans-serif;">LEVEL</div>
+              <div class="text-2xl font-bold text-glow" style="font-family: Poppins, system-ui, sans-serif;"><span id="demo-level">1</span>/2</div>
+            </div>
+            <div class="bg-detective/60 border-2 border-glow rounded-lg px-5 py-3 backdrop-blur-sm">
+              <div class="text-xs text-glow/80 mb-1" style="font-family: Poppins, system-ui, sans-serif;">STREAK</div>
+              <div id="demo-streak" class="text-2xl font-bold text-warning" style="font-family: Poppins, system-ui, sans-serif;">0</div>
+            </div>
+          </div>
+
+          <main class="max-w-3xl mx-auto">
+            <div id="demo-start" class="text-center">
+              <div class="bg-detective/60 border-2 border-glow rounded-lg p-6 md:p-8 backdrop-blur-sm">
+                <p class="text-white text-base md:text-lg leading-relaxed mb-6" style="font-family: Poppins, system-ui, sans-serif;">Your refund disappeared. Match codes to meanings. Each correct answer earns points.</p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button id="demo-start-btn" class="bg-glow text-detective font-bold py-3 px-8 rounded-lg text-base md:text-lg hover:bg-success hover:shadow-lg transition-all transform hover:scale-105" type="button" style="font-family: Poppins, system-ui, sans-serif;">
+                    START DEMO
+                  </button>
+                  <button id="demo-unlock-btn" type="button" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-3 rounded-lg btn-shadow transition-all hover:scale-105" style="font-family: Poppins, system-ui, sans-serif;">
+                    Unlock &amp; Play (8 tokens)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div id="demo-game" class="hidden">
+              <div class="bg-detective/60 border-2 border-glow rounded-lg p-5 md:p-6 mb-5 backdrop-blur-sm">
+                <div class="text-glow text-sm font-bold mb-2" style="font-family: Poppins, system-ui, sans-serif;">CODE IDENTIFICATION</div>
+                <div id="demo-question" class="text-2xl md:text-3xl text-white" style="font-family: 'Fredoka One', system-ui, sans-serif;"></div>
+              </div>
+
+              <div id="demo-cards" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5"></div>
+
+              <div id="demo-feedback" class="hidden bg-detective/60 border-2 rounded-lg p-4 backdrop-blur-sm mb-4">
+                <div id="demo-feedback-text" class="text-center font-bold text-lg" style="font-family: Poppins, system-ui, sans-serif;"></div>
+              </div>
+
+              <div class="flex flex-wrap gap-3 justify-center">
+                <button id="demo-next-btn" class="hidden bg-success text-detective font-bold py-2 px-6 rounded-lg hover:shadow-lg transition-all" type="button" style="font-family: Poppins, system-ui, sans-serif;">NEXT →</button>
+                <button id="demo-reset-btn" class="bg-white/10 border border-white/15 text-white font-semibold py-2 px-6 rounded-lg hover:bg-white/15 transition-all" type="button" style="font-family: Poppins, system-ui, sans-serif;">RESTART</button>
+                <button id="demo-skip-btn" class="bg-danger text-white font-bold py-2 px-6 rounded-lg hover:shadow-lg transition-all" type="button" style="font-family: Poppins, system-ui, sans-serif;">SKIP (-100)</button>
+                <button id="demo-unlock-btn-2" type="button" class="bg-glow text-detective font-bold py-2 px-6 rounded-lg hover:bg-success hover:shadow-lg transition-all" style="font-family: Poppins, system-ui, sans-serif;">UNLOCK (8)</button>
+              </div>
+            </div>
+
+            <div id="demo-results" class="hidden text-center">
+              <div class="bg-detective/60 border-2 border-glow rounded-lg p-6 md:p-8 backdrop-blur-sm">
+                <div class="text-4xl mb-4">🎉</div>
+                <h3 class="text-2xl md:text-3xl font-title text-success mb-2" style="font-family: 'Fredoka One', system-ui, sans-serif;">DEMO COMPLETE!</h3>
+                <p class="text-lg text-glow mb-6" style="font-family: Poppins, system-ui, sans-serif;">Final Score: <span id="demo-final" class="font-bold">0</span></p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button id="demo-restart-btn" class="bg-white/10 border border-white/15 text-white font-semibold py-3 px-8 rounded-lg hover:bg-white/15 transition-all" type="button" style="font-family: Poppins, system-ui, sans-serif;">REPLAY DEMO</button>
+                  <button id="demo-unlock-btn-3" class="bg-glow text-detective font-bold py-3 px-8 rounded-lg hover:bg-success hover:shadow-lg transition-all transform hover:scale-105" type="button" style="font-family: Poppins, system-ui, sans-serif;">UNLOCK &amp; PLAY (8)</button>
+                </div>
+              </div>
+            </div>
+          </main>
+
+          <div class="max-w-3xl mx-auto mt-6">
+            <p class="text-glow/80 text-sm text-center" style="font-family: Poppins, system-ui, sans-serif;">Education only. Not tax advice. Not representation. For real help, use <a class="underline text-white" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "https://tools-api.taxmonitor.pro";
+    const gameFile = "irs-tax-detective.html";
+    const gameSlug = "irs-tax-detective";
+    const tokenCost = 8;
+
+    function setStatus(msg) {
+      const el = document.getElementById("status");
+      if (!el) return;
+      el.className = "text-blue-200 text-sm";
+      el.textContent = msg || "";
+    }
+
+    function setStatusHtml(html) {
+      const el = document.getElementById("status");
+      if (!el) return;
+      el.className = "text-blue-200 text-sm";
+      el.innerHTML = html || "";
+    }
+
+    function toggleFaq(button) {
+      const content = button.nextElementSibling;
+      const icon = button.querySelector('.faq-icon');
+      const isOpen = !content.classList.contains('hidden');
+
+      document.querySelectorAll('.faq-content').forEach((c) => c.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach((i) => { i.style.transform = 'rotate(0deg)'; });
+
+      if (!isOpen) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    function showConfirmModal() {
+      document.getElementById("modalCost").textContent = String(tokenCost);
+      document.getElementById("modalCost2").textContent = String(tokenCost);
+      document.getElementById("btnConfirmSpend").textContent = `Confirm spend (${tokenCost} tokens)`;
+      const modal = document.getElementById("confirmModal");
+      modal.classList.remove("hidden");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function hideConfirmModal() {
+      const modal = document.getElementById("confirmModal");
+      modal.classList.add("hidden");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    async function apiGet(path) {
+      const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
+      return { res, json: await res.json().catch(() => ({})) };
+    }
+
+    async function apiPost(path, body) {
+      const res = await fetch(API_BASE + path, {
+        method: "POST",
+        credentials: "include",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      return { res, json: await res.json().catch(() => ({})) };
+    }
+
+    async function beginLogin() {
+      setStatus("Starting sign-in…");
+      const started = await apiPost("/v1/auth/start", { returnTo: window.location.href });
+      const redirectUrl = started?.json?.redirectUrl || started?.json?.url || "";
+      if (started.res.ok && redirectUrl) {
+        window.location.href = redirectUrl;
+        return;
+      }
+      window.location.href = "/index.html";
+    }
+
+    function setUnlockMode(mode) {
+      const btns = [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean);
+      const label = mode === "resume" ? "Resume Play" : `Unlock & Play (${tokenCost} tokens)`;
+      btns.forEach((btn) => {
+        btn.dataset.mode = mode;
+        btn.innerHTML = mode === "resume"
+          ? "Resume Play"
+          : btn.id === "btnUnlock2"
+            ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Unlock &amp; Play (8 tokens)'
+            : label;
+      });
+    }
+
+    async function preflightUnlock() {
+      setStatus("Checking session…");
+
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
+        await beginLogin();
+        return;
+      }
+
+      setStatus("Checking token balance…");
+      const bal = await apiGet("/v1/tokens/balance");
+      const balance = Number(bal.json && bal.json.balance);
+      if (!Number.isFinite(balance)) {
+        setStatus("Could not load token balance.");
+        return;
+      }
+
+      if (balance < tokenCost) {
+        setStatusHtml('Not enough tokens. Buy a pack from the main arcade page, then come back.');
+        return;
+      }
+
+      setStatus("Ready. Confirm spend to unlock.");
+      showConfirmModal();
+    }
+
+    async function confirmSpendAndRedirect() {
+      setStatus("Confirming token spend…");
+
+      const spend = await apiPost("/v1/tokens/spend", {
+        amount: tokenCost,
+        idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
+        reason: "arcade_play",
+        slug: gameSlug
+      });
+
+      if (!spend.res.ok) {
+        hideConfirmModal();
+        setStatus("Spend failed. Please try again.");
+        return;
+      }
+
+      hideConfirmModal();
+      setStatus("Unlocked. Redirecting…");
+      window.location.href = "/games/" + gameFile;
+    }
+
+    async function refreshGrantStatus() {
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok) {
+        setUnlockMode("locked");
+        setStatus("");
+        return { allowed: false };
+      }
+
+      const access = await apiGet(`/v1/games/access?slug=${encodeURIComponent(gameSlug)}`);
+      const allowed = !!(access.res.ok && access.json && access.json.allowed);
+
+      if (allowed) {
+        setUnlockMode("resume");
+        setStatus("Active session detected. You can resume without spending tokens.");
+        return { allowed: true };
+      }
+
+      setUnlockMode("locked");
+      setStatus("");
+      return { allowed: false };
+    }
+
+    function resumePlay() {
+      window.location.href = "/games/" + gameFile;
+    }
+
+    function wireUnlockButtons() {
+      [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean).forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          const state = await refreshGrantStatus();
+          if (state.allowed) {
+            resumePlay();
+            return;
+          }
+          preflightUnlock();
+        });
+      });
+    }
+
+    function wireConfirmModal() {
+      document.querySelectorAll('[data-confirm-close="1"]').forEach((el) => {
+        el.addEventListener("click", hideConfirmModal);
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        const confirmModal = document.getElementById("confirmModal");
+        const demoModal = document.getElementById("demoModal");
+        if (confirmModal && !confirmModal.classList.contains("hidden")) hideConfirmModal();
+        if (demoModal && !demoModal.classList.contains("hidden")) hideDemoModal();
+      });
+
+      document.getElementById("btnConfirmSpend")?.addEventListener("click", confirmSpendAndRedirect);
+      document.getElementById("btnCancelSpend")?.addEventListener("click", hideConfirmModal);
+    }
+
+    const demoData = [
+      {
+        code: "826",
+        question: "What does code 826 mean?",
+        answers: [
+          { text: "Overpayment transferred to another tax period", correct: true },
+          { text: "Notice issued and mailed", correct: false },
+          { text: "Refund applied to non-IRS debt", correct: false }
+        ]
+      },
+      {
+        code: "820",
+        question: "What does code 820 mean?",
+        answers: [
+          { text: "Credit transferred to another tax period", correct: true },
+          { text: "Overpayment transferred to another tax period", correct: false },
+          { text: "Identity verified successfully", correct: false }
+        ]
+      }
+    ];
+
+    let demoState = {
+      answered: false,
+      currentQuestion: 0,
+      score: 0,
+      streak: 0
+    };
+
+    function shuffleArray(arr) {
+      return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    function demoEls() {
+      return {
+        cards: document.getElementById("demo-cards"),
+        feedback: document.getElementById("demo-feedback"),
+        feedbackText: document.getElementById("demo-feedback-text"),
+        final: document.getElementById("demo-final"),
+        game: document.getElementById("demo-game"),
+        level: document.getElementById("demo-level"),
+        next: document.getElementById("demo-next-btn"),
+        question: document.getElementById("demo-question"),
+        results: document.getElementById("demo-results"),
+        score: document.getElementById("demo-score"),
+        start: document.getElementById("demo-start"),
+        streak: document.getElementById("demo-streak")
+      };
+    }
+
+    function demoShow(screen) {
+      const { game, results, start } = demoEls();
+      if (!game || !results || !start) return;
+      start.classList.toggle("hidden", screen !== "start");
+      game.classList.toggle("hidden", screen !== "game");
+      results.classList.toggle("hidden", screen !== "results");
+    }
+
+    function demoUpdateUI() {
+      const { level, score, streak } = demoEls();
+      if (score) score.textContent = String(demoState.score);
+      if (level) level.textContent = String(demoState.currentQuestion + 1);
+      if (streak) streak.textContent = String(demoState.streak);
+    }
+
+    function demoFeedbackShow(kind, text) {
+      const { feedback, feedbackText } = demoEls();
+      if (!feedback || !feedbackText) return;
+      feedback.classList.remove("hidden", "border-success", "border-danger", "border-warning");
+      feedback.classList.add(kind === "success" ? "border-success" : kind === "danger" ? "border-danger" : "border-warning");
+      feedbackText.textContent = text;
+      feedbackText.className = kind === "success"
+        ? "text-success text-lg font-bold"
+        : kind === "danger"
+          ? "text-danger text-lg font-bold"
+          : "text-warning text-lg font-bold";
+    }
+
+    function demoRenderQuestion() {
+      const { cards, feedback, next, question } = demoEls();
+      const currentQ = demoData[demoState.currentQuestion];
+      if (question) question.textContent = currentQ.question;
+      if (cards) cards.innerHTML = "";
+
+      shuffleArray(currentQ.answers).forEach((answer) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "bg-detective/60 border-2 border-glow hover:border-success rounded-lg p-4 backdrop-blur-sm card-reveal text-left transition-all hover:shadow-lg transform hover:scale-105 text-white";
+        btn.textContent = answer.text;
+        btn.addEventListener("click", () => demoSelectAnswer(answer, btn));
+        cards?.appendChild(btn);
+      });
+
+      feedback?.classList.add("hidden");
+      next?.classList.add("hidden");
+      demoState.answered = false;
+      demoUpdateUI();
+    }
+
+    function demoSelectAnswer(answer, btn) {
+      const { cards, next } = demoEls();
+      if (demoState.answered) return;
+      demoState.answered = true;
+
+      cards?.querySelectorAll("button")?.forEach((b) => {
+        b.disabled = true;
+        b.classList.add("opacity-70");
+      });
+
+      if (answer.correct) {
+        demoState.score += 250;
+        demoState.streak += 1;
+        btn.classList.add("success-glow", "border-success", "bg-success/10");
+        demoFeedbackShow("success", "✅ CORRECT! +250 PTS");
+      } else {
+        demoState.streak = 0;
+        btn.classList.add("glitch", "border-danger", "bg-danger/10");
+        demoFeedbackShow("danger", "❌ INCORRECT!");
+      }
+
+      demoUpdateUI();
+
+      window.setTimeout(() => {
+        if (demoState.currentQuestion < demoData.length - 1) {
+          next?.classList.remove("hidden");
+          return;
+        }
+        demoEnd();
+      }, 500);
+    }
+
+    function demoNext() {
+      if (!demoState.answered) return;
+      demoState.currentQuestion += 1;
+      demoRenderQuestion();
+    }
+
+    function demoReset() {
+      demoState = { answered: false, currentQuestion: 0, score: 0, streak: 0 };
+      demoShow("start");
+      demoUpdateUI();
+    }
+
+    function demoSkip() {
+      const { next } = demoEls();
+      if (demoState.answered) return;
+      demoState.answered = true;
+      demoState.score = Math.max(0, demoState.score - 100);
+      demoState.streak = 0;
+      demoFeedbackShow("warning", "⏭️ SKIPPED -100 PTS");
+      demoUpdateUI();
+
+      window.setTimeout(() => {
+        if (demoState.currentQuestion < demoData.length - 1) {
+          demoState.currentQuestion += 1;
+          demoRenderQuestion();
+          return;
+        }
+        demoEnd();
+      }, 500);
+
+      next?.classList.add("hidden");
+    }
+
+    function demoStart() {
+      demoState = { answered: false, currentQuestion: 0, score: 0, streak: 0 };
+      demoShow("game");
+      demoRenderQuestion();
+    }
+
+    function demoEnd() {
+      const { final } = demoEls();
+      if (final) final.textContent = String(demoState.score);
+      demoShow("results");
+    }
+
+    function showDemoModal() {
+      const modal = document.getElementById("demoModal");
+      if (!modal) return;
+      modal.classList.remove("hidden");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("overflow-hidden");
+      demoReset();
+    }
+
+    function hideDemoModal() {
+      const modal = document.getElementById("demoModal");
+      if (!modal) return;
+      modal.classList.add("hidden");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    function wireDemoModal() {
+      document.querySelectorAll('[data-demo-close="1"]').forEach((el) => {
+        el.addEventListener("click", hideDemoModal);
+      });
+
+      document.getElementById("demo-start-btn")?.addEventListener("click", demoStart);
+      document.getElementById("demo-next-btn")?.addEventListener("click", demoNext);
+      document.getElementById("demo-reset-btn")?.addEventListener("click", demoReset);
+      document.getElementById("demo-skip-btn")?.addEventListener("click", demoSkip);
+      document.getElementById("demo-restart-btn")?.addEventListener("click", demoStart);
+      document.getElementById("demo-unlock-btn")?.addEventListener("click", () => { hideDemoModal(); preflightUnlock(); });
+      document.getElementById("demo-unlock-btn-2")?.addEventListener("click", () => { hideDemoModal(); preflightUnlock(); });
+      document.getElementById("demo-unlock-btn-3")?.addEventListener("click", () => { hideDemoModal(); preflightUnlock(); });
+    }
+
+    function initElementSdk() {
+      window.elementSdk?.init?.({
+        elements: {
+          gameSubtitle: { type: "text" },
+          gameTitle: { type: "text" }
+        },
+        page: {
+          file: `about-games/${gameFile}`,
+          slug: gameSlug,
+          type: "about-game"
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initElementSdk();
+      refreshGrantStatus();
+      wireUnlockButtons();
+      wireConfirmModal();
+      wireDemoModal();
+
+      document.getElementById("btnDemo")?.addEventListener("click", showDemoModal);
+      document.getElementById("previewTryDemo")?.addEventListener("click", showDemoModal);
+      document.getElementById("heroTryDemo")?.addEventListener("click", showDemoModal);
+    });
+
+    window.addEventListener("pageshow", () => {
+      refreshGrantStatus();
+    });
+  </script>
+</body>
+</html>
