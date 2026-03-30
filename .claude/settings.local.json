@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/tmp/**)"
+    ]
+  },
+  "autoApprove": [
+    "Write",
+    "Edit",
+    "Create"
+  ],
+  "autoApprovePatterns": [
+    "**/*.html",
+    "**/*.js",
+    "**/*.css",
+    ".claude/**",
+    "_sdk/**"
+  ],
+  "deny": [
+    "Bash(rm -rf *)",
+    "Bash(curl *)",
+    "Bash(wget *)",
+    "Write(workers/**)"
+  ],
+  "maxTurns": 20
+}

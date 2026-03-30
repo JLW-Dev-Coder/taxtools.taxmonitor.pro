@@ -27,10 +27,6 @@ invocation_logs = true
 # Auth
 TAXTOOLS_AUTH_BASE_URL = "https://tools-api.taxmonitor.pro"
 
-# ClickUp
-CLICKUP_ACCOUNTS_LIST_ID = "901710909567"
-CLICKUP_SUPPORT_LIST_ID = "901710818377"
-
 # Google Workspace
 GOOGLE_CLIENT_EMAIL = "tax-monitor-worker@tax-monitor-pro.iam.gserviceaccount.com"
 GOOGLE_TOKEN_URI = "https://oauth2.googleapis.com/token"
@@ -46,10 +42,5 @@ MY_ORGANIZATION_NAME = "Tax Monitor Pro"
 MY_ORGANIZATION_STATE_PROVINCE = "CA"
 MY_ORGANIZATION_ZIP = "92020"
 
-# PayPal IDs
-PAYPAL_CLIENT_ID = "AVtOtr3LiOz8PjZKHuPoxdeg5rOqSUxVPfm-iChUfTnY8smb1UuVXXiCnzYzNC-H--5_UjpxpgzDGzQ7"
-PAYPAL_ENV = "live"
-PAYPAL_WEBHOOKS_ENABLED = "true"
-PAYPAL_WEBHOOK_ID = "61844185M0758343H"
 DEV_LOGIN_ENABLED = "false"
 

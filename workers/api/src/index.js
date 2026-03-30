@@ -1654,6 +1654,8 @@ export default {
 
       const path = url.pathname === "/v1/arcade/tokens" ? "/v1/tokens/balance" : url.pathname;
 
+      // DEV ROUTES — TO BE REMOVED in Phase T5 when Worker
+      // is deleted. Do not add new dev routes.
       if (path === "/dev/login") return handleDevLogin(request, env);
       if (path === "/dev/mint") return handleDevMint(request, env);
 

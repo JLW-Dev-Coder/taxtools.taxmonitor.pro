@@ -764,7 +764,6 @@
       await refreshGameResumeStates();
 
       if (sessionId) {
-        url.searchParams.delete('paypal');
         url.searchParams.delete('session_id');
         url.searchParams.delete('token');
         history.replaceState({}, document.title, url.toString());
