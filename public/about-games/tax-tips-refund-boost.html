@@ -1,0 +1,1330 @@
+<!-- about-games/tax-tips-refund-boost.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tax Tips Refund Boost • TaxTools</title>
+  <meta name="description" content="Play a fast, 20-question tax tips quiz with streak tracking and power-ups. Unlock full play with 8 tokens, verified server-side." />
+
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="stylesheet" href="/styles/site.css" />
+
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            dm: ['"DM Sans"', 'system-ui', 'sans-serif']
+          },
+          colors: {
+            action: '#1d4ed8',
+            charcoal: '#2d3748',
+            muted: '#64748b',
+            navy: '#0f2747',
+            'navy-light': '#17365f',
+            primary: '#1d4ed8',
+            'primary-dark': '#1e40af',
+            accent: '#f59e0b',
+            'accent-dark': '#d97706',
+            surface: '#f8fafc'
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * { font-family: 'DM Sans', system-ui, sans-serif; }
+    html { scroll-behavior: smooth; }
+    body { box-sizing: border-box; }
+    .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
+    .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+    .btn-shadow { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); }
+    .hero-panel { animation: hero-float 4.5s ease-in-out infinite; transform-origin: center; }
+    @keyframes hero-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 18px 28px rgba(0,0,0,0.25)); }
+      50% { transform: translateY(-10px) rotate(0.6deg); filter: drop-shadow(0 26px 34px rgba(0,0,0,0.35)); }
+    }
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 26px;
+      pointer-events: none;
+      background: radial-gradient(600px 220px at 20% 0%, rgba(255,255,255,0.10), transparent 55%),
+                  radial-gradient(500px 260px at 80% 100%, rgba(245,158,11,0.12), transparent 60%);
+      opacity: 0.75;
+      animation: hero-glow 3.8s ease-in-out infinite;
+    }
+    @keyframes hero-glow {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 0.9; }
+    }
+    .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .demo-game {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      font-family: 'Fredoka', system-ui, sans-serif;
+    }
+    .demo-card {
+      background: rgba(255, 255, 255, 0.10);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.20);
+    }
+    .demo-primary {
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #FFD600 0%, #FFC700 100%);
+      color: #1e3a5f;
+      font-weight: 800;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .demo-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(255, 215, 0, 0.35); }
+    .demo-primary:active { transform: translateY(-1px); }
+    .demo-primary:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+      transform: none;
+      box-shadow: none;
+    }
+    .demo-secondary {
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.30);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 700;
+    }
+    .demo-secondary:hover { background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 215, 0, 0.45); }
+    .demo-answer {
+      transition: all 0.3s ease;
+      border: 3px solid rgba(255, 255, 255, 0.30);
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 16px;
+      font-weight: 700;
+      width: 100%;
+      color: #fff;
+    }
+    .demo-answer:hover:not(.disabled) {
+      border-color: rgba(255, 215, 0, 0.60);
+      background: rgba(255, 215, 0, 0.12);
+      transform: scale(1.01);
+    }
+    .demo-answer.correct {
+      background: rgba(16, 185, 129, 0.30);
+      border-color: #10b981;
+    }
+    .demo-answer.incorrect {
+      background: rgba(239, 68, 68, 0.30);
+      border-color: #ef4444;
+    }
+    .demo-answer.disabled { opacity: 0.7; cursor: not-allowed; }
+    .demo-score {
+      background: rgba(255, 215, 0, 0.20);
+      border: 2px solid #FFD600;
+      border-radius: 9999px;
+      padding: 10px 16px;
+      font-weight: 800;
+      display: inline-block;
+    }
+    .demo-power {
+      background: rgba(139, 92, 246, 0.30);
+      border: 2px solid rgba(139, 92, 246, 0.60);
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: not-allowed;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      opacity: 0.55;
+    }
+    .demo-streak {
+      display: inline-block;
+      background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-weight: 800;
+      font-size: 14px;
+      margin-top: 6px;
+    }
+    @keyframes pulse-indicator {
+      0%, 100% {
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), inset 0 0 6px rgba(255, 255, 255, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.9), inset 0 0 8px rgba(255, 255, 255, 0.5);
+      }
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+      border: 2px solid rgba(16, 185, 129, 0.35);
+      border-radius: 14px;
+      padding: 12px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+    .status-badge:hover {
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.15), inset 0 1px 3px rgba(255, 255, 255, 0.15);
+    }
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), inset 0 0 6px rgba(255, 255, 255, 0.3);
+      animation: pulse-indicator 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    .status-text {
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+    }
+    .status-link {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body class="h-full bg-white text-charcoal overflow-hidden font-dm">
+  <div id="app" class="h-full w-full overflow-auto custom-scrollbar">
+
+    <!-- PARTIAL:header -->
+
+    <section class="gradient-hero text-white py-16 lg:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div class="text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <span class="w-2 h-2 bg-accent rounded-full pulse-ring"></span>
+              <span class="text-sm font-medium">Interactive Game • Instant Access</span>
+            </div>
+
+            <p class="text-blue-100 text-lg mb-2"></p>
+            <h1 id="game-title" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Tax Tips Refund Boost</h1>
+            <p id="game-subtitle" class="text-xl md:text-2xl text-blue-100 mb-8">A 20-question quiz with streak tracking and power-ups (50/50 + skip). Built for quick, practical tax learning.</p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <button id="btnUnlock" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105">
+                Unlock &amp; Play (8 tokens)
+              </button>
+              <button id="btnDemo" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-xl border border-white/20 transition-all">
+                Try Demo
+              </button>
+            </div>
+
+            <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
+              <p class="text-blue-200 text-sm">✓ Education only • ✓ Cookie session • ✓ Token-gated unlock</p>
+              <span id="status" class="text-blue-200 text-sm">Checking access…</span>
+            </div>
+          </div>
+
+          <div class="relative flex justify-center lg:justify-end">
+            <div class="relative w-full max-w-md">
+              <div class="hero-panel relative rounded-3xl p-5 card-shadow border border-white/10" style="background: linear-gradient(135deg, rgba(30,27,75,0.85) 0%, rgba(49,46,129,0.85) 55%, rgba(67,56,202,0.85) 100%);">
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <h3 class="text-white font-bold text-lg">Quest Map</h3>
+                    <p class="text-blue-200 text-sm">5 zones. Quizzes. Badges.</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/15" style="background: rgba(255,255,255,0.10)">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2m0 18l6-3m-6 3V2m6 15l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 13l-6 3" />
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3">
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(59,130,246,0.85) 0%, rgba(34,211,238,0.75) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">A</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Subpart A</p>
+                        <p class="text-white/80 text-sm leading-tight">Tax Basics</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Start</span>
+                    </div>
+                  </button>
+
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(16,185,129,0.85) 0%, rgba(20,184,166,0.75) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">B</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Subpart B</p>
+                        <p class="text-white/80 text-sm leading-tight">Credits & Deductions</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Mid</span>
+                    </div>
+                  </button>
+
+                  <div class="grid grid-cols-2 gap-3">
+                    <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(239,68,68,0.85) 0%, rgba(244,63,94,0.75) 100%);">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                          <span class="text-white font-bold">C</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-white font-semibold leading-tight">Income</p>
+                          <p class="text-white/80 text-xs leading-tight">Reporting</p>
+                        </div>
+                      </div>
+                    </button>
+
+                    <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(168,85,247,0.85) 0%, rgba(139,92,246,0.75) 100%);">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                          <span class="text-white font-bold">D</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-white font-semibold leading-tight">Retirement</p>
+                          <p class="text-white/80 text-xs leading-tight">Limits</p>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(249,115,22,0.85) 0%, rgba(245,158,11,0.75) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">E</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Subpart E</p>
+                        <p class="text-white/80 text-sm leading-tight">Business Write-Offs</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Finish</span>
+                    </div>
+                  </button>
+                </div>
+
+                <div class="mt-5 grid grid-cols-3 gap-3">
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">5</p>
+                    <p class="text-blue-200 text-xs">Zones</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">20</p>
+                    <p class="text-blue-200 text-xs">Questions</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">2</p>
+                    <p class="text-blue-200 text-xs">Power-ups</p>
+                  </div>
+                </div>
+
+                <div class="mt-5 flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="inline-flex h-2.5 w-2.5 rounded-full" style="background: rgba(16,185,129,0.95)"></span>
+                    <span class="text-blue-200 text-xs">Progress tracked</span>
+                  </div>
+                  <button type="button" id="heroTryDemo" class="text-white text-xs font-semibold px-3 py-2 rounded-xl border border-white/15 transition hover:bg-white/10">Try demo</button>
+                </div>
+              </div>
+
+              <div class="absolute -top-3 -right-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(249,115,22,0.95)">
+                <p class="text-white text-sm font-bold">8 tokens</p>
+                <p class="text-white/90 text-xs">per play</p>
+              </div>
+              <div class="absolute -bottom-3 -left-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(29,78,216,0.95)">
+                <p class="text-white text-sm font-bold">Run to</p>
+                <p class="text-white/90 text-xs">completion</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="what-youll-learn" class="py-16 lg:py-24 bg-surface">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">What You’ll Learn</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Refund-focused tax fundamentals</h2>
+          <p class="text-muted text-lg max-w-2xl mx-auto">Four clean takeaways, because apparently humans do better with fewer shiny boxes.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <h3 class="text-navy font-bold text-lg mb-2">Standard deduction basics</h3>
+            <p class="text-muted text-sm">Know the baseline so you can spot when itemizing matters.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <h3 class="text-navy font-bold text-lg mb-2">Retirement contribution limits</h3>
+            <p class="text-muted text-sm">Understand IRA and 401(k) limits that affect tax planning.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <h3 class="text-navy font-bold text-lg mb-2">Credits and deductions</h3>
+            <p class="text-muted text-sm">Practice common credits like CTC and deductions like student loan interest.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <h3 class="text-navy font-bold text-lg mb-2">Small business write-offs</h3>
+            <p class="text-muted text-sm">Cover equipment and pass-through topics in quick question form.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="preview" class="py-16 lg:py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div class="order-2 lg:order-1">
+            <div class="bg-gray-50 rounded-3xl p-6 md:p-8">
+              <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                <div class="bg-navy px-4 py-3 flex items-center gap-3">
+                  <div class="flex gap-1.5">
+                    <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                    <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                  </div>
+                  <div class="flex-1 text-center"><span class="text-white/60 text-sm">Tax Tips Refund Boost (Preview)</span></div>
+                </div>
+
+                <div class="p-5">
+                  <div class="flex items-center justify-between mb-4">
+                    <p class="text-navy font-bold">Mini Demo</p>
+                    <span class="text-muted text-xs">Education only</span>
+                  </div>
+
+                  <div class="space-y-3">
+                    <div class="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border-l-4 border-primary">
+                      <div class="text-center">
+                        <p class="text-xs text-muted uppercase">Q</p>
+                        <p class="text-lg font-bold text-navy">01</p>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-navy font-semibold text-sm">What is the standard deduction for single filers in 2025?</p>
+                        <p class="text-muted text-xs">Demo question from the real game</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-start gap-3 p-4 bg-amber-50 rounded-xl border-l-4" style="border-color: #f59e0b;">
+                      <div class="text-center">
+                        <p class="text-xs text-muted uppercase">Q</p>
+                        <p class="text-lg font-bold text-navy">02</p>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-navy font-semibold text-sm">How much can you contribute to a traditional IRA in 2025?</p>
+                        <p class="text-muted text-xs">Demo question from the real game</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-5 flex justify-end">
+                    <button type="button" class="bg-gray-200 text-gray-500 px-6 py-3 rounded-xl font-semibold cursor-not-allowed" disabled title="Unlocked after token spend">
+                      Full Play (locked)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-1 lg:order-2 text-center lg:text-left">
+            <span class="text-primary font-semibold text-sm uppercase tracking-wide">Preview</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Try the first two prompts</h2>
+            <p class="text-muted text-lg mb-6">Demo mode is limited to two questions and never spends tokens. Full gameplay unlocks only after the Worker confirms a valid token spend.</p>
+
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-center gap-3 justify-center lg:justify-start">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4" style="color: #f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-navy">Two real questions from the game</span>
+              </li>
+              <li class="flex items-center gap-3 justify-center lg:justify-start">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4" style="color: #f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-navy">No token spend in demo</span>
+              </li>
+              <li class="flex items-center gap-3 justify-center lg:justify-start">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4" style="color: #f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-navy">Education only, not tax advice</span>
+              </li>
+            </ul>
+
+            <button id="previewTryDemo" class="bg-navy hover:bg-navy-light text-white font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Try Demo
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="py-16 lg:py-24 bg-navy text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">Simple Setup</span>
+          <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">How It Works</h2>
+          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. No local token guesswork. The Worker decides what you can play, because that is how reality should work.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-20 h-20 bg-primary/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center font-bold text-sm">1</span>
+              <svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.341A8 8 0 104.572 15.34" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Sign in</h3>
+            <p class="text-blue-200">Cookie session required so tokens and access grants attach to your account.</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-20 h-20 bg-accent/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8" style="background: #f59e0b; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.875rem;">2</span>
+              <svg class="w-10 h-10" style="color: #f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Confirm spend</h3>
+            <p class="text-blue-200">You approve the spend first. Nothing charges itself just because a browser woke up confused.</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-20 h-20 bg-amber-500/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center font-bold text-sm">3</span>
+              <svg class="w-10 h-10 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Play</h3>
+            <p class="text-blue-200">You’re redirected into the 20-question challenge once access exists.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="py-16 lg:py-24 bg-white">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">FAQ</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="space-y-4" id="faq-container">
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">Do tokens expire?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">No. Tokens do not expire and are non-transferable.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">How does the token spend work?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">When you confirm, the Worker verifies your balance and creates an active play session so reloads don’t charge you again while the session is active.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">Is this tax advice or representation?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">No. This is educational only. Not tax advice. Not representation.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">Why do I need to sign in?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">Tokens and play grants are tied to your account, and the Worker uses a cookie session to verify access.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">What happens if the API is unavailable?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">The page shows a temporary connection message and does not attempt any token spend until the API is reachable again.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">I need real help, what now?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">If you want monitoring or representation, go to <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-surface">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl card-shadow p-8">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center" style="background: rgba(245,158,11,0.15)">
+              <svg class="w-7 h-7" style="color: #f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 21a9 9 0 100-18 9 9 0 000 18z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-2xl font-bold text-navy">Trust + Disclaimers</h2>
+              <ul class="mt-3 space-y-2 text-muted">
+                <li>Educational only. Not tax advice.</li>
+                <li>Not representation.</li>
+                <li>Need monitoring or representation? Visit <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 lg:py-24 gradient-hero text-white">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to play?</h2>
+        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend verified by the Worker.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+          <button id="btnUnlock2" class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            Unlock &amp; Play (8 tokens)
+          </button>
+          <a href="/index.html" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl border border-white/20 transition-all">
+            View All Games
+          </a>
+        </div>
+        <div class="inline-flex items-center gap-2" style="background: rgba(245,158,11,0.20); border-radius: 9999px; padding: 0.75rem 1.5rem;">
+          <svg class="w-5 h-5" style="color: #f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          <span class="text-sm font-medium">Tokens don’t expire. Active sessions prevent double-spend during play.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARTIAL:footer -->
+  </div>
+
+  <div id="confirmModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/60" data-confirm-close="1"></div>
+
+    <div class="absolute inset-4 md:inset-10 lg:inset-16 bg-white rounded-3xl overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <div>
+          <p class="text-muted text-sm">Confirm spend</p>
+          <h3 class="text-xl font-bold text-navy">Spend <span id="modalCost">8</span> tokens to unlock?</h3>
+        </div>
+        <button id="btnCloseModal" type="button" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" data-confirm-close="1" aria-label="Close">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-auto p-6">
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-4">
+          <p class="text-green-900 text-sm"><strong>Session behavior:</strong> This spend creates an active play session that stays valid until you complete or lose, so reloads don’t charge you again while the session is active.</p>
+        </div>
+
+        <div class="mt-5 grid md:grid-cols-2 gap-4">
+          <div class="bg-surface rounded-2xl p-5">
+            <p class="text-navy font-semibold">Game</p>
+            <p class="text-muted text-sm">Tax Tips Refund Boost</p>
+          </div>
+          <div class="bg-surface rounded-2xl p-5">
+            <p class="text-navy font-semibold">Cost</p>
+            <p class="text-muted text-sm"><span id="modalCost2">8</span> tokens</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-gray-200 bg-surface flex items-center justify-end gap-3">
+        <button id="btnCancelSpend" type="button" class="bg-white hover:bg-gray-50 text-navy font-semibold px-6 py-3 rounded-xl border border-gray-200 transition-all">
+          Cancel
+        </button>
+        <button id="btnConfirmSpend" type="button" class="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-xl btn-shadow transition-all hover:scale-105">
+          Confirm spend (8 tokens)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="demoModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/70" data-demo-close="1"></div>
+
+    <div class="demo-game absolute inset-4 md:inset-10 lg:inset-16 rounded-3xl overflow-hidden flex flex-col border border-white/10">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10" style="background: rgba(255,255,255,0.08)">
+        <div>
+          <p class="text-white/80 text-sm font-semibold">Demo</p>
+          <h3 class="text-white text-xl font-black" id="demoTitle">Tax Tips Refund Boost</h3>
+          <p class="text-white/70 text-xs" id="demoCompany">TaxTools</p>
+        </div>
+        <button type="button" class="p-2 hover:bg-white/10 rounded-lg transition-colors text-white" data-demo-close="1" aria-label="Close demo">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-auto p-6">
+        <div class="mx-auto w-full max-w-3xl">
+          <div class="flex justify-between items-center mb-6">
+            <div class="text-left">
+              <p class="text-sm text-white/80">Question <span id="demoQIndex">1</span>/2</p>
+              <div class="w-48 h-2 bg-white/20 rounded-full mt-2">
+                <div id="demoProgress" class="h-full rounded-full transition-all" style="width: 50%; background: linear-gradient(90deg, #FFD600 0%, #FFC700 100%);"></div>
+              </div>
+              <div class="demo-streak" id="demoStreak" style="display: none;">
+                🔥 Streak: <span id="demoStreakCount">0</span>
+              </div>
+            </div>
+
+            <div class="text-right">
+              <div class="demo-score mb-3">Score: <span id="demoScore">0</span></div>
+              <div class="flex gap-2 justify-end">
+                <button type="button" class="demo-power used" title="Demo only">50/50</button>
+                <button type="button" class="demo-power used" title="Demo only">⏭️ Skip</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo-card rounded-3xl p-6 md:p-8">
+            <h4 id="demoQuestion" class="text-2xl md:text-3xl font-bold leading-tight mb-6"></h4>
+            <div id="demoOptions" class="space-y-4"></div>
+            <div class="text-center text-sm text-white/75 mt-6">
+              <p id="demoFeedbackText" class="mb-2 min-h-[1.5rem]"></p>
+            </div>
+            <button id="demoNext" type="button" class="demo-primary w-full hidden">NEXT →</button>
+
+            <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button id="demoReset" type="button" class="demo-secondary">RESTART DEMO</button>
+              <button id="demoUnlock" type="button" class="demo-primary">UNLOCK &amp; PLAY (8 TOKENS)</button>
+            </div>
+
+            <p class="mt-4 text-xs text-white/70">Educational only. Not tax advice. Not representation.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-white/10" style="background: rgba(255,255,255,0.06)">
+        <p class="text-white/80 text-sm">Want the real thing? Full game unlocks only after a Worker-verified token spend.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "https://tools-api.taxmonitor.pro";
+    const gameFile = "tax-tips-refund-boost.html";
+    const gameSlug = "tax-tips-refund-boost";
+    const tokenCost = 8;
+
+    let spendInFlight = false;
+    let apiReachable = true;
+    let lastNetworkError = "";
+
+    function setStatus(msg) {
+      const el = document.getElementById("status");
+      if (el) el.textContent = msg || "";
+    }
+
+    function setStatusHtml(html) {
+      const el = document.getElementById("status");
+      if (el) el.innerHTML = html || "";
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function isNetworkError(error) {
+      return error instanceof TypeError || /fetch/i.test(String(error && error.message || ""));
+    }
+
+    function showApiUnavailableStatus(contextLabel) {
+      const safeContext = escapeHtml(contextLabel || "service");
+      setStatusHtml(
+        `Connection issue while checking ${safeContext}. ` +
+        `This environment may block external requests. ` +
+        `<a class="status-link" href="${API_BASE}" target="_blank" rel="noreferrer">Open API</a>`
+      );
+    }
+
+    function updateButtonsDisabledState(disabled) {
+      [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2"), document.getElementById("demoUnlock")]
+        .filter(Boolean)
+        .forEach((btn) => {
+          btn.disabled = !!disabled;
+          btn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+        });
+    }
+
+    function toggleFaq(button) {
+      const content = button.nextElementSibling;
+      const icon = button.querySelector('.faq-icon');
+      const isOpen = !content.classList.contains('hidden');
+
+      document.querySelectorAll('.faq-content').forEach((c) => c.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach((i) => { i.style.transform = 'rotate(0deg)'; });
+
+      if (!isOpen) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    function showConfirmModal() {
+      document.getElementById("modalCost").textContent = String(tokenCost);
+      document.getElementById("modalCost2").textContent = String(tokenCost);
+      document.getElementById("btnConfirmSpend").textContent = `Confirm spend (${tokenCost} tokens)`;
+      const modal = document.getElementById("confirmModal");
+      modal.classList.remove("hidden");
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function hideConfirmModal() {
+      const modal = document.getElementById("confirmModal");
+      modal.classList.add("hidden");
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove("overflow-hidden");
+      spendInFlight = false;
+      const btn = document.getElementById("btnConfirmSpend");
+      if (btn) btn.disabled = false;
+    }
+
+    async function apiRequest(path, options = {}, contextLabel = "service") {
+      try {
+        const res = await fetch(API_BASE + path, {
+          credentials: "include",
+          ...options
+        });
+        apiReachable = true;
+        lastNetworkError = "";
+        const json = await res.json().catch(() => ({}));
+        return { ok: true, res, json, networkError: false };
+      } catch (error) {
+        if (isNetworkError(error)) {
+          apiReachable = false;
+          lastNetworkError = String(error && error.message || error || "Failed to fetch");
+          showApiUnavailableStatus(contextLabel);
+          return {
+            ok: false,
+            res: null,
+            json: {},
+            networkError: true,
+            error
+          };
+        }
+        throw error;
+      }
+    }
+
+    async function apiGet(path, contextLabel) {
+      return apiRequest(path, { method: "GET" }, contextLabel);
+    }
+
+    async function apiPost(path, body, contextLabel) {
+      return apiRequest(path, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body)
+      }, contextLabel);
+    }
+
+    async function beginLogin() {
+      setStatus("Starting sign-in…");
+      const started = await apiPost("/v1/auth/start", { returnTo: window.location.href }, "sign-in");
+      if (started.networkError) return;
+      const redirectUrl = started?.json?.redirectUrl || started?.json?.url || "";
+      if (started.res && started.res.ok && redirectUrl) {
+        window.location.href = redirectUrl;
+        return;
+      }
+      setStatus("Could not start sign-in.");
+    }
+
+    function showBuyOptions() {
+      setStatusHtml(
+        `Not enough tokens. <a class="status-link" href="/index.html#pricing">Buy a token pack</a>.`
+      );
+    }
+
+    async function preflightUnlock() {
+      setStatus("Checking session…");
+
+      const me = await apiGet("/v1/auth/me", "your session");
+      if (me.networkError) return;
+      if (!me.res || !me.res.ok || !me.json || me.json.isAuthenticated === false) {
+        await beginLogin();
+        return;
+      }
+
+      setStatus("Checking token balance…");
+      const bal = await apiGet("/v1/tokens/balance", "your token balance");
+      if (bal.networkError) return;
+      const balance = Number(bal.json && bal.json.balance);
+
+      if (!Number.isFinite(balance)) {
+        setStatus("Could not load token balance.");
+        return;
+      }
+
+      if (balance < tokenCost) {
+        showBuyOptions();
+        return;
+      }
+
+      setStatus("Ready. Confirm spend to unlock.");
+      showConfirmModal();
+    }
+
+    async function confirmSpendAndRedirect() {
+      if (spendInFlight) return;
+      spendInFlight = true;
+
+      const btn = document.getElementById("btnConfirmSpend");
+      if (btn) btn.disabled = true;
+
+      setStatus("Confirming token spend…");
+
+      const spend = await apiPost("/v1/tokens/spend", {
+        amount: tokenCost,
+        idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
+        reason: "arcade_play",
+        slug: gameSlug
+      }, "token spend");
+
+      if (spend.networkError) {
+        hideConfirmModal();
+        return;
+      }
+
+      if (!spend.res || !spend.res.ok) {
+        hideConfirmModal();
+        setStatus("Spend failed. Please try again.");
+        return;
+      }
+
+      hideConfirmModal();
+      setStatus("Unlocked. Redirecting…");
+      window.location.href = "/games/" + gameFile;
+    }
+
+    function setUnlockMode(mode) {
+      const btns = [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean);
+      const labels = {
+        locked: `Unlock & Play (${tokenCost} tokens)`,
+        resume: "Resume Play"
+      };
+
+      btns.forEach((btn) => {
+        btn.textContent = labels[mode] || labels.locked;
+        btn.dataset.mode = mode;
+      });
+    }
+
+    async function refreshGrantStatus() {
+      const me = await apiGet("/v1/auth/me", "your session");
+      if (me.networkError) {
+        setUnlockMode("locked");
+        updateButtonsDisabledState(true);
+        return { allowed: false, networkError: true };
+      }
+
+      if (!me.res || !me.res.ok || !me.json || me.json.isAuthenticated === false) {
+        setUnlockMode("locked");
+        updateButtonsDisabledState(false);
+        setStatus("");
+        return { allowed: false, networkError: false };
+      }
+
+      const access = await apiGet(`/v1/games/access?slug=${encodeURIComponent(gameSlug)}`, "game access");
+      if (access.networkError) {
+        setUnlockMode("locked");
+        updateButtonsDisabledState(true);
+        return { allowed: false, networkError: true };
+      }
+
+      const allowed = !!(access.res && access.res.ok && access.json && access.json.allowed === true);
+
+      updateButtonsDisabledState(false);
+
+      if (allowed) {
+        setUnlockMode("resume");
+        setStatus("Active session detected. You can resume without spending tokens.");
+        return { allowed: true, networkError: false };
+      }
+
+      setUnlockMode("locked");
+      setStatus("");
+      return { allowed: false, networkError: false };
+    }
+
+    function resumePlay() {
+      window.location.href = "/games/" + gameFile;
+    }
+
+    function scrollToPreview() {
+      const el = document.getElementById('preview');
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    const demoQuestions = [
+      {
+        question: 'What is the standard deduction for single filers in 2025?',
+        options: ['$13,850', '$14,600', '$15,000', '$16,550'],
+        correct: 1,
+        explanation: 'Correct answer: $14,600.'
+      },
+      {
+        question: 'How much can you contribute to a traditional IRA in 2025?',
+        options: ['$6,500', '$7,000', '$7,500', '$8,000'],
+        correct: 1,
+        explanation: 'Correct answer: $7,000.'
+      }
+    ];
+
+    const demoState = {
+      answered: false,
+      index: 0,
+      score: 0,
+      streak: 0
+    };
+
+    function getDemoSummaryText() {
+      return `Final demo score: ${demoState.score}/${demoQuestions.length}.`;
+    }
+
+    function showDemoModal() {
+      const modal = document.getElementById('demoModal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('overflow-hidden');
+      resetDemo();
+    }
+
+    function hideDemoModal() {
+      const modal = document.getElementById('demoModal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    function renderDemoQuestion() {
+      const q = demoQuestions[demoState.index];
+      const qIndex = demoState.index + 1;
+      const total = demoQuestions.length;
+
+      demoState.answered = false;
+
+      document.getElementById('demoTitle').textContent = document.getElementById('game-title')?.textContent || 'Tax Tips Refund Boost';
+      document.getElementById('demoQIndex').textContent = String(qIndex);
+      document.getElementById('demoScore').textContent = String(demoState.score);
+      document.getElementById('demoQuestion').textContent = q.question;
+      document.getElementById('demoFeedbackText').textContent = '';
+
+      const progress = Math.round((qIndex / total) * 100);
+      const bar = document.getElementById('demoProgress');
+      if (bar) bar.style.width = progress + '%';
+
+      const streakEl = document.getElementById('demoStreak');
+      const streakCount = document.getElementById('demoStreakCount');
+      if (demoState.streak > 0) {
+        if (streakEl) streakEl.style.display = 'inline-block';
+        if (streakCount) streakCount.textContent = String(demoState.streak);
+      } else if (streakEl) {
+        streakEl.style.display = 'none';
+      }
+
+      const nextBtn = document.getElementById('demoNext');
+      if (nextBtn) nextBtn.classList.add('hidden');
+
+      const options = document.getElementById('demoOptions');
+      if (!options) return;
+      options.innerHTML = q.options.map((opt, idx) => `<button type="button" class="demo-answer" data-idx="${idx}">${opt}</button>`).join('');
+
+      options.querySelectorAll('.demo-answer').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const selected = Number(btn.getAttribute('data-idx'));
+          gradeDemo(selected);
+        });
+      });
+    }
+
+    function gradeDemo(selectedIndex) {
+      if (demoState.answered) return;
+      demoState.answered = true;
+
+      const q = demoQuestions[demoState.index];
+      const isCorrect = selectedIndex === q.correct;
+      const buttons = document.querySelectorAll('#demoOptions .demo-answer');
+
+      if (isCorrect) {
+        demoState.score += 1;
+        demoState.streak += 1;
+        document.getElementById('demoFeedbackText').textContent = `✅ Correct! ${q.explanation}`;
+      } else {
+        demoState.streak = 0;
+        document.getElementById('demoFeedbackText').textContent = `❌ Not quite. ${q.explanation}`;
+      }
+
+      document.getElementById('demoScore').textContent = String(demoState.score);
+
+      buttons.forEach((btn, idx) => {
+        btn.classList.add('disabled');
+        btn.setAttribute('aria-disabled', 'true');
+        if (idx === q.correct) btn.classList.add('correct');
+        if (idx === selectedIndex && !isCorrect) btn.classList.add('incorrect');
+      });
+
+      const nextBtn = document.getElementById('demoNext');
+      if (nextBtn) {
+        nextBtn.textContent = demoState.index < demoQuestions.length - 1 ? 'NEXT →' : 'FINISH →';
+        nextBtn.classList.remove('hidden');
+      }
+
+      const streakEl = document.getElementById('demoStreak');
+      const streakCount = document.getElementById('demoStreakCount');
+      if (demoState.streak > 0) {
+        if (streakEl) streakEl.style.display = 'inline-block';
+        if (streakCount) streakCount.textContent = String(demoState.streak);
+      } else if (streakEl) {
+        streakEl.style.display = 'none';
+      }
+    }
+
+    function resetDemo() {
+      demoState.index = 0;
+      demoState.score = 0;
+      demoState.streak = 0;
+      demoState.answered = false;
+      renderDemoQuestion();
+    }
+
+    function advanceDemo() {
+      if (!demoState.answered) {
+        document.getElementById('demoFeedbackText').textContent = 'Pick an answer to continue.';
+        return;
+      }
+
+      if (demoState.index < demoQuestions.length - 1) {
+        demoState.index += 1;
+        renderDemoQuestion();
+        return;
+      }
+
+      document.getElementById('demoQuestion').textContent = 'Demo complete. Ready to unlock the full 20-question quiz?';
+      document.getElementById('demoFeedbackText').textContent = getDemoSummaryText();
+      const options = document.getElementById('demoOptions');
+      if (options) options.innerHTML = '';
+      const nextBtn = document.getElementById('demoNext');
+      if (nextBtn) nextBtn.classList.add('hidden');
+      const streakEl = document.getElementById('demoStreak');
+      if (streakEl) streakEl.style.display = 'none';
+    }
+
+    function wireDemoModal() {
+      document.querySelectorAll('[data-demo-close="1"]').forEach((el) => {
+        el.addEventListener('click', hideDemoModal);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const demoModal = document.getElementById('demoModal');
+        if (demoModal && !demoModal.classList.contains('hidden')) hideDemoModal();
+      });
+
+      document.getElementById('demoReset')?.addEventListener('click', resetDemo);
+      document.getElementById('demoNext')?.addEventListener('click', advanceDemo);
+      document.getElementById('demoUnlock')?.addEventListener('click', async () => {
+        hideDemoModal();
+        const state = await refreshGrantStatus();
+        if (state.allowed) {
+          resumePlay();
+          return;
+        }
+        if (!state.networkError) {
+          preflightUnlock();
+        }
+      });
+    }
+
+    function wireConfirmModal() {
+      document.querySelectorAll('[data-confirm-close="1"]').forEach((el) => {
+        el.addEventListener('click', hideConfirmModal);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const confirmModal = document.getElementById('confirmModal');
+        if (confirmModal && !confirmModal.classList.contains('hidden')) hideConfirmModal();
+      });
+
+      document.getElementById('btnConfirmSpend')?.addEventListener('click', confirmSpendAndRedirect);
+      document.getElementById('btnCancelSpend')?.addEventListener('click', hideConfirmModal);
+    }
+
+    function wireUnlockButtons() {
+      [document.getElementById('btnUnlock'), document.getElementById('btnUnlock2')].filter(Boolean).forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const state = await refreshGrantStatus();
+          if (state.allowed) {
+            resumePlay();
+            return;
+          }
+          if (!state.networkError) {
+            preflightUnlock();
+          }
+        });
+      });
+    }
+
+    function initElementSdk() {
+      window.elementSdk?.init({
+        elements: {
+          companyName: { selector: '#demoCompany', type: 'text' },
+          gameSubtitle: { selector: '#game-subtitle', type: 'text' },
+          gameTitle: { selector: '#game-title', type: 'text' }
+        },
+        page: {
+          slug: gameSlug,
+          type: 'about-game'
+        }
+      });
+    }
+
+    function runLocalSelfTests() {
+      const tests = [];
+
+      tests.push({
+        name: 'required ids exist',
+        pass: !!document.getElementById('app') && !!document.getElementById('status') && !!document.getElementById('btnUnlock') && !!document.getElementById('btnUnlock2') && !!document.getElementById('confirmModal')
+      });
+
+      tests.push({
+        name: 'demo question count is 2',
+        pass: demoQuestions.length === 2
+      });
+
+      tests.push({
+        name: 'demo summary text reflects score',
+        pass: (() => {
+          const prior = demoState.score;
+          demoState.score = 1;
+          const ok = getDemoSummaryText() === 'Final demo score: 1/2.';
+          demoState.score = prior;
+          return ok;
+        })()
+      });
+
+      tests.push({
+        name: 'network errors recognized',
+        pass: isNetworkError(new TypeError('Failed to fetch')) === true
+      });
+
+      tests.push({
+        name: 'escapeHtml sanitizes angle brackets',
+        pass: escapeHtml('<demo>') === '&lt;demo&gt;'
+      });
+
+      window.__aboutGameSelfTests = tests;
+      window.__aboutGameSelfTestsPassed = tests.every((test) => test.pass);
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      setStatus('Checking access…');
+      initElementSdk();
+      runLocalSelfTests();
+      wireConfirmModal();
+      wireDemoModal();
+      wireUnlockButtons();
+
+      document.getElementById('btnDemo')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        scrollToPreview();
+      });
+
+      document.getElementById('previewTryDemo')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        showDemoModal();
+      });
+
+      document.getElementById('heroTryDemo')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        scrollToPreview();
+      });
+
+      await refreshGrantStatus();
+    });
+
+    window.addEventListener('pageshow', () => {
+      refreshGrantStatus();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,859 @@
+<!-- games/irs-notice-jackpot.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>IRS Notice Jackpot</title>
+  <meta name="description" content="Spin the reels and match IRS notice numbers to real-world scenarios. Educational-only tax knowledge practice." />
+
+  <link rel="icon" href="/assets/favicon.ico" />
+
+  <!-- Keep these remote assets for now so your game styling doesn’t change.
+       If you want strict “local assets only” compliance, vendor them and remove these tags. -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&amp;family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/styles/site.css" />
+
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    .slot-font { font-family: 'Russo One', sans-serif; }
+    .notice-font { font-family: 'Roboto', sans-serif; }
+
+    @keyframes spin {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-100%); }
+    }
+
+    @keyframes flash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700; }
+      50% { box-shadow: 0 0 40px #ffd700, 0 0 80px #ffd700, 0 0 120px #ffd700; }
+    }
+
+    @keyframes coin-fall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100%) rotate(720deg); opacity: 0; }
+    }
+
+    @keyframes confetti {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100%) rotate(360deg); opacity: 0; }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @keyframes lever-pull {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(45deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    @keyframes letter-reveal {
+      0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+      50% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .spinning .reel-strip {
+      animation: spin 0.1s linear infinite;
+    }
+
+    .flash { animation: flash 0.5s ease-in-out 3; }
+    .pulse-glow { animation: pulse-glow 1s ease-in-out infinite; }
+    .shake { animation: shake 0.5s ease-in-out; }
+    .lever-pull { animation: lever-pull 0.5s ease-in-out; }
+    .letter-reveal { animation: letter-reveal 0.6s ease-out forwards; }
+
+    .coin {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(135deg, #ffd700, #ffed4a, #ffd700);
+      border-radius: 50%;
+      border: 3px solid #b8860b;
+      animation: coin-fall 2s ease-in forwards;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confetti 3s ease-out forwards;
+    }
+
+    .slot-machine {
+      background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%);
+      border: 8px solid #c0c0c0;
+      border-radius: 20px;
+      box-shadow:
+        inset 0 5px 15px rgba(255,255,255,0.1),
+        0 10px 30px rgba(0,0,0,0.5),
+        0 0 0 4px #8b0000;
+    }
+
+    .reel-window {
+      background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+      border: 4px solid #ffd700;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .reel-symbol {
+      background: linear-gradient(135deg, #ffffff 0%, #e8e8e8 50%, #ffffff 100%);
+      border: 2px solid #333;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .lever-container {
+      position: absolute;
+      right: -60px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .lever-ball {
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle at 30% 30%, #ff4444, #cc0000, #8b0000);
+      border-radius: 50%;
+      border: 3px solid #660000;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .lever-ball:hover {
+      transform: scale(1.1);
+    }
+
+    .lever-stick {
+      width: 8px;
+      height: 80px;
+      background: linear-gradient(90deg, #c0c0c0, #808080);
+      margin: 0 auto;
+      border-radius: 4px;
+    }
+
+    .light-bulb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+
+    .light-on {
+      box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+    }
+
+    .irs-letter {
+      background: #fff;
+      border: 1px solid #ccc;
+      font-size: 11px;
+      line-height: 1.4;
+      position: relative;
+    }
+
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 48px;
+      color: rgba(200, 0, 0, 0.15);
+      font-weight: bold;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <style>
+    html, body { background: #020617; }
+
+    /* Status badge styling (matches canonical Canvas pages) */
+    @keyframes pulse-indicator {
+      0%, 100% {
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), inset 0 0 6px rgba(255, 255, 255, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.9), inset 0 0 8px rgba(255, 255, 255, 0.5);
+      }
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+      border: 2px solid rgba(16, 185, 129, 0.35);
+      border-radius: 14px;
+      padding: 12px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .status-badge:hover {
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.15), inset 0 1px 3px rgba(255, 255, 255, 0.15);
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), inset 0 0 6px rgba(255, 255, 255, 0.3);
+      animation: pulse-indicator 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .status-text {
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="h-full notice-font">
+  <!-- PARTIAL:header -->
+
+  <!-- Status line required by Canonical UX safety -->
+  <div class="mx-auto max-w-6xl px-6 pt-4 pb-4 flex justify-center">
+    <div class="status-badge">
+      <span class="status-indicator" aria-hidden="true"></span>
+      <span id="status" class="status-text">Checking access…</span>
+    </div>
+  </div>
+
+  <!-- GAME UI (as provided) -->
+  <div id="app" class="h-full w-full overflow-auto custom-scrollbar" style="background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%); padding-bottom: 6rem;">
+    <!-- Intro Screen -->
+    <div id="intro-screen" class="min-h-full flex flex-col items-center justify-center p-6 text-center">
+      <div class="relative">
+        <!-- Decorative lights -->
+        <div class="absolute -top-8 left-1/2 -translate-x-1/2 flex gap-3">
+          <div class="light-bulb bg-red-500 light-on" style="animation: flash 0.8s infinite;"></div>
+          <div class="light-bulb bg-yellow-400 light-on" style="animation: flash 0.8s infinite 0.2s;"></div>
+          <div class="light-bulb bg-green-500 light-on" style="animation: flash 0.8s infinite 0.4s;"></div>
+          <div class="light-bulb bg-blue-500 light-on" style="animation: flash 0.8s infinite 0.6s;"></div>
+          <div class="light-bulb bg-red-500 light-on" style="animation: flash 0.8s infinite;"></div>
+        </div>
+        <h1 id="main-title" class="slot-font text-5xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 mb-2 drop-shadow-lg">IRS NOTICE JACKPOT</h1>
+        <p id="main-subtitle" class="slot-font text-2xl md:text-3xl text-red-400 mb-6">🎰 Spin to Win! 🎰</p>
+      </div>
+      <div class="bg-black/40 backdrop-blur rounded-xl p-6 max-w-lg mb-8 border border-yellow-500/30">
+        <p class="text-yellow-100 text-lg mb-4">Can you match the right IRS notice to each section? Spin the reels and test your tax knowledge!</p>
+        <div class="text-left text-gray-300 space-y-2">
+          <p>🎯 Match the notice number to the clue</p>
+          <p>🎰 Spin until you get it right</p>
+          <p>🏆 Get 7 out of 10 for the JACKPOT!</p>
+        </div>
+      </div>
+      <button id="start-btn" onclick="startGame()" disabled class="slot-font text-2xl bg-gradient-to-r from-red-600 via-red-500 to-red-600 text-white px-12 py-4 rounded-full border-4 border-yellow-400 transition-transform pulse-glow opacity-50 cursor-not-allowed">🎰 PULL TO START 🎰</button>
+
+      <!-- Mini slot machine decoration -->
+      <div class="mt-8 flex gap-2">
+        <div class="w-16 h-20 bg-white rounded-lg flex items-center justify-center text-lg font-bold border-2 border-yellow-500">CP71C</div>
+        <div class="w-16 h-20 bg-white rounded-lg flex items-center justify-center text-lg font-bold border-2 border-yellow-500">CP27</div>
+        <div class="w-16 h-20 bg-white rounded-lg flex items-center justify-center text-lg font-bold border-2 border-yellow-500">CP40</div>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="min-h-full flex flex-col items-center justify-center p-4 hidden">
+      <!-- Score display -->
+      <div class="flex items-center gap-8 mb-4">
+        <div class="bg-black/60 px-6 py-2 rounded-full border-2 border-yellow-500">
+          <span class="text-yellow-400 slot-font">ROUND: </span>
+          <span id="round-num" class="text-white slot-font text-xl">1</span>
+          <span class="text-gray-400 slot-font">/10</span>
+        </div>
+        <div class="bg-black/60 px-6 py-2 rounded-full border-2 border-green-500">
+          <span class="text-green-400 slot-font">WINS: </span>
+          <span id="wins-num" class="text-white slot-font text-xl">0</span>
+        </div>
+      </div>
+
+      <!-- Question clue -->
+      <div id="clue-box" class="bg-gradient-to-r from-red-900/80 via-red-800/80 to-red-900/80 px-8 py-4 rounded-xl border-2 border-yellow-500 mb-6 max-w-2xl text-center">
+        <p class="text-yellow-400 text-sm mb-1 slot-font">MATCH THIS NOTICE:</p>
+        <p id="clue-text" class="text-white text-lg"></p>
+      </div>
+
+      <!-- Slot Machine -->
+      <div class="relative">
+        <div id="slot-machine" class="slot-machine p-6 w-80 md:w-96">
+          <!-- Top decoration -->
+          <div class="flex justify-center gap-2 mb-4">
+            <div class="light-bulb bg-red-500" id="light1"></div>
+            <div class="light-bulb bg-yellow-400" id="light2"></div>
+            <div class="light-bulb bg-green-500" id="light3"></div>
+            <div class="light-bulb bg-blue-500" id="light4"></div>
+            <div class="light-bulb bg-red-500" id="light5"></div>
+          </div>
+          <div class="text-center mb-4"><span class="slot-font text-yellow-400 text-xl">★ IRS JACKPOT ★</span></div>
+
+          <!-- Reels -->
+          <div class="flex gap-2 justify-center mb-4">
+            <div class="reel-window w-20 h-24 md:w-24 md:h-28">
+              <div id="reel1" class="reel-container h-full flex flex-col"><div class="reel-strip flex flex-col"></div></div>
+            </div>
+            <div class="reel-window w-20 h-24 md:w-24 md:h-28 border-4 border-green-400 relative">
+              <div class="absolute -top-2 left-1/2 -translate-x-1/2 bg-green-400 px-2 py-0.5 rounded text-xs font-bold text-black z-10">ANSWER</div>
+              <div id="reel2" class="reel-container h-full flex flex-col"><div class="reel-strip flex flex-col"></div></div>
+            </div>
+            <div class="reel-window w-20 h-24 md:w-24 md:h-28">
+              <div id="reel3" class="reel-container h-full flex flex-col"><div class="reel-strip flex flex-col"></div></div>
+            </div>
+          </div>
+
+          <!-- Spin button -->
+          <button id="spin-btn" onclick="spinReels()" class="w-full slot-font text-xl bg-gradient-to-r from-green-600 via-green-500 to-green-600 text-white py-3 rounded-full border-4 border-yellow-400 hover:scale-105 transition-transform">🎰 SPIN! 🎰</button>
+        </div>
+
+        <!-- Lever -->
+        <div class="lever-container hidden md:block">
+          <div id="lever" onclick="spinReels()">
+            <div class="lever-ball"></div>
+            <div class="lever-stick"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result message -->
+      <div id="result-message" class="mt-6 text-center hidden">
+        <div id="result-banner" class="slot-font text-4xl mb-2"></div>
+        <p id="result-text" class="text-white text-lg"></p>
+        <button id="next-btn" onclick="nextRound()" class="mt-4 slot-font bg-gradient-to-r from-blue-600 to-blue-500 text-white px-8 py-3 rounded-full border-2 border-yellow-400 hover:scale-105 transition-transform hidden">NEXT ROUND →</button>
+      </div>
+
+      <!-- Coin container for animations -->
+      <div id="coin-container" class="fixed inset-0 pointer-events-none overflow-hidden"></div>
+    </div>
+
+    <!-- Letter Modal -->
+    <div id="letter-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 hidden z-50">
+      <div id="letter-content" class="irs-letter max-w-lg w-full max-h-[80%] overflow-auto p-6 rounded shadow-2xl">
+        <div class="watermark">SAMPLE - NOT REAL</div>
+        <!-- Letter content will be inserted here -->
+      </div>
+    </div>
+
+    <!-- Jackpot Screen -->
+    <div id="jackpot-screen" class="min-h-full flex flex-col items-center justify-center p-6 text-center hidden">
+      <div id="jackpot-confetti" class="fixed inset-0 pointer-events-none overflow-hidden"></div>
+      <div class="relative z-10">
+        <div class="text-8xl mb-4">🏆</div>
+        <h2 class="slot-font text-5xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 mb-4">JACKPOT!</h2>
+        <p class="slot-font text-2xl text-green-400 mb-6">You're a Tax Notice Pro!</p>
+        <div class="bg-black/60 rounded-xl p-6 mb-8 border-2 border-yellow-500">
+          <p class="text-white text-xl mb-2">Final Score</p>
+          <p class="slot-font text-5xl text-yellow-400"><span id="final-score">0</span>/10</p>
+        </div>
+        <button onclick="resetGame()" class="slot-font text-xl bg-gradient-to-r from-green-600 to-green-500 text-white px-10 py-4 rounded-full border-4 border-yellow-400 hover:scale-105 transition-transform pulse-glow">🎰 PLAY AGAIN 🎰</button>
+      </div>
+    </div>
+
+    <!-- Game Over Screen (didn't hit jackpot) -->
+    <div id="gameover-screen" class="min-h-full flex flex-col items-center justify-center p-6 text-center hidden">
+      <div class="text-6xl mb-4">😢</div>
+      <h2 class="slot-font text-4xl md:text-5xl text-red-400 mb-4">BUST!</h2>
+      <p class="text-gray-300 text-xl mb-6">Better luck next time!</p>
+      <div class="bg-black/60 rounded-xl p-6 mb-8 border-2 border-red-500">
+        <p class="text-white text-xl mb-2">Final Score</p>
+        <p class="slot-font text-5xl text-red-400"><span id="final-score-lose">0</span>/10</p>
+        <p class="text-gray-400 mt-2">Need 7+ for Jackpot</p>
+      </div>
+      <button onclick="resetGame()" class="slot-font text-xl bg-gradient-to-r from-red-600 to-red-500 text-white px-10 py-4 rounded-full border-4 border-yellow-400 hover:scale-105 transition-transform">🎰 TRY AGAIN 🎰</button>
+    </div>
+  </div>
+
+  <!-- PARTIAL:footer -->
+
+  <script>
+    // --- Canonical access gate (Canvas-equivalent) ---
+    const API_BASE = "https://tools-api.taxmonitor.pro";
+    const GAME_FILE = "irs-notice-jackpot.html";
+    const GAME_SLUG = "irs-notice-jackpot";
+    const ABOUT_URL = "/about-games/" + GAME_FILE;
+
+    function redirectToAbout() {
+      window.location.href = ABOUT_URL;
+    }
+
+    function setStatus(msg) {
+      const el = document.getElementById("status");
+      if (el) el.textContent = msg || "";
+    }
+
+    async function apiGet(path) {
+      const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
+      const json = await res.json().catch(() => ({}));
+      return { res, json };
+    }
+
+    async function gateAccess() {
+      setStatus("Checking session…");
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) return false;
+
+      setStatus("Loading token balance…");
+      const bal = await apiGet("/v1/tokens/balance");
+      if (!bal.res.ok) return false;
+
+      setStatus("Verifying access grant…");
+      const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(GAME_SLUG));
+      if (!access.res.ok || !access.json || access.json.allowed !== true) return false;
+
+      setStatus("Access granted.");
+      return true;
+    }
+
+    async function endRun(result) {
+      await fetch(API_BASE + "/v1/games/end", {
+        method: "POST",
+        credentials: "include",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ result, slug: GAME_SLUG })
+      }).catch(() => {});
+    }
+
+    function initializeApp() {
+      const startBtn = document.getElementById("start-btn");
+      if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        startBtn.classList.add("hover:scale-105");
+      }
+    }
+
+    // --- Game code (as provided) ---
+
+    // Game data - IRS notices and their descriptions
+    const noticeData = [
+      { notice: "CP71C", clue: "Annual reminder that you have an unpaid balance due for a specific tax year, with potential levy warning.", letterType: "balance_due" },
+      { notice: "CP27", clue: "Notification that you may be entitled to the Earned Income Credit but didn't claim it on your return.", letterType: "credit" },
+      { notice: "CP40", clue: "Notice that your refund was used to pay a debt you owe to another federal agency.", letterType: "offset" },
+      { notice: "CP53", clue: "Your refund check was returned to the IRS because it couldn't be delivered to your address.", letterType: "refund" },
+      { notice: "CP575A", clue: "Confirmation that your application for an Employer Identification Number (EIN) has been approved.", letterType: "ein" },
+      { notice: "CP14", clue: "First notice informing you that you have a balance due on your tax account.", letterType: "balance_due" },
+      { notice: "CP2000", clue: "Proposed changes to your tax return because the income or payment information doesn't match records.", letterType: "mismatch" },
+      { notice: "CP22A", clue: "Changes were made to your tax return resulting in a balance due.", letterType: "balance_due" },
+      { notice: "CP501", clue: "Reminder notice that you have an unpaid amount due on your account.", letterType: "reminder" },
+      { notice: "CP90", clue: "Final notice of intent to levy - your right to a Collection Due Process hearing.", letterType: "levy" }
+    ];
+
+    const allNotices = ["CP71C", "CP27", "CP40", "CP53", "CP575A", "CP14", "CP2000", "CP22A", "CP501", "CP90", "FTB4024", "CP11", "CP12", "CP23"];
+
+    let currentRound = 0;
+    let wins = 0;
+    let isSpinning = false;
+    let gameQuestions = [];
+
+    // Default config
+    const defaultConfig = {
+      game_title: "IRS NOTICE JACKPOT",
+      subtitle: "🎰 Spin to Win! 🎰"
+    };
+
+    // Initialize Element SDK
+    window.elementSdk?.init({
+      defaultConfig,
+      onConfigChange: async (config) => {
+        const titleEl = document.getElementById('main-title');
+        const subEl = document.getElementById('main-subtitle');
+        if (titleEl) titleEl.textContent = config.game_title || defaultConfig.game_title;
+        if (subEl) subEl.textContent = config.subtitle || defaultConfig.subtitle;
+      },
+      mapToCapabilities: () => ({
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      }),
+      mapToEditPanelValues: (config) => new Map([
+        ["game_title", config.game_title || defaultConfig.game_title],
+        ["subtitle", config.subtitle || defaultConfig.subtitle]
+      ])
+    });
+
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    function startGame() {
+      currentRound = 0;
+      wins = 0;
+      gameQuestions = shuffleArray(noticeData);
+
+      document.getElementById('intro-screen').classList.add('hidden');
+      document.getElementById('game-screen').classList.remove('hidden');
+      document.getElementById('jackpot-screen').classList.add('hidden');
+      document.getElementById('gameover-screen').classList.add('hidden');
+
+      updateDisplay();
+      setupRound();
+    }
+
+    function updateDisplay() {
+      document.getElementById('round-num').textContent = currentRound + 1;
+      document.getElementById('wins-num').textContent = wins;
+    }
+
+    function setupRound() {
+      const question = gameQuestions[currentRound];
+      document.getElementById('clue-text').textContent = question.clue;
+
+      // Reset result area
+      document.getElementById('result-message').classList.add('hidden');
+      document.getElementById('next-btn').classList.add('hidden');
+      document.getElementById('spin-btn').disabled = false;
+      document.getElementById('spin-btn').textContent = '🎰 SPIN! 🎰';
+      document.getElementById('spin-btn').classList.remove('hidden');
+
+      // Setup reels with random notices
+      setupReels();
+
+      // Turn off lights
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById(`light${i}`).classList.remove('light-on');
+      }
+    }
+
+    function setupReels() {
+      const reels = ['reel1', 'reel2', 'reel3'];
+      reels.forEach((reelId) => {
+        const reel = document.getElementById(reelId);
+        const existing = reel.querySelector('.reel-strip');
+        const strip = existing || document.createElement('div');
+        strip.className = 'reel-strip';
+        strip.innerHTML = '';
+
+        // Create multiple symbols for spinning effect
+        const shuffledNotices = shuffleArray(allNotices);
+        for (let i = 0; i < 20; i++) {
+          const symbol = document.createElement('div');
+          symbol.className = 'reel-symbol w-full h-24 md:h-28 flex-shrink-0 text-sm md:text-base';
+          symbol.textContent = shuffledNotices[i % shuffledNotices.length];
+          strip.appendChild(symbol);
+        }
+
+        if (!existing) reel.appendChild(strip);
+        strip.style.transform = 'translateY(0)';
+      });
+    }
+
+    function spinReels() {
+      if (isSpinning) return;
+      isSpinning = true;
+
+      const spinBtn = document.getElementById('spin-btn');
+      spinBtn.disabled = true;
+      spinBtn.textContent = '🎰 SPINNING... 🎰';
+
+      // Animate lever
+      document.getElementById('lever')?.classList.add('lever-pull');
+      setTimeout(() => { document.getElementById('lever')?.classList.remove('lever-pull'); }, 500);
+
+      // Flash lights during spin
+      const lightInterval = setInterval(() => {
+        for (let i = 1; i <= 5; i++) {
+          const light = document.getElementById(`light${i}`);
+          light.classList.toggle('light-on');
+        }
+      }, 100);
+
+      // Add spinning class
+      const reels = ['reel1', 'reel2', 'reel3'];
+      reels.forEach(reelId => document.getElementById(reelId).classList.add('spinning'));
+
+      // Determine result - center reel (reel2) is the answer
+      const question = gameQuestions[currentRound];
+      const correctAnswer = question.notice;
+
+      // Random results for reel 1 and 3, but reel 2 has a chance to be correct
+      const isWin = Math.random() < 0.4; // 40% chance to win each spin
+
+      const results = [
+        shuffleArray(allNotices.filter(n => n !== correctAnswer))[0],
+        isWin ? correctAnswer : shuffleArray(allNotices.filter(n => n !== correctAnswer))[0],
+        shuffleArray(allNotices.filter(n => n !== correctAnswer))[0]
+      ];
+
+      // Stop reels one by one
+      const stopTimes = [1000, 1500, 2000];
+
+      reels.forEach((reelId, index) => {
+        setTimeout(() => {
+          const reel = document.getElementById(reelId);
+          reel.classList.remove('spinning');
+
+          // Show final result
+          const strip = reel.querySelector('.reel-strip');
+          strip.innerHTML = '';
+          const finalSymbol = document.createElement('div');
+          finalSymbol.className = 'reel-symbol w-full h-full text-sm md:text-base';
+          finalSymbol.textContent = results[index];
+          strip.appendChild(finalSymbol);
+        }, stopTimes[index]);
+      });
+
+      // Show result after all reels stop
+      setTimeout(() => {
+        clearInterval(lightInterval);
+        isSpinning = false;
+
+        // All lights on
+        for (let i = 1; i <= 5; i++) {
+          document.getElementById(`light${i}`).classList.add('light-on');
+        }
+
+        showResult(isWin, correctAnswer);
+      }, 2500);
+    }
+
+    function showResult(isWin, correctAnswer) {
+      const resultMessage = document.getElementById('result-message');
+      const resultBanner = document.getElementById('result-banner');
+      const resultText = document.getElementById('result-text');
+      const nextBtn = document.getElementById('next-btn');
+      const spinBtn = document.getElementById('spin-btn');
+      const slotMachine = document.getElementById('slot-machine');
+
+      resultMessage.classList.remove('hidden');
+
+      if (isWin) {
+        wins++;
+        document.getElementById('wins-num').textContent = wins;
+
+        resultBanner.textContent = '🎉 WINNER! 🎉';
+        resultBanner.className = 'slot-font text-4xl mb-2 text-yellow-400';
+        resultText.textContent = `Correct! ${correctAnswer} is the right answer!`;
+
+        // Celebration effects
+        slotMachine.classList.add('pulse-glow');
+        spawnCoins();
+
+        // Show letter
+        setTimeout(() => showLetter(correctAnswer, true), 500);
+
+        // Show next button
+        nextBtn.classList.remove('hidden');
+        spinBtn.classList.add('hidden');
+
+        setTimeout(() => slotMachine.classList.remove('pulse-glow'), 3000);
+      } else {
+        resultBanner.textContent = '❌ MISS! ❌';
+        resultBanner.className = 'slot-font text-4xl mb-2 text-red-400';
+        resultText.textContent = `Try again! Looking for: ${correctAnswer}`;
+
+        slotMachine.classList.add('shake');
+        setTimeout(() => slotMachine.classList.remove('shake'), 500);
+
+        // Enable spin again
+        spinBtn.disabled = false;
+        spinBtn.textContent = '🎰 SPIN AGAIN! 🎰';
+      }
+    }
+
+    function spawnCoins() {
+      const container = document.getElementById('coin-container');
+      container.innerHTML = '';
+
+      for (let i = 0; i < 15; i++) {
+        const coin = document.createElement('div');
+        coin.className = 'coin';
+        coin.style.left = `${Math.random() * 100}%`;
+        coin.style.animationDelay = `${Math.random() * 0.5}s`;
+        container.appendChild(coin);
+      }
+
+      setTimeout(() => container.innerHTML = '', 3000);
+    }
+
+    function showLetter(notice, isCorrect) {
+      const modal = document.getElementById('letter-modal');
+      const content = document.getElementById('letter-content');
+
+      content.innerHTML = generateLetterContent(notice, isCorrect);
+      content.classList.add('letter-reveal');
+      modal.classList.remove('hidden');
+
+      // Close on click outside
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          modal.classList.add('hidden');
+          content.classList.remove('letter-reveal');
+        }
+      };
+    }
+
+    function generateLetterContent(notice, isCorrect) {
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+      return `
+        <div class="watermark">${isCorrect ? 'SAMPLE - NOT REAL' : 'SAMPLE - TRY AGAIN'}</div>
+
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <div class="font-bold text-lg">Department of the Treasury</div>
+            <div class="text-sm">Internal Revenue Service</div>
+            <div class="text-xs text-gray-600">Austin, TX 73301-0049</div>
+          </div>
+          <div class="text-right">
+            <div class="text-2xl font-bold">${notice}</div>
+          </div>
+        </div>
+
+        <div class="border-t-2 border-b-2 border-gray-400 py-2 my-4">
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <div class="text-gray-600">Notice Date:</div>
+              <div class="font-bold">${today}</div>
+            </div>
+            <div>
+              <div class="text-gray-600">Tax Year:</div>
+              <div class="font-bold">2023</div>
+            </div>
+            <div>
+              <div class="text-gray-600">Social Security Number:</div>
+              <div class="font-bold">XXX-XX-1234</div>
+            </div>
+            <div>
+              <div class="text-gray-600">Notice Number:</div>
+              <div class="font-bold">${notice}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <div class="font-bold">SAMPLE TAXPAYER</div>
+          <div>123 SAMPLE STREET</div>
+          <div>ANYTOWN, TX 12345</div>
+        </div>
+
+        ${isCorrect ? `
+          <div class="bg-green-100 border-2 border-green-500 p-4 rounded mb-4">
+            <div class="text-green-700 font-bold text-center text-lg">✓ CORRECT MATCH!</div>
+            <div class="text-green-600 text-center text-sm mt-1">You identified this notice correctly!</div>
+          </div>
+        ` : `
+          <div class="bg-red-100 border-2 border-red-500 p-4 rounded mb-4">
+            <div class="text-red-700 font-bold text-center text-lg">✗ INCORRECT</div>
+            <div class="text-red-600 text-center text-sm mt-1">Keep spinning to find the right notice!</div>
+          </div>
+        `}
+
+        <div class="text-sm mb-4">
+          <div class="font-bold mb-2">What This Notice Means:</div>
+          <p class="text-gray-700">This is a sample IRS notice ${notice}. This document is for educational purposes only and does not represent an actual IRS communication.</p>
+        </div>
+
+        <div class="bg-gray-100 p-3 rounded text-xs text-center">
+          <div class="font-bold text-red-600">⚠️ SAMPLE DOCUMENT - NOT A REAL IRS NOTICE ⚠️</div>
+          <div class="text-gray-500 mt-1">For educational gaming purposes only</div>
+        </div>
+
+        <button onclick="document.getElementById('letter-modal').classList.add('hidden')" class="mt-4 w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700 transition-colors">Close Letter</button>
+      `;
+    }
+
+    function nextRound() {
+      currentRound++;
+
+      if (currentRound >= 10) {
+        endGame();
+        return;
+      }
+
+      updateDisplay();
+      setupRound();
+    }
+
+    function endGame() {
+      document.getElementById('game-screen').classList.add('hidden');
+
+      const result = wins >= 7 ? "completed" : "lost";
+      endRun(result);
+
+      if (wins >= 7) {
+        // Jackpot!
+        document.getElementById('jackpot-screen').classList.remove('hidden');
+        document.getElementById('final-score').textContent = wins;
+
+        // Confetti celebration
+        const confettiContainer = document.getElementById('jackpot-confetti');
+        confettiContainer.innerHTML = '';
+        const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ff9f43'];
+
+        for (let i = 0; i < 100; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti-piece';
+          confetti.style.left = `${Math.random() * 100}%`;
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDelay = `${Math.random() * 2}s`;
+          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+          confettiContainer.appendChild(confetti);
+        }
+      } else {
+        // Bust
+        document.getElementById('gameover-screen').classList.remove('hidden');
+        document.getElementById('final-score-lose').textContent = wins;
+      }
+    }
+
+    function resetGame() {
+      document.getElementById('jackpot-screen').classList.add('hidden');
+      document.getElementById('gameover-screen').classList.add('hidden');
+      document.getElementById('intro-screen').classList.remove('hidden');
+    }
+
+        // Boot sequence: gate first, then initialize
+    (async () => {
+      const ok = await gateAccess();
+      if (!ok) {
+        setStatus("Access denied. Redirecting…");
+        redirectToAbout();
+        return;
+      }
+      initializeApp();
+    })().catch(() => {
+      setStatus('Error loading game. Redirecting…');
+      redirectToAbout();
+    });
+  </script>
+</body>
+</html>

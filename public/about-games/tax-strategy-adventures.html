@@ -1,0 +1,1201 @@
+<!-- about-games/tax-strategy-adventures.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tax Strategy Adventures • TaxTools</title>
+  <meta name="description" content="A zone-based strategy adventure that helps you practice tax planning concepts by collecting and reviewing strategy cards. Unlock full play with 8 tokens." />
+
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="stylesheet" href="/styles/site.css" />
+
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Press+Start+2P&family=Fredoka:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            dm: ['"DM Sans"', 'system-ui', 'sans-serif']
+          },
+          colors: {
+            action: '#1d4ed8',
+            charcoal: '#2d3748',
+            muted: '#64748b',
+            navy: '#0f2747',
+            'navy-light': '#17365f',
+            primary: '#1d4ed8',
+            'primary-dark': '#1e40af',
+            accent: '#f97316',
+            'accent-dark': '#ea580c',
+            surface: '#f8fafc',
+            warm: '#f97316'
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * { font-family: 'DM Sans', system-ui, sans-serif; }
+    html { scroll-behavior: smooth; }
+    body { box-sizing: border-box; }
+
+    .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
+    .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+    .btn-shadow { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); }
+
+    .hero-panel { animation: hero-float 4.5s ease-in-out infinite; transform-origin: center; }
+    @keyframes hero-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 18px 28px rgba(0,0,0,0.25)); }
+      50% { transform: translateY(-10px) rotate(0.6deg); filter: drop-shadow(0 26px 34px rgba(0,0,0,0.35)); }
+    }
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 26px;
+      pointer-events: none;
+      background: radial-gradient(600px 220px at 20% 0%, rgba(255,255,255,0.10), transparent 55%),
+                  radial-gradient(500px 260px at 80% 100%, rgba(249,115,22,0.10), transparent 60%);
+      opacity: 0.75;
+      animation: hero-glow 3.8s ease-in-out infinite;
+    }
+    @keyframes hero-glow {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 0.9; }
+    }
+
+    .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    #demoModal.demo-game-root * { font-family: 'Fredoka', system-ui, sans-serif; }
+    #demoModal .pixelated { font-family: 'Press Start 2P', cursive; font-size: 0.75rem; letter-spacing: 2px; }
+    #demoModal .modal-overlay { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(6px); }
+
+    #demoModal .quest-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.92) 100%);
+      border: 2px solid rgba(59, 130, 246, 0.35);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #demoModal .quest-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.10) 50%, transparent 70%);
+      transform: translateX(-100%);
+    }
+
+    #demoModal .quest-card:hover::before { animation: demo-shimmer 0.5s; }
+    @keyframes demo-shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+    #demoModal .quest-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(59, 130, 246, 0.25);
+      border-color: rgba(168, 85, 247, 0.45);
+    }
+
+    #demoModal .difficulty-beginner { border-color: rgba(16, 185, 129, 0.85); }
+    #demoModal .difficulty-intermediate { border-color: rgba(245, 158, 11, 0.85); }
+
+    #demoModal .xp-badge {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      padding: 8px 12px;
+      color: #0b1220;
+      font-weight: 800;
+    }
+
+    #demoModal .quest-title {
+      font-family: 'Press Start 2P', cursive;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  </style>
+</head>
+
+<body class="h-full bg-white text-charcoal overflow-hidden font-dm">
+  <div id="app" class="h-full w-full overflow-auto custom-scrollbar">
+
+    <!-- PARTIAL:header -->
+
+    <section class="gradient-hero text-white py-16 lg:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div class="text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <span class="w-2 h-2 bg-accent rounded-full pulse-ring"></span>
+              <span class="text-sm font-medium">Interactive Game • Instant Access</span>
+            </div>
+
+            <h1 id="gameTitle" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Tax Strategy Adventures</h1>
+            <p id="gameSubtitle" class="text-xl md:text-2xl text-blue-100 mb-8">A guided challenge through tax strategy concepts with zones, cards, and progression.</p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <button id="btnUnlock" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105">
+                Unlock &amp; Play (8 tokens)
+              </button>
+              <button id="btnDemo" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-xl border border-white/20 transition-all">
+                Try Demo
+              </button>
+            </div>
+
+            <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
+              <p class="text-blue-200 text-sm">✓ Education only • ✓ Cookie session • ✓ Token-gated unlock</p>
+              <div id="status"></div>
+            </div>
+          </div>
+
+          <div class="relative flex justify-center lg:justify-end">
+            <div class="relative w-full max-w-md">
+              <div class="hero-panel relative rounded-3xl p-5 card-shadow border border-white/10" style="background: linear-gradient(135deg, rgba(30,27,75,0.85) 0%, rgba(49,46,129,0.85) 55%, rgba(67,56,202,0.85) 100%);">
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <h3 class="text-white font-bold text-lg">Quest Map</h3>
+                    <p class="text-blue-200 text-sm">5 zones. Cards. Progress.</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/15" style="background: rgba(255,255,255,0.10)">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2m0 18l6-3m-6 3V2m6 15l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 13l-6 3" />
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3">
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(59,130,246,0.85) 0%, rgba(34,211,238,0.75) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">A</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Novice</p>
+                        <p class="text-white/80 text-sm leading-tight">Daily challenge</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Start</span>
+                    </div>
+                  </button>
+
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(16,185,129,0.85) 0%, rgba(20,184,166,0.75) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">B</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Builder</p>
+                        <p class="text-white/80 text-sm leading-tight">Pattern review</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Mid</span>
+                    </div>
+                  </button>
+
+                  <div class="grid grid-cols-2 gap-3">
+                    <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(239,68,68,0.85) 0%, rgba(244,63,94,0.75) 100%);">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                          <span class="text-white font-bold">C</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-white font-semibold leading-tight">Warrior</p>
+                          <p class="text-white/80 text-xs leading-tight">More cards</p>
+                        </div>
+                      </div>
+                    </button>
+
+                    <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(168,85,247,0.85) 0%, rgba(139,92,246,0.75) 100%);">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                          <span class="text-white font-bold">D</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-white font-semibold leading-tight">Legend</p>
+                          <p class="text-white/80 text-xs leading-tight">Deeper review</p>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(249,115,22,0.85) 0%, rgba(245,158,11,0.75) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">E</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Library</p>
+                        <p class="text-white/80 text-sm leading-tight">Reference cards</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Finish</span>
+                    </div>
+                  </button>
+                </div>
+
+                <div class="mt-5 grid grid-cols-3 gap-3">
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">5</p>
+                    <p class="text-blue-200 text-xs">Zones</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">24</p>
+                    <p class="text-blue-200 text-xs">Cards</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">XP</p>
+                    <p class="text-blue-200 text-xs">Progress</p>
+                  </div>
+                </div>
+
+                <div class="mt-5 flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="inline-flex h-2.5 w-2.5 rounded-full" style="background: rgba(16,185,129,0.95)"></span>
+                    <span class="text-blue-200 text-xs">Access tracked</span>
+                  </div>
+                  <button type="button" id="heroTryDemo" class="text-white text-xs font-semibold px-3 py-2 rounded-xl border border-white/15 transition hover:bg-white/10">Try demo</button>
+                </div>
+              </div>
+
+              <div class="absolute -top-3 -right-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(249,115,22,0.95)">
+                <p class="text-white text-sm font-bold">8 tokens</p>
+                <p class="text-white/90 text-xs">per play</p>
+              </div>
+              <div class="absolute -bottom-3 -left-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(29,78,216,0.95)">
+                <p class="text-white text-sm font-bold">Resume</p>
+                <p class="text-white/90 text-xs">if granted</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="what-youll-learn" class="py-16 lg:py-24 bg-surface">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">What You’ll Learn</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Practical strategy patterns</h2>
+          <p class="text-muted text-lg max-w-2xl mx-auto">This game uses strategy cards, zones, and progression so the concepts stick instead of evaporating like most online promises.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-navy font-bold text-lg mb-2">Daily challenge</h3>
+            <p class="text-muted text-sm">Pull a random strategy card and build momentum.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-navy font-bold text-lg mb-2">XP + leveling</h3>
+            <p class="text-muted text-sm">Points pile up when you actually complete the run.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-navy font-bold text-lg mb-2">Strategy cards</h3>
+            <p class="text-muted text-sm">Each card breaks things into what, when, why, where, and who.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-4">
+              <svg class="w-7 h-7 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-navy font-bold text-lg mb-2">Zones</h3>
+            <p class="text-muted text-sm">Novice, Warrior, Legend, plus a reference library.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="preview" class="py-16 lg:py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div class="order-2 lg:order-1">
+            <div class="bg-gray-50 rounded-3xl p-6 md:p-8">
+              <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                <div class="bg-navy px-4 py-3 flex items-center gap-3">
+                  <div class="flex gap-1.5">
+                    <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                    <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                  </div>
+                  <div class="flex-1 text-center"><span class="text-white/60 text-sm">Tax Strategy Adventures (Preview)</span></div>
+                </div>
+
+                <div class="p-5">
+                  <div class="flex items-center justify-between mb-4">
+                    <p class="text-navy font-bold">Mini Demo</p>
+                    <span class="text-muted text-xs">Education only</span>
+                  </div>
+
+                  <div class="space-y-3">
+                    <div class="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border-l-4 border-primary">
+                      <div class="text-center">
+                        <p class="text-xs text-muted uppercase">Card</p>
+                        <p class="text-lg font-bold text-navy">01</p>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-navy font-semibold text-sm" id="previewCard1Title"></p>
+                        <p class="text-muted text-xs" id="previewCard1What"></p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-start gap-3 p-4 bg-amber-50 rounded-xl border-l-4 border-accent">
+                      <div class="text-center">
+                        <p class="text-xs text-muted uppercase">Card</p>
+                        <p class="text-lg font-bold text-navy">02</p>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-navy font-semibold text-sm" id="previewCard2Title"></p>
+                        <p class="text-muted text-xs" id="previewCard2What"></p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-5 flex justify-end">
+                    <button type="button" class="bg-gray-200 text-gray-500 px-6 py-3 rounded-xl font-semibold cursor-not-allowed" disabled title="Unlocked after token spend">
+                      Full Play (locked)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-1 lg:order-2 text-center lg:text-left">
+            <span class="text-primary font-semibold text-sm uppercase tracking-wide">Preview</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Try two real strategy cards</h2>
+            <p class="text-muted text-lg mb-6">Demo mode is limited and never spends tokens. Full play unlocks only after the Worker confirms a valid token spend.</p>
+
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-center gap-3 justify-center lg:justify-start">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-navy">Card-based learning</span>
+              </li>
+              <li class="flex items-center gap-3 justify-center lg:justify-start">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-navy">Token-gated unlock with confirmed spend</span>
+              </li>
+              <li class="flex items-center gap-3 justify-center lg:justify-start">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-navy">Educational only, not tax advice</span>
+              </li>
+            </ul>
+
+            <button id="previewTryDemo" class="bg-navy hover:bg-navy-light text-white font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Try Demo
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="py-16 lg:py-24 bg-navy text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">Simple Setup</span>
+          <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">How It Works</h2>
+          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. Minimal chaos. The Worker handles the gate because trusting humans with money is rarely wise.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-20 h-20 bg-primary/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center font-bold text-sm">1</span>
+              <svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.341A8 8 0 104.572 15.34" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Sign in</h3>
+            <p class="text-blue-200">Cookie session required so tokens and grants attach to your account.</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-20 h-20 bg-accent/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center font-bold text-sm">2</span>
+              <svg class="w-10 h-10 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Confirm spend</h3>
+            <p class="text-blue-200">You approve the spend first. Nothing charges until you click confirm.</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-20 h-20 bg-amber-500/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center font-bold text-sm">3</span>
+              <svg class="w-10 h-10 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Play</h3>
+            <p class="text-blue-200">You’re redirected into the game once access is granted.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="py-16 lg:py-24 bg-white">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">FAQ</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="space-y-4" id="faq-container">
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" data-faq="1">
+              <span class="text-navy font-semibold">Do tokens expire?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">No. Tokens do not expire and are non-transferable.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" data-faq="2">
+              <span class="text-navy font-semibold">How does the token spend work?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">You confirm first, then the Worker verifies your balance and creates or respects access for this game.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" data-faq="3">
+              <span class="text-navy font-semibold">Is this tax advice or representation?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">No. This is educational only. Representation requires a separate engagement via taxmonitor.pro.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" data-faq="4">
+              <span class="text-navy font-semibold">Why do I need to sign in?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">Tokens and play grants are tied to your account, and the Worker uses a cookie session to verify access.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" data-faq="5">
+              <span class="text-navy font-semibold">I need real help. What now?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">If you want monitoring or representation, go to <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-surface">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl card-shadow p-8">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 bg-accent/15 rounded-2xl flex items-center justify-center">
+              <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 21a9 9 0 100-18 9 9 0 000 18z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-2xl font-bold text-navy">Trust + Disclaimers</h2>
+              <ul class="mt-3 space-y-2 text-muted">
+                <li>Educational only. Not tax advice.</li>
+                <li>Not legal or tax representation.</li>
+                <li>Need monitoring or representation? Visit <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 lg:py-24 gradient-hero text-white">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to play?</h2>
+        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend verified by the Worker.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+          <button id="btnUnlock2" class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            Unlock &amp; Play (8 tokens)
+          </button>
+          <a href="/index.html" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl border border-white/20 transition-all">
+            View All Games
+          </a>
+        </div>
+        <div class="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm rounded-full px-6 py-3">
+          <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          <span class="text-sm font-medium">Tokens are non-expiring. Active access lets you resume without another spend.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARTIAL:footer -->
+  </div>
+
+  <div id="confirmModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/60" data-confirm-close="1"></div>
+
+    <div class="absolute inset-4 md:inset-10 lg:inset-16 bg-white rounded-3xl overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <div>
+          <p class="text-muted text-sm">Confirm spend</p>
+          <h3 class="text-xl font-bold text-navy">Spend <span id="modalCost">8</span> tokens to unlock?</h3>
+        </div>
+        <button id="btnCloseModal" type="button" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" data-confirm-close="1" aria-label="Close">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-auto p-6">
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-4">
+          <p class="text-green-900 text-sm"><strong>Session behavior:</strong> Spending happens only after you confirm. If access already exists, this page switches to resume mode instead of charging again.</p>
+        </div>
+
+        <div class="mt-5 grid md:grid-cols-2 gap-4">
+          <div class="bg-surface rounded-2xl p-5">
+            <p class="text-navy font-semibold">Game</p>
+            <p class="text-muted text-sm">Tax Strategy Adventures</p>
+          </div>
+          <div class="bg-surface rounded-2xl p-5">
+            <p class="text-navy font-semibold">Cost</p>
+            <p class="text-muted text-sm"><span id="modalCost2">8</span> tokens</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-gray-200 bg-surface flex items-center justify-end gap-3">
+        <button id="btnCancelSpend" type="button" class="bg-white hover:bg-gray-50 text-navy font-semibold px-6 py-3 rounded-xl border border-gray-200 transition-all">
+          Cancel
+        </button>
+        <button id="btnConfirmSpend" type="button" class="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-xl btn-shadow transition-all hover:scale-105">
+          Confirm spend (8 tokens)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="demoModal" class="demo-game-root fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 modal-overlay" data-demo-close="1"></div>
+
+    <div class="absolute inset-4 md:inset-10 lg:inset-16 bg-slate-900 rounded-xl overflow-hidden shadow-2xl border border-blue-500/40 flex flex-col">
+      <div class="sticky top-0 bg-slate-800 p-4 border-b border-blue-500/30 flex justify-between items-center">
+        <div class="min-w-0">
+          <div class="flex items-center gap-3">
+            <div class="text-2xl">⭐</div>
+            <div class="min-w-0">
+              <div class="quest-title text-lg md:text-xl">TAX STRATEGY ADVENTURES</div>
+              <div class="text-blue-300 text-sm font-semibold pixelated">DEMO RUN (2 CARDS)</div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 flex items-center justify-center text-2xl text-white" data-demo-close="1" aria-label="Close demo">×</button>
+      </div>
+
+      <div class="flex-1 overflow-auto p-6">
+        <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-1">
+            <div class="quest-card difficulty-intermediate rounded-xl p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <div class="text-sm text-slate-300 pixelated">DEMO STATUS</div>
+                  <div class="text-2xl font-extrabold text-cyan-300">CARD <span id="demoStep">1</span>/2</div>
+                </div>
+                <div class="xp-badge text-xs">0 XP</div>
+              </div>
+
+              <div class="text-slate-300 text-sm space-y-2">
+                <p><span class="text-white font-bold">What you get:</span> two real cards from the game.</p>
+                <p><span class="text-white font-bold">What you don’t:</span> saving progress, full zones, or any token spend.</p>
+                <p><span class="text-white font-bold">Full play:</span> unlocks only after confirmed spend.</p>
+              </div>
+
+              <div class="mt-5 rounded-lg border border-blue-500/30 bg-blue-900/20 p-4">
+                <div class="text-slate-200 text-sm font-bold mb-2 pixelated">UNLOCK COST</div>
+                <div class="flex items-center justify-between">
+                  <div class="text-slate-300 text-sm">Start the full quest map</div>
+                  <div class="text-yellow-300 font-extrabold">8 TOKENS</div>
+                </div>
+              </div>
+
+              <button id="demoUnlock" type="button" class="mt-5 w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-lg font-bold transition">
+                UNLOCK &amp; PLAY
+              </button>
+
+              <p class="mt-4 text-xs text-slate-400">Education only. Not tax advice. Not representation.</p>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2">
+            <div class="quest-card difficulty-beginner rounded-xl p-6">
+              <div class="flex items-start justify-between gap-4 mb-4">
+                <div class="min-w-0">
+                  <div class="text-slate-300 pixelated text-xs">STRATEGY CARD</div>
+                  <h4 id="demoCardTitle" class="text-2xl font-extrabold text-white leading-tight"></h4>
+                </div>
+                <div class="text-4xl" id="demoCardIcon">📜</div>
+              </div>
+
+              <div class="space-y-4">
+                <div class="bg-blue-900/30 border border-blue-500/50 rounded-lg p-4">
+                  <div class="text-xl font-bold text-blue-300 mb-2 pixelated">WHAT</div>
+                  <p id="demoCardWhat" class="text-slate-200"></p>
+                </div>
+                <div class="bg-purple-900/30 border border-purple-500/50 rounded-lg p-4">
+                  <div class="text-xl font-bold text-purple-300 mb-2 pixelated">WHEN</div>
+                  <p id="demoCardWhen" class="text-slate-200"></p>
+                </div>
+                <div class="bg-emerald-900/30 border border-emerald-500/50 rounded-lg p-4">
+                  <div class="text-xl font-bold text-emerald-300 mb-2 pixelated">WHY</div>
+                  <p id="demoCardWhy" class="text-slate-200"></p>
+                </div>
+              </div>
+
+              <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-end">
+                <button id="demoPrev" type="button" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-bold transition">Back</button>
+                <button id="demoNext" type="button" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-bold transition">Next</button>
+              </div>
+            </div>
+
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <button type="button" class="quest-card difficulty-beginner rounded-lg p-4 text-left" data-demo-pick="0">
+                <div class="flex justify-between items-start mb-2">
+                  <span class="text-4xl">📅</span>
+                  <span class="text-emerald-400 pixelated text-xs">DEMO</span>
+                </div>
+                <div class="text-white font-bold" id="demoCard1Title"></div>
+                <div class="text-slate-300 text-sm" id="demoCard1What"></div>
+              </button>
+
+              <button type="button" class="quest-card difficulty-intermediate rounded-lg p-4 text-left" data-demo-pick="1">
+                <div class="flex justify-between items-start mb-2">
+                  <span class="text-4xl">⚙️</span>
+                  <span class="text-yellow-300 pixelated text-xs">DEMO</span>
+                </div>
+                <div class="text-white font-bold" id="demoCard2Title"></div>
+                <div class="text-slate-300 text-sm" id="demoCard2What"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-blue-500/20 bg-slate-800">
+        <p class="text-blue-200 text-sm">Need monitoring or representation? Use <a class="underline text-white" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "https://tools-api.taxmonitor.pro";
+    const gameFile = "tax-strategy-adventures.html";
+    const gameSlug = "tax-strategy-adventures";
+    const tokenCost = 8;
+
+    const demoCards = [
+      {
+        icon: "📅",
+        title: "Tax Calendar Guide",
+        what: "Key tax dates and deadlines throughout the year.",
+        when: "Reference monthly to avoid missed deadlines.",
+        why: "Deadlines shape planning and reduce avoidable damage. A rare human win."
+      },
+      {
+        icon: "⚙️",
+        title: "S-Corp Election",
+        what: "Structure compensation to reduce self-employment taxes where appropriate.",
+        when: "Review when planning owner pay and profit allocation.",
+        why: "Entity and payroll decisions can materially affect total tax."
+      }
+    ];
+
+    let demoIndex = 0;
+
+    function setStatus(msg) {
+      const el = document.getElementById("status");
+      if (el) {
+        el.textContent = msg || "";
+        el.className = "text-blue-200 text-sm";
+      }
+    }
+
+    function setStatusHtml(html) {
+      const el = document.getElementById("status");
+      if (el) {
+        el.innerHTML = html || "";
+        el.className = "text-blue-200 text-sm";
+      }
+    }
+
+    function isNetworkError(value) {
+      return !!(value && typeof value === 'object' && value.networkError === true);
+    }
+
+    function normalizePath(path) {
+      if (typeof path !== 'string' || !path) return '/';
+      return path.startsWith('/') ? path : `/${path}`;
+    }
+
+    async function apiRequest(method, path, body) {
+      const normalizedPath = normalizePath(path);
+      const url = API_BASE + normalizedPath;
+
+      try {
+        const options = {
+          credentials: "include",
+          method
+        };
+
+        if (body !== undefined) {
+          options.body = JSON.stringify(body);
+          options.headers = { "content-type": "application/json" };
+        }
+
+        const res = await fetch(url, options);
+        const json = await res.json().catch(() => ({}));
+        return { json, networkError: false, res };
+      } catch (error) {
+        return {
+          error,
+          json: {},
+          networkError: true,
+          res: {
+            ok: false,
+            status: 0,
+            url
+          }
+        };
+      }
+    }
+
+    async function apiGet(path) {
+      return apiRequest("GET", path);
+    }
+
+    async function apiPost(path, body) {
+      return apiRequest("POST", path, body);
+    }
+
+    function toggleFaq(button) {
+      const content = button.nextElementSibling;
+      const icon = button.querySelector('.faq-icon');
+      const isOpen = !content.classList.contains('hidden');
+
+      document.querySelectorAll('.faq-content').forEach((item) => item.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach((item) => {
+        item.style.transform = 'rotate(0deg)';
+      });
+
+      if (!isOpen) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    function showConfirmModal() {
+      document.getElementById("modalCost").textContent = String(tokenCost);
+      document.getElementById("modalCost2").textContent = String(tokenCost);
+      document.getElementById("btnConfirmSpend").textContent = `Confirm spend (${tokenCost} tokens)`;
+      const modal = document.getElementById("confirmModal");
+      modal.classList.remove("hidden");
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function hideConfirmModal() {
+      const modal = document.getElementById("confirmModal");
+      modal.classList.add("hidden");
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    function scrollToPreview() {
+      const el = document.getElementById('preview');
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function beginLogin() {
+      setStatus("Starting sign-in…");
+      const returnTo = encodeURIComponent(window.location.href);
+      window.location.href = `${API_BASE}/v1/auth/start?returnTo=${returnTo}`;
+    }
+
+    function setUnlockMode(mode) {
+      const buttons = [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean);
+      const labels = {
+        locked: `Unlock & Play (${tokenCost} tokens)`,
+        resume: "Resume Play"
+      };
+
+      buttons.forEach((button) => {
+        button.textContent = labels[mode] || labels.locked;
+        button.dataset.mode = mode;
+      });
+    }
+
+    function resumePlay() {
+      window.location.href = "/games/" + gameFile;
+    }
+
+    function showBuyOptions() {
+      setStatusHtml('Not enough tokens. Visit <a class="underline" href="/index.html#pricing">pricing</a> to buy more.');
+    }
+
+    function showApiUnavailableStatus() {
+      setUnlockMode('locked');
+      setStatus('Could not reach the game service. Check your connection and try again.');
+    }
+
+    async function preflightUnlock() {
+      setStatus("Checking session…");
+
+      const me = await apiGet("/v1/auth/me");
+      if (isNetworkError(me)) {
+        showApiUnavailableStatus();
+        return;
+      }
+
+      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
+        beginLogin();
+        return;
+      }
+
+      setStatus("Checking token balance…");
+      const balanceResponse = await apiGet("/v1/tokens/balance");
+      if (isNetworkError(balanceResponse)) {
+        showApiUnavailableStatus();
+        return;
+      }
+
+      const balance = Number(balanceResponse.json && balanceResponse.json.balance);
+      if (!Number.isFinite(balance)) {
+        setStatus("Could not load token balance.");
+        return;
+      }
+
+      if (balance < tokenCost) {
+        showBuyOptions();
+        return;
+      }
+
+      setStatus("Ready. Confirm spend to unlock.");
+      showConfirmModal();
+    }
+
+    async function confirmSpendAndRedirect() {
+      setStatus("Confirming token spend…");
+
+      const spend = await apiPost("/v1/tokens/spend", {
+        amount: tokenCost,
+        idempotencyKey: (window.crypto && typeof window.crypto.randomUUID === 'function') ? window.crypto.randomUUID() : String(Date.now()),
+        reason: "arcade_play",
+        slug: gameSlug
+      });
+
+      if (isNetworkError(spend)) {
+        hideConfirmModal();
+        showApiUnavailableStatus();
+        return;
+      }
+
+      if (!spend.res.ok) {
+        hideConfirmModal();
+        setStatus("Spend failed. Please try again.");
+        return;
+      }
+
+      hideConfirmModal();
+      setStatus("Unlocked. Redirecting…");
+      window.location.href = "/games/" + gameFile;
+    }
+
+    async function refreshGrantStatus() {
+      const me = await apiGet("/v1/auth/me");
+      if (isNetworkError(me)) {
+        setUnlockMode('locked');
+        setStatus('Could not reach the game service. Demo still works.');
+        return { allowed: false, offline: true };
+      }
+
+      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
+        setUnlockMode('locked');
+        setStatus("");
+        return { allowed: false, offline: false };
+      }
+
+      const access = await apiGet(`/v1/games/access?slug=${encodeURIComponent(gameSlug)}`);
+      if (isNetworkError(access)) {
+        setUnlockMode('locked');
+        setStatus('Could not verify active access right now.');
+        return { allowed: false, offline: true };
+      }
+
+      const allowed = !!(access.res.ok && access.json && access.json.allowed === true);
+
+      if (allowed) {
+        setUnlockMode('resume');
+        setStatus("Active session detected. You can resume without spending tokens.");
+        return { allowed: true, offline: false };
+      }
+
+      setUnlockMode('locked');
+      setStatus("");
+      return { allowed: false, offline: false };
+    }
+
+    function showDemoModal() {
+      const modal = document.getElementById('demoModal');
+      if (!modal) return;
+      demoIndex = 0;
+      renderDemoCard();
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function hideDemoModal() {
+      const modal = document.getElementById('demoModal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    function renderDemoCard() {
+      const card = demoCards[demoIndex];
+      document.getElementById('demoCardTitle').textContent = card.title;
+      document.getElementById('demoCardWhat').textContent = card.what;
+      document.getElementById('demoCardWhen').textContent = card.when;
+      document.getElementById('demoCardWhy').textContent = card.why;
+      document.getElementById('demoCardIcon').textContent = card.icon || '📜';
+      document.getElementById('demoStep').textContent = String(demoIndex + 1);
+
+      document.getElementById('demoCard1Title').textContent = demoCards[0].title;
+      document.getElementById('demoCard1What').textContent = demoCards[0].what;
+      document.getElementById('demoCard2Title').textContent = demoCards[1].title;
+      document.getElementById('demoCard2What').textContent = demoCards[1].what;
+
+      document.getElementById('previewCard1Title').textContent = demoCards[0].title;
+      document.getElementById('previewCard1What').textContent = demoCards[0].what;
+      document.getElementById('previewCard2Title').textContent = demoCards[1].title;
+      document.getElementById('previewCard2What').textContent = demoCards[1].what;
+
+      const prev = document.getElementById('demoPrev');
+      const next = document.getElementById('demoNext');
+      if (prev) {
+        prev.disabled = demoIndex === 0;
+        prev.classList.toggle('opacity-60', demoIndex === 0);
+      }
+      if (next) {
+        next.textContent = demoIndex === demoCards.length - 1 ? 'Done' : 'Next';
+      }
+    }
+
+    function nextDemo() {
+      if (demoIndex >= demoCards.length - 1) {
+        hideDemoModal();
+        return;
+      }
+      demoIndex += 1;
+      renderDemoCard();
+    }
+
+    function prevDemo() {
+      if (demoIndex <= 0) return;
+      demoIndex -= 1;
+      renderDemoCard();
+    }
+
+    function setDemoIndex(value) {
+      const index = Number(value);
+      if (!Number.isFinite(index)) return;
+      if (index < 0 || index >= demoCards.length) return;
+      demoIndex = index;
+      renderDemoCard();
+    }
+
+    function wireConfirmModal() {
+      document.querySelectorAll('[data-confirm-close="1"]').forEach((element) => {
+        element.addEventListener('click', hideConfirmModal);
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        const modal = document.getElementById('confirmModal');
+        if (modal && !modal.classList.contains('hidden')) {
+          hideConfirmModal();
+        }
+      });
+
+      document.getElementById("btnConfirmSpend")?.addEventListener("click", confirmSpendAndRedirect);
+      document.getElementById("btnCancelSpend")?.addEventListener("click", hideConfirmModal);
+    }
+
+    function wireDemoModal() {
+      document.querySelectorAll('[data-demo-close="1"]').forEach((element) => {
+        element.addEventListener('click', hideDemoModal);
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        const modal = document.getElementById('demoModal');
+        if (modal && !modal.classList.contains('hidden')) {
+          hideDemoModal();
+        }
+      });
+
+      document.getElementById('demoNext')?.addEventListener('click', nextDemo);
+      document.getElementById('demoPrev')?.addEventListener('click', prevDemo);
+      document.getElementById('demoUnlock')?.addEventListener('click', () => {
+        hideDemoModal();
+        preflightUnlock();
+      });
+
+      document.querySelectorAll('[data-demo-pick]').forEach((button) => {
+        button.addEventListener('click', () => {
+          setDemoIndex(button.getAttribute('data-demo-pick'));
+        });
+      });
+    }
+
+    function wireUnlockButtons() {
+      [document.getElementById('btnUnlock'), document.getElementById('btnUnlock2')].filter(Boolean).forEach((button) => {
+        button.addEventListener('click', async (event) => {
+          event.preventDefault();
+          const state = await refreshGrantStatus();
+          if (state.allowed) {
+            resumePlay();
+            return;
+          }
+          preflightUnlock();
+        });
+      });
+    }
+
+    function initElementSdk() {
+      window.elementSdk?.init({
+        elements: {
+          gameSubtitle: { type: 'text' },
+          gameTitle: { type: 'text' }
+        },
+        page: {
+          file: `about-games/${gameFile}`,
+          slug: gameSlug
+        }
+      });
+    }
+
+    function runSelfTests() {
+      try {
+        console.assert(normalizePath('/v1/auth/me') === '/v1/auth/me', 'normalizePath should preserve leading slash');
+        console.assert(normalizePath('v1/auth/me') === '/v1/auth/me', 'normalizePath should add leading slash');
+        console.assert(isNetworkError({ networkError: true }) === true, 'isNetworkError should detect flagged objects');
+        console.assert(isNetworkError({ networkError: false }) === false, 'isNetworkError should reject false flag');
+
+        const originalBtn1 = document.getElementById('btnUnlock')?.textContent;
+        const originalBtn2 = document.getElementById('btnUnlock2')?.textContent;
+
+        setUnlockMode('resume');
+        console.assert(document.getElementById('btnUnlock')?.textContent === 'Resume Play', 'btnUnlock should show Resume Play in resume mode');
+        console.assert(document.getElementById('btnUnlock2')?.textContent === 'Resume Play', 'btnUnlock2 should show Resume Play in resume mode');
+
+        setUnlockMode('locked');
+        console.assert(document.getElementById('btnUnlock')?.textContent === `Unlock & Play (${tokenCost} tokens)`, 'btnUnlock should show locked label');
+        console.assert(document.getElementById('btnUnlock2')?.textContent === `Unlock & Play (${tokenCost} tokens)`, 'btnUnlock2 should show locked label');
+
+        if (typeof originalBtn1 === 'string') document.getElementById('btnUnlock').textContent = originalBtn1;
+        if (typeof originalBtn2 === 'string') document.getElementById('btnUnlock2').textContent = originalBtn2;
+      } catch (error) {
+        console.error('Self-tests failed:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderDemoCard();
+      initElementSdk();
+      runSelfTests();
+      refreshGrantStatus();
+      wireUnlockButtons();
+      wireConfirmModal();
+      wireDemoModal();
+
+      document.querySelectorAll('.faq-toggle').forEach((button) => {
+        button.addEventListener('click', () => toggleFaq(button));
+      });
+
+      document.getElementById('btnDemo')?.addEventListener('click', (event) => {
+        event.preventDefault();
+        scrollToPreview();
+      });
+
+      document.getElementById('previewTryDemo')?.addEventListener('click', (event) => {
+        event.preventDefault();
+        showDemoModal();
+      });
+
+      document.getElementById('heroTryDemo')?.addEventListener('click', (event) => {
+        event.preventDefault();
+        scrollToPreview();
+      });
+    });
+
+    window.addEventListener('pageshow', () => {
+      refreshGrantStatus();
+    });
+  </script>
+</body>
+</html>

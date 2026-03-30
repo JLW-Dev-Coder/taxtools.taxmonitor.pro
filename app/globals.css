@@ -1,0 +1,51 @@
+:root {
+  /* TTTMP Brand — Amber Gold */
+  --accent: #f59e0b;
+  --accent-hover: #d97706;
+
+  /* Shared dark theme tokens */
+  --bg: #0F0F1A;
+  --surface: #1A1A2E;
+  --surface-border: #2D2D44;
+  --text: #F1F1F5;
+  --text-muted: #9494B0;
+  --error: #ef4444;
+  --success: #10b981;
+
+  /* Layout */
+  --header-height: 60px;
+  --sidebar-width: 260px;
+  --max-content: 1200px;
+  --radius: 8px;
+
+  /* Typography */
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-display: 'Fredoka One', cursive;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  min-height: 100vh;
+  line-height: 1.7;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}

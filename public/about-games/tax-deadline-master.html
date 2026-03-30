@@ -1,0 +1,1207 @@
+<!-- about-games/tax-deadline-master.html -->
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tax Deadline Master • TaxTools</title>
+  <meta name="description" content="Learn the major IRS and federal tax deadlines through a fast, replayable 10-question challenge with scoring and streaks." />
+
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="stylesheet" href="/styles/site.css" />
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Nunito:wght@400;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            dm: ['"DM Sans"', 'system-ui', 'sans-serif']
+          },
+          colors: {
+            action: '#1d4ed8',
+            charcoal: '#2d3748',
+            muted: '#64748b',
+            navy: '#0f2747',
+            'navy-light': '#17365f',
+            primary: '#1d4ed8',
+            'primary-dark': '#1e40af',
+            accent: '#f97316',
+            'accent-dark': '#ea580c',
+            surface: '#f8fafc',
+            warm: '#f97316'
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * { font-family: 'DM Sans', system-ui, sans-serif; }
+    html { scroll-behavior: smooth; }
+    .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
+    .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+    .btn-shadow { box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); }
+
+    .hero-panel { animation: hero-float 4.5s ease-in-out infinite; transform-origin: center; }
+    @keyframes hero-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 18px 28px rgba(0,0,0,0.25)); }
+      50% { transform: translateY(-10px) rotate(0.6deg); filter: drop-shadow(0 26px 34px rgba(0,0,0,0.35)); }
+    }
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 26px;
+      pointer-events: none;
+      background: radial-gradient(600px 220px at 20% 0%, rgba(255,255,255,0.10), transparent 55%),
+                  radial-gradient(500px 260px at 80% 100%, rgba(249,115,22,0.10), transparent 60%);
+      opacity: 0.75;
+      animation: hero-glow 3.8s ease-in-out infinite;
+    }
+    @keyframes hero-glow {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 0.9; }
+    }
+    .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .demo-font-display { font-family: 'Fredoka One', cursive; }
+    .demo-font-body { font-family: 'Nunito', system-ui, sans-serif; }
+
+    @keyframes demo-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes demo-pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.35); }
+      50% { box-shadow: 0 0 42px rgba(59, 130, 246, 0.7); }
+    }
+    @keyframes demo-bounce-in {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes demo-slide-up {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes demo-shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .demo-animate-float { animation: demo-float 3s ease-in-out infinite; }
+    .demo-animate-pulse-glow { animation: demo-pulse-glow 2s ease-in-out infinite; }
+    .demo-animate-bounce-in { animation: demo-bounce-in 0.5s ease-out forwards; }
+    .demo-animate-slide-up { animation: demo-slide-up 0.4s ease-out forwards; }
+    .demo-animate-shake { animation: demo-shake 0.5s ease-in-out; }
+
+    .demo-quiz-option { transition: all 0.2s ease; }
+    .demo-quiz-option:hover:not(:disabled) { transform: scale(1.02); }
+
+    body { box-sizing: border-box; }
+  </style>
+</head>
+
+<body class="h-full bg-white text-charcoal overflow-hidden font-dm">
+  <div id="app" class="h-full w-full overflow-auto custom-scrollbar">
+
+    <!-- PARTIAL:header -->
+
+    <section class="gradient-hero text-white py-16 lg:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div class="text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <span class="w-2 h-2 bg-accent rounded-full pulse-ring"></span>
+              <span class="text-sm font-medium">Interactive Game • Instant Access</span>
+            </div>
+
+            <h1 id="gameTitle" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Tax Deadline Master</h1>
+            <p id="gameSubtitle" class="text-xl md:text-2xl text-blue-100 mb-8">A 10-question challenge to help you remember major IRS and federal tax deadlines with scoring and streaks.</p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <button id="btnUnlock" class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl btn-shadow transition-all hover:scale-105">
+                Unlock &amp; Play (8 tokens)
+              </button>
+              <button id="btnDemo" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-xl border border-white/20 transition-all">
+                Try Demo
+              </button>
+            </div>
+
+            <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
+              <p class="text-blue-200 text-sm">✓ Educational only • ✓ Cookie session • ✓ Token-gated unlock</p>
+              <div id="status"></div>
+            </div>
+          </div>
+
+          <div class="relative flex justify-center lg:justify-end">
+            <div class="relative w-full max-w-md">
+              <div class="hero-panel relative rounded-3xl p-5 card-shadow border border-white/10" style="background: linear-gradient(135deg, rgba(15,39,71,0.88) 0%, rgba(29,78,216,0.78) 55%, rgba(16,185,129,0.78) 100%);">
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <h3 class="text-white font-bold text-lg">Round Preview</h3>
+                    <p class="text-blue-200 text-sm">Pick answers. Build streaks.</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl flex items-center justify-center border border-white/15" style="background: rgba(255,255,255,0.10)">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5a2 2 0 002 2h2a2 2 0 002-2" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l2 2 4-4" />
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3">
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(59,130,246,0.85) 0%, rgba(29,78,216,0.85) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">Q1</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Individual filing deadline</p>
+                        <p class="text-white/80 text-sm leading-tight">Which date is standard?</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">10 pts</span>
+                    </div>
+                  </button>
+
+                  <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(16,185,129,0.85) 0%, rgba(5,150,105,0.85) 100%);">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                        <span class="text-white text-xl font-bold">Q2</span>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-white font-semibold leading-tight">Estimated taxes</p>
+                        <p class="text-white/80 text-sm leading-tight">Quarterly due dates</p>
+                      </div>
+                      <span class="text-white/90 text-xs font-semibold">Streak</span>
+                    </div>
+                  </button>
+
+                  <div class="grid grid-cols-2 gap-3">
+                    <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(249,115,22,0.85) 0%, rgba(245,158,11,0.85) 100%);">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                          <span class="text-white font-bold">W-2</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-white font-semibold leading-tight">January</p>
+                          <p class="text-white/80 text-xs leading-tight">Employer deadline</p>
+                        </div>
+                      </div>
+                    </button>
+
+                    <button type="button" class="group w-full text-left rounded-2xl p-4 border border-white/10 shadow-sm transition hover:translate-y-[-2px]" style="background: linear-gradient(135deg, rgba(168,85,247,0.85) 0%, rgba(139,92,246,0.85) 100%);">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/15 border border-white/10">
+                          <span class="text-white font-bold">1099</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-white font-semibold leading-tight">NEC</p>
+                          <p class="text-white/80 text-xs leading-tight">Filing deadline</p>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+
+                  <button type="button" id="heroTryDemo" class="text-white text-xs font-semibold px-3 py-2 rounded-xl border border-white/15 transition hover:bg-white/10">Try demo</button>
+                </div>
+
+                <div class="mt-5 grid grid-cols-3 gap-3">
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">10</p>
+                    <p class="text-blue-200 text-xs">Questions</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">10</p>
+                    <p class="text-blue-200 text-xs">Points each</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 p-3 text-center" style="background: rgba(255,255,255,0.08)">
+                    <p class="text-white text-lg font-bold">Streak</p>
+                    <p class="text-blue-200 text-xs">Best run</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="absolute -top-3 -right-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(249,115,22,0.95)">
+                <p class="text-white text-sm font-bold">8 tokens</p>
+                <p class="text-white/90 text-xs">per play</p>
+              </div>
+              <div class="absolute -bottom-3 -left-3 rounded-2xl px-4 py-3 card-shadow border border-white/10" style="background: rgba(29,78,216,0.95)">
+                <p class="text-white text-sm font-bold">Run to</p>
+                <p class="text-white/90 text-xs">completion</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="what-youll-learn" class="py-16 lg:py-24 bg-surface">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">What You’ll Learn</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Deadlines that actually stick</h2>
+          <p class="text-muted text-lg max-w-2xl mx-auto">Short rounds designed to reinforce the key due dates you see over and over.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <h3 class="text-navy font-bold text-lg mb-2">Individual filing dates</h3>
+            <p class="text-muted text-sm">Practice Tax Day and common deadline shifts.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <h3 class="text-navy font-bold text-lg mb-2">Estimated tax schedule</h3>
+            <p class="text-muted text-sm">Quarterly due dates and where people slip.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <h3 class="text-navy font-bold text-lg mb-2">Information return timing</h3>
+            <p class="text-muted text-sm">W-2 and 1099-NEC filing and delivery deadlines.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 card-shadow hover:scale-105 transition-transform">
+            <h3 class="text-navy font-bold text-lg mb-2">Streak-based recall</h3>
+            <p class="text-muted text-sm">Build momentum and lock the dates into memory.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="preview" class="py-16 lg:py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div class="order-2 lg:order-1">
+            <div class="bg-gray-50 rounded-3xl p-6 md:p-8">
+              <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                <div class="bg-navy px-4 py-3 flex items-center gap-3">
+                  <div class="flex gap-1.5">
+                    <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                    <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                  </div>
+                  <div class="flex-1 text-center"><span class="text-white/60 text-sm">Tax Deadline Master (Preview)</span></div>
+                </div>
+
+                <div class="p-5">
+                  <div class="flex items-center justify-between mb-4">
+                    <p class="text-navy font-bold">Mini Demo</p>
+                    <span class="text-muted text-xs">Education only</span>
+                  </div>
+
+                  <div class="space-y-3">
+                    <div class="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border-l-4 border-primary">
+                      <div class="text-center">
+                        <p class="text-xs text-muted uppercase">Q</p>
+                        <p class="text-lg font-bold text-navy">01</p>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-navy font-semibold text-sm">When is the standard federal income tax filing deadline for individuals?</p>
+                        <p class="text-muted text-xs">Answer choices included</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-start gap-3 p-4 bg-amber-50 rounded-xl border-l-4 border-accent">
+                      <div class="text-center">
+                        <p class="text-xs text-muted uppercase">Q</p>
+                        <p class="text-lg font-bold text-navy">02</p>
+                      </div>
+                      <div class="flex-1">
+                        <p class="text-navy font-semibold text-sm">What’s the estimated tax payment deadline for Q1?</p>
+                        <p class="text-muted text-xs">Answer choices included</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-5 flex justify-end">
+                    <button type="button" class="bg-navy hover:bg-navy-light text-white px-6 py-3 rounded-xl font-semibold transition" id="previewTryDemo">
+                      Try Demo
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-1 lg:order-2 text-center lg:text-left">
+            <span class="text-primary font-semibold text-sm uppercase tracking-wide">Preview</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2 mb-4">Try two real prompts</h2>
+            <p class="text-muted text-lg mb-6">Demo mode stays limited and never spends tokens. Full gameplay unlocks only after the Worker confirms a valid spend.</p>
+
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-center gap-3 justify-center lg:justify-start">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-navy">10-question run</span>
+              </li>
+              <li class="flex items-center gap-3 justify-center lg:justify-start">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-navy">Streak + score tracking</span>
+              </li>
+              <li class="flex items-center gap-3 justify-center lg:justify-start">
+                <div class="w-6 h-6 bg-accent/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-navy">Education only, not advice</span>
+              </li>
+            </ul>
+
+            <button id="previewTryDemo2" class="bg-navy hover:bg-navy-light text-white font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Try Demo
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="py-16 lg:py-24 bg-navy text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">Simple Setup</span>
+          <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">How It Works</h2>
+          <p class="text-blue-200 text-lg max-w-2xl mx-auto">Three steps. Minimal drama. The Worker does the gate, not wishful thinking.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-20 h-20 bg-primary/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center font-bold text-sm">1</span>
+              <svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 0 1 6 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.341A8 8 0 10 4.572 15.34" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Sign in</h3>
+            <p class="text-blue-200">Cookie session required so tokens and play access attach to your account.</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-20 h-20 bg-accent/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center font-bold text-sm">2</span>
+              <svg class="w-10 h-10 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Confirm spend</h3>
+            <p class="text-blue-200">You approve the spend first. No auto-charge nonsense.</p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-20 h-20 bg-amber-500/20 rounded-3xl flex items-center justify-center mx-auto mb-6 relative">
+              <span class="absolute -top-2 -right-2 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center font-bold text-sm">3</span>
+              <svg class="w-10 h-10 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Play</h3>
+            <p class="text-blue-200">You’re redirected into the game once access is granted.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="py-16 lg:py-24 bg-white">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <span class="text-primary font-semibold text-sm uppercase tracking-wide">FAQ</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-navy mt-2">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="space-y-4" id="faq-container">
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" type="button" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">Do tokens expire?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">No. Tokens do not expire and are non-transferable.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" type="button" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">How does the token spend work?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">When you confirm, the Worker verifies your balance and creates an active play session for this game so reloading doesn’t charge you twice while the session is active.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" type="button" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">Is this tax advice or representation?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">No. This is educational only. It is not tax advice and not representation.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" type="button" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">Why do I need to sign in?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">Tokens and play grants are tied to your account, and the Worker uses a cookie session to verify access.</p>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-2xl overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between p-6 text-left" type="button" onclick="toggleFaq(this)">
+              <span class="text-navy font-semibold">I need real help, what now?</span>
+              <svg class="faq-icon w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-muted">If you want monitoring or representation, go to <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-surface">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl card-shadow p-8">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 bg-accent/15 rounded-2xl flex items-center justify-center">
+              <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 21a9 9 0 100-18 9 9 0 000 18z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-2xl font-bold text-navy">Trust + Disclaimers</h2>
+              <ul class="mt-3 space-y-2 text-muted">
+                <li>Educational only. Not tax advice.</li>
+                <li>Not representation.</li>
+                <li>Need monitoring or representation? Visit <a class="underline" href="https://taxmonitor.pro">taxmonitor.pro</a>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 lg:py-24 gradient-hero text-white">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to play?</h2>
+        <p class="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">Unlock access with a token spend verified by the Worker.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+          <button id="btnUnlock2" class="bg-white text-navy hover:bg-gray-100 font-semibold px-10 py-4 rounded-xl transition-all hover:scale-105 inline-flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            Unlock &amp; Play (8 tokens)
+          </button>
+          <a href="/index.html" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-10 py-4 rounded-xl border border-white/20 transition-all">
+            View All Games
+          </a>
+        </div>
+        <div class="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm rounded-full px-6 py-3">
+          <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          <span class="text-sm font-medium">Tokens don’t expire. Sessions prevent double-spend during active play.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARTIAL:footer -->
+
+  </div>
+
+  <div id="confirmModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/60" data-confirm-close="1"></div>
+
+    <div class="absolute inset-4 md:inset-10 lg:inset-16 bg-white rounded-3xl overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <div>
+          <p class="text-muted text-sm">Confirm spend</p>
+          <h3 class="text-xl font-bold text-navy">Spend <span id="modalCost">8</span> tokens to unlock?</h3>
+        </div>
+        <button id="btnCloseModal" type="button" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" data-confirm-close="1" aria-label="Close">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-auto p-6">
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-4">
+          <p class="text-green-900 text-sm"><strong>Session behavior:</strong> This spend creates an active play session that stays valid until you complete or lose, so reloads don’t charge you again while the session is active.</p>
+        </div>
+
+        <div class="mt-5 grid md:grid-cols-2 gap-4">
+          <div class="bg-surface rounded-2xl p-5">
+            <p class="text-navy font-semibold">Game</p>
+            <p class="text-muted text-sm">Tax Deadline Master</p>
+          </div>
+          <div class="bg-surface rounded-2xl p-5">
+            <p class="text-navy font-semibold">Cost</p>
+            <p class="text-muted text-sm"><span id="modalCost2">8</span> tokens</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-gray-200 bg-surface flex items-center justify-end gap-3">
+        <button id="btnCancelSpend" type="button" class="bg-white hover:bg-gray-50 text-navy font-semibold px-6 py-3 rounded-xl border border-gray-200 transition-all">
+          Cancel
+        </button>
+        <button id="btnConfirmSpend" type="button" class="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-xl btn-shadow transition-all hover:scale-105">
+          Confirm spend (8 tokens)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="demoModal" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/70" data-demo-close="1"></div>
+
+    <div class="absolute inset-4 md:inset-10 lg:inset-16 rounded-3xl overflow-hidden flex flex-col border border-white/10" style="background: linear-gradient(135deg, rgba(30,58,95,0.97) 0%, rgba(59,130,246,0.97) 50%, rgba(16,185,129,0.97) 100%);">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10" style="background: rgba(255,255,255,0.06)">
+        <div>
+          <p class="demo-font-body text-blue-100 text-sm">Demo mode</p>
+          <h3 class="demo-font-display text-white text-2xl">Tax Deadline Master</h3>
+        </div>
+        <button type="button" class="p-2 hover:bg-white/10 rounded-lg transition-colors text-white" data-demo-close="1" aria-label="Close demo">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-auto p-4 md:p-8 demo-font-body">
+        <div class="max-w-6xl mx-auto">
+          <div id="demo-loading" class="hidden h-full w-full flex items-center justify-center">
+            <div class="text-center">
+              <div class="w-16 h-16 border-4 border-blue-200 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
+              <p class="text-white text-lg">Loading demo…</p>
+            </div>
+          </div>
+
+          <div id="demo-menu" class="hidden">
+            <header class="text-center mb-8 demo-animate-slide-up">
+              <h1 class="demo-font-display text-4xl md:text-5xl text-white mb-2 drop-shadow-lg">Tax Deadline Master</h1>
+              <p class="text-blue-100 text-lg">Two questions. No token spend.</p>
+            </header>
+
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 demo-animate-slide-up" style="animation-delay: 0.08s;">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <h2 class="demo-font-display text-2xl text-white">Demo Round</h2>
+                  <p class="text-blue-100">2 questions • sample scoring</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="bg-white/20 rounded-full px-4 py-2"><span class="text-white font-semibold">Questions <span id="demo-menu-qcount">2</span></span></div>
+                  <div class="bg-white/20 rounded-full px-4 py-2"><span class="text-white font-semibold">Score <span id="demo-menu-score">0</span></span></div>
+                </div>
+              </div>
+
+              <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)">
+                  <p class="text-white font-semibold">Rules</p>
+                  <p class="text-blue-100 text-sm">Pick one answer per question.</p>
+                </div>
+                <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)">
+                  <p class="text-white font-semibold">Scoring</p>
+                  <p class="text-blue-100 text-sm">+10 per correct answer.</p>
+                </div>
+                <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)">
+                  <p class="text-white font-semibold">Unlock</p>
+                  <p class="text-blue-100 text-sm">Full game requires 8 tokens.</p>
+                </div>
+              </div>
+
+              <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+                <button id="demo-start" type="button" class="bg-white text-navy font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105">Start Demo</button>
+                <button id="demo-unlock" type="button" class="bg-white/20 text-white font-bold py-4 px-8 rounded-xl hover:bg-white/30 transition-all">Unlock &amp; Play (8 tokens)</button>
+              </div>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 demo-animate-slide-up" style="animation-delay: 0.16s;">
+              <h2 class="demo-font-display text-2xl text-white mb-3 text-center">What this is (and isn’t)</h2>
+              <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)"><p class="text-white font-semibold">Education</p><p class="text-blue-100">Training, not advice.</p></div>
+                <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)"><p class="text-white font-semibold">No representation</p><p class="text-blue-100">That’s separate.</p></div>
+                <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08)"><p class="text-white font-semibold">Cookie session</p><p class="text-blue-100">Required for unlock.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="demo-quiz" class="hidden">
+            <div class="max-w-3xl mx-auto">
+              <div class="flex items-center justify-between mb-6">
+                <button id="demo-back" type="button" class="flex items-center gap-2 text-white hover:text-blue-100 transition-colors">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                  Back to Demo
+                </button>
+                <div class="flex items-center gap-4">
+                  <div class="bg-white/20 rounded-full px-4 py-2"><span class="text-white font-semibold">Question <span id="demo-qnum">1</span>/<span id="demo-qtotal">2</span></span></div>
+                  <div class="bg-white/20 rounded-full px-4 py-2"><span class="text-white font-semibold">Score <span id="demo-score">0</span></span></div>
+                </div>
+              </div>
+
+              <div class="rounded-2xl p-4 mb-6 text-center demo-animate-pulse-glow" style="background: rgba(255,255,255,0.10)">
+                <h2 class="demo-font-display text-2xl text-white">Deadline Drill</h2>
+                <p class="text-blue-100">Quick-check questions</p>
+              </div>
+
+              <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 mb-6 demo-animate-slide-up">
+                <div class="mb-6">
+                  <span id="demo-type" class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold mb-4">Multiple Choice</span>
+                  <h3 id="demo-question" class="text-xl md:text-2xl font-bold text-gray-800"></h3>
+                </div>
+
+                <div id="demo-options" class="space-y-3"></div>
+
+                <div id="demo-feedback" class="hidden mt-6 p-4 rounded-xl">
+                  <div class="flex items-start gap-3">
+                    <span id="demo-feedback-icon" class="text-3xl"></span>
+                    <div>
+                      <h4 id="demo-feedback-title" class="font-bold text-lg"></h4>
+                      <p id="demo-feedback-text" class="text-gray-600 mt-1"></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-center">
+                <button id="demo-next" type="button" class="hidden bg-navy hover:bg-navy-light text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105">Next</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="demo-results" class="hidden">
+            <div class="max-w-2xl mx-auto text-center">
+              <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 demo-animate-bounce-in">
+                <div class="text-6xl mb-4" id="demo-results-icon">Done</div>
+                <h2 class="demo-font-display text-4xl text-white mb-4" id="demo-results-title">Demo complete</h2>
+                <p class="text-blue-100 text-xl mb-8" id="demo-results-message">You finished the demo. Full play uses tokens.</p>
+
+                <div class="flex justify-center gap-8 mb-8">
+                  <div class="text-center">
+                    <div id="demo-final-score" class="text-5xl font-bold text-white">0</div>
+                    <p class="text-blue-100">Points Earned</p>
+                  </div>
+                  <div class="text-center">
+                    <div id="demo-correct" class="text-5xl font-bold text-white">0/2</div>
+                    <p class="text-blue-100">Correct Answers</p>
+                  </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                  <button id="demo-retry" type="button" class="bg-white/20 text-white font-bold py-3 px-6 rounded-xl hover:bg-white/30 transition-all">Try Again</button>
+                  <button id="demo-results-unlock" type="button" class="bg-white text-navy font-bold py-3 px-6 rounded-xl hover:shadow-xl transition-all">Unlock &amp; Play</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-white/10" style="background: rgba(255,255,255,0.06)">
+        <p class="text-blue-100 text-sm">Education only. Not tax advice. Not representation. For real help, use <a class="underline text-white" href="https://taxmonitor.pro">taxmonitor.pro</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "https://tools-api.taxmonitor.pro";
+    const gameFile = "tax-deadline-master.html";
+    const gameSlug = "tax-deadline-master";
+    const tokenCost = 8;
+
+    function setStatus(msg) {
+      const el = document.getElementById("status");
+      if (el) {
+        el.className = "text-blue-200 text-sm";
+        el.textContent = msg || "";
+      }
+    }
+
+    function setStatusHtml(html) {
+      const el = document.getElementById("status");
+      if (el) {
+        el.className = "text-blue-200 text-sm";
+        el.innerHTML = html || "";
+      }
+    }
+
+    function toggleFaq(button) {
+      const content = button.nextElementSibling;
+      const icon = button.querySelector('.faq-icon');
+      const isOpen = !content.classList.contains('hidden');
+
+      document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = 'rotate(0deg)');
+
+      if (!isOpen) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    function showConfirmModal() {
+      document.getElementById("modalCost").textContent = String(tokenCost);
+      document.getElementById("modalCost2").textContent = String(tokenCost);
+      document.getElementById("btnConfirmSpend").textContent = `Confirm spend (${tokenCost} tokens)`;
+      const modal = document.getElementById("confirmModal");
+      modal.classList.remove("hidden");
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function hideConfirmModal() {
+      const modal = document.getElementById("confirmModal");
+      modal.classList.add("hidden");
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    async function apiGet(path) {
+      const res = await fetch(API_BASE + path, { method: "GET", credentials: "include" });
+      return { res, json: await res.json().catch(() => ({})) };
+    }
+
+    async function apiPost(path, body) {
+      const res = await fetch(API_BASE + path, {
+        method: "POST",
+        credentials: "include",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      return { res, json: await res.json().catch(() => ({})) };
+    }
+
+    async function beginLogin() {
+      setStatus("Starting sign-in…");
+      const started = await apiPost("/v1/auth/start", { returnTo: window.location.href });
+      const redirectUrl = started?.json?.redirectUrl || started?.json?.url || "";
+      if (started.res.ok && redirectUrl) {
+        window.location.href = redirectUrl;
+        return;
+      }
+      window.location.href = "/index.html";
+    }
+
+    async function preflightUnlock() {
+      setStatus("Checking session…");
+
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
+        await beginLogin();
+        return;
+      }
+
+      setStatus("Checking token balance…");
+      const bal = await apiGet("/v1/tokens/balance");
+      const balance = Number(bal.json && bal.json.balance);
+      if (!Number.isFinite(balance)) {
+        setStatus("Could not load token balance.");
+        return;
+      }
+
+      if (balance < tokenCost) {
+        setStatusHtml('Not enough tokens. <a class="underline" href="/index.html#pricing">Buy more tokens</a>.');
+        return;
+      }
+
+      setStatus("Ready. Confirm spend to unlock.");
+      showConfirmModal();
+    }
+
+    async function confirmSpendAndRedirect() {
+      setStatus("Confirming token spend…");
+
+      const spend = await apiPost("/v1/tokens/spend", {
+        amount: tokenCost,
+        idempotencyKey: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
+        reason: "arcade_play",
+        slug: gameSlug
+      });
+
+      if (!spend.res.ok) {
+        hideConfirmModal();
+        setStatus("Spend failed. Please try again.");
+        return;
+      }
+
+      hideConfirmModal();
+      setStatus("Unlocked. Redirecting…");
+      window.location.href = "/games/" + gameFile;
+    }
+
+    function scrollToPreview() {
+      const el = document.getElementById('preview');
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    const demoQuestions = [
+      {
+        type: 'Multiple Choice',
+        question: 'When is the standard federal income tax filing deadline for individuals?',
+        options: ['April 15', 'March 31', 'May 1', 'June 30'],
+        correct: 0,
+        explanation: 'April 15 is Tax Day, the annual deadline for filing federal income tax returns.'
+      },
+      {
+        type: 'Multiple Choice',
+        question: "What’s the estimated tax payment deadline for Q1?",
+        options: ['April 15', 'January 15', 'March 15', 'February 15'],
+        correct: 0,
+        explanation: 'Q1 estimated tax payments are due April 15.'
+      }
+    ];
+
+    const demoState = {
+      correct: 0,
+      index: 0,
+      locked: false,
+      score: 0
+    };
+
+    function demoShow(screenId) {
+      const ids = ['demo-loading', 'demo-menu', 'demo-quiz', 'demo-results'];
+      ids.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.toggle('hidden', id !== screenId);
+      });
+    }
+
+    function showDemoModal() {
+      const modal = document.getElementById('demoModal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('overflow-hidden');
+
+      demoShow('demo-loading');
+      setTimeout(() => {
+        resetDemo();
+        demoShow('demo-menu');
+      }, 350);
+    }
+
+    function hideDemoModal() {
+      const modal = document.getElementById('demoModal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    function demoUpdateMenu() {
+      const qCount = document.getElementById('demo-menu-qcount');
+      const score = document.getElementById('demo-menu-score');
+      if (qCount) qCount.textContent = String(demoQuestions.length);
+      if (score) score.textContent = String(demoState.score);
+    }
+
+    function demoRenderQuestion() {
+      const q = demoQuestions[demoState.index];
+
+      document.getElementById('demo-qnum').textContent = String(demoState.index + 1);
+      document.getElementById('demo-qtotal').textContent = String(demoQuestions.length);
+      document.getElementById('demo-score').textContent = String(demoState.score);
+      document.getElementById('demo-type').textContent = q.type;
+      document.getElementById('demo-question').textContent = q.question;
+
+      const feedback = document.getElementById('demo-feedback');
+      const nextBtn = document.getElementById('demo-next');
+      const options = document.getElementById('demo-options');
+
+      demoState.locked = false;
+      feedback.classList.add('hidden');
+      nextBtn.classList.add('hidden');
+
+      options.innerHTML = q.options.map((opt, idx) => {
+        const letter = String.fromCharCode(65 + idx);
+        return `
+          <button type="button" class="demo-quiz-option w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all" data-idx="${idx}">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-700 font-bold mr-3">${letter}</span>
+            <span class="text-gray-700">${opt}</span>
+          </button>
+        `;
+      }).join('');
+
+      options.querySelectorAll('.demo-quiz-option').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const selected = Number(btn.getAttribute('data-idx'));
+          demoGrade(selected);
+        });
+      });
+    }
+
+    function demoGrade(selectedIndex) {
+      if (demoState.locked) return;
+      demoState.locked = true;
+
+      const q = demoQuestions[demoState.index];
+      const isCorrect = selectedIndex === q.correct;
+
+      if (isCorrect) {
+        demoState.correct += 1;
+        demoState.score += 10;
+      }
+
+      document.getElementById('demo-score').textContent = String(demoState.score);
+      demoUpdateMenu();
+
+      const opts = document.querySelectorAll('#demo-options .demo-quiz-option');
+      opts.forEach((el, idx) => {
+        el.disabled = true;
+        if (idx === q.correct) {
+          el.classList.remove('border-gray-200');
+          el.classList.add('border-green-500', 'bg-green-50');
+        } else if (idx === selectedIndex && !isCorrect) {
+          el.classList.remove('border-gray-200');
+          el.classList.add('border-red-500', 'bg-red-50', 'demo-animate-shake');
+        }
+      });
+
+      const feedback = document.getElementById('demo-feedback');
+      feedback.classList.remove('hidden');
+      feedback.className = `mt-6 p-4 rounded-xl ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`;
+
+      document.getElementById('demo-feedback-icon').textContent = isCorrect ? '✓' : '!';
+      document.getElementById('demo-feedback-title').textContent = isCorrect ? 'Correct' : 'Not quite';
+      document.getElementById('demo-feedback-title').className = `font-bold text-lg ${isCorrect ? 'text-green-700' : 'text-red-700'}`;
+      document.getElementById('demo-feedback-text').textContent = q.explanation;
+
+      const nextBtn = document.getElementById('demo-next');
+      nextBtn.textContent = demoState.index < demoQuestions.length - 1 ? 'Next Question' : 'See Results';
+      nextBtn.classList.remove('hidden');
+    }
+
+    function demoShowResults() {
+      const total = demoQuestions.length;
+
+      let title = 'Demo complete';
+      let message = 'You finished the demo. Full play uses tokens.';
+
+      if (demoState.correct === total) {
+        title = 'Perfect demo run';
+        message = 'Two for two. Full game is 10 questions.';
+      } else if (demoState.correct === 1) {
+        title = 'Nice start';
+        message = 'Good momentum. Full game is 10 questions.';
+      }
+
+      document.getElementById('demo-results-icon').textContent = 'Done';
+      document.getElementById('demo-results-title').textContent = title;
+      document.getElementById('demo-results-message').textContent = message;
+      document.getElementById('demo-final-score').textContent = String(demoState.score);
+      document.getElementById('demo-correct').textContent = `${demoState.correct}/${total}`;
+
+      demoShow('demo-results');
+    }
+
+    function resetDemo() {
+      demoState.correct = 0;
+      demoState.index = 0;
+      demoState.locked = false;
+      demoState.score = 0;
+      demoUpdateMenu();
+      demoShow('demo-menu');
+    }
+
+    function startDemo() {
+      demoState.correct = 0;
+      demoState.index = 0;
+      demoState.locked = false;
+      demoState.score = 0;
+      demoUpdateMenu();
+      demoShow('demo-quiz');
+      demoRenderQuestion();
+    }
+
+    function demoAdvance() {
+      if (!demoState.locked) {
+        const feedback = document.getElementById('demo-feedback');
+        if (feedback.classList.contains('hidden')) {
+          feedback.classList.remove('hidden');
+          feedback.className = 'mt-6 p-4 rounded-xl bg-amber-100';
+          document.getElementById('demo-feedback-icon').textContent = '!';
+          document.getElementById('demo-feedback-title').textContent = 'Pick an answer';
+          document.getElementById('demo-feedback-title').className = 'font-bold text-lg text-amber-700';
+          document.getElementById('demo-feedback-text').textContent = 'Demo rules: choose one option to continue.';
+        }
+        return;
+      }
+
+      if (demoState.index < demoQuestions.length - 1) {
+        demoState.index += 1;
+        demoRenderQuestion();
+        return;
+      }
+
+      demoShowResults();
+    }
+
+    function wireDemoModal() {
+      document.querySelectorAll('[data-demo-close="1"]').forEach((el) => {
+        el.addEventListener('click', hideDemoModal);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const modal = document.getElementById('demoModal');
+        if (modal && !modal.classList.contains('hidden')) hideDemoModal();
+      });
+
+      document.getElementById('demo-start')?.addEventListener('click', startDemo);
+      document.getElementById('demo-unlock')?.addEventListener('click', () => {
+        hideDemoModal();
+        preflightUnlock();
+      });
+
+      document.getElementById('demo-back')?.addEventListener('click', () => {
+        demoShow('demo-menu');
+      });
+
+      document.getElementById('demo-next')?.addEventListener('click', demoAdvance);
+
+      document.getElementById('demo-retry')?.addEventListener('click', startDemo);
+      document.getElementById('demo-results-unlock')?.addEventListener('click', () => {
+        hideDemoModal();
+        preflightUnlock();
+      });
+    }
+
+    function wireConfirmModal() {
+      document.querySelectorAll('[data-confirm-close="1"]').forEach(el => {
+        el.addEventListener('click', hideConfirmModal);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const modal = document.getElementById('confirmModal');
+        if (modal && !modal.classList.contains('hidden')) hideConfirmModal();
+      });
+
+      document.getElementById("btnConfirmSpend")?.addEventListener("click", confirmSpendAndRedirect);
+      document.getElementById("btnCancelSpend")?.addEventListener("click", hideConfirmModal);
+    }
+
+    function setUnlockMode(mode) {
+      const btns = [document.getElementById("btnUnlock"), document.getElementById("btnUnlock2")].filter(Boolean);
+      const labels = {
+        locked: `Unlock & Play (${tokenCost} tokens)`,
+        resume: 'Resume Play'
+      };
+
+      btns.forEach((b) => {
+        b.innerHTML = labels[mode] || labels.locked;
+        b.dataset.mode = mode;
+      });
+    }
+
+    async function refreshGrantStatus() {
+      const me = await apiGet("/v1/auth/me");
+      if (!me.res.ok) {
+        setUnlockMode('locked');
+        setStatus("");
+        return { allowed: false };
+      }
+
+      const access = await apiGet(`/v1/games/access?slug=${encodeURIComponent(gameSlug)}`);
+      const allowed = !!(access.res.ok && access.json && access.json.allowed);
+
+      if (allowed) {
+        setUnlockMode('resume');
+        setStatus('Active session detected. You can resume without spending tokens.');
+        return { allowed: true };
+      }
+
+      setUnlockMode('locked');
+      setStatus('');
+      return { allowed: false };
+    }
+
+    function resumePlay() {
+      window.location.href = "/games/" + gameFile;
+    }
+
+    function wireUnlockButtons() {
+      const btn1 = document.getElementById("btnUnlock");
+      const btn2 = document.getElementById("btnUnlock2");
+
+      [btn1, btn2].filter(Boolean).forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+
+          const st = await refreshGrantStatus();
+          if (st.allowed) {
+            resumePlay();
+            return;
+          }
+
+          preflightUnlock();
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      window.elementSdk?.init?.({
+        elements: {
+          gameSubtitle: { type: 'text' },
+          gameTitle: { type: 'text' }
+        },
+        page: {
+          slug: 'about-games/tax-deadline-master'
+        }
+      });
+
+      refreshGrantStatus();
+      wireUnlockButtons();
+
+      document.getElementById("btnDemo")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        scrollToPreview();
+      });
+
+      document.getElementById("previewTryDemo")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        showDemoModal();
+      });
+
+      document.getElementById("previewTryDemo2")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        showDemoModal();
+      });
+
+      document.getElementById('heroTryDemo')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        scrollToPreview();
+      });
+
+      wireConfirmModal();
+      wireDemoModal();
+    });
+
+    window.addEventListener('pageshow', () => {
+      refreshGrantStatus();
+    });
+  </script>
+</body>
+</html>
