@@ -41,7 +41,7 @@ export const api = {
   getSession: () =>
     apiFetch<{
       ok: boolean
-      user: { account_id: string; email: string; balance: number }
+      user: { account_id: string; email: string; balance: number; membership?: string }
     }>('/v1/tttmp/auth/session'),
 
   logout: () =>
@@ -51,6 +51,32 @@ export const api = {
   getBalance: () =>
     apiFetch<{ ok: boolean; balance: number; account_id: string }>(
       '/v1/tttmp/tokens/balance'
+    ),
+
+  getTokenBalance: (account_id: string) =>
+    apiFetch<{ ok: boolean; balance: number; account_id: string }>(
+      `/v1/tokens/balance/${account_id}`
+    ),
+
+  getTokenPricing: () =>
+    apiFetch<{
+      ok: boolean
+      prices: Array<{
+        price_id: string
+        amount: number
+        currency: string
+        tokens: number
+        recommended: boolean
+        label: string
+        type?: string
+        badge?: string
+      }>
+    }>('/v1/tokens/pricing', { auth: false }),
+
+  purchaseTokens: (price_id: string) =>
+    apiFetch<{ ok: boolean; session_url: string }>(
+      '/v1/tokens/purchase',
+      { method: 'POST', body: JSON.stringify({ price_id }) }
     ),
 
   // Checkout
