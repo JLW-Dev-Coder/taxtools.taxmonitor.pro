@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import styles from './page.module.css'
 
 export default function RefundPage() {
@@ -72,7 +71,6 @@ export default function RefundPage() {
           </p>
         </div>
       </main>
-      <Footer />
     </>
   )
 }

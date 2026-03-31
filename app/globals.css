@@ -1,9 +1,19 @@
-:root {
-  /* TTTMP Brand — Amber Gold */
-  --accent: #f59e0b;
-  --accent-hover: #d97706;
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap');
 
-  /* Shared dark theme tokens */
+:root {
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --accent:        #f59e0b;
+  --accent-light:  #fffbeb;
+  --accent-dark:   #b45309;
+  --accent-text:   #92400e;
+  --accent-border: #fde68a;
+  --max-width:     1280px;
+  --page-gutter:   clamp(1.25rem, 5vw, 3rem);
+  --header-height: 68px;
+
+  /* Semantic */
+  --accent-hover: #d97706;
   --bg: #0F0F1A;
   --surface: #1A1A2E;
   --surface-border: #2D2D44;
@@ -13,14 +23,12 @@
   --success: #10b981;
 
   /* Layout */
-  --header-height: 60px;
   --sidebar-width: 260px;
   --max-content: 1200px;
   --radius: 8px;
 
-  /* Typography */
-  --font-sans: 'DM Sans', system-ui, sans-serif;
-  --font-display: 'Fredoka One', cursive;
+  /* Typography aliases */
+  --font-sans: var(--font-body);
 }
 
 * {
@@ -30,7 +38,7 @@
 }
 
 html {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--text);
 }

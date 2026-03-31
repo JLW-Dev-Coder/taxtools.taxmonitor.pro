@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import { api } from '@/lib/api'
 import { GAMES } from '@/lib/games'
 import styles from './page.module.css'
@@ -216,7 +215,6 @@ export default function GamesPage() {
           ))}
         </div>
       </main>
-      <Footer />
 
       {showModal && (
         <TokenModal

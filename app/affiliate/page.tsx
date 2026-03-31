@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import { api } from '@/lib/api'
 import styles from './page.module.css'
 
@@ -126,7 +125,6 @@ export default function AffiliatePage() {
         <main className={styles.main}>
           <p className={styles.loadingText}>Loading…</p>
         </main>
-        <Footer />
       </>
     )
   }
@@ -138,7 +136,6 @@ export default function AffiliatePage() {
         <main className={styles.main}>
           <p className={styles.errorText}>{error || 'Could not load affiliate data.'}</p>
         </main>
-        <Footer />
       </>
     )
   }
@@ -295,7 +292,6 @@ export default function AffiliatePage() {
           )}
         </section>
       </main>
-      <Footer />
     </>
   )
 }

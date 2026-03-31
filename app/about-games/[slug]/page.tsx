@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import { GAMES } from '@/lib/games'
 import styles from './page.module.css'
 
@@ -62,7 +61,6 @@ export default async function AboutGamePage({
           </Link>
         </div>
       </main>
-      <Footer />
     </>
   )
 }

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import { api } from '@/lib/api'
 import styles from './page.module.css'
 
@@ -84,7 +83,6 @@ export default function LoginPage() {
           )}
         </div>
       </main>
-      <Footer />
     </>
   )
 }

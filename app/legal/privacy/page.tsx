@@ -1,5 +1,4 @@
 import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import styles from './page.module.css'
 
 export default function PrivacyPage() {
@@ -86,7 +85,6 @@ export default function PrivacyPage() {
           </p>
         </div>
       </main>
-      <Footer />
     </>
   )
 }
