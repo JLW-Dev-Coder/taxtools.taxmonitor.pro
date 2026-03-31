@@ -145,4 +145,39 @@ export const api = {
         label: string
       }>
     }>('/v1/pricing/transcripts', { auth: false }),
+
+  // Affiliates
+  getAffiliate: (account_id: string) =>
+    apiFetch<{
+      ok: boolean
+      referral_code: string
+      connect_status: string
+      balance_pending: number
+      balance_paid: number
+      referral_url: string
+    }>(`/v1/affiliates/${account_id}`),
+
+  getAffiliateEvents: (account_id: string) =>
+    apiFetch<{
+      ok: boolean
+      events: Array<{
+        platform: string
+        gross_amount: number
+        commission_amount: number
+        status: string
+        created_at: string
+      }>
+    }>(`/v1/affiliates/${account_id}/events`),
+
+  startAffiliateOnboarding: () =>
+    apiFetch<{ ok: boolean; onboard_url: string }>(
+      '/v1/affiliates/connect/onboard',
+      { method: 'POST' }
+    ),
+
+  requestPayout: (amount: number) =>
+    apiFetch<{ ok: boolean; payout_id: string; amount: number; status: string }>(
+      '/v1/affiliates/payout/request',
+      { method: 'POST', body: JSON.stringify({ amount }) }
+    ),
 }

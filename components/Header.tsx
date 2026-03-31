@@ -31,6 +31,7 @@ export default function Header() {
           <Link href="/pricing">Tokens</Link>
           {loggedIn ? (
             <>
+              <Link href="/affiliate">Affiliate</Link>
               <Link href="/account" className={styles.balance}>
                 🪙 {balance ?? '—'}
               </Link>
