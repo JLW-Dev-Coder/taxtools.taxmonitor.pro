@@ -64,6 +64,14 @@ Games remain as static HTML in public/games/.
 3. Click Settings → scroll to bottom → Delete Worker
 4. Confirm deletion
 
+## Post-Task Commit Requirements
+
+After completing any task, Repo Claude must:
+1. Run `npm run build` — confirm pass before committing
+2. `git add` only the files changed by the task
+3. Commit with a descriptive message summarizing the change
+4. Report: files changed, build result, commit hash
+
 ### Delete TTTMP D1 Database from Cloudflare
 1. Go to Cloudflare Dashboard → Workers & Pages → D1
 2. Find: tax-tools-tax-monitor
