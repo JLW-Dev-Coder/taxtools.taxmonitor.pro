@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import CtaBanner from '@/components/CtaBanner'
 import SiteFooter from '@/components/SiteFooter'
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
+        <CtaBanner />
         <SiteFooter />
       </body>
     </html>
