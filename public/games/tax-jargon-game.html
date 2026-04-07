@@ -11,8 +11,8 @@
   <link rel="stylesheet" href="/styles/site.css" />
 
   <!-- SDKs (required) -->
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
+  
+  
 
   <!-- Remote UI helpers allowed if local CSS does not provide them -->
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -146,7 +146,7 @@
   <div id="app" class="h-full w-full overflow-auto custom-scrollbar" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); padding-bottom: 6rem;">
 
       <!-- Home Screen -->
-      <div id="home-screen" class="hidden h-full w-full p-4 md:p-8 pb-24">
+      <div id="home-screen" class="h-full w-full p-4 md:p-8 pb-24">
         <div class="max-w-6xl mx-auto">
 
           <header class="text-center mb-8 mt-[50px] bounce-in">
@@ -224,155 +224,7 @@
 
   <!-- PARTIAL:footer -->
 
-  <script>
-
-  /* ===== Required constants ===== */
-
-  const API_BASE = "https://tools-api.taxmonitor.pro";
-  const GAME_SLUG = "tax-jargon-game";
-  const GAME_FILE = "tax-jargon-game.html";
-  const ABOUT_URL = "/about-games/" + GAME_FILE;
-
-
-  /* ===== Helpers ===== */
-
-  function setStatus(message) {
-    const el = document.getElementById("status");
-    if (el) el.textContent = message || "";
-  }
-
-
-  async function safeJson(res) {
-    try {
-      const ct = (res.headers.get("content-type") || "").toLowerCase();
-      if (!ct.includes("application/json")) return {};
-      return await res.json();
-    } catch {
-      return {};
-    }
-  }
-
-
-  async function apiGet(path) {
-    const res = await fetch(API_BASE + path, {
-      method: "GET",
-      credentials: "include"
-    });
-
-    const json = await safeJson(res);
-
-    return { res, json };
-  }
-
-
-  function redirectToAbout() {
-    window.location.href = ABOUT_URL;
-  }
-
-
-  async function endRun(result) {
-    await fetch(API_BASE + "/v1/games/end", {
-      method: "POST",
-      credentials: "include",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ result, slug: GAME_SLUG })
-    }).catch(() => {});
-  }
-
-
-  /* ===== Access Gate ===== */
-
-  async function gateAccess() {
-
-    setStatus("Checking session…");
-
-    const me = await apiGet("/v1/auth/me");
-
-    if (!me.res.ok || !me.json || me.json.isAuthenticated === false) {
-      redirectToAbout();
-      return false;
-    }
-
-
-    setStatus("Loading token balance…");
-
-    await apiGet("/v1/tokens/balance");
-
-
-    setStatus("Verifying access…");
-
-    const access = await apiGet("/v1/games/access?slug=" + encodeURIComponent(GAME_SLUG));
-
-    if (!access.res.ok || !access.json || access.json.allowed !== true) {
-      redirectToAbout();
-      return false;
-    }
-
-
-    setStatus("Access granted.");
-
-    window.__playerEmail = me.json.email || me.json.user?.email || "player";
-
-    return true;
-  }
-
-
-  /* ===== Boot Sequence ===== */
-
-  (async () => {
-
-    const ok = await gateAccess();
-
-    if (!ok) return;
-
-    initializeApp();
-
-  })().catch(() => {
-
-    setStatus("Error loading game. Redirecting…");
-
-    redirectToAbout();
-
-  });
-
-
-  /* ===== Minimal Game Initialization ===== */
-
-  function initializeApp() {
-
-    const email = window.__playerEmail || "player";
-
-    const emailEl = document.getElementById("player-email");
-
-    if (emailEl) emailEl.textContent = email;
-
-
-    if (window.elementSdk) {
-      window.elementSdk.init({});
-    }
-
-
-    if (window.dataSdk) {
-      window.dataSdk.init({});
-    }
-
-
-    const home = document.getElementById("home-screen");
-
-    if (home) home.classList.remove("hidden");
-
-  }
-
-
-  /* ===== Placeholder Game Methods ===== */
-
-  function startFlashcards() { console.log("flashcards"); }
-  function startIRSGame() { console.log("irs"); }
-  function startLightning() { console.log("lightning"); }
-  function startQuiz() { console.log("quiz"); }
-  function showProgress() { console.log("progress"); }
-
-  </script>
+  
 
 </body>
 </html>
