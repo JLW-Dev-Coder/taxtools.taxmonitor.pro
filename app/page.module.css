@@ -4,32 +4,53 @@
   flex-direction: column;
 }
 
+/* ---------- Hero ---------- */
 .hero {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 6rem 1.5rem;
-  max-width: 800px;
+  position: relative;
+  padding: 5rem var(--page-gutter) 3rem;
+  background:
+    radial-gradient(ellipse at top left, rgba(245, 158, 11, 0.08), transparent 60%),
+    var(--bg);
+  overflow: hidden;
+}
+
+.heroInner {
+  max-width: var(--max-content);
   margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-block;
+  padding: 0.4rem 0.9rem;
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.5rem;
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  color: var(--accent);
-  letter-spacing: 0.02em;
-  margin-bottom: 1.5rem;
+  font-size: clamp(2.25rem, 5.5vw, 4rem);
+  color: var(--text);
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .subtitle {
   font-size: 1.125rem;
   color: var(--text-muted);
-  line-height: 1.8;
-  margin-bottom: 2.5rem;
-  max-width: 580px;
+  line-height: 1.75;
+  margin: 0 auto 2rem;
+  max-width: 680px;
 }
 
 .actions {
@@ -41,9 +62,9 @@
 
 .primary {
   background: var(--accent);
-  color: #000;
+  color: #fff;
   font-weight: 700;
-  padding: 0.875rem 2rem;
+  padding: 0.9rem 2rem;
   border-radius: var(--radius);
   font-size: 1rem;
   transition: background 0.15s, transform 0.15s;
@@ -58,7 +79,7 @@
   background: var(--surface);
   color: var(--text);
   font-weight: 600;
-  padding: 0.875rem 2rem;
+  padding: 0.9rem 2rem;
   border-radius: var(--radius);
   border: 1px solid var(--surface-border);
   font-size: 1rem;
@@ -70,12 +91,424 @@
   transform: translateY(-2px);
 }
 
+/* ---------- Trust badges ---------- */
+.trustRow {
+  max-width: var(--max-content);
+  margin: 3rem auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--surface-border);
+}
+
+.trustBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.trustIcon {
+  display: inline-flex;
+  color: var(--success);
+}
+
+/* ---------- Generic sections ---------- */
+.section {
+  padding: 4rem var(--page-gutter);
+  background: var(--bg);
+}
+
+.sectionAlt {
+  padding: 4rem var(--page-gutter);
+  background: var(--surface);
+}
+
+.sectionInner {
+  max-width: var(--max-content);
+  margin: 0 auto;
+}
+
+.sectionInnerNarrow {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.sectionHead {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  color: var(--text);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.01em;
+}
+
+.sectionSub {
+  color: var(--text-muted);
+  font-size: 1.0625rem;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+/* ---------- Tools grid ---------- */
+.toolsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.toolCard {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  transition: border-color 0.18s ease, transform 0.18s ease;
+}
+
+.toolCard:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.toolIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+}
+
+.icon_amber {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--accent);
+}
+
+.icon_green {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--success);
+}
+
+.icon_blue {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+}
+
+.toolTitle {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.toolDesc {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.toolActions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.toolSecondary {
+  flex: 1;
+  text-align: center;
+  padding: 0.65rem 1rem;
+  background: transparent;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: border-color 0.15s;
+}
+
+.toolSecondary:hover {
+  border-color: var(--accent);
+}
+
+.toolPrimary {
+  flex: 1;
+  text-align: center;
+  padding: 0.65rem 1rem;
+  background: var(--accent);
+  border-radius: var(--radius);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  transition: background 0.15s;
+}
+
+.toolPrimary:hover {
+  background: var(--accent-hover);
+}
+
+/* ---------- Highlight (token bundle) card ---------- */
+.highlightCard {
+  position: relative;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border: 1px solid var(--accent);
+  color: #fff;
+  justify-content: center;
+  text-align: center;
+}
+
+.highlightCard:hover {
+  border-color: var(--accent-light);
+}
+
+.highlightBadge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+}
+
+.highlightTitle {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.highlightDesc {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  opacity: 0.95;
+}
+
+.highlightCta {
+  display: inline-block;
+  padding: 0.75rem 1.75rem;
+  background: #fff;
+  color: var(--accent-dark);
+  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  transition: transform 0.15s;
+}
+
+.highlightCta:hover {
+  transform: translateY(-2px);
+}
+
+/* ---------- Features / Why ---------- */
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.featureCard {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.featureCard:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.featureTitle {
+  font-family: var(--font-display);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+
+.featureBody {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+/* ---------- FAQ ---------- */
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ---------- Contact ---------- */
+.contactGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.contactCard {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  transition: border-color 0.15s;
+}
+
+.contactCard:hover {
+  border-color: var(--accent);
+}
+
+.contactTitle {
+  font-family: var(--font-display);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.contactBody {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  margin: 0.5rem 0;
+}
+
+.contactLink {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.contactLink:hover {
+  color: var(--accent-hover);
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  background: var(--surface);
+  border-top: 1px solid var(--surface-border);
+  padding: 3rem var(--page-gutter) 1.75rem;
+  margin-top: auto;
+}
+
+.footerInner {
+  max-width: var(--max-content);
+  margin: 0 auto;
+}
+
+.footerTop {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.footerBrand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.footerLogo {
+  font-size: 1.75rem;
+}
+
+.footerBrandName {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.footerNav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.footerNav a {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  transition: color 0.15s;
+}
+
+.footerNav a:hover {
+  color: var(--accent);
+}
+
+.footerNavTitle {
+  font-family: var(--font-display);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.35rem;
+}
+
+.footerBottom {
+  padding-top: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .hero {
+    padding: 3rem var(--page-gutter) 2rem;
+  }
+
+  .section,
+  .sectionAlt {
+    padding: 2.5rem var(--page-gutter);
+  }
+
+  .trustRow {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    gap: 1rem 1.5rem;
+  }
+
+  .toolsGrid,
+  .featuresGrid,
+  .contactGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .footerTop {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+}
+
 @media (max-width: 640px) {
   .actions {
     flex-direction: column;
     width: 100%;
   }
-  .primary, .secondary {
+  .primary,
+  .secondary {
     text-align: center;
+    width: 100%;
   }
 }
