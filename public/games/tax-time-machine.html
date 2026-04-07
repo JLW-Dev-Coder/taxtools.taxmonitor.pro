@@ -1,1 +1,898 @@
 <!-- PASTE HTML FROM CANVA: https://www.canva.com/ai/code/thread/c1eb56a2-6609-42a1-8eeb-43bdc0cca27c -->
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Time Machine</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Syne:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    
+    :root {
+      --bg-color: #0a0a1a;
+      --surface-color: #1a1a2e;
+      --text-color: #ffffff;
+      --primary-color: #00ffd5;
+      --secondary-color: #ff00aa;
+    }
+    
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      overflow-x: hidden;
+    }
+    
+    /* Starfield Background */
+    .starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--duration) ease-in-out infinite;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+    
+    /* Title Animations */
+    .title-container {
+      animation: fadeUp 1s ease-out forwards;
+      opacity: 0;
+    }
+    
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .main-title {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), #ffff00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 3s ease infinite, textGlow 2s ease-in-out infinite alternate;
+      background-size: 200% 200%;
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    @keyframes textGlow {
+      from { filter: drop-shadow(0 0 10px var(--primary-color)); }
+      to { filter: drop-shadow(0 0 30px var(--secondary-color)); }
+    }
+    
+    .subtitle {
+      animation: fadeUp 1s ease-out 0.3s forwards, letterSpacing 3s ease-in-out infinite;
+      opacity: 0;
+    }
+    
+    @keyframes letterSpacing {
+      0%, 100% { letter-spacing: 0.1em; }
+      50% { letter-spacing: 0.2em; }
+    }
+    
+    /* Timeline Container */
+    .timeline-wrapper {
+      animation: scaleIn 0.8s ease-out 0.5s forwards;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    /* Glowing Border */
+    .glow-border {
+      position: relative;
+    }
+    
+    .glow-border::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), #ffff00, var(--primary-color));
+      background-size: 400% 400%;
+      border-radius: 20px;
+      z-index: -1;
+      animation: glowPulse 4s ease infinite, morphBorder 8s ease-in-out infinite;
+      filter: blur(10px);
+    }
+    
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.5; background-position: 0% 50%; }
+      50% { opacity: 1; background-position: 100% 50%; }
+    }
+    
+    @keyframes morphBorder {
+      0%, 100% { border-radius: 20px 40px 20px 40px; }
+      25% { border-radius: 40px 20px 40px 20px; }
+      50% { border-radius: 30px 50px 30px 50px; }
+      75% { border-radius: 50px 30px 50px 30px; }
+    }
+    
+    /* Timeline Bar */
+    .timeline-bar {
+      position: relative;
+      height: 6px;
+      background: linear-gradient(90deg, var(--surface-color), var(--surface-color));
+      border-radius: 3px;
+      overflow: visible;
+    }
+    
+    .timeline-progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.5s ease-out;
+      position: relative;
+    }
+    
+    .timeline-progress::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      animation: pulse 1.5s ease-in-out infinite;
+      box-shadow: 0 0 20px var(--primary-color);
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: translateY(-50%) scale(1); box-shadow: 0 0 20px var(--primary-color); }
+      50% { transform: translateY(-50%) scale(1.3); box-shadow: 0 0 40px var(--primary-color); }
+    }
+    
+    /* Year Markers */
+    .year-marker {
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .year-dot {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--surface-color);
+      border: 3px solid var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      animation: float 3s ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .year-marker:hover .year-dot {
+      transform: scale(1.2) translateY(-5px);
+      background: var(--primary-color);
+      color: var(--bg-color);
+      box-shadow: 0 0 30px var(--primary-color), 0 10px 30px rgba(0, 255, 213, 0.3);
+      animation: jello 0.5s ease;
+    }
+    
+    @keyframes jello {
+      0%, 100% { transform: scale(1.2) translateY(-5px); }
+      25% { transform: scale(1.25, 1.15) translateY(-5px); }
+      50% { transform: scale(1.15, 1.25) translateY(-5px); }
+      75% { transform: scale(1.22, 1.18) translateY(-5px); }
+    }
+    
+    .year-marker.active .year-dot {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border-color: white;
+      animation: bounce 0.6s ease;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      30% { transform: scale(1.3); }
+      50% { transform: scale(0.9); }
+      70% { transform: scale(1.1); }
+    }
+    
+    /* Connector Lines */
+    .connector {
+      position: absolute;
+      top: 50%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+      transform: translateY(-50%);
+      animation: wave 2s ease-in-out infinite;
+    }
+    
+    @keyframes wave {
+      0%, 100% { opacity: 0.3; transform: translateY(-50%) scaleX(1); }
+      50% { opacity: 1; transform: translateY(-50%) scaleX(1.05); }
+    }
+    
+    /* Pop-up Cards */
+    .popup-card {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: var(--surface-color);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      z-index: 100;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      border: 2px solid transparent;
+      background-image: linear-gradient(var(--surface-color), var(--surface-color)), 
+                        linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+    }
+    
+    .popup-card.active {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      animation: swingIn 0.6s ease-out;
+    }
+    
+    @keyframes swingIn {
+      0% { transform: translate(-50%, -50%) scale(0) rotate(-10deg); }
+      50% { transform: translate(-50%, -50%) scale(1.1) rotate(5deg); }
+      70% { transform: translate(-50%, -50%) scale(0.95) rotate(-2deg); }
+      100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+    }
+    
+    .popup-card .year-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-family: 'Space Mono', monospace;
+      font-weight: bold;
+      margin-bottom: 15px;
+      animation: rubberBand 1s ease 0.3s;
+    }
+    
+    @keyframes rubberBand {
+      0%, 100% { transform: scaleX(1); }
+      30% { transform: scaleX(1.25) scaleY(0.75); }
+      40% { transform: scaleX(0.75) scaleY(1.25); }
+      50% { transform: scaleX(1.15) scaleY(0.85); }
+      65% { transform: scaleX(0.95) scaleY(1.05); }
+      75% { transform: scaleX(1.05) scaleY(0.95); }
+    }
+    
+    .popup-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      animation: typewriter 0.5s steps(20) 0.2s forwards;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 0;
+    }
+    
+    .popup-card.active h3 {
+      width: 100%;
+    }
+    
+    .popup-card p {
+      opacity: 0;
+      animation: fadeDown 0.5s ease 0.5s forwards;
+      line-height: 1.6;
+      color: #b0b0b0;
+    }
+    
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .popup-card .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: transparent;
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .popup-card .close-btn:hover {
+      background: var(--primary-color);
+      color: var(--bg-color);
+      transform: rotate(90deg) scale(1.1);
+    }
+    
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 99;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+    
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    /* Navigation Buttons */
+    .nav-btn {
+      position: relative;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    .nav-btn.primary {
+      background: linear-gradient(135deg, var(--primary-color), #00b4aa);
+      color: var(--bg-color);
+    }
+    
+    .nav-btn.secondary {
+      background: transparent;
+      border: 2px solid var(--secondary-color);
+      color: var(--secondary-color);
+    }
+    
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+    
+    .nav-btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    
+    .nav-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 255, 213, 0.3);
+    }
+    
+    .nav-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .nav-btn:hover::after {
+      left: 100%;
+    }
+    
+    /* Success Modal */
+    .success-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0) rotateY(180deg);
+      background: linear-gradient(135deg, var(--surface-color), #2a2a4e);
+      border-radius: 30px;
+      padding: 50px;
+      text-align: center;
+      z-index: 200;
+      opacity: 0;
+      transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      border: 3px solid var(--primary-color);
+      box-shadow: 0 0 50px var(--primary-color);
+    }
+    
+    .success-modal.active {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+    }
+    
+    .success-modal h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), #ffff00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: letterSpacingSuccess 2s ease-in-out infinite, textGlow 1.5s ease-in-out infinite alternate;
+    }
+    
+    @keyframes letterSpacingSuccess {
+      0%, 100% { letter-spacing: 0.05em; }
+      50% { letter-spacing: 0.15em; }
+    }
+    
+    .success-icon {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 30px;
+      animation: spin3d 2s ease-in-out infinite;
+    }
+    
+    @keyframes spin3d {
+      0% { transform: rotateY(0deg) rotateX(0deg); }
+      50% { transform: rotateY(180deg) rotateX(10deg); }
+      100% { transform: rotateY(360deg) rotateX(0deg); }
+    }
+    
+    /* Orbit Effect */
+    .orbit-container {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      animation: orbit 10s linear infinite;
+    }
+    
+    @keyframes orbit {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    .orbit-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--primary-color);
+    }
+    
+    /* Progress Ring */
+    .progress-ring {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 80px;
+      height: 80px;
+      z-index: 50;
+    }
+    
+    .progress-ring circle {
+      fill: none;
+      stroke-width: 4;
+    }
+    
+    .progress-ring .bg {
+      stroke: var(--surface-color);
+    }
+    
+    .progress-ring .progress {
+      stroke: url(#progressGradient);
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: center;
+      transition: stroke-dasharray 0.5s ease;
+    }
+    
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    
+    /* Tooltip */
+    .tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      background: var(--surface-color);
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      border: 1px solid var(--primary-color);
+    }
+    
+    .tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--primary-color);
+    }
+    
+    .year-marker:hover .tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-15px);
+    }
+    
+    /* Animated Icons */
+    .icon-spin {
+      animation: iconSpin 4s linear infinite;
+    }
+    
+    @keyframes iconSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Highlight Marker */
+    .current-marker {
+      position: relative;
+    }
+    
+    .current-marker::before {
+      content: 'NOW';
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--secondary-color);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: bold;
+      animation: pulse 1s ease-in-out infinite;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full overflow-auto"><!-- Starfield Background -->
+   <div class="starfield" id="starfield"></div><!-- Main Container -->
+   <div class="relative z-10 min-h-full p-8 flex flex-col"><!-- Header -->
+    <header class="title-container text-center mb-12">
+     <h1 id="mainTitle" class="main-title text-5xl md:text-7xl font-extrabold mb-4">TAX TIME MACHINE</h1>
+     <p id="subtitle" class="subtitle text-xl md:text-2xl text-gray-300 tracking-widest">Journey Through Tax History</p>
+    </header><!-- Navigation Buttons -->
+    <div class="flex justify-center gap-4 mb-12 flex-wrap"><button class="nav-btn secondary" onclick="jumpToYear(0)"> <span class="relative z-10">⏪ Back to Start</span> </button> <button class="nav-btn primary" onclick="jumpToYear(taxYears.length - 1)"> <span class="relative z-10">Jump to Present 🚀</span> </button>
+    </div><!-- Timeline Section -->
+    <div class="timeline-wrapper glow-border flex-1 bg-opacity-50 rounded-2xl p-8" style="background: var(--surface-color);"><!-- Timeline Bar -->
+     <div class="timeline-bar mb-8">
+      <div class="timeline-progress" id="timelineProgress"></div>
+     </div><!-- Year Markers -->
+     <div class="flex justify-between items-center flex-wrap gap-6" id="yearMarkers"><!-- Generated by JS -->
+     </div>
+    </div><!-- Instructions -->
+    <div class="text-center mt-8 text-gray-400 animate-pulse">
+     <p>✨ Click on any year to explore tax law changes ✨</p>
+    </div>
+   </div><!-- Overlay -->
+   <div class="overlay" id="overlay" onclick="closePopup()"></div><!-- Popup Card -->
+   <div class="popup-card" id="popupCard"><button class="close-btn" onclick="closePopup()" aria-label="Close popup">✕</button> <span class="year-badge" id="popupYear">2024</span>
+    <h3 id="popupTitle">Tax Law Change</h3>
+    <p id="popupContent">Details about the tax law change...</p>
+    <div class="mt-6 flex gap-3"><button class="nav-btn secondary text-sm" onclick="navigateYear(-1)">← Previous</button> <button class="nav-btn primary text-sm" onclick="navigateYear(1)">Next →</button>
+    </div>
+   </div><!-- Success Modal -->
+   <div class="success-modal" id="successModal">
+    <div class="success-icon">
+     <svg viewbox="0 0 100 100" class="w-full h-full"><defs>
+       <lineargradient id="successGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#00ffd5" />
+        <stop offset="100%" style="stop-color:#ff00aa" />
+       </lineargradient>
+      </defs> <circle cx="50" cy="50" r="45" fill="none" stroke="url(#successGradient)" stroke-width="4" /> <path d="M30 50 L45 65 L70 35" fill="none" stroke="url(#successGradient)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+     </svg>
+    </div>
+    <h2 id="successMessage">🎉 You've Reached the Present! 🎉</h2>
+    <p class="text-gray-300 mb-6">You've traveled through decades of tax history!</p><button class="nav-btn primary" onclick="closeSuccess()"> <span class="relative z-10">Travel Again 🔄</span> </button>
+   </div><!-- Progress Ring -->
+   <div class="progress-ring">
+    <svg viewbox="0 0 100 100" class="w-full h-full"><defs>
+      <lineargradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+       <stop offset="0%" style="stop-color:#00ffd5" />
+       <stop offset="100%" style="stop-color:#ff00aa" />
+      </lineargradient>
+     </defs> <circle class="bg" cx="50" cy="50" r="40" /> <circle class="progress" id="progressCircle" cx="50" cy="50" r="40" stroke-dasharray="0 251" />
+    </svg>
+    <div class="progress-text" id="progressText">
+     0%
+    </div>
+   </div>
+  </div>
+  <script>
+    // Tax years data
+    const taxYears = [
+      {
+        year: 1986,
+        title: "Tax Reform Act of 1986",
+        content: "The most significant overhaul of the U.S. tax code in decades. Reduced individual tax brackets from 15 to 2 (15% and 28%), eliminated many tax shelters, and lowered the top corporate rate from 46% to 34%."
+      },
+      {
+        year: 1993,
+        title: "Omnibus Budget Reconciliation Act",
+        content: "Added two new tax brackets (36% and 39.6%), increased the top corporate rate to 35%, made the Earned Income Tax Credit permanent, and created the Hope and Lifetime Learning tax credits."
+      },
+      {
+        year: 2001,
+        title: "Economic Growth & Tax Relief Act",
+        content: "Phased in lower tax rates across all brackets, doubled the child tax credit to $1,000, created new education savings accounts, and began phasing out the estate tax."
+      },
+      {
+        year: 2003,
+        title: "Jobs & Growth Tax Relief Act",
+        content: "Accelerated the 2001 tax cuts, reduced capital gains rates to 15%, and qualified dividends taxed at the same rate as capital gains for the first time."
+      },
+      {
+        year: 2010,
+        title: "Affordable Care Act Tax Provisions",
+        content: "Introduced the individual mandate, created premium tax credits for health insurance, added 0.9% Medicare surtax on high earners, and established the 3.8% net investment income tax."
+      },
+      {
+        year: 2013,
+        title: "American Taxpayer Relief Act",
+        content: "Made Bush-era tax cuts permanent for most taxpayers, restored 39.6% top rate for high earners, permanently patched the Alternative Minimum Tax, and increased capital gains rate to 20%."
+      },
+      {
+        year: 2017,
+        title: "Tax Cuts & Jobs Act",
+        content: "Lowered individual rates and nearly doubled the standard deduction, cut corporate rate from 35% to 21%, limited SALT deductions to $10,000, and created the 20% pass-through deduction."
+      },
+      {
+        year: 2024,
+        title: "Current Tax Landscape",
+        content: "Inflation-adjusted brackets, enhanced child tax credits from pandemic relief (partially expired), ongoing debates about extending TCJA provisions set to expire in 2025, and new clean energy credits."
+      }
+    ];
+    
+    let currentYearIndex = -1;
+    let visitedYears = new Set();
+    
+    // Default configuration
+    const defaultConfig = {
+      main_title: "TAX TIME MACHINE",
+      subtitle: "Journey Through Tax History",
+      success_message: "🎉 You've Reached the Present! 🎉",
+      background_color: "#0a0a1a",
+      surface_color: "#1a1a2e",
+      text_color: "#ffffff",
+      primary_color: "#00ffd5",
+      secondary_color: "#ff00aa"
+    };
+    
+    // Initialize Element SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          // Update text content
+          document.getElementById('mainTitle').textContent = config.main_title || defaultConfig.main_title;
+          document.getElementById('subtitle').textContent = config.subtitle || defaultConfig.subtitle;
+          document.getElementById('successMessage').textContent = config.success_message || defaultConfig.success_message;
+          
+          // Update colors
+          const root = document.documentElement;
+          root.style.setProperty('--bg-color', config.background_color || defaultConfig.background_color);
+          root.style.setProperty('--surface-color', config.surface_color || defaultConfig.surface_color);
+          root.style.setProperty('--text-color', config.text_color || defaultConfig.text_color);
+          root.style.setProperty('--primary-color', config.primary_color || defaultConfig.primary_color);
+          root.style.setProperty('--secondary-color', config.secondary_color || defaultConfig.secondary_color);
+          
+          document.body.style.background = config.background_color || defaultConfig.background_color;
+        },
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+            },
+            {
+              get: () => config.surface_color || defaultConfig.surface_color,
+              set: (value) => { config.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+            },
+            {
+              get: () => config.primary_color || defaultConfig.primary_color,
+              set: (value) => { config.primary_color = value; window.elementSdk.setConfig({ primary_color: value }); }
+            },
+            {
+              get: () => config.secondary_color || defaultConfig.secondary_color,
+              set: (value) => { config.secondary_color = value; window.elementSdk.setConfig({ secondary_color: value }); }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["main_title", config.main_title || defaultConfig.main_title],
+          ["subtitle", config.subtitle || defaultConfig.subtitle],
+          ["success_message", config.success_message || defaultConfig.success_message]
+        ])
+      });
+    }
+    
+    // Create starfield
+    function createStarfield() {
+      const starfield = document.getElementById('starfield');
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = (Math.random() * 3 + 1) + 'px';
+        star.style.height = star.style.width;
+        star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+        star.style.animationDelay = Math.random() * 5 + 's';
+        starfield.appendChild(star);
+      }
+    }
+    
+    // Create year markers
+    function createYearMarkers() {
+      const container = document.getElementById('yearMarkers');
+      container.innerHTML = '';
+      
+      taxYears.forEach((item, index) => {
+        const isLast = index === taxYears.length - 1;
+        const marker = document.createElement('div');
+        marker.className = `year-marker ${isLast ? 'current-marker' : ''}`;
+        marker.style.setProperty('--delay', (index * 0.2) + 's');
+        marker.innerHTML = `
+          <div class="tooltip">Click to explore ${item.year}</div>
+          <div class="year-dot" data-index="${index}">${item.year}</div>
+        `;
+        marker.onclick = () => openPopup(index);
+        container.appendChild(marker);
+      });
+    }
+    
+    // Update progress
+    function updateProgress() {
+      const progress = (visitedYears.size / taxYears.length) * 100;
+      const circumference = 2 * Math.PI * 40;
+      const dashArray = (progress / 100) * circumference;
+      
+      document.getElementById('progressCircle').style.strokeDasharray = `${dashArray} ${circumference}`;
+      document.getElementById('progressText').textContent = Math.round(progress) + '%';
+      
+      // Update timeline bar
+      if (currentYearIndex >= 0) {
+        const barProgress = ((currentYearIndex + 1) / taxYears.length) * 100;
+        document.getElementById('timelineProgress').style.width = barProgress + '%';
+      }
+    }
+    
+    // Open popup
+    function openPopup(index) {
+      currentYearIndex = index;
+      visitedYears.add(index);
+      
+      const item = taxYears[index];
+      document.getElementById('popupYear').textContent = item.year;
+      document.getElementById('popupTitle').textContent = item.title;
+      document.getElementById('popupContent').textContent = item.content;
+      
+      document.getElementById('overlay').classList.add('active');
+      document.getElementById('popupCard').classList.add('active');
+      
+      // Update active marker
+      document.querySelectorAll('.year-marker').forEach((m, i) => {
+        m.classList.toggle('active', i === index);
+      });
+      
+      updateProgress();
+      
+      // Check if reached present
+      if (index === taxYears.length - 1 && visitedYears.size === taxYears.length) {
+        setTimeout(showSuccess, 1000);
+      }
+    }
+    
+    // Close popup
+    function closePopup() {
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('popupCard').classList.remove('active');
+    }
+    
+    // Navigate between years
+    function navigateYear(direction) {
+      const newIndex = currentYearIndex + direction;
+      if (newIndex >= 0 && newIndex < taxYears.length) {
+        closePopup();
+        setTimeout(() => openPopup(newIndex), 300);
+      }
+    }
+    
+    // Jump to specific year
+    function jumpToYear(index) {
+      if (index >= 0 && index < taxYears.length) {
+        openPopup(index);
+      }
+    }
+    
+    // Show success modal
+    function showSuccess() {
+      closePopup();
+      setTimeout(() => {
+        document.getElementById('overlay').classList.add('active');
+        document.getElementById('successModal').classList.add('active');
+      }, 300);
+    }
+    
+    // Close success modal
+    function closeSuccess() {
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('successModal').classList.remove('active');
+      
+      // Reset for another journey
+      visitedYears.clear();
+      currentYearIndex = -1;
+      document.getElementById('timelineProgress').style.width = '0%';
+      updateProgress();
+      document.querySelectorAll('.year-marker').forEach(m => m.classList.remove('active'));
+    }
+    
+    // Initialize
+    createStarfield();
+    createYearMarkers();
+    updateProgress();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8cdce3550a27c5',t:'MTc3NTYwNTA3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

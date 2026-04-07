@@ -1,1 +1,1401 @@
 <!-- PASTE HTML FROM CANVA: https://www.canva.com/ai/code/thread/7f21aa9b-320d-4942-bdeb-11b03f71339a -->
+<!doctype html>
+<html lang="html" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Escape Room Adventure</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    
+    :root {
+      --bg-color: #0a0a1a;
+      --surface-color: #1a1a2e;
+      --text-color: #e0e0ff;
+      --primary-color: #00ffcc;
+      --secondary-color: #ff00aa;
+    }
+    
+    html, body { 
+      height: 100%; 
+      margin: 0; 
+      font-family: 'Space Mono', monospace;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+    
+    .game-wrapper {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      position: relative;
+    }
+    
+    /* Animated Background */
+    .bg-grid {
+      background-image: 
+        linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridMove 20s linear infinite;
+    }
+    
+    @keyframes gridMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 50px 50px; }
+    }
+    
+    /* Floating Stars */
+    .star {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+    
+    /* Glow Pulse Border */
+    .glow-border {
+      position: relative;
+    }
+    
+    .glow-border::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), var(--primary-color));
+      border-radius: inherit;
+      z-index: -1;
+      animation: glowPulse 3s ease-in-out infinite;
+      filter: blur(8px);
+    }
+    
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    
+    /* Entry Animations */
+    .fade-up {
+      animation: fadeUp 0.8s ease-out forwards;
+    }
+    
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .scale-in {
+      animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.5); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .rotate-in {
+      animation: rotateIn 0.8s ease-out forwards;
+    }
+    
+    @keyframes rotateIn {
+      from { opacity: 0; transform: rotate(-180deg) scale(0); }
+      to { opacity: 1; transform: rotate(0) scale(1); }
+    }
+    
+    /* Float Animation */
+    .float {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    /* Pulse Animation */
+    .pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    /* Wobble Animation */
+    .wobble {
+      animation: wobble 1s ease-in-out infinite;
+    }
+    
+    @keyframes wobble {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+    
+    /* Swing Animation */
+    .swing:hover {
+      animation: swing 0.5s ease-in-out;
+    }
+    
+    @keyframes swing {
+      20% { transform: rotate(15deg); }
+      40% { transform: rotate(-10deg); }
+      60% { transform: rotate(5deg); }
+      80% { transform: rotate(-5deg); }
+      100% { transform: rotate(0); }
+    }
+    
+    /* Bounce Animation */
+    .bounce {
+      animation: bounce 0.6s ease-out;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-20px); }
+      60% { transform: translateY(-10px); }
+    }
+    
+    /* Jello Animation */
+    .jello {
+      animation: jello 0.9s ease-in-out;
+    }
+    
+    @keyframes jello {
+      0%, 100% { transform: scale3d(1, 1, 1); }
+      30% { transform: scale3d(1.25, 0.75, 1); }
+      40% { transform: scale3d(0.75, 1.25, 1); }
+      50% { transform: scale3d(1.15, 0.85, 1); }
+      65% { transform: scale3d(0.95, 1.05, 1); }
+      75% { transform: scale3d(1.05, 0.95, 1); }
+    }
+    
+    /* Rubber Band Animation */
+    .rubber-band {
+      animation: rubberBand 0.8s ease-out;
+    }
+    
+    @keyframes rubberBand {
+      0% { transform: scale3d(1, 1, 1); }
+      30% { transform: scale3d(1.25, 0.75, 1); }
+      40% { transform: scale3d(0.75, 1.25, 1); }
+      50% { transform: scale3d(1.15, 0.85, 1); }
+      65% { transform: scale3d(0.95, 1.05, 1); }
+      75% { transform: scale3d(1.05, 0.95, 1); }
+      100% { transform: scale3d(1, 1, 1); }
+    }
+    
+    /* Spin Animation */
+    .spin {
+      animation: spin 8s linear infinite;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Orbit Animation */
+    .orbit {
+      animation: orbit 6s linear infinite;
+    }
+    
+    @keyframes orbit {
+      from { transform: rotate(0deg) translateX(30px) rotate(0deg); }
+      to { transform: rotate(360deg) translateX(30px) rotate(-360deg); }
+    }
+    
+    /* Gradient Shift */
+    .gradient-shift {
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), #ffff00, var(--primary-color));
+      background-size: 300% 100%;
+      animation: gradientShift 4s linear infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+    
+    /* Hue Rotate */
+    .hue-rotate {
+      animation: hueRotate 5s linear infinite;
+    }
+    
+    @keyframes hueRotate {
+      from { filter: hue-rotate(0deg); }
+      to { filter: hue-rotate(360deg); }
+    }
+    
+    /* Typewriter Effect */
+    .typewriter {
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 3px solid var(--primary-color);
+      animation: typing 3s steps(40) forwards, blink 0.75s step-end infinite;
+    }
+    
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+    
+    /* Progress Ring */
+    .progress-ring {
+      animation: progressRing 1s ease-out forwards;
+    }
+    
+    @keyframes progressRing {
+      from { stroke-dashoffset: 283; }
+      to { stroke-dashoffset: 0; }
+    }
+    
+    /* Ripple Effect */
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .ripple::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
+      transform: scale(0);
+      opacity: 0;
+    }
+    
+    .ripple:hover::after {
+      animation: rippleEffect 0.6s ease-out;
+    }
+    
+    @keyframes rippleEffect {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+    
+    /* Shine Effect */
+    .shine {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .shine::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shine 2s ease-in-out infinite;
+    }
+    
+    @keyframes shine {
+      0% { left: -100%; }
+      50%, 100% { left: 100%; }
+    }
+    
+    /* 3D Flip */
+    .flip-3d {
+      animation: flip3D 1s ease-in-out forwards;
+      transform-style: preserve-3d;
+    }
+    
+    @keyframes flip3D {
+      0% { transform: perspective(1000px) rotateY(0); }
+      100% { transform: perspective(1000px) rotateY(180deg); }
+    }
+    
+    /* Confetti */
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confettiFall 3s ease-out forwards;
+    }
+    
+    @keyframes confettiFall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+    }
+    
+    /* Draggable Item */
+    .draggable-item {
+      cursor: grab;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    
+    .draggable-item:active {
+      cursor: grabbing;
+      transform: scale(1.1);
+    }
+    
+    .draggable-item.dragging {
+      opacity: 0.7;
+      transform: scale(1.1);
+    }
+    
+    /* Drop Zone */
+    .drop-zone {
+      transition: all 0.3s ease;
+      border: 2px dashed rgba(0, 255, 204, 0.3);
+    }
+    
+    .drop-zone.drag-over {
+      border-color: var(--primary-color);
+      background: rgba(0, 255, 204, 0.1);
+      animation: glowPulse 0.5s ease-in-out infinite;
+    }
+    
+    .drop-zone.matched {
+      border-color: var(--primary-color);
+      background: rgba(0, 255, 204, 0.2);
+      border-style: solid;
+    }
+    
+    /* Hotspot */
+    .hotspot {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .hotspot:hover {
+      filter: brightness(1.3) drop-shadow(0 0 10px var(--primary-color));
+    }
+    
+    /* Screen Transitions */
+    .screen {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.5s ease;
+      display: none;
+    }
+    
+    .screen.active {
+      opacity: 1;
+      transform: scale(1);
+      display: block;
+    }
+    
+    /* Letter Spacing Animation */
+    .letter-space-anim {
+      animation: letterSpace 2s ease-in-out infinite;
+    }
+    
+    @keyframes letterSpace {
+      0%, 100% { letter-spacing: 0.1em; }
+      50% { letter-spacing: 0.3em; }
+    }
+    
+    /* Wave Animation */
+    .wave {
+      animation: wave 2s ease-in-out infinite;
+    }
+    
+    @keyframes wave {
+      0%, 100% { transform: translateY(0) scaleY(1); }
+      50% { transform: translateY(-5px) scaleY(1.1); }
+    }
+    
+    /* Text Glow */
+    .text-glow {
+      text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px var(--primary-color);
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--bg-color);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--surface-color);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-color);
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full">
+  <div id="game-container" class="game-wrapper bg-grid"><!-- Floating Stars Background -->
+   <div id="stars-container" class="fixed inset-0 pointer-events-none overflow-hidden"></div><!-- Welcome Screen -->
+   <div id="welcome-screen" class="screen active min-h-full flex flex-col items-center justify-center p-8 w-full">
+    <div class="text-center max-w-2xl w-full">
+     <h1 id="main-title" class="text-4xl md:text-6xl font-bold mb-6 gradient-shift fade-up" style="font-family: 'Orbitron', sans-serif; animation-delay: 0.2s;">TAX ESCAPE ROOM</h1>
+     <p id="subtitle" class="text-xl md:text-2xl mb-8 text-glow fade-up" style="animation-delay: 0.4s;">ADVENTURE</p>
+     <div class="glow-border rounded-2xl p-8 mb-8 scale-in" style="background: var(--surface-color); animation-delay: 0.6s;">
+      <p id="welcome-text" class="text-lg mb-6 typewriter">Solve tax puzzles to escape the IRS audit room!</p>
+      <div class="flex flex-col gap-4">
+       <input type="text" id="player-name-input" placeholder="Enter your name, Agent..." class="w-full px-4 py-3 rounded-lg bg-black/50 border-2 border-cyan-500/30 focus:border-cyan-500 outline-none transition-all text-center" style="font-family: 'Space Mono', monospace;"> <button id="start-btn" class="ripple shine px-8 py-4 rounded-lg font-bold text-xl transition-all hover:scale-105" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: var(--bg-color);"> 🔓 BEGIN ESCAPE </button>
+      </div>
+     </div><!-- Leaderboard Preview -->
+     <div id="leaderboard-preview" class="glow-border rounded-xl p-6 fade-up" style="background: var(--surface-color); animation-delay: 0.8s;">
+      <h3 class="text-lg font-bold mb-4" style="color: var(--primary-color);">🏆 TOP ESCAPEES</h3>
+      <div id="leaderboard-list" class="space-y-2 text-sm">
+       <p class="opacity-50">No records yet. Be the first!</p>
+      </div>
+     </div>
+    </div>
+   </div><!-- Game Screen -->
+   <div id="game-screen" class="screen min-h-full flex flex-col">
+    <!-- Header -->
+    <header class="p-4 flex justify-between items-center" style="background: var(--surface-color);">
+     <div class="flex items-center gap-4">
+      <span id="player-display" class="font-bold" style="color: var(--primary-color);">Agent: ???</span>
+     </div>
+     <div class="flex items-center gap-6">
+      <!-- Timer -->
+      <div class="flex items-center gap-2">
+       <svg class="w-12 h-12 hue-rotate" viewbox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8" /> <circle id="timer-ring" cx="50" cy="50" r="45" fill="none" stroke="var(--primary-color)" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 50 50)" />
+       </svg><span id="timer-display" class="text-2xl font-bold font-mono text-glow">05:00</span>
+      </div><!-- Progress -->
+      <div class="flex items-center gap-2">
+       <span class="text-sm opacity-70">Progress:</span>
+       <div class="flex gap-1">
+        <div id="prog-1" class="w-4 h-4 rounded-full bg-gray-600 transition-all"></div>
+        <div id="prog-2" class="w-4 h-4 rounded-full bg-gray-600 transition-all"></div>
+        <div id="prog-3" class="w-4 h-4 rounded-full bg-gray-600 transition-all"></div>
+        <div id="prog-4" class="w-4 h-4 rounded-full bg-gray-600 transition-all"></div>
+       </div>
+      </div>
+     </div>
+    </header><!-- Puzzle Area -->
+    <main class="flex-1 p-4 md:p-8 overflow-auto">
+     <!-- Puzzle 1: Drag-and-Drop Deductions -->
+     <section id="puzzle-1" class="puzzle-section">
+      <div class="max-w-4xl mx-auto">
+       <h2 class="text-2xl md:text-3xl font-bold mb-2 text-center gradient-shift" style="font-family: 'Orbitron', sans-serif;">PUZZLE 1: MATCH THE DEDUCTIONS</h2>
+       <p class="text-center mb-6 opacity-70">Drag each deduction to its correct category!</p>
+       <div class="grid md:grid-cols-2 gap-8">
+        <!-- Draggable Items -->
+        <div class="glow-border rounded-xl p-6" style="background: var(--surface-color);">
+         <h3 class="text-lg font-bold mb-4" style="color: var(--primary-color);">📋 Deductions</h3>
+         <div id="deductions-container" class="flex flex-wrap gap-3">
+          <div class="draggable-item float px-4 py-2 rounded-lg cursor-grab" data-type="business" style="background: linear-gradient(135deg, #ff6b6b, #ff8e8e);">
+           🖥️ Office Equipment
+          </div>
+          <div class="draggable-item float px-4 py-2 rounded-lg cursor-grab" data-type="medical" style="background: linear-gradient(135deg, #4ecdc4, #44a08d); animation-delay: 0.2s;">
+           💊 Medical Bills
+          </div>
+          <div class="draggable-item float px-4 py-2 rounded-lg cursor-grab" data-type="charity" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb); animation-delay: 0.4s;">
+           💝 Charity Donation
+          </div>
+          <div class="draggable-item float px-4 py-2 rounded-lg cursor-grab" data-type="business" style="background: linear-gradient(135deg, #f093fb, #f5576c); animation-delay: 0.6s;">
+           🚗 Business Travel
+          </div>
+          <div class="draggable-item float px-4 py-2 rounded-lg cursor-grab" data-type="education" style="background: linear-gradient(135deg, #5ee7df, #b490ca); animation-delay: 0.8s;">
+           📚 Tuition Fees
+          </div>
+          <div class="draggable-item float px-4 py-2 rounded-lg cursor-grab" data-type="medical" style="background: linear-gradient(135deg, #fa709a, #fee140); animation-delay: 1s;">
+           🏥 Health Insurance
+          </div>
+         </div>
+        </div><!-- Drop Zones -->
+        <div class="space-y-4">
+         <div class="drop-zone rounded-xl p-4 min-h-20" data-category="business">
+          <span class="text-sm font-bold" style="color: var(--secondary-color);">💼 BUSINESS EXPENSES</span>
+          <div class="matched-items flex flex-wrap gap-2 mt-2"></div>
+         </div>
+         <div class="drop-zone rounded-xl p-4 min-h-20" data-category="medical">
+          <span class="text-sm font-bold" style="color: var(--secondary-color);">🏥 MEDICAL EXPENSES</span>
+          <div class="matched-items flex flex-wrap gap-2 mt-2"></div>
+         </div>
+         <div class="drop-zone rounded-xl p-4 min-h-20" data-category="charity">
+          <span class="text-sm font-bold" style="color: var(--secondary-color);">💝 CHARITABLE</span>
+          <div class="matched-items flex flex-wrap gap-2 mt-2"></div>
+         </div>
+         <div class="drop-zone rounded-xl p-4 min-h-20" data-category="education">
+          <span class="text-sm font-bold" style="color: var(--secondary-color);">📚 EDUCATION</span>
+          <div class="matched-items flex flex-wrap gap-2 mt-2"></div>
+         </div>
+        </div>
+       </div>
+       <div id="puzzle1-feedback" class="mt-6 text-center hidden">
+        <p class="text-xl font-bold text-glow jello" style="color: var(--primary-color);">✨ ALL DEDUCTIONS MATCHED! ✨</p>
+       </div>
+      </div>
+     </section><!-- Puzzle 2: Hidden Clues -->
+     <section id="puzzle-2" class="puzzle-section hidden">
+      <div class="max-w-4xl mx-auto">
+       <h2 class="text-2xl md:text-3xl font-bold mb-2 text-center gradient-shift" style="font-family: 'Orbitron', sans-serif;">PUZZLE 2: FIND THE HIDDEN CLUES</h2>
+       <p class="text-center mb-6 opacity-70">Click on objects to discover the 4-digit safe code!</p>
+       <div class="glow-border rounded-xl p-6 relative overflow-hidden" style="background: var(--surface-color); min-height: 400px;">
+        <!-- Room Background -->
+        <div class="absolute inset-0 opacity-20" style="background: radial-gradient(circle at 30% 50%, var(--primary-color) 0%, transparent 50%);"></div><!-- Interactive Objects -->
+        <div class="relative grid grid-cols-3 gap-6 h-full">
+         <!-- Desk -->
+         <div class="hotspot swing col-span-2 p-6 rounded-xl transition-all hover:scale-105" style="background: linear-gradient(135deg, #2d2d44, #1a1a2e);" data-clue="1" data-digit="7">
+          <div class="text-6xl mb-2">
+           🖥️
+          </div>
+          <p class="font-bold">Office Desk</p>
+          <p class="text-sm opacity-50">Click to search...</p>
+          <div class="clue-reveal hidden mt-2 p-2 rounded bg-black/50">
+           <p class="text-sm" style="color: var(--primary-color);">First digit: <span class="text-xl font-bold">7</span></p>
+          </div>
+         </div><!-- File Cabinet -->
+         <div class="hotspot wobble p-6 rounded-xl transition-all hover:scale-105" style="background: linear-gradient(135deg, #2d2d44, #1a1a2e);" data-clue="2" data-digit="3">
+          <div class="text-5xl mb-2">
+           🗄️
+          </div>
+          <p class="font-bold">File Cabinet</p>
+          <p class="text-sm opacity-50">Click to search...</p>
+          <div class="clue-reveal hidden mt-2 p-2 rounded bg-black/50">
+           <p class="text-sm" style="color: var(--primary-color);">Second digit: <span class="text-xl font-bold">3</span></p>
+          </div>
+         </div><!-- Plant -->
+         <div class="hotspot wave p-6 rounded-xl transition-all hover:scale-105" style="background: linear-gradient(135deg, #2d2d44, #1a1a2e);" data-clue="3" data-digit="8">
+          <div class="text-5xl mb-2">
+           🪴
+          </div>
+          <p class="font-bold">Suspicious Plant</p>
+          <p class="text-sm opacity-50">Click to search...</p>
+          <div class="clue-reveal hidden mt-2 p-2 rounded bg-black/50">
+           <p class="text-sm" style="color: var(--primary-color);">Third digit: <span class="text-xl font-bold">8</span></p>
+          </div>
+         </div><!-- Clock -->
+         <div class="hotspot pulse p-6 rounded-xl transition-all hover:scale-105" style="background: linear-gradient(135deg, #2d2d44, #1a1a2e);" data-clue="4" data-digit="2">
+          <div class="text-5xl mb-2 spin">
+           ⏰
+          </div>
+          <p class="font-bold">Wall Clock</p>
+          <p class="text-sm opacity-50">Click to search...</p>
+          <div class="clue-reveal hidden mt-2 p-2 rounded bg-black/50">
+           <p class="text-sm" style="color: var(--primary-color);">Fourth digit: <span class="text-xl font-bold">2</span></p>
+          </div>
+         </div><!-- Safe -->
+         <div class="col-span-2 p-6 rounded-xl flex items-center justify-center gap-4" style="background: linear-gradient(135deg, #3d3d5c, #2d2d44);">
+          <div class="text-5xl">
+           🔐
+          </div>
+          <div>
+           <p class="font-bold mb-2">Enter Safe Code:</p>
+           <div class="flex gap-2">
+            <input type="text" maxlength="1" class="safe-digit w-12 h-12 text-center text-2xl font-bold rounded bg-black/50 border-2 border-cyan-500/30 focus:border-cyan-500 outline-none"> <input type="text" maxlength="1" class="safe-digit w-12 h-12 text-center text-2xl font-bold rounded bg-black/50 border-2 border-cyan-500/30 focus:border-cyan-500 outline-none"> <input type="text" maxlength="1" class="safe-digit w-12 h-12 text-center text-2xl font-bold rounded bg-black/50 border-2 border-cyan-500/30 focus:border-cyan-500 outline-none"> <input type="text" maxlength="1" class="safe-digit w-12 h-12 text-center text-2xl font-bold rounded bg-black/50 border-2 border-cyan-500/30 focus:border-cyan-500 outline-none">
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div id="puzzle2-feedback" class="mt-6 text-center hidden">
+        <p class="text-xl font-bold text-glow jello" style="color: var(--primary-color);">✨ SAFE UNLOCKED! ✨</p>
+       </div>
+      </div>
+     </section><!-- Puzzle 3: Document Matching -->
+     <section id="puzzle-3" class="puzzle-section hidden">
+      <div class="max-w-4xl mx-auto">
+       <h2 class="text-2xl md:text-3xl font-bold mb-2 text-center gradient-shift" style="font-family: 'Orbitron', sans-serif;">PUZZLE 3: MATCH THE DOCUMENTS</h2>
+       <p class="text-center mb-6 opacity-70">Find the matching pairs of tax forms!</p>
+       <div class="glow-border rounded-xl p-6" style="background: var(--surface-color);">
+        <div id="memory-grid" class="grid grid-cols-4 gap-4 max-w-lg mx-auto">
+         <!-- Cards will be generated by JS -->
+        </div>
+        <div class="mt-4 flex justify-center gap-8">
+         <p class="text-sm">Matches: <span id="match-count" class="font-bold" style="color: var(--primary-color);">0</span>/6</p>
+         <p class="text-sm">Moves: <span id="move-count" class="font-bold" style="color: var(--secondary-color);">0</span></p>
+        </div>
+       </div>
+       <div id="puzzle3-feedback" class="mt-6 text-center hidden">
+        <p class="text-xl font-bold text-glow jello" style="color: var(--primary-color);">✨ ALL DOCUMENTS MATCHED! ✨</p>
+       </div>
+      </div>
+     </section><!-- Puzzle 4: Tax Calculator -->
+     <section id="puzzle-4" class="puzzle-section hidden">
+      <div class="max-w-4xl mx-auto">
+       <h2 class="text-2xl md:text-3xl font-bold mb-2 text-center gradient-shift" style="font-family: 'Orbitron', sans-serif;">PUZZLE 4: CALCULATE THE REFUND</h2>
+       <p class="text-center mb-6 opacity-70">Enter the correct tax refund amount to unlock the door!</p>
+       <div class="grid md:grid-cols-2 gap-6">
+        <div class="glow-border rounded-xl p-6" style="background: var(--surface-color);">
+         <h3 class="text-lg font-bold mb-4" style="color: var(--primary-color);">📊 Tax Summary</h3>
+         <div class="space-y-3">
+          <div class="flex justify-between p-3 rounded" style="background: rgba(0,255,204,0.1);">
+           <span>Gross Income:</span> <span class="font-bold">$75,000</span>
+          </div>
+          <div class="flex justify-between p-3 rounded" style="background: rgba(255,0,170,0.1);">
+           <span>Tax Withheld:</span> <span class="font-bold">$12,500</span>
+          </div>
+          <div class="flex justify-between p-3 rounded" style="background: rgba(0,255,204,0.1);">
+           <span>Deductions:</span> <span class="font-bold">$18,000</span>
+          </div>
+          <div class="flex justify-between p-3 rounded" style="background: rgba(255,0,170,0.1);">
+           <span>Tax Rate:</span> <span class="font-bold">22%</span>
+          </div>
+          <hr class="border-gray-600 my-2">
+          <div class="flex justify-between p-3 rounded" style="background: rgba(0,255,204,0.2);">
+           <span>Taxable Income:</span> <span class="font-bold">$57,000</span>
+          </div>
+          <div class="flex justify-between p-3 rounded" style="background: rgba(255,0,170,0.2);">
+           <span>Tax Owed:</span> <span class="font-bold">$12,540</span>
+          </div>
+         </div>
+        </div>
+        <div class="glow-border rounded-xl p-6 flex flex-col justify-center" style="background: var(--surface-color);">
+         <div class="text-6xl text-center mb-4 wobble">
+          🧮
+         </div>
+         <p class="text-center mb-4 opacity-70">Hint: Refund = Tax Withheld - Tax Owed</p>
+         <div class="flex items-center justify-center gap-2">
+          <span class="text-2xl">$</span> <input type="text" id="refund-input" placeholder="???" class="w-32 px-4 py-3 text-2xl font-bold text-center rounded-lg bg-black/50 border-2 border-cyan-500/30 focus:border-cyan-500 outline-none">
+         </div><button id="check-refund-btn" class="mt-4 ripple shine px-6 py-3 rounded-lg font-bold transition-all hover:scale-105 mx-auto" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: var(--bg-color);"> CHECK ANSWER </button>
+         <p id="refund-feedback" class="mt-4 text-center hidden"></p>
+        </div>
+       </div>
+       <div id="puzzle4-feedback" class="mt-6 text-center hidden">
+        <p class="text-xl font-bold text-glow jello" style="color: var(--primary-color);">✨ CORRECT! THE DOOR IS UNLOCKING! ✨</p>
+       </div>
+      </div>
+     </section><!-- Escape Door -->
+     <section id="escape-section" class="puzzle-section hidden">
+      <div class="max-w-2xl mx-auto text-center">
+       <div id="escape-door" class="glow-border rounded-2xl p-12 mb-8 scale-in" style="background: var(--surface-color);">
+        <div class="text-8xl mb-6 pulse">
+         🚪
+        </div>
+        <h2 class="text-3xl font-bold mb-4 gradient-shift" style="font-family: 'Orbitron', sans-serif;">ESCAPE DOOR UNLOCKED!</h2>
+        <p class="mb-6 opacity-70">All puzzles complete. Click to escape!</p><button id="escape-btn" class="ripple shine px-12 py-6 rounded-xl font-bold text-2xl transition-all hover:scale-110" style="background: linear-gradient(135deg, #00ff88, #00ccff); color: var(--bg-color);"> 🔓 ESCAPE NOW </button>
+       </div>
+      </div>
+     </section>
+    </main>
+   </div><!-- Success Screen -->
+   <div id="success-screen" class="screen min-h-full flex flex-col items-center justify-center p-8 relative w-full">
+    <div id="confetti-container" class="fixed inset-0 pointer-events-none overflow-hidden"></div>
+    <div class="text-center max-w-2xl z-10 w-full">
+     <div class="text-9xl mb-8 jello">
+      🏆
+     </div>
+     <h1 class="text-4xl md:text-6xl font-bold mb-6 letter-space-anim text-glow" style="font-family: 'Orbitron', sans-serif; color: var(--primary-color);">CONGRATULATIONS!</h1>
+     <p class="text-2xl mb-4">You escaped the Tax Audit Room!</p>
+     <div class="glow-border rounded-xl p-6 mb-8" style="background: var(--surface-color);">
+      <p class="text-lg mb-2">Agent: <span id="final-player-name" class="font-bold" style="color: var(--primary-color);">???</span></p>
+      <p class="text-3xl font-bold" style="color: var(--secondary-color);">Time: <span id="final-time">00:00</span></p>
+     </div><button id="play-again-btn" class="ripple shine px-8 py-4 rounded-lg font-bold text-xl transition-all hover:scale-105" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: var(--bg-color);"> 🔄 PLAY AGAIN </button>
+    </div>
+   </div><!-- Toast Container -->
+   <div id="toast-container" class="fixed bottom-4 right-4 z-50"></div>
+  </div>
+  <script>
+    // Default Configuration
+    const defaultConfig = {
+      background_color: '#0a0a1a',
+      surface_color: '#1a1a2e',
+      text_color: '#e0e0ff',
+      primary_color: '#00ffcc',
+      secondary_color: '#ff00aa',
+      font_family: 'Orbitron',
+      font_size: 16,
+      game_title: 'TAX ESCAPE ROOM',
+      welcome_message: 'Solve tax puzzles to escape the IRS audit room!',
+      escape_button_text: 'ESCAPE NOW'
+    };
+    
+    // Game State
+    let gameState = {
+      playerName: '',
+      startTime: null,
+      timerInterval: null,
+      currentPuzzle: 1,
+      puzzlesCompleted: [false, false, false, false],
+      puzzle1Matches: 0,
+      puzzle2Clues: [],
+      puzzle3Matches: 0,
+      puzzle3Moves: 0,
+      puzzle3Cards: [],
+      puzzle3Flipped: [],
+      leaderboard: []
+    };
+    
+    // Initialize SDKs
+    async function initializeApp() {
+      // Initialize Element SDK
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            applyConfig(config);
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (value) => window.elementSdk.setConfig({ background_color: value })
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => window.elementSdk.setConfig({ surface_color: value })
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => window.elementSdk.setConfig({ text_color: value })
+              },
+              {
+                get: () => config.primary_color || defaultConfig.primary_color,
+                set: (value) => window.elementSdk.setConfig({ primary_color: value })
+              },
+              {
+                get: () => config.secondary_color || defaultConfig.secondary_color,
+                set: (value) => window.elementSdk.setConfig({ secondary_color: value })
+              }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => config.font_family || defaultConfig.font_family,
+              set: (value) => window.elementSdk.setConfig({ font_family: value })
+            },
+            fontSizeable: {
+              get: () => config.font_size || defaultConfig.font_size,
+              set: (value) => window.elementSdk.setConfig({ font_size: value })
+            }
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['game_title', config.game_title || defaultConfig.game_title],
+            ['welcome_message', config.welcome_message || defaultConfig.welcome_message],
+            ['escape_button_text', config.escape_button_text || defaultConfig.escape_button_text]
+          ])
+        });
+      }
+      
+      // Initialize Data SDK
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init({
+          onDataChanged: (data) => {
+            gameState.leaderboard = data
+              .filter(d => d.best_time)
+              .sort((a, b) => a.best_time - b.best_time)
+              .slice(0, 5);
+            updateLeaderboard();
+          }
+        });
+        
+        if (!result.isOk) {
+          console.error('Failed to initialize Data SDK');
+        }
+      }
+      
+      // Apply initial config
+      applyConfig(window.elementSdk?.config || defaultConfig);
+      
+      // Generate stars
+      generateStars();
+      
+      // Setup game
+      setupGame();
+    }
+    
+    function applyConfig(config) {
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      
+      document.documentElement.style.setProperty('--bg-color', bgColor);
+      document.documentElement.style.setProperty('--surface-color', surfaceColor);
+      document.documentElement.style.setProperty('--text-color', textColor);
+      document.documentElement.style.setProperty('--primary-color', primaryColor);
+      document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+      
+      document.body.style.background = bgColor;
+      document.body.style.color = textColor;
+      document.body.style.fontSize = `${fontSize}px`;
+      
+      // Update titles
+      const titles = document.querySelectorAll('[style*="Orbitron"]');
+      titles.forEach(el => {
+        el.style.fontFamily = `'${fontFamily}', 'Orbitron', sans-serif`;
+      });
+      
+      // Update text content
+      const mainTitle = document.getElementById('main-title');
+      if (mainTitle) mainTitle.textContent = config.game_title || defaultConfig.game_title;
+      
+      const welcomeText = document.querySelector('#welcome-text');
+      if (welcomeText) welcomeText.textContent = config.welcome_message || defaultConfig.welcome_message;
+      
+      const escapeBtn = document.getElementById('escape-btn');
+      if (escapeBtn) escapeBtn.innerHTML = '🔓 ' + (config.escape_button_text || defaultConfig.escape_button_text);
+    }
+    
+    function generateStars() {
+      const container = document.getElementById('stars-container');
+      container.innerHTML = '';
+      
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        star.style.background = Math.random() > 0.5 ? 'var(--primary-color)' : 'var(--secondary-color)';
+        container.appendChild(star);
+      }
+    }
+    
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'px-6 py-3 rounded-lg mb-2 fade-up';
+      toast.style.background = type === 'success' ? 'var(--primary-color)' : 'var(--secondary-color)';
+      toast.style.color = 'var(--bg-color)';
+      toast.textContent = message;
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+      }, 2000);
+    }
+    
+    function updateLeaderboard() {
+      const list = document.getElementById('leaderboard-list');
+      if (gameState.leaderboard.length === 0) {
+        list.innerHTML = '<p class="opacity-50">No records yet. Be the first!</p>';
+        return;
+      }
+      
+      list.innerHTML = gameState.leaderboard.map((entry, i) => {
+        const minutes = Math.floor(entry.best_time / 60);
+        const seconds = entry.best_time % 60;
+        const timeStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '🏅';
+        return `<p class="flex justify-between"><span>${medal} ${entry.player_name}</span><span class="font-bold" style="color: var(--primary-color);">${timeStr}</span></p>`;
+      }).join('');
+    }
+    
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+    
+    function setupGame() {
+      // Start button
+      document.getElementById('start-btn').addEventListener('click', startGame);
+      document.getElementById('player-name-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') startGame();
+      });
+      
+      // Setup puzzles
+      setupPuzzle1();
+      setupPuzzle2();
+      setupPuzzle3();
+      setupPuzzle4();
+      
+      // Escape button
+      document.getElementById('escape-btn').addEventListener('click', completeGame);
+      document.getElementById('play-again-btn').addEventListener('click', () => {
+        resetGame();
+        showScreen('welcome-screen');
+      });
+    }
+    
+    function startGame() {
+      const nameInput = document.getElementById('player-name-input');
+      gameState.playerName = nameInput.value.trim() || 'Agent X';
+      document.getElementById('player-display').textContent = `Agent: ${gameState.playerName}`;
+      
+      showScreen('game-screen');
+      gameState.startTime = Date.now();
+      startTimer();
+      showPuzzle(1);
+    }
+    
+    function startTimer() {
+      const display = document.getElementById('timer-display');
+      const ring = document.getElementById('timer-ring');
+      const totalTime = 300; // 5 minutes
+      
+      gameState.timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+        const remaining = Math.max(0, totalTime - elapsed);
+        const minutes = Math.floor(remaining / 60);
+        const seconds = remaining % 60;
+        
+        display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        
+        // Update ring
+        const progress = (totalTime - remaining) / totalTime;
+        ring.style.strokeDashoffset = 283 * progress;
+        
+        if (remaining <= 60) {
+          display.style.color = 'var(--secondary-color)';
+        }
+        
+        if (remaining <= 0) {
+          clearInterval(gameState.timerInterval);
+          showToast('Time\'s up! Try again!', 'error');
+          setTimeout(() => {
+            resetGame();
+            showScreen('welcome-screen');
+          }, 2000);
+        }
+      }, 1000);
+    }
+    
+    function showPuzzle(num) {
+      document.querySelectorAll('.puzzle-section').forEach(s => s.classList.add('hidden'));
+      const puzzle = document.getElementById(`puzzle-${num}`);
+      if (puzzle) {
+        puzzle.classList.remove('hidden');
+        puzzle.classList.add('fade-up');
+      }
+      gameState.currentPuzzle = num;
+    }
+    
+    function updateProgress() {
+      gameState.puzzlesCompleted.forEach((completed, i) => {
+        const prog = document.getElementById(`prog-${i + 1}`);
+        if (prog) {
+          prog.style.background = completed ? 'var(--primary-color)' : '';
+          prog.style.boxShadow = completed ? '0 0 10px var(--primary-color)' : '';
+        }
+      });
+    }
+    
+    function completePuzzle(num) {
+      gameState.puzzlesCompleted[num - 1] = true;
+      updateProgress();
+      
+      const feedback = document.getElementById(`puzzle${num}-feedback`);
+      if (feedback) {
+        feedback.classList.remove('hidden');
+      }
+      
+      showToast(`Puzzle ${num} Complete!`);
+      
+      // Create confetti
+      createConfetti(20);
+      
+      setTimeout(() => {
+        if (num < 4) {
+          showPuzzle(num + 1);
+        } else {
+          document.getElementById('escape-section').classList.remove('hidden');
+          showPuzzle(5);
+          document.getElementById('puzzle-4').classList.add('hidden');
+        }
+      }, 1500);
+    }
+    
+    // Puzzle 1: Drag and Drop
+    function setupPuzzle1() {
+      const draggables = document.querySelectorAll('.draggable-item');
+      const dropZones = document.querySelectorAll('.drop-zone');
+      
+      draggables.forEach(item => {
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragend', handleDragEnd);
+        item.setAttribute('draggable', 'true');
+        
+        // Touch support
+        item.addEventListener('touchstart', handleTouchStart, { passive: false });
+        item.addEventListener('touchmove', handleTouchMove, { passive: false });
+        item.addEventListener('touchend', handleTouchEnd);
+      });
+      
+      dropZones.forEach(zone => {
+        zone.addEventListener('dragover', handleDragOver);
+        zone.addEventListener('dragleave', handleDragLeave);
+        zone.addEventListener('drop', handleDrop);
+      });
+    }
+    
+    let draggedItem = null;
+    let touchClone = null;
+    
+    function handleDragStart(e) {
+      draggedItem = e.target;
+      e.target.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+    
+    function handleDragEnd(e) {
+      e.target.classList.remove('dragging');
+    }
+    
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+    
+    function handleDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+    
+    function handleDrop(e) {
+      e.preventDefault();
+      const zone = e.currentTarget;
+      zone.classList.remove('drag-over');
+      
+      if (!draggedItem) return;
+      
+      const itemType = draggedItem.dataset.type;
+      const zoneCategory = zone.dataset.category;
+      
+      if (itemType === zoneCategory) {
+        const matchedContainer = zone.querySelector('.matched-items');
+        const clone = draggedItem.cloneNode(true);
+        clone.classList.remove('draggable-item', 'float', 'cursor-grab');
+        clone.classList.add('jello', 'text-sm');
+        clone.removeAttribute('draggable');
+        matchedContainer.appendChild(clone);
+        
+        draggedItem.remove();
+        zone.classList.add('matched');
+        
+        gameState.puzzle1Matches++;
+        showToast('Correct match! 🎉');
+        
+        if (gameState.puzzle1Matches >= 6) {
+          completePuzzle(1);
+        }
+      } else {
+        draggedItem.classList.add('rubber-band');
+        setTimeout(() => draggedItem.classList.remove('rubber-band'), 800);
+        showToast('Wrong category! Try again.', 'error');
+      }
+    }
+    
+    // Touch handlers for mobile
+    function handleTouchStart(e) {
+      e.preventDefault();
+      draggedItem = e.target;
+      draggedItem.classList.add('dragging');
+      
+      touchClone = draggedItem.cloneNode(true);
+      touchClone.style.position = 'fixed';
+      touchClone.style.pointerEvents = 'none';
+      touchClone.style.zIndex = '1000';
+      touchClone.style.opacity = '0.8';
+      document.body.appendChild(touchClone);
+      
+      const touch = e.touches[0];
+      touchClone.style.left = touch.clientX - 50 + 'px';
+      touchClone.style.top = touch.clientY - 20 + 'px';
+    }
+    
+    function handleTouchMove(e) {
+      e.preventDefault();
+      if (!touchClone) return;
+      
+      const touch = e.touches[0];
+      touchClone.style.left = touch.clientX - 50 + 'px';
+      touchClone.style.top = touch.clientY - 20 + 'px';
+      
+      // Highlight drop zone under touch
+      const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+      const dropZone = elemBelow?.closest('.drop-zone');
+      
+      document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+      if (dropZone) dropZone.classList.add('drag-over');
+    }
+    
+    function handleTouchEnd(e) {
+      if (!touchClone || !draggedItem) return;
+      
+      const touch = e.changedTouches[0];
+      const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+      const dropZone = elemBelow?.closest('.drop-zone');
+      
+      touchClone.remove();
+      touchClone = null;
+      draggedItem.classList.remove('dragging');
+      
+      if (dropZone) {
+        handleDrop({ preventDefault: () => {}, currentTarget: dropZone });
+      }
+    }
+    
+    // Puzzle 2: Hidden Clues
+    function setupPuzzle2() {
+      const hotspots = document.querySelectorAll('.hotspot');
+      const safeDigits = document.querySelectorAll('.safe-digit');
+      
+      hotspots.forEach(hotspot => {
+        hotspot.addEventListener('click', () => {
+          const clueNum = hotspot.dataset.clue;
+          const digit = hotspot.dataset.digit;
+          
+          if (!gameState.puzzle2Clues.includes(clueNum)) {
+            gameState.puzzle2Clues.push(clueNum);
+            hotspot.querySelector('.clue-reveal').classList.remove('hidden');
+            hotspot.classList.add('bounce');
+            showToast(`Clue ${clueNum} found!`);
+          }
+        });
+      });
+      
+      safeDigits.forEach((input, i) => {
+        input.addEventListener('input', (e) => {
+          const value = e.target.value;
+          if (value && i < safeDigits.length - 1) {
+            safeDigits[i + 1].focus();
+          }
+          checkSafeCode();
+        });
+        
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !e.target.value && i > 0) {
+            safeDigits[i - 1].focus();
+          }
+        });
+      });
+    }
+    
+    function checkSafeCode() {
+      const safeDigits = document.querySelectorAll('.safe-digit');
+      const code = Array.from(safeDigits).map(d => d.value).join('');
+      
+      if (code === '7382') {
+        completePuzzle(2);
+      }
+    }
+    
+    // Puzzle 3: Memory Game
+    function setupPuzzle3() {
+      const forms = ['W-2', '1040', '1099', 'W-4', 'Schedule A', 'Schedule C'];
+      const cards = [...forms, ...forms];
+      
+      // Shuffle
+      for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+      }
+      
+      gameState.puzzle3Cards = cards;
+      
+      const grid = document.getElementById('memory-grid');
+      grid.innerHTML = cards.map((card, i) => `
+        <div class="memory-card aspect-square rounded-lg cursor-pointer transition-all hover:scale-105 flex items-center justify-center text-2xl"
+          style="background: linear-gradient(135deg, var(--surface-color), #2d2d44);"
+          data-index="${i}" data-form="${card}">
+          <span class="card-back">📄</span>
+          <span class="card-front hidden text-sm font-bold text-center p-1">${card}</span>
+        </div>
+      `).join('');
+      
+      grid.querySelectorAll('.memory-card').forEach(card => {
+        card.addEventListener('click', () => flipCard(card));
+      });
+    }
+    
+    function flipCard(card) {
+      if (gameState.puzzle3Flipped.length >= 2) return;
+      if (card.classList.contains('matched') || card.classList.contains('flipped')) return;
+      
+      card.classList.add('flipped');
+      card.querySelector('.card-back').classList.add('hidden');
+      card.querySelector('.card-front').classList.remove('hidden');
+      card.style.background = 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))';
+      
+      gameState.puzzle3Flipped.push(card);
+      gameState.puzzle3Moves++;
+      document.getElementById('move-count').textContent = gameState.puzzle3Moves;
+      
+      if (gameState.puzzle3Flipped.length === 2) {
+        const [card1, card2] = gameState.puzzle3Flipped;
+        
+        if (card1.dataset.form === card2.dataset.form) {
+          card1.classList.add('matched', 'jello');
+          card2.classList.add('matched', 'jello');
+          gameState.puzzle3Matches++;
+          document.getElementById('match-count').textContent = gameState.puzzle3Matches;
+          gameState.puzzle3Flipped = [];
+          
+          if (gameState.puzzle3Matches >= 6) {
+            completePuzzle(3);
+          }
+        } else {
+          setTimeout(() => {
+            [card1, card2].forEach(c => {
+              c.classList.remove('flipped');
+              c.querySelector('.card-back').classList.remove('hidden');
+              c.querySelector('.card-front').classList.add('hidden');
+              c.style.background = 'linear-gradient(135deg, var(--surface-color), #2d2d44)';
+            });
+            gameState.puzzle3Flipped = [];
+          }, 1000);
+        }
+      }
+    }
+    
+    // Puzzle 4: Calculator
+    function setupPuzzle4() {
+      const checkBtn = document.getElementById('check-refund-btn');
+      const input = document.getElementById('refund-input');
+      const feedback = document.getElementById('refund-feedback');
+      
+      checkBtn.addEventListener('click', () => {
+        const answer = input.value.replace(/[^0-9.-]/g, '');
+        const correct = -40; // 12500 - 12540 = -40 (they owe money)
+        
+        feedback.classList.remove('hidden');
+        
+        if (answer === '-40' || answer === '40') {
+          feedback.textContent = 'Wait... you actually OWE $40! But close enough!';
+          feedback.style.color = 'var(--primary-color)';
+          completePuzzle(4);
+        } else {
+          feedback.textContent = 'Not quite! Check your math.';
+          feedback.style.color = 'var(--secondary-color)';
+          input.classList.add('rubber-band');
+          setTimeout(() => input.classList.remove('rubber-band'), 800);
+        }
+      });
+      
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkBtn.click();
+      });
+    }
+    
+    function createConfetti(count) {
+      const container = document.getElementById('confetti-container');
+      const colors = ['#00ffcc', '#ff00aa', '#ffff00', '#00ff88', '#ff6b6b'];
+      
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.top = '-10px';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = Math.random() * 0.5 + 's';
+        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+        container.appendChild(piece);
+        
+        setTimeout(() => piece.remove(), 3000);
+      }
+    }
+    
+    async function completeGame() {
+      clearInterval(gameState.timerInterval);
+      
+      const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+      const minutes = Math.floor(elapsed / 60);
+      const seconds = elapsed % 60;
+      const timeStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      
+      document.getElementById('final-player-name').textContent = gameState.playerName;
+      document.getElementById('final-time').textContent = timeStr;
+      
+      showScreen('success-screen');
+      
+      // Create lots of confetti
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => createConfetti(30), i * 300);
+      }
+      
+      // Save to leaderboard
+      if (window.dataSdk && gameState.leaderboard.length < 999) {
+        const result = await window.dataSdk.create({
+          player_name: gameState.playerName,
+          best_time: elapsed,
+          completed_at: new Date().toISOString()
+        });
+        
+        if (!result.isOk) {
+          console.error('Failed to save score');
+        }
+      }
+    }
+    
+    function resetGame() {
+      clearInterval(gameState.timerInterval);
+      
+      gameState = {
+        ...gameState,
+        playerName: '',
+        startTime: null,
+        timerInterval: null,
+        currentPuzzle: 1,
+        puzzlesCompleted: [false, false, false, false],
+        puzzle1Matches: 0,
+        puzzle2Clues: [],
+        puzzle3Matches: 0,
+        puzzle3Moves: 0,
+        puzzle3Cards: [],
+        puzzle3Flipped: []
+      };
+      
+      // Reset UI
+      document.getElementById('player-name-input').value = '';
+      document.getElementById('timer-display').textContent = '05:00';
+      document.getElementById('timer-display').style.color = '';
+      document.getElementById('timer-ring').style.strokeDashoffset = '0';
+      
+      // Reset puzzles
+      document.querySelectorAll('.puzzle-section').forEach(s => s.classList.add('hidden'));
+      document.getElementById('puzzle-1').classList.remove('hidden');
+      document.getElementById('escape-section').classList.add('hidden');
+      
+      document.querySelectorAll('[id$="-feedback"]').forEach(el => el.classList.add('hidden'));
+      
+      // Reset puzzle 1
+      const deductionsContainer = document.getElementById('deductions-container');
+      deductionsContainer.innerHTML = `
+        <div class="draggable-item float px-4 py-2 rounded-lg cursor-grab" data-type="business" style="background: linear-gradient(135deg, #ff6b6b, #ff8e8e);">🖥️ Office Equipment</div>
+        <div class="draggable-item float px-4 py-2 rounded-lg cursor-grab" data-type="medical" style="background: linear-gradient(135deg, #4ecdc4, #44a08d); animation-delay: 0.2s;">💊 Medical Bills</div>
+        <div class="draggable-item float px-4 py-2 rounded-lg cursor-grab" data-type="charity" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb); animation-delay: 0.4s;">💝 Charity Donation</div>
+        <div class="draggable-item float px-4 py-2 rounded-lg cursor-grab" data-type="business" style="background: linear-gradient(135deg, #f093fb, #f5576c); animation-delay: 0.6s;">🚗 Business Travel</div>
+        <div class="draggable-item float px-4 py-2 rounded-lg cursor-grab" data-type="education" style="background: linear-gradient(135deg, #5ee7df, #b490ca); animation-delay: 0.8s;">📚 Tuition Fees</div>
+        <div class="draggable-item float px-4 py-2 rounded-lg cursor-grab" data-type="medical" style="background: linear-gradient(135deg, #fa709a, #fee140); animation-delay: 1s;">🏥 Health Insurance</div>
+      `;
+      
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.classList.remove('matched');
+        zone.querySelector('.matched-items').innerHTML = '';
+      });
+      
+      // Reset puzzle 2
+      document.querySelectorAll('.clue-reveal').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.safe-digit').forEach(el => el.value = '');
+      
+      // Reset puzzle 3
+      setupPuzzle3();
+      document.getElementById('match-count').textContent = '0';
+      document.getElementById('move-count').textContent = '0';
+      
+      // Reset puzzle 4
+      document.getElementById('refund-input').value = '';
+      document.getElementById('refund-feedback').classList.add('hidden');
+      
+      // Reset progress
+      updateProgress();
+      
+      // Re-setup drag and drop
+      setupPuzzle1();
+    }
+    
+    // Initialize on load
+    initializeApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8cdb1773e327c5',t:'MTc3NTYwNTAwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

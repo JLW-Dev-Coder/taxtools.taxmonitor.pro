@@ -1,1 +1,1169 @@
 <!-- PASTE HTML FROM CANVA: https://www.canva.com/ai/code/thread/c48abd93-847a-48a0-80ce-fed1d2398e49 -->
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>International Tax Explorer</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    
+    :root {
+      --bg-color: #0a0a1a;
+      --surface-color: #1a1a2e;
+      --text-color: #ffffff;
+      --primary-color: #00ffd5;
+      --secondary-color: #ff00aa;
+    }
+    
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      overflow-x: hidden;
+    }
+    
+    /* Entry Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes rotateIn {
+      from { opacity: 0; transform: rotate(-10deg) scale(0.9); }
+      to { opacity: 1; transform: rotate(0) scale(1); }
+    }
+    
+    @keyframes flipIn {
+      from { opacity: 0; transform: perspective(400px) rotateY(-90deg); }
+      to { opacity: 1; transform: perspective(400px) rotateY(0); }
+    }
+    
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: scale(0.3); }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    /* Continuous Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    
+    @keyframes wobble {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+    
+    @keyframes swing {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(15deg); }
+      40% { transform: rotate(-10deg); }
+      60% { transform: rotate(5deg); }
+      80% { transform: rotate(-5deg); }
+    }
+    
+    @keyframes jello {
+      0%, 100% { transform: scale(1, 1); }
+      30% { transform: scale(1.25, 0.75); }
+      40% { transform: scale(0.75, 1.25); }
+      50% { transform: scale(1.15, 0.85); }
+      65% { transform: scale(0.95, 1.05); }
+      75% { transform: scale(1.05, 0.95); }
+    }
+    
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color); }
+      50% { box-shadow: 0 0 40px var(--primary-color), 0 0 80px var(--secondary-color); }
+    }
+    
+    @keyframes morph {
+      0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+      50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    
+    @keyframes orbit {
+      from { transform: rotate(0deg) translateX(20px) rotate(0deg); }
+      to { transform: rotate(360deg) translateX(20px) rotate(-360deg); }
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    @keyframes hueRotate {
+      from { filter: hue-rotate(0deg); }
+      to { filter: hue-rotate(360deg); }
+    }
+    
+    @keyframes rubberBand {
+      0% { transform: scale(1); }
+      30% { transform: scaleX(1.25) scaleY(0.75); }
+      40% { transform: scaleX(0.75) scaleY(1.25); }
+      50% { transform: scaleX(1.15) scaleY(0.85); }
+      65% { transform: scaleX(0.95) scaleY(1.05); }
+      75% { transform: scaleX(1.05) scaleY(0.95); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    
+    @keyframes textGlow {
+      0%, 100% { text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color); }
+      50% { text-shadow: 0 0 20px var(--secondary-color), 0 0 40px var(--secondary-color); }
+    }
+    
+    @keyframes ripple {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(4); opacity: 0; }
+    }
+    
+    @keyframes shine {
+      0% { left: -100%; }
+      100% { left: 200%; }
+    }
+    
+    @keyframes letterSpacing {
+      0%, 100% { letter-spacing: 0.1em; }
+      50% { letter-spacing: 0.3em; }
+    }
+    
+    @keyframes wave {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      25% { transform: translateY(-5px) rotate(2deg); }
+      75% { transform: translateY(5px) rotate(-2deg); }
+    }
+    
+    @keyframes progressPulse {
+      0%, 100% { stroke-dashoffset: 0; }
+    }
+    
+    @keyframes bouncingDots {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes cubeFlip {
+      0% { transform: perspective(1000px) rotateY(0) rotateX(0); }
+      25% { transform: perspective(1000px) rotateY(90deg) rotateX(0); }
+      50% { transform: perspective(1000px) rotateY(180deg) rotateX(90deg); }
+      75% { transform: perspective(1000px) rotateY(270deg) rotateX(0); }
+      100% { transform: perspective(1000px) rotateY(360deg) rotateX(0); }
+    }
+    
+    /* Animation Classes */
+    .fade-up { animation: fadeUp 0.8s ease-out forwards; }
+    .scale-in { animation: scaleIn 0.6s ease-out forwards; }
+    .rotate-in { animation: rotateIn 0.7s ease-out forwards; }
+    .flip-in { animation: flipIn 0.6s ease-out forwards; }
+    .bounce-in { animation: bounceIn 0.8s ease-out forwards; }
+    
+    .float { animation: float 3s ease-in-out infinite; }
+    .pulse { animation: pulse 2s ease-in-out infinite; }
+    .spin { animation: spin 3s linear infinite; }
+    .bounce { animation: bounce 1s ease-in-out infinite; }
+    .wobble { animation: wobble 1s ease-in-out infinite; }
+    .swing { animation: swing 2s ease-in-out infinite; }
+    .jello { animation: jello 1s ease-in-out; }
+    .glow-pulse { animation: glowPulse 2s ease-in-out infinite; }
+    .morph { animation: morph 8s ease-in-out infinite; }
+    .twinkle { animation: twinkle 2s ease-in-out infinite; }
+    .orbit { animation: orbit 4s linear infinite; }
+    .gradient-shift { 
+      background-size: 200% 200%; 
+      animation: gradientShift 3s ease infinite; 
+    }
+    .hue-rotate { animation: hueRotate 5s linear infinite; }
+    .rubber-band { animation: rubberBand 0.8s ease-out; }
+    .text-glow { animation: textGlow 2s ease-in-out infinite; }
+    .letter-spacing { animation: letterSpacing 2s ease-in-out infinite; }
+    .wave { animation: wave 2s ease-in-out infinite; }
+    .cube-flip { animation: cubeFlip 2s ease-in-out forwards; }
+    
+    /* Hover Effects */
+    .hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .hover-lift:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 255, 213, 0.3); }
+    
+    .hover-scale { transition: transform 0.3s ease; }
+    .hover-scale:hover { transform: scale(1.1); }
+    
+    .hover-glow { transition: box-shadow 0.3s ease, filter 0.3s ease; }
+    .hover-glow:hover { 
+      box-shadow: 0 0 30px var(--primary-color); 
+      filter: brightness(1.2);
+    }
+    
+    .hover-shake:hover { animation: wobble 0.5s ease-in-out; }
+    .hover-rubber:hover { animation: rubberBand 0.8s ease-out; }
+    .hover-jello:hover { animation: jello 0.8s ease-out; }
+    
+    /* Stars Background */
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+    
+    /* Map Container */
+    .map-container {
+      position: relative;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      border-radius: 20px;
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+    
+    .map-border {
+      position: absolute;
+      inset: -4px;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), #ffff00, var(--primary-color));
+      border-radius: 24px;
+      z-index: -1;
+      animation: morph 8s ease-in-out infinite, gradientShift 3s ease infinite;
+      background-size: 300% 300%;
+    }
+    
+    /* Country Markers */
+    .country-marker {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    
+    .country-marker::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      z-index: -1;
+      opacity: 0.5;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    .country-marker:hover {
+      transform: scale(1.3);
+      z-index: 20;
+    }
+    
+    .country-marker:hover::before {
+      animation: glowPulse 0.5s ease-in-out infinite;
+      opacity: 1;
+    }
+    
+    .country-marker.explored {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+    
+    .country-marker.explored::after {
+      content: '✓';
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 18px;
+      height: 18px;
+      background: #00ff00;
+      border-radius: 50%;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: bold;
+      animation: bounceIn 0.5s ease-out;
+    }
+    
+    /* Popup */
+    .popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .popup-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .popup-content {
+      background: linear-gradient(135deg, var(--surface-color) 0%, #2a2a4e 100%);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      transform: scale(0.8) rotateY(-90deg);
+      transition: transform 0.5s ease;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+    
+    .popup-overlay.active .popup-content {
+      transform: scale(1) rotateY(0);
+      animation: bounceIn 0.6s ease-out;
+    }
+    
+    .popup-content::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), #ffff00);
+      border-radius: 22px;
+      z-index: -1;
+      animation: gradientShift 3s ease infinite;
+      background-size: 200% 200%;
+    }
+    
+    .fun-fact-box {
+      background: linear-gradient(135deg, #2a2a4e, #3a3a5e, #2a2a4e);
+      background-size: 200% 200%;
+      animation: gradientShift 3s ease infinite;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+    
+    /* Search Button */
+    .search-btn {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .search-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shine 2s infinite;
+    }
+    
+    .search-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px var(--primary-color);
+    }
+    
+    .search-btn .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      animation: ripple 0.6s ease-out;
+    }
+    
+    /* Progress Ring */
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+    
+    .progress-ring-circle {
+      transition: stroke-dashoffset 0.5s ease;
+      stroke-linecap: round;
+    }
+    
+    /* Bouncing Dots Loader */
+    .bouncing-dots span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      margin: 0 4px;
+      animation: bouncingDots 0.6s ease-in-out infinite;
+    }
+    
+    .bouncing-dots span:nth-child(2) { animation-delay: 0.1s; }
+    .bouncing-dots span:nth-child(3) { animation-delay: 0.2s; }
+    
+    /* Success Modal */
+    .success-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .success-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .success-content {
+      text-align: center;
+      animation: cubeFlip 1s ease-out forwards;
+    }
+    
+    .success-title {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), #ffff00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: textGlow 2s ease-in-out infinite, letterSpacing 2s ease-in-out infinite;
+    }
+    
+    /* Animated Icon Container */
+    .icon-spin { animation: spin 3s linear infinite; }
+    .icon-orbit { animation: orbit 4s linear infinite; }
+    .icon-wobble { animation: wobble 1s ease-in-out infinite; }
+    
+    /* Tooltip */
+    .tooltip {
+      position: absolute;
+      background: var(--surface-color);
+      color: var(--text-color);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 30;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+    }
+    
+    .tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--surface-color);
+    }
+    
+    .country-marker:hover .tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(-5px);
+      animation: fadeUp 0.3s ease-out;
+    }
+    
+    /* Typewriter Effect */
+    .typewriter {
+      overflow: hidden;
+      white-space: nowrap;
+      animation: typewriter 2s steps(40) forwards;
+    }
+    
+    /* Gradient Text */
+    .gradient-text {
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), #ffff00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% 200%;
+      animation: gradientShift 3s ease infinite;
+    }
+    
+    /* World Map SVG Styling */
+    .world-map path {
+      fill: #2a2a4e;
+      stroke: var(--primary-color);
+      stroke-width: 0.5;
+      transition: all 0.3s ease;
+    }
+    
+    .world-map path:hover {
+      fill: #3a3a5e;
+      filter: brightness(1.3);
+    }
+    
+    /* Search Dropdown */
+    .search-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--surface-color);
+      border-radius: 12px;
+      margin-top: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 50;
+    }
+    
+    .search-dropdown.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .search-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .search-item:hover {
+      background: rgba(0, 255, 213, 0.1);
+    }
+    
+    .search-item:last-child {
+      border-bottom: none;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full overflow-auto" style="background: var(--bg-color);"><!-- Animated Stars Background -->
+   <div id="stars-container" class="fixed inset-0 pointer-events-none overflow-hidden"></div><!-- Main Container -->
+   <div class="relative z-10 min-h-full p-6 md:p-10"><!-- Header -->
+    <header class="text-center mb-8 fade-up" style="animation-delay: 0.1s;">
+     <h1 id="main-title" class="text-4xl md:text-6xl font-extrabold gradient-text text-glow mb-4">International Tax Explorer</h1>
+     <p id="subtitle" class="text-lg md:text-xl text-gray-300 float" style="animation-delay: 0.3s;">Discover global tax landscapes with interactive exploration</p>
+    </header><!-- Progress Section -->
+    <div class="flex justify-center items-center gap-6 mb-8 scale-in" style="animation-delay: 0.4s;">
+     <div class="relative">
+      <svg class="progress-ring" width="80" height="80"><circle cx="40" cy="40" r="35" stroke="#2a2a4e" stroke-width="6" fill="none" /> <circle id="progress-circle" class="progress-ring-circle" cx="40" cy="40" r="35" stroke="url(#progressGradient)" stroke-width="6" fill="none" stroke-dasharray="220" stroke-dashoffset="220" /> <defs>
+        <lineargradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+         <stop offset="0%" style="stop-color:var(--primary-color)" />
+         <stop offset="100%" style="stop-color:var(--secondary-color)" />
+        </lineargradient>
+       </defs>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center"><span id="progress-text" class="text-lg font-bold">0/12</span>
+      </div>
+     </div>
+     <div>
+      <p class="text-sm text-gray-400">Countries Explored</p>
+      <div class="bouncing-dots mt-2"><span></span><span></span><span></span>
+      </div>
+     </div>
+    </div><!-- Search Section -->
+    <div class="max-w-md mx-auto mb-8 relative rotate-in" style="animation-delay: 0.5s;">
+     <div class="flex gap-3">
+      <div class="flex-1 relative"><input type="text" id="search-input" placeholder="Search countries..." class="w-full px-5 py-3 rounded-full bg-surface-color border-2 border-transparent focus:border-primary-color outline-none transition-all hover-glow" style="background: var(--surface-color);">
+       <div id="search-dropdown" class="search-dropdown"></div>
+      </div><button id="search-btn" class="search-btn" onclick="handleSearchClick(event)"> <span class="relative z-10">🔍 Jump</span> </button>
+     </div>
+    </div><!-- Map Section -->
+    <div class="max-w-5xl mx-auto scale-in" style="animation-delay: 0.6s;">
+     <div class="map-container p-6 md:p-10 relative">
+      <div class="map-border"></div><!-- World Map SVG -->
+      <div class="relative" style="padding-bottom: 50%;">
+       <svg id="world-map" class="world-map absolute inset-0 w-full h-full" viewbox="0 0 1000 500" preserveaspectratio="xMidYMid meet"><!-- Simplified World Map Paths --> <path d="M150,120 L200,100 L250,120 L280,150 L260,200 L200,220 L150,180 Z" title="North America" /> <path d="M200,250 L280,230 L320,280 L300,350 L250,380 L200,350 L180,300 Z" title="South America" /> <path d="M420,100 L520,90 L560,130 L540,180 L480,200 L420,170 L400,140 Z" title="Europe" /> <path d="M420,200 L520,180 L580,220 L560,320 L480,380 L400,340 L380,260 Z" title="Africa" /> <path d="M580,100 L720,80 L800,120 L820,200 L760,250 L640,220 L580,160 Z" title="Asia" /> <path d="M750,280 L850,260 L900,320 L880,400 L800,420 L740,380 L730,320 Z" title="Australia" />
+       </svg><!-- Country Markers -->
+       <div id="markers-container" class="absolute inset-0"></div>
+      </div>
+     </div>
+    </div><!-- Hint Section -->
+    <div class="text-center mt-8 fade-up" style="animation-delay: 0.8s;">
+     <p class="text-gray-400 text-sm wave">💡 <span class="gradient-text">Click on glowing markers</span> to explore tax information</p>
+    </div>
+   </div><!-- Country Popup -->
+   <div id="popup-overlay" class="popup-overlay" onclick="closePopup(event)">
+    <div class="popup-content" onclick="event.stopPropagation()"><button onclick="closePopup()" class="absolute top-4 right-4 text-2xl hover-scale hover-jello">✕</button>
+     <div class="flex items-center gap-4 mb-4"><span id="popup-flag" class="text-5xl float"></span>
+      <div>
+       <h2 id="popup-title" class="text-2xl font-bold gradient-text"></h2>
+       <p id="popup-region" class="text-gray-400 text-sm"></p>
+      </div>
+     </div>
+     <div class="space-y-4">
+      <div class="flex items-start gap-3"><span class="text-2xl icon-wobble">💰</span>
+       <div>
+        <h3 class="font-semibold text-primary-color">Tax Rate</h3>
+        <p id="popup-tax-rate" class="text-gray-300"></p>
+       </div>
+      </div>
+      <div class="flex items-start gap-3"><span class="text-2xl icon-spin">📋</span>
+       <div>
+        <h3 class="font-semibold text-primary-color">Key Treaties</h3>
+        <p id="popup-treaties" class="text-gray-300"></p>
+       </div>
+      </div>
+      <div class="flex items-start gap-3"><span class="text-2xl orbit" style="display: inline-block;">🌟</span>
+       <div>
+        <h3 class="font-semibold text-primary-color">Unique Rule</h3>
+        <p id="popup-unique" class="text-gray-300"></p>
+       </div>
+      </div>
+      <div class="fun-fact-box">
+       <div class="flex items-center gap-2 mb-2"><span class="text-xl bounce">🎉</span>
+        <h3 class="font-semibold" style="color: #ffff00;">Fun Fact</h3>
+       </div>
+       <p id="popup-fun-fact" class="text-gray-300 text-sm"></p>
+      </div>
+     </div><button id="mark-explored-btn" onclick="markExplored()" class="w-full mt-6 py-3 rounded-full bg-gradient-to-r from-primary-color to-secondary-color text-black font-bold hover-lift hover-glow" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));"> ✓ Mark as Explored </button>
+    </div>
+   </div><!-- Success Modal -->
+   <div id="success-modal" class="success-modal">
+    <div class="success-content">
+     <div class="text-8xl mb-6 bounce">
+      🏆
+     </div>
+     <h2 id="success-title" class="success-title mb-4">World Explorer!</h2>
+     <p class="text-xl text-gray-300 mb-8">You've explored all countries!</p><button onclick="resetExploration()" class="search-btn text-lg"> 🔄 Start New Journey </button>
+    </div>
+   </div>
+  </div>
+  <script>
+    // Country Data
+    const countries = [
+      {
+        code: 'US',
+        name: 'United States',
+        flag: '🇺🇸',
+        region: 'North America',
+        position: { x: 18, y: 28 },
+        taxRate: '21% Corporate, 10-37% Individual',
+        treaties: '68 tax treaties worldwide',
+        uniqueRule: 'Citizenship-based taxation - US citizens taxed on worldwide income regardless of residence',
+        funFact: 'The US tax code is over 70,000 pages long!'
+      },
+      {
+        code: 'UK',
+        name: 'United Kingdom',
+        flag: '🇬🇧',
+        region: 'Europe',
+        position: { x: 44, y: 22 },
+        taxRate: '19% Corporate, 20-45% Individual',
+        treaties: '130+ tax treaties',
+        uniqueRule: 'Non-domiciled residents can use remittance basis for foreign income',
+        funFact: 'The UK introduced the first income tax in 1799 to fund wars against Napoleon!'
+      },
+      {
+        code: 'JP',
+        name: 'Japan',
+        flag: '🇯🇵',
+        region: 'Asia',
+        position: { x: 82, y: 32 },
+        taxRate: '23.2% Corporate, 5-45% Individual',
+        treaties: '78 tax treaties',
+        uniqueRule: 'Inheritance tax up to 55% - one of the highest in the world',
+        funFact: 'Japan taxes virtual currency gains as miscellaneous income up to 55%!'
+      },
+      {
+        code: 'AU',
+        name: 'Australia',
+        flag: '🇦🇺',
+        region: 'Oceania',
+        position: { x: 82, y: 70 },
+        taxRate: '30% Corporate, 0-45% Individual',
+        treaties: '45 tax treaties',
+        uniqueRule: 'Compulsory superannuation - employers must contribute 11% to retirement',
+        funFact: 'Australia\'s fiscal year runs July to June, opposite to most countries!'
+      },
+      {
+        code: 'DE',
+        name: 'Germany',
+        flag: '🇩🇪',
+        region: 'Europe',
+        position: { x: 48, y: 26 },
+        taxRate: '~30% Corporate, 0-45% Individual',
+        treaties: '95+ tax treaties',
+        uniqueRule: 'Solidarity surcharge of 5.5% on income tax for reunification',
+        funFact: 'German tax returns can be filed up to 4 years late without penalty!'
+      },
+      {
+        code: 'SG',
+        name: 'Singapore',
+        flag: '🇸🇬',
+        region: 'Asia',
+        position: { x: 72, y: 52 },
+        taxRate: '17% Corporate, 0-22% Individual',
+        treaties: '90+ tax treaties',
+        uniqueRule: 'No capital gains tax and territorial tax system',
+        funFact: 'Singapore has no inheritance tax, making it popular for wealth management!'
+      },
+      {
+        code: 'BR',
+        name: 'Brazil',
+        flag: '🇧🇷',
+        region: 'South America',
+        position: { x: 28, y: 62 },
+        taxRate: '34% Corporate, 7.5-27.5% Individual',
+        treaties: '35 tax treaties',
+        uniqueRule: 'Complex federal, state, and municipal tax layers',
+        funFact: 'Brazil has over 60 different taxes - one of the most complex systems globally!'
+      },
+      {
+        code: 'AE',
+        name: 'UAE',
+        flag: '🇦🇪',
+        region: 'Middle East',
+        position: { x: 58, y: 40 },
+        taxRate: '9% Corporate (2023+), 0% Individual',
+        treaties: '130+ tax treaties',
+        uniqueRule: 'No personal income tax for residents',
+        funFact: 'UAE introduced corporate tax only in 2023, ending decades of zero tax!'
+      },
+      {
+        code: 'CH',
+        name: 'Switzerland',
+        flag: '🇨🇭',
+        region: 'Europe',
+        position: { x: 46, y: 30 },
+        taxRate: '11.9-21% Corporate, 0-40% Individual',
+        treaties: '100+ tax treaties',
+        uniqueRule: 'Lump-sum taxation available for wealthy foreigners',
+        funFact: 'Each Swiss canton sets its own tax rates, creating 26 different tax systems!'
+      },
+      {
+        code: 'IN',
+        name: 'India',
+        flag: '🇮🇳',
+        region: 'Asia',
+        position: { x: 65, y: 42 },
+        taxRate: '25-30% Corporate, 5-30% Individual',
+        treaties: '95+ tax treaties',
+        uniqueRule: 'Equalisation levy on digital services (Google Tax)',
+        funFact: 'India\'s GST has 5 different rate slabs from 0% to 28%!'
+      },
+      {
+        code: 'CA',
+        name: 'Canada',
+        flag: '🇨🇦',
+        region: 'North America',
+        position: { x: 20, y: 18 },
+        taxRate: '15% Federal Corporate, 15-33% Individual',
+        treaties: '93 tax treaties',
+        uniqueRule: 'TFSA - Tax-Free Savings Account with no tax on gains',
+        funFact: 'Canada has a "departure tax" on unrealized gains when you leave!'
+      },
+      {
+        code: 'ZA',
+        name: 'South Africa',
+        flag: '🇿🇦',
+        region: 'Africa',
+        position: { x: 52, y: 72 },
+        taxRate: '27% Corporate, 18-45% Individual',
+        treaties: '80+ tax treaties',
+        uniqueRule: 'Exchange control regulations limit foreign investments',
+        funFact: 'South Africa taxes worldwide income but allows foreign tax credits!'
+      }
+    ];
+
+    let exploredCountries = [];
+    let currentCountry = null;
+    let isLoading = false;
+
+    const defaultConfig = {
+      main_title: 'International Tax Explorer',
+      subtitle: 'Discover global tax landscapes with interactive exploration',
+      success_message: 'World Explorer!',
+      background_color: '#0a0a1a',
+      surface_color: '#1a1a2e',
+      text_color: '#ffffff',
+      primary_color: '#00ffd5',
+      secondary_color: '#ff00aa',
+      font_family: 'Syne',
+      font_size: 16
+    };
+
+    // Initialize Element SDK
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (config) => {
+        const root = document.documentElement;
+        root.style.setProperty('--bg-color', config.background_color || defaultConfig.background_color);
+        root.style.setProperty('--surface-color', config.surface_color || defaultConfig.surface_color);
+        root.style.setProperty('--text-color', config.text_color || defaultConfig.text_color);
+        root.style.setProperty('--primary-color', config.primary_color || defaultConfig.primary_color);
+        root.style.setProperty('--secondary-color', config.secondary_color || defaultConfig.secondary_color);
+        
+        const fontFamily = config.font_family || defaultConfig.font_family;
+        document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+        
+        const fontSize = config.font_size || defaultConfig.font_size;
+        document.body.style.fontSize = `${fontSize}px`;
+        
+        const titleEl = document.getElementById('main-title');
+        if (titleEl) {
+          titleEl.textContent = config.main_title || defaultConfig.main_title;
+          titleEl.style.fontSize = `${fontSize * 3}px`;
+        }
+        
+        const subtitleEl = document.getElementById('subtitle');
+        if (subtitleEl) {
+          subtitleEl.textContent = config.subtitle || defaultConfig.subtitle;
+          subtitleEl.style.fontSize = `${fontSize * 1.25}px`;
+        }
+        
+        const successTitle = document.getElementById('success-title');
+        if (successTitle) {
+          successTitle.textContent = config.success_message || defaultConfig.success_message;
+        }
+      },
+      mapToCapabilities: (config) => ({
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => window.elementSdk.setConfig({ background_color: value })
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => window.elementSdk.setConfig({ surface_color: value })
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => window.elementSdk.setConfig({ text_color: value })
+          },
+          {
+            get: () => config.primary_color || defaultConfig.primary_color,
+            set: (value) => window.elementSdk.setConfig({ primary_color: value })
+          },
+          {
+            get: () => config.secondary_color || defaultConfig.secondary_color,
+            set: (value) => window.elementSdk.setConfig({ secondary_color: value })
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => window.elementSdk.setConfig({ font_family: value })
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => window.elementSdk.setConfig({ font_size: value })
+        }
+      }),
+      mapToEditPanelValues: (config) => new Map([
+        ['main_title', config.main_title || defaultConfig.main_title],
+        ['subtitle', config.subtitle || defaultConfig.subtitle],
+        ['success_message', config.success_message || defaultConfig.success_message]
+      ])
+    });
+
+    // Data Handler
+    const dataHandler = {
+      onDataChanged(data) {
+        exploredCountries = data.map(d => d.country_code);
+        updateMarkers();
+        updateProgress();
+        checkCompletion();
+      }
+    };
+
+    // Initialize Data SDK
+    async function initDataSDK() {
+      const result = await window.dataSdk.init(dataHandler);
+      if (!result.isOk) {
+        console.error('Failed to initialize Data SDK');
+      }
+    }
+
+    // Create Stars
+    function createStars() {
+      const container = document.getElementById('stars-container');
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = `${Math.random() * 4 + 1}px`;
+        star.style.height = star.style.width;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.animationDelay = `${Math.random() * 2}s`;
+        container.appendChild(star);
+      }
+    }
+
+    // Create Country Markers
+    function createMarkers() {
+      const container = document.getElementById('markers-container');
+      container.innerHTML = '';
+      
+      countries.forEach((country, index) => {
+        const marker = document.createElement('div');
+        marker.className = `country-marker hover-lift ${exploredCountries.includes(country.code) ? 'explored' : ''}`;
+        marker.style.left = `${country.position.x}%`;
+        marker.style.top = `${country.position.y}%`;
+        marker.style.background = exploredCountries.includes(country.code) 
+          ? 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))' 
+          : 'var(--surface-color)';
+        marker.style.animationDelay = `${index * 0.1}s`;
+        marker.innerHTML = `
+          <span class="float" style="animation-delay: ${index * 0.2}s;">${country.flag}</span>
+          <div class="tooltip">${country.name}</div>
+        `;
+        marker.onclick = () => openPopup(country);
+        container.appendChild(marker);
+      });
+    }
+
+    // Update Markers
+    function updateMarkers() {
+      const markers = document.querySelectorAll('.country-marker');
+      markers.forEach((marker, index) => {
+        const country = countries[index];
+        const isExplored = exploredCountries.includes(country.code);
+        
+        if (isExplored && !marker.classList.contains('explored')) {
+          marker.classList.add('explored', 'rubber-band');
+          marker.style.background = 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))';
+          setTimeout(() => marker.classList.remove('rubber-band'), 800);
+        }
+      });
+    }
+
+    // Update Progress
+    function updateProgress() {
+      const explored = exploredCountries.length;
+      const total = countries.length;
+      const percentage = (explored / total) * 100;
+      
+      const circle = document.getElementById('progress-circle');
+      const circumference = 220;
+      const offset = circumference - (percentage / 100) * circumference;
+      circle.style.strokeDashoffset = offset;
+      
+      document.getElementById('progress-text').textContent = `${explored}/${total}`;
+    }
+
+    // Check Completion
+    function checkCompletion() {
+      if (exploredCountries.length === countries.length) {
+        setTimeout(() => {
+          document.getElementById('success-modal').classList.add('active');
+        }, 500);
+      }
+    }
+
+    // Open Popup
+    function openPopup(country) {
+      currentCountry = country;
+      
+      document.getElementById('popup-flag').textContent = country.flag;
+      document.getElementById('popup-title').textContent = country.name;
+      document.getElementById('popup-region').textContent = country.region;
+      document.getElementById('popup-tax-rate').textContent = country.taxRate;
+      document.getElementById('popup-treaties').textContent = country.treaties;
+      document.getElementById('popup-unique').textContent = country.uniqueRule;
+      document.getElementById('popup-fun-fact').textContent = country.funFact;
+      
+      const btn = document.getElementById('mark-explored-btn');
+      if (exploredCountries.includes(country.code)) {
+        btn.textContent = '✓ Already Explored';
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+      } else {
+        btn.textContent = '✓ Mark as Explored';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      }
+      
+      document.getElementById('popup-overlay').classList.add('active');
+    }
+
+    // Close Popup
+    function closePopup(e) {
+      if (e && e.target !== e.currentTarget) return;
+      document.getElementById('popup-overlay').classList.remove('active');
+      currentCountry = null;
+    }
+
+    // Mark as Explored
+    async function markExplored() {
+      if (!currentCountry || isLoading || exploredCountries.includes(currentCountry.code)) return;
+      
+      if (exploredCountries.length >= 999) {
+        showToast('Maximum exploration limit reached!', 'error');
+        return;
+      }
+      
+      isLoading = true;
+      const btn = document.getElementById('mark-explored-btn');
+      btn.textContent = 'Saving...';
+      btn.disabled = true;
+      
+      const result = await window.dataSdk.create({
+        country_code: currentCountry.code,
+        explored_at: new Date().toISOString()
+      });
+      
+      isLoading = false;
+      
+      if (result.isOk) {
+        btn.textContent = '✓ Explored!';
+        btn.classList.add('rubber-band');
+        showToast(`${currentCountry.name} explored! 🎉`, 'success');
+      } else {
+        btn.textContent = '✓ Mark as Explored';
+        btn.disabled = false;
+        showToast('Failed to save. Please try again.', 'error');
+      }
+    }
+
+    // Search Functionality
+    function setupSearch() {
+      const input = document.getElementById('search-input');
+      const dropdown = document.getElementById('search-dropdown');
+      
+      input.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        if (query.length < 1) {
+          dropdown.classList.remove('active');
+          return;
+        }
+        
+        const matches = countries.filter(c => 
+          c.name.toLowerCase().includes(query) ||
+          c.region.toLowerCase().includes(query)
+        );
+        
+        if (matches.length > 0) {
+          dropdown.innerHTML = matches.map(c => `
+            <div class="search-item" onclick="jumpToCountry('${c.code}')">
+              <span class="mr-2">${c.flag}</span>
+              <span>${c.name}</span>
+              <span class="text-xs text-gray-400 ml-2">${c.region}</span>
+            </div>
+          `).join('');
+          dropdown.classList.add('active');
+        } else {
+          dropdown.classList.remove('active');
+        }
+      });
+      
+      input.addEventListener('blur', () => {
+        setTimeout(() => dropdown.classList.remove('active'), 200);
+      });
+    }
+
+    // Jump to Country
+    function jumpToCountry(code) {
+      const country = countries.find(c => c.code === code);
+      if (country) {
+        document.getElementById('search-input').value = '';
+        document.getElementById('search-dropdown').classList.remove('active');
+        openPopup(country);
+      }
+    }
+
+    // Handle Search Button Click with Ripple
+    function handleSearchClick(e) {
+      const btn = e.currentTarget;
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      ripple.style.width = ripple.style.height = '10px';
+      btn.appendChild(ripple);
+      
+      setTimeout(() => ripple.remove(), 600);
+      
+      const input = document.getElementById('search-input');
+      if (input.value) {
+        const match = countries.find(c => 
+          c.name.toLowerCase().includes(input.value.toLowerCase())
+        );
+        if (match) jumpToCountry(match.code);
+      }
+    }
+
+    // Reset Exploration
+    async function resetExploration() {
+      document.getElementById('success-modal').classList.remove('active');
+      // Note: In a real app, you'd delete all records here
+      showToast('Start a new exploration journey!', 'success');
+    }
+
+    // Toast Notification
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `fixed bottom-6 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full text-sm font-semibold z-50 bounce-in`;
+      toast.style.background = type === 'success' 
+        ? 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))' 
+        : '#ff4444';
+      toast.style.color = type === 'success' ? '#000' : '#fff';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Initialize
+    createStars();
+    createMarkers();
+    setupSearch();
+    initDataSDK();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8cda33c33427c5',t:'MTc3NTYwNDk2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

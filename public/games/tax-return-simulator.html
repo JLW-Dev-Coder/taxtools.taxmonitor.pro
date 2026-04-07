@@ -1,1 +1,1072 @@
 <!-- PASTE HTML FROM CANVA: https://www.canva.com/ai/code/thread/dff42d6b-d284-4056-8e63-5e007b639910 -->
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Return Simulator</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Syne:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    
+    html, body { 
+      height: 100%; 
+      margin: 0; 
+      overflow-x: hidden;
+    }
+    
+    .app-wrapper {
+      min-height: 100%;
+      width: 100%;
+    }
+    
+    :root {
+      --bg-color: #0a0a1a;
+      --surface-color: #151530;
+      --text-color: #e8e8f0;
+      --primary-color: #00ffd5;
+      --secondary-color: #ff00aa;
+    }
+    
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+    
+    /* Animated Stars Background */
+    .stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    
+    .star {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    
+    /* Entry Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes rotateIn {
+      from { opacity: 0; transform: rotate(-10deg) scale(0.9); }
+      to { opacity: 1; transform: rotate(0) scale(1); }
+    }
+    
+    @keyframes flipIn {
+      from { opacity: 0; transform: rotateX(-90deg); }
+      to { opacity: 1; transform: rotateX(0); }
+    }
+    
+    .animate-fade-up {
+      animation: fadeUp 0.8s ease-out forwards;
+    }
+    
+    .animate-scale-in {
+      animation: scaleIn 0.6s ease-out forwards;
+    }
+    
+    .animate-rotate-in {
+      animation: rotateIn 0.7s ease-out forwards;
+    }
+    
+    .animate-flip-in {
+      animation: flipIn 0.8s ease-out forwards;
+      transform-style: preserve-3d;
+    }
+    
+    /* Continuous Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px var(--primary-color), 0 0 40px rgba(0, 255, 213, 0.3); }
+      50% { box-shadow: 0 0 40px var(--primary-color), 0 0 80px rgba(0, 255, 213, 0.5); }
+    }
+    
+    @keyframes wobble {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-3deg); }
+      75% { transform: rotate(3deg); }
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    @keyframes morph {
+      0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+      25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+      50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+      75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+    }
+    
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    .animate-pulse { animation: pulse 2s ease-in-out infinite; }
+    .animate-glow { animation: glow 2s ease-in-out infinite; }
+    .animate-wobble { animation: wobble 2s ease-in-out infinite; }
+    .animate-bounce { animation: bounce 1s ease-in-out infinite; }
+    .animate-spin { animation: spin 10s linear infinite; }
+    .animate-morph { animation: morph 8s ease-in-out infinite; }
+    
+    /* Jello Animation for Value Updates */
+    @keyframes jello {
+      0%, 100% { transform: scale3d(1, 1, 1); }
+      30% { transform: scale3d(1.25, 0.75, 1); }
+      40% { transform: scale3d(0.75, 1.25, 1); }
+      50% { transform: scale3d(1.15, 0.85, 1); }
+      65% { transform: scale3d(0.95, 1.05, 1); }
+      75% { transform: scale3d(1.05, 0.95, 1); }
+    }
+    
+    .animate-jello {
+      animation: jello 0.6s ease-in-out;
+    }
+    
+    /* Rubber Band Animation */
+    @keyframes rubberBand {
+      0% { transform: scale3d(1, 1, 1); }
+      30% { transform: scale3d(1.25, 0.75, 1); }
+      40% { transform: scale3d(0.75, 1.25, 1); }
+      50% { transform: scale3d(1.15, 0.85, 1); }
+      65% { transform: scale3d(0.95, 1.05, 1); }
+      75% { transform: scale3d(1.05, 0.95, 1); }
+      100% { transform: scale3d(1, 1, 1); }
+    }
+    
+    .animate-rubber-band {
+      animation: rubberBand 0.8s ease-in-out;
+    }
+    
+    /* 3D Flip Animation */
+    @keyframes flip3d {
+      0% { transform: perspective(400px) rotateY(0); }
+      100% { transform: perspective(400px) rotateY(360deg); }
+    }
+    
+    .animate-flip3d {
+      animation: flip3d 1s ease-in-out;
+    }
+    
+    /* Typewriter Effect */
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    
+    .typewriter-text {
+      overflow: hidden;
+      white-space: nowrap;
+      animation: typewriter 2s steps(40) forwards;
+    }
+    
+    /* Text Glow */
+    @keyframes textGlow {
+      0%, 100% { text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color); }
+      50% { text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color), 0 0 60px var(--primary-color); }
+    }
+    
+    .text-glow {
+      animation: textGlow 2s ease-in-out infinite;
+    }
+    
+    /* Letter Spacing Animation */
+    @keyframes letterSpace {
+      0%, 100% { letter-spacing: 0.1em; }
+      50% { letter-spacing: 0.3em; }
+    }
+    
+    .animate-letter-space {
+      animation: letterSpace 2s ease-in-out infinite;
+    }
+    
+    /* Glowing Border */
+    .glow-border {
+      position: relative;
+    }
+    
+    .glow-border::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), #ffee00, var(--primary-color));
+      background-size: 400% 400%;
+      border-radius: inherit;
+      z-index: -1;
+      animation: gradientShift 4s ease infinite;
+      filter: blur(8px);
+      opacity: 0.7;
+    }
+    
+    /* Morphing Background Shape */
+    .morph-bg {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(135deg, rgba(0, 255, 213, 0.15), rgba(255, 0, 170, 0.15));
+      animation: morph 8s ease-in-out infinite, float 6s ease-in-out infinite;
+      filter: blur(40px);
+      z-index: 0;
+    }
+    
+    /* Custom Slider Styles */
+    .custom-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 12px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, var(--surface-color), rgba(0, 255, 213, 0.3));
+      outline: none;
+      cursor: pointer;
+    }
+    
+    .custom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      cursor: pointer;
+      box-shadow: 0 0 20px var(--primary-color);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    .custom-slider::-moz-range-thumb {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 20px var(--primary-color);
+    }
+    
+    /* Progress Ring */
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+    
+    .progress-ring-circle {
+      transition: stroke-dashoffset 0.5s ease-in-out;
+      transform-origin: center;
+    }
+    
+    @keyframes wave {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(1.3); }
+    }
+    
+    .wave-bar {
+      animation: wave 1s ease-in-out infinite;
+    }
+    
+    /* Button Effects */
+    .btn-ripple {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn-ripple:hover::after {
+      width: 300px;
+      height: 300px;
+    }
+    
+    .btn-shine {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-shine::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn-shine:hover::before {
+      left: 100%;
+    }
+    
+    /* Hover Effects */
+    .hover-lift {
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .hover-lift:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 255, 213, 0.3);
+    }
+    
+    .hover-glow:hover {
+      box-shadow: 0 0 30px var(--primary-color);
+    }
+    
+    .hover-scale {
+      transition: transform 0.3s;
+    }
+    
+    .hover-scale:hover {
+      transform: scale(1.05);
+    }
+    
+    /* Tooltip */
+    .tooltip-container {
+      position: relative;
+    }
+    
+    .tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface-color);
+      border: 1px solid var(--primary-color);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+      z-index: 100;
+    }
+    
+    .tooltip-container:hover .tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(-8px);
+    }
+    
+    /* Orbit Animation for Help Icons */
+    @keyframes orbit {
+      from { transform: rotate(0deg) translateX(3px) rotate(0deg); }
+      to { transform: rotate(360deg) translateX(3px) rotate(-360deg); }
+    }
+    
+    .orbit-icon {
+      animation: orbit 4s linear infinite;
+      display: inline-block;
+    }
+    
+    /* Success Confetti */
+    @keyframes confetti-fall {
+      0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+    
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      animation: confetti-fall 3s ease-in-out forwards;
+    }
+    
+    /* Scenario Card Flip */
+    .card-3d {
+      perspective: 1000px;
+    }
+    
+    .card-inner {
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    
+    .card-3d.active .card-inner {
+      transform: rotateY(180deg);
+    }
+    
+    /* Equalizer Animation */
+    @keyframes equalizer {
+      0%, 100% { height: 20%; }
+      50% { height: 100%; }
+    }
+    
+    .eq-bar {
+      animation: equalizer 0.8s ease-in-out infinite;
+    }
+    
+    /* Delay utilities */
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-400 { animation-delay: 0.4s; }
+    .delay-500 { animation-delay: 0.5s; }
+    .delay-600 { animation-delay: 0.6s; }
+    .delay-700 { animation-delay: 0.7s; }
+    .delay-800 { animation-delay: 0.8s; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div class="app-wrapper relative overflow-auto" style="background: var(--bg-color);">
+   <!-- Animated Stars Background -->
+   <div class="stars-container" id="starsContainer"></div><!-- Morphing Background Shapes -->
+   <div class="morph-bg" style="top: 10%; left: 10%;"></div>
+   <div class="morph-bg" style="top: 60%; right: 10%; animation-delay: -4s;"></div><!-- Main Container -->
+   <div class="relative z-10 max-w-6xl mx-auto px-4 py-8">
+    <!-- Header Section -->
+    <header class="text-center mb-12 opacity-0 animate-fade-up" style="animation-fill-mode: forwards;">
+     <div class="inline-block mb-4">
+      <div class="animate-spin" style="animation-duration: 20s;">
+       <svg width="60" height="60" viewbox="0 0 60 60">
+        <polygon points="30,5 55,50 5,50" fill="none" stroke="var(--primary-color)" stroke-width="2" /> <polygon points="30,15 45,45 15,45" fill="none" stroke="var(--secondary-color)" stroke-width="2" />
+       </svg>
+      </div>
+     </div>
+     <h1 id="mainTitle" class="text-4xl md:text-6xl font-extrabold mb-4 text-glow" style="font-family: 'Syne', sans-serif; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), #ffee00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Tax Return Simulator</h1>
+     <p id="subtitle" class="text-xl opacity-80 typewriter-text" style="font-family: 'Space Mono', monospace;">Build your perfect tax scenario • Watch your refund grow</p>
+    </header><!-- Game Instructions -->
+    <section class="mb-10 opacity-0 animate-fade-up delay-100" style="animation-fill-mode: forwards;">
+     <div class="glow-border rounded-2xl p-6 max-w-3xl mx-auto" style="background: var(--surface-color);">
+      <h2 class="text-2xl font-bold mb-4 flex items-center gap-2"><span class="animate-bounce">🎮</span> How to Play &amp; Win</h2>
+      <div class="space-y-4 text-sm opacity-90">
+       <div class="flex gap-3">
+        <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold" style="background: var(--primary-color); color: var(--bg-color);">
+         1
+        </div>
+        <div>
+         <p class="font-semibold mb-1">Choose Your Filing Status</p>
+         <p class="opacity-70">Select whether you're filing as Single, Married Filing Jointly, or Head of Household. This affects your standard deduction and tax brackets.</p>
+        </div>
+       </div>
+       <div class="flex gap-3">
+        <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold" style="background: var(--secondary-color); color: var(--bg-color);">
+         2
+        </div>
+        <div>
+         <p class="font-semibold mb-1">Adjust Your Income &amp; Deductions</p>
+         <p class="opacity-70">Drag the sliders to set your gross income and deductions. Higher deductions reduce your taxable income and the tax you owe.</p>
+        </div>
+       </div>
+       <div class="flex gap-3">
+        <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold" style="background: #ffee00; color: var(--bg-color);">
+         3
+        </div>
+        <div>
+         <p class="font-semibold mb-1">Apply Tax Credits</p>
+         <p class="opacity-70">Add tax credits (child tax credits, education, EV credits, etc.) to directly reduce what you owe. Use the quick preset buttons!</p>
+        </div>
+       </div>
+       <div class="flex gap-3">
+        <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold" style="background: var(--primary-color); color: var(--bg-color);">
+         🎯
+        </div>
+        <div>
+         <p class="font-semibold mb-1">🏆 WIN: Achieve Perfect Balance</p>
+         <p class="opacity-70 font-semibold">Set the "Tax Withheld" slider to match your total tax owed. When they're equal, your result hits $0 and you trigger the celebration! 🎉</p>
+        </div>
+       </div>
+       <div class="pt-3 border-t border-opacity-20" style="border-color: var(--primary-color);">
+        <p class="text-xs opacity-60 italic">💡 <strong>Pro Tip:</strong> Watch the Tax Breakdown card and the progress ring to guide you. The closer you get to $0, the closer you are to victory!</p>
+       </div>
+      </div>
+     </div>
+    </section><!-- Filing Status Selection -->
+    <section class="mb-10 opacity-0 animate-scale-in delay-200" style="animation-fill-mode: forwards;">
+     <h2 class="text-2xl font-bold mb-6 text-center animate-float"><span class="orbit-icon mr-2">💫</span> Choose Your Filing Status</h2>
+     <div class="flex flex-wrap justify-center gap-4">
+      <button class="status-btn btn-ripple btn-shine hover-lift px-6 py-4 rounded-xl font-semibold transition-all active" data-status="single" style="background: var(--surface-color); border: 2px solid var(--primary-color);"> <span class="text-2xl mb-2 block animate-bounce">👤</span> Single </button> <button class="status-btn btn-ripple btn-shine hover-lift px-6 py-4 rounded-xl font-semibold transition-all" data-status="married" style="background: var(--surface-color); border: 2px solid transparent;"> <span class="text-2xl mb-2 block animate-bounce delay-100">💑</span> Married Filing Jointly </button> <button class="status-btn btn-ripple btn-shine hover-lift px-6 py-4 rounded-xl font-semibold transition-all" data-status="head" style="background: var(--surface-color); border: 2px solid transparent;"> <span class="text-2xl mb-2 block animate-bounce delay-200">🏠</span> Head of Household </button>
+     </div>
+    </section><!-- Main Dashboard -->
+    <div class="grid lg:grid-cols-2 gap-8">
+     <!-- Left Panel - Sliders -->
+     <div class="space-y-6">
+      <!-- Income Slider -->
+      <div class="glow-border rounded-2xl p-6 opacity-0 animate-flip-in delay-300" style="animation-fill-mode: forwards; background: var(--surface-color);">
+       <div class="flex items-center justify-between mb-4">
+        <div class="tooltip-container">
+         <label class="text-lg font-semibold flex items-center gap-2"> <span class="text-2xl animate-wobble">💰</span> Gross Income <span class="text-xs px-2 py-1 rounded-full" style="background: rgba(0, 255, 213, 0.2);">?</span> </label>
+         <div class="tooltip">
+          <span class="text-glow">Total earnings before deductions</span>
+         </div>
+        </div>
+        <div id="incomeValue" class="text-2xl font-bold" style="color: var(--primary-color); font-family: 'Space Mono', monospace;">
+         $75,000
+        </div>
+       </div><input type="range" id="incomeSlider" class="custom-slider" min="0" max="500000" value="75000" step="1000">
+       <div class="flex justify-between text-xs mt-2 opacity-60" style="font-family: 'Space Mono', monospace;">
+        <span>$0</span> <span>$500,000</span>
+       </div>
+      </div><!-- Deductions Slider -->
+      <div class="glow-border rounded-2xl p-6 opacity-0 animate-flip-in delay-400" style="animation-fill-mode: forwards; background: var(--surface-color);">
+       <div class="flex items-center justify-between mb-4">
+        <div class="tooltip-container">
+         <label class="text-lg font-semibold flex items-center gap-2"> <span class="text-2xl animate-pulse">📝</span> Deductions <span class="text-xs px-2 py-1 rounded-full" style="background: rgba(255, 0, 170, 0.2);">?</span> </label>
+         <div class="tooltip">
+          <span class="text-glow">Expenses that reduce taxable income</span>
+         </div>
+        </div>
+        <div id="deductionsValue" class="text-2xl font-bold" style="color: var(--secondary-color); font-family: 'Space Mono', monospace;">
+         $14,600
+        </div>
+       </div><input type="range" id="deductionsSlider" class="custom-slider" min="0" max="100000" value="14600" step="100">
+       <div class="flex justify-between text-xs mt-2 opacity-60" style="font-family: 'Space Mono', monospace;">
+        <span>$0</span> <span>$100,000</span>
+       </div>
+       <div class="flex gap-2 mt-4">
+        <button class="deduction-preset btn-shine text-xs px-3 py-1 rounded-full hover-scale" style="background: rgba(255, 0, 170, 0.2);" data-value="14600">Standard</button> <button class="deduction-preset btn-shine text-xs px-3 py-1 rounded-full hover-scale" style="background: rgba(255, 0, 170, 0.2);" data-value="29200">Married Std</button> <button class="deduction-preset btn-shine text-xs px-3 py-1 rounded-full hover-scale" style="background: rgba(255, 0, 170, 0.2);" data-value="50000">Itemized</button>
+       </div>
+      </div><!-- Tax Credits Slider -->
+      <div class="glow-border rounded-2xl p-6 opacity-0 animate-flip-in delay-500" style="animation-fill-mode: forwards; background: var(--surface-color);">
+       <div class="flex items-center justify-between mb-4">
+        <div class="tooltip-container">
+         <label class="text-lg font-semibold flex items-center gap-2"> <span class="text-2xl animate-float">⭐</span> Tax Credits <span class="text-xs px-2 py-1 rounded-full" style="background: rgba(255, 238, 0, 0.2);">?</span> </label>
+         <div class="tooltip">
+          <span class="text-glow">Direct reduction of tax owed</span>
+         </div>
+        </div>
+        <div id="creditsValue" class="text-2xl font-bold" style="color: #ffee00; font-family: 'Space Mono', monospace;">
+         $2,000
+        </div>
+       </div><input type="range" id="creditsSlider" class="custom-slider" min="0" max="20000" value="2000" step="100">
+       <div class="flex justify-between text-xs mt-2 opacity-60" style="font-family: 'Space Mono', monospace;">
+        <span>$0</span> <span>$20,000</span>
+       </div>
+       <div class="flex flex-wrap gap-2 mt-4">
+        <button class="credit-preset btn-shine text-xs px-3 py-1 rounded-full hover-scale" style="background: rgba(255, 238, 0, 0.2);" data-value="2000">Child Tax Credit</button> <button class="credit-preset btn-shine text-xs px-3 py-1 rounded-full hover-scale" style="background: rgba(255, 238, 0, 0.2);" data-value="7500">EV Credit</button> <button class="credit-preset btn-shine text-xs px-3 py-1 rounded-full hover-scale" style="background: rgba(255, 238, 0, 0.2);" data-value="1000">Education</button>
+       </div>
+      </div><!-- Withholdings Slider -->
+      <div class="glow-border rounded-2xl p-6 opacity-0 animate-flip-in delay-600" style="animation-fill-mode: forwards; background: var(--surface-color);">
+       <div class="flex items-center justify-between mb-4">
+        <div class="tooltip-container">
+         <label class="text-lg font-semibold flex items-center gap-2"> <span class="text-2xl animate-wobble">💵</span> Tax Withheld <span class="text-xs px-2 py-1 rounded-full" style="background: rgba(0, 255, 213, 0.2);">?</span> </label>
+         <div class="tooltip">
+          <span class="text-glow">Taxes already paid from paychecks</span>
+         </div>
+        </div>
+        <div id="withheldValue" class="text-2xl font-bold" style="color: var(--primary-color); font-family: 'Space Mono', monospace;">
+         $10,000
+        </div>
+       </div><input type="range" id="withheldSlider" class="custom-slider" min="0" max="100000" value="10000" step="500">
+       <div class="flex justify-between text-xs mt-2 opacity-60" style="font-family: 'Space Mono', monospace;">
+        <span>$0</span> <span>$100,000</span>
+       </div>
+      </div>
+     </div><!-- Right Panel - Results -->
+     <div class="space-y-6">
+      <!-- Main Result Card -->
+      <div id="resultCard" class="glow-border rounded-2xl p-8 text-center opacity-0 animate-rotate-in delay-400" style="animation-fill-mode: forwards; background: var(--surface-color);">
+       <h3 class="text-xl font-semibold mb-6 animate-float">Your Tax Result</h3><!-- Progress Ring -->
+       <div class="relative inline-block mb-6">
+        <svg class="progress-ring" width="200" height="200">
+         <defs>
+          <lineargradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+           <stop offset="0%" style="stop-color: var(--primary-color)" />
+           <stop offset="50%" style="stop-color: var(--secondary-color)" />
+           <stop offset="100%" style="stop-color: #ffee00" />
+          </lineargradient>
+         </defs> <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="15" /> <circle id="progressCircle" class="progress-ring-circle" cx="100" cy="100" r="85" fill="none" stroke="url(#ringGradient)" stroke-width="15" stroke-linecap="round" stroke-dasharray="534" stroke-dashoffset="267" />
+        </svg>
+        <div class="absolute inset-0 flex items-center justify-center flex-col">
+         <span id="resultLabel" class="text-sm opacity-70 mb-1">REFUND</span> <span id="resultAmount" class="text-3xl font-bold text-glow" style="font-family: 'Space Mono', monospace;">$2,456</span>
+        </div>
+       </div><!-- Equalizer Visualization -->
+       <div id="equalizer" class="flex justify-center items-end gap-1 h-16 mb-6">
+        <div class="eq-bar w-3 rounded-t" style="background: var(--primary-color); animation-delay: 0s;"></div>
+        <div class="eq-bar w-3 rounded-t" style="background: var(--secondary-color); animation-delay: 0.1s;"></div>
+        <div class="eq-bar w-3 rounded-t" style="background: #ffee00; animation-delay: 0.2s;"></div>
+        <div class="eq-bar w-3 rounded-t" style="background: var(--primary-color); animation-delay: 0.3s;"></div>
+        <div class="eq-bar w-3 rounded-t" style="background: var(--secondary-color); animation-delay: 0.4s;"></div>
+        <div class="eq-bar w-3 rounded-t" style="background: #ffee00; animation-delay: 0.5s;"></div>
+        <div class="eq-bar w-3 rounded-t" style="background: var(--primary-color); animation-delay: 0.6s;"></div>
+       </div><!-- Success Message -->
+       <div id="successMessage" class="hidden">
+        <div class="text-2xl font-bold animate-letter-space text-glow mb-2" style="color: #ffee00;">
+         ✨ PERFECTLY BALANCED! ✨
+        </div>
+        <p class="text-sm opacity-70">Your tax situation is in perfect harmony</p>
+       </div>
+      </div><!-- Breakdown Card -->
+      <div class="glow-border rounded-2xl p-6 opacity-0 animate-scale-in delay-500" style="animation-fill-mode: forwards; background: var(--surface-color);">
+       <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><span class="animate-spin" style="animation-duration: 8s;">⚙️</span> Tax Breakdown</h3>
+       <div class="space-y-3" style="font-family: 'Space Mono', monospace;">
+        <div class="flex justify-between items-center p-3 rounded-lg" style="background: rgba(0, 255, 213, 0.1);">
+         <span class="opacity-70">Taxable Income</span> <span id="taxableIncome" class="font-bold">$60,400</span>
+        </div>
+        <div class="flex justify-between items-center p-3 rounded-lg" style="background: rgba(255, 0, 170, 0.1);">
+         <span class="opacity-70">Tax Before Credits</span> <span id="taxBeforeCredits" class="font-bold">$8,456</span>
+        </div>
+        <div class="flex justify-between items-center p-3 rounded-lg" style="background: rgba(255, 238, 0, 0.1);">
+         <span class="opacity-70">Credits Applied</span> <span id="creditsApplied" class="font-bold">-$2,000</span>
+        </div>
+        <div class="flex justify-between items-center p-3 rounded-lg" style="background: rgba(0, 255, 213, 0.1);">
+         <span class="opacity-70">Total Tax Owed</span> <span id="totalTaxOwed" class="font-bold">$6,456</span>
+        </div>
+        <div class="flex justify-between items-center p-3 rounded-lg border-2" style="border-color: var(--primary-color); background: rgba(0, 255, 213, 0.05);">
+         <span class="font-semibold">Tax Already Paid</span> <span id="taxPaid" class="font-bold" style="color: var(--primary-color);">$10,000</span>
+        </div>
+       </div>
+      </div><!-- Effective Tax Rate -->
+      <div class="glow-border rounded-2xl p-6 opacity-0 animate-fade-up delay-600" style="animation-fill-mode: forwards; background: var(--surface-color);">
+       <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><span class="animate-pulse">📊</span> Tax Rate Analysis</h3>
+       <div class="grid grid-cols-2 gap-4">
+        <div class="text-center p-4 rounded-xl hover-lift" style="background: rgba(0, 255, 213, 0.1);">
+         <div class="text-3xl font-bold mb-1" id="effectiveRate" style="color: var(--primary-color);">
+          8.6%
+         </div>
+         <div class="text-xs opacity-70">
+          Effective Rate
+         </div>
+        </div>
+        <div class="text-center p-4 rounded-xl hover-lift" style="background: rgba(255, 0, 170, 0.1);">
+         <div class="text-3xl font-bold mb-1" id="marginalRate" style="color: var(--secondary-color);">
+          22%
+         </div>
+         <div class="text-xs opacity-70">
+          Marginal Rate
+         </div>
+        </div>
+       </div><!-- Tax Bracket Visualization -->
+       <div class="mt-4">
+        <div class="text-xs mb-2 opacity-70">
+         Tax Bracket Breakdown
+        </div>
+        <div class="flex gap-1 h-6 rounded-lg overflow-hidden">
+         <div id="bracket10" class="transition-all" style="background: #00ffd5; width: 15%;"></div>
+         <div id="bracket12" class="transition-all" style="background: #00d4aa; width: 25%;"></div>
+         <div id="bracket22" class="transition-all" style="background: #ff00aa; width: 40%;"></div>
+         <div id="bracket24" class="transition-all" style="background: #ffee00; width: 20%;"></div>
+        </div>
+        <div class="flex justify-between text-xs mt-1 opacity-60">
+         <span>10%</span> <span>12%</span> <span>22%</span> <span>24%+</span>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div><!-- Tips Section -->
+    <section class="mt-12 opacity-0 animate-fade-up delay-700" style="animation-fill-mode: forwards;">
+     <h2 class="text-2xl font-bold mb-6 text-center"><span class="animate-float inline-block">💡</span> Tax Saving Tips</h2>
+     <div class="grid md:grid-cols-3 gap-4">
+      <div class="glow-border rounded-xl p-5 hover-lift" style="background: var(--surface-color);">
+       <div class="text-3xl mb-3 animate-bounce">
+        🎯
+       </div>
+       <h4 class="font-semibold mb-2">Maximize Retirement</h4>
+       <p class="text-sm opacity-70">Contribute to 401(k) or IRA to reduce taxable income by up to $23,000</p>
+      </div>
+      <div class="glow-border rounded-xl p-5 hover-lift" style="background: var(--surface-color);">
+       <div class="text-3xl mb-3 animate-bounce delay-100">
+        🏥
+       </div>
+       <h4 class="font-semibold mb-2">HSA Contributions</h4>
+       <p class="text-sm opacity-70">Triple tax advantage: deductible, grows tax-free, tax-free withdrawals</p>
+      </div>
+      <div class="glow-border rounded-xl p-5 hover-lift" style="background: var(--surface-color);">
+       <div class="text-3xl mb-3 animate-bounce delay-200">
+        🎓
+       </div>
+       <h4 class="font-semibold mb-2">Education Credits</h4>
+       <p class="text-sm opacity-70">American Opportunity Credit worth up to $2,500 per student</p>
+      </div>
+     </div>
+    </section><!-- Footer -->
+    <footer class="mt-12 text-center opacity-60 pb-8">
+     <p class="text-sm" style="font-family: 'Space Mono', monospace;">⚠️ This is a simplified tax simulator for educational purposes only</p>
+    </footer>
+   </div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      main_title: 'Tax Return Simulator',
+      subtitle: 'Build your perfect tax scenario • Watch your refund grow',
+      background_color: '#0a0a1a',
+      surface_color: '#151530',
+      text_color: '#e8e8f0',
+      primary_color: '#00ffd5',
+      secondary_color: '#ff00aa',
+      font_family: 'Syne',
+      font_size: 16
+    };
+    
+    // Initialize Element SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          // Update title
+          const titleEl = document.getElementById('mainTitle');
+          if (titleEl) {
+            titleEl.textContent = config.main_title || defaultConfig.main_title;
+          }
+          
+          // Update subtitle
+          const subtitleEl = document.getElementById('subtitle');
+          if (subtitleEl) {
+            subtitleEl.textContent = config.subtitle || defaultConfig.subtitle;
+          }
+          
+          // Update colors
+          const root = document.documentElement;
+          root.style.setProperty('--bg-color', config.background_color || defaultConfig.background_color);
+          root.style.setProperty('--surface-color', config.surface_color || defaultConfig.surface_color);
+          root.style.setProperty('--text-color', config.text_color || defaultConfig.text_color);
+          root.style.setProperty('--primary-color', config.primary_color || defaultConfig.primary_color);
+          root.style.setProperty('--secondary-color', config.secondary_color || defaultConfig.secondary_color);
+          
+          // Update font
+          const fontFamily = config.font_family || defaultConfig.font_family;
+          document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+          
+          // Update font size
+          const baseSize = config.font_size || defaultConfig.font_size;
+          document.body.style.fontSize = `${baseSize}px`;
+        },
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => window.elementSdk.setConfig({ background_color: value })
+            },
+            {
+              get: () => config.surface_color || defaultConfig.surface_color,
+              set: (value) => window.elementSdk.setConfig({ surface_color: value })
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => window.elementSdk.setConfig({ text_color: value })
+            },
+            {
+              get: () => config.primary_color || defaultConfig.primary_color,
+              set: (value) => window.elementSdk.setConfig({ primary_color: value })
+            },
+            {
+              get: () => config.secondary_color || defaultConfig.secondary_color,
+              set: (value) => window.elementSdk.setConfig({ secondary_color: value })
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => window.elementSdk.setConfig({ font_family: value })
+          },
+          fontSizeable: {
+            get: () => config.font_size || defaultConfig.font_size,
+            set: (value) => window.elementSdk.setConfig({ font_size: value })
+          }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['main_title', config.main_title || defaultConfig.main_title],
+          ['subtitle', config.subtitle || defaultConfig.subtitle]
+        ])
+      });
+    }
+    
+    // Create animated stars
+    function createStars() {
+      const container = document.getElementById('starsContainer');
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        star.style.width = (Math.random() * 3 + 2) + 'px';
+        star.style.height = star.style.width;
+        container.appendChild(star);
+      }
+    }
+    createStars();
+    
+    // Tax calculation logic
+    const taxBrackets2024 = {
+      single: [
+        { min: 0, max: 11600, rate: 0.10 },
+        { min: 11600, max: 47150, rate: 0.12 },
+        { min: 47150, max: 100525, rate: 0.22 },
+        { min: 100525, max: 191950, rate: 0.24 },
+        { min: 191950, max: 243725, rate: 0.32 },
+        { min: 243725, max: 609350, rate: 0.35 },
+        { min: 609350, max: Infinity, rate: 0.37 }
+      ],
+      married: [
+        { min: 0, max: 23200, rate: 0.10 },
+        { min: 23200, max: 94300, rate: 0.12 },
+        { min: 94300, max: 201050, rate: 0.22 },
+        { min: 201050, max: 383900, rate: 0.24 },
+        { min: 383900, max: 487450, rate: 0.32 },
+        { min: 487450, max: 731200, rate: 0.35 },
+        { min: 731200, max: Infinity, rate: 0.37 }
+      ],
+      head: [
+        { min: 0, max: 16550, rate: 0.10 },
+        { min: 16550, max: 63100, rate: 0.12 },
+        { min: 63100, max: 100500, rate: 0.22 },
+        { min: 100500, max: 191950, rate: 0.24 },
+        { min: 191950, max: 243700, rate: 0.32 },
+        { min: 243700, max: 609350, rate: 0.35 },
+        { min: 609350, max: Infinity, rate: 0.37 }
+      ]
+    };
+    
+    let currentStatus = 'single';
+    
+    function calculateTax(income, brackets) {
+      let tax = 0;
+      let remaining = income;
+      
+      for (const bracket of brackets) {
+        if (remaining <= 0) break;
+        const taxableInBracket = Math.min(remaining, bracket.max - bracket.min);
+        tax += taxableInBracket * bracket.rate;
+        remaining -= taxableInBracket;
+      }
+      
+      return tax;
+    }
+    
+    function getMarginalRate(income, brackets) {
+      for (const bracket of brackets) {
+        if (income <= bracket.max) {
+          return bracket.rate;
+        }
+      }
+      return brackets[brackets.length - 1].rate;
+    }
+    
+    function animateValue(element) {
+      element.classList.remove('animate-jello');
+      void element.offsetWidth; // Trigger reflow
+      element.classList.add('animate-jello');
+    }
+    
+    function updateCalculations() {
+      const income = parseInt(document.getElementById('incomeSlider').value);
+      const deductions = parseInt(document.getElementById('deductionsSlider').value);
+      const credits = parseInt(document.getElementById('creditsSlider').value);
+      const withheld = parseInt(document.getElementById('withheldSlider').value);
+      
+      const taxableIncome = Math.max(0, income - deductions);
+      const brackets = taxBrackets2024[currentStatus];
+      const taxBeforeCredits = calculateTax(taxableIncome, brackets);
+      const totalTaxOwed = Math.max(0, taxBeforeCredits - credits);
+      const refundOrOwed = withheld - totalTaxOwed;
+      
+      // Update displays with animations
+      const incomeDisplay = document.getElementById('incomeValue');
+      incomeDisplay.textContent = '$' + income.toLocaleString();
+      animateValue(incomeDisplay);
+      
+      const deductionsDisplay = document.getElementById('deductionsValue');
+      deductionsDisplay.textContent = '$' + deductions.toLocaleString();
+      animateValue(deductionsDisplay);
+      
+      const creditsDisplay = document.getElementById('creditsValue');
+      creditsDisplay.textContent = '$' + credits.toLocaleString();
+      animateValue(creditsDisplay);
+      
+      const withheldDisplay = document.getElementById('withheldValue');
+      withheldDisplay.textContent = '$' + withheld.toLocaleString();
+      animateValue(withheldDisplay);
+      
+      // Update breakdown
+      document.getElementById('taxableIncome').textContent = '$' + taxableIncome.toLocaleString();
+      document.getElementById('taxBeforeCredits').textContent = '$' + Math.round(taxBeforeCredits).toLocaleString();
+      document.getElementById('creditsApplied').textContent = '-$' + credits.toLocaleString();
+      document.getElementById('totalTaxOwed').textContent = '$' + Math.round(totalTaxOwed).toLocaleString();
+      document.getElementById('taxPaid').textContent = '$' + withheld.toLocaleString();
+      
+      // Update result
+      const resultLabel = document.getElementById('resultLabel');
+      const resultAmount = document.getElementById('resultAmount');
+      const resultCard = document.getElementById('resultCard');
+      const successMessage = document.getElementById('successMessage');
+      
+      if (Math.abs(refundOrOwed) < 100) {
+        // Perfect balance!
+        resultLabel.textContent = 'BALANCED';
+        resultAmount.textContent = '$0';
+        resultAmount.style.color = '#ffee00';
+        successMessage.classList.remove('hidden');
+        resultCard.classList.add('animate-flip3d');
+        setTimeout(() => resultCard.classList.remove('animate-flip3d'), 1000);
+        createConfetti();
+      } else if (refundOrOwed > 0) {
+        resultLabel.textContent = 'REFUND';
+        resultAmount.textContent = '+$' + Math.round(refundOrOwed).toLocaleString();
+        resultAmount.style.color = 'var(--primary-color)';
+        successMessage.classList.add('hidden');
+      } else {
+        resultLabel.textContent = 'TAX DUE';
+        resultAmount.textContent = '-$' + Math.abs(Math.round(refundOrOwed)).toLocaleString();
+        resultAmount.style.color = 'var(--secondary-color)';
+        successMessage.classList.add('hidden');
+      }
+      
+      // Update progress ring
+      const circle = document.getElementById('progressCircle');
+      const maxResult = 20000;
+      const progress = Math.min(Math.abs(refundOrOwed) / maxResult, 1);
+      const circumference = 2 * Math.PI * 85;
+      circle.style.strokeDashoffset = circumference * (1 - progress);
+      
+      // Update tax rates
+      const effectiveRate = income > 0 ? (totalTaxOwed / income * 100) : 0;
+      const marginalRate = getMarginalRate(taxableIncome, brackets) * 100;
+      
+      document.getElementById('effectiveRate').textContent = effectiveRate.toFixed(1) + '%';
+      document.getElementById('marginalRate').textContent = marginalRate.toFixed(0) + '%';
+      
+      // Update bracket visualization
+      updateBracketVisualization(taxableIncome, brackets);
+    }
+    
+    function updateBracketVisualization(income, brackets) {
+      const bracket10 = document.getElementById('bracket10');
+      const bracket12 = document.getElementById('bracket12');
+      const bracket22 = document.getElementById('bracket22');
+      const bracket24 = document.getElementById('bracket24');
+      
+      if (income === 0) {
+        bracket10.style.width = '25%';
+        bracket12.style.width = '25%';
+        bracket22.style.width = '25%';
+        bracket24.style.width = '25%';
+        return;
+      }
+      
+      const b1 = Math.min(income, brackets[0].max) / income * 100;
+      const b2 = Math.max(0, Math.min(income - brackets[0].max, brackets[1].max - brackets[0].max)) / income * 100;
+      const b3 = Math.max(0, Math.min(income - brackets[1].max, brackets[2].max - brackets[1].max)) / income * 100;
+      const b4 = Math.max(0, income - brackets[2].max) / income * 100;
+      
+      bracket10.style.width = Math.max(5, b1) + '%';
+      bracket12.style.width = Math.max(5, b2) + '%';
+      bracket22.style.width = Math.max(5, b3) + '%';
+      bracket24.style.width = Math.max(5, b4) + '%';
+    }
+    
+    function createConfetti() {
+      const colors = ['#00ffd5', '#ff00aa', '#ffee00', '#fff'];
+      for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => confetti.remove(), 3000);
+      }
+    }
+    
+    // Event listeners
+    document.getElementById('incomeSlider').addEventListener('input', updateCalculations);
+    document.getElementById('deductionsSlider').addEventListener('input', updateCalculations);
+    document.getElementById('creditsSlider').addEventListener('input', updateCalculations);
+    document.getElementById('withheldSlider').addEventListener('input', updateCalculations);
+    
+    // Status buttons
+    document.querySelectorAll('.status-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.status-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.borderColor = 'transparent';
+        });
+        this.classList.add('active');
+        this.style.borderColor = 'var(--primary-color)';
+        currentStatus = this.dataset.status;
+        
+        // Update standard deduction based on status
+        const deductionSlider = document.getElementById('deductionsSlider');
+        if (currentStatus === 'married') {
+          deductionSlider.value = 29200;
+        } else if (currentStatus === 'head') {
+          deductionSlider.value = 21900;
+        } else {
+          deductionSlider.value = 14600;
+        }
+        
+        updateCalculations();
+      });
+    });
+    
+    // Deduction presets
+    document.querySelectorAll('.deduction-preset').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const value = parseInt(this.dataset.value);
+        document.getElementById('deductionsSlider').value = value;
+        updateCalculations();
+      });
+    });
+    
+    // Credit presets
+    document.querySelectorAll('.credit-preset').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const value = parseInt(this.dataset.value);
+        const currentCredits = parseInt(document.getElementById('creditsSlider').value);
+        document.getElementById('creditsSlider').value = currentCredits + value;
+        updateCalculations();
+      });
+    });
+    
+    // Initial calculation
+    updateCalculations();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8cdc39a36527c5',t:'MTc3NTYwNTA0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

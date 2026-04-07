@@ -1,1 +1,988 @@
 <!-- PASTE HTML FROM CANVA: https://www.canva.com/ai/code/thread/9a51669a-284e-482d-8ee2-3c25ba08d98f -->
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Defense Showdown</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Syne:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    
+    :root {
+      --bg-color: #0a0a1a;
+      --card-color: #1a1a2e;
+      --text-color: #e0e0ff;
+      --accent-primary: #00ffd5;
+      --accent-secondary: #ff00aa;
+    }
+    
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    /* Animated Background Stars */
+    .stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    
+    .star {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+    
+    /* Entry Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.5); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes rotateIn {
+      from { opacity: 0; transform: rotate(-180deg) scale(0); }
+      to { opacity: 1; transform: rotate(0) scale(1); }
+    }
+    
+    @keyframes flipIn {
+      from { opacity: 0; transform: perspective(400px) rotateY(-90deg); }
+      to { opacity: 1; transform: perspective(400px) rotateY(0); }
+    }
+    
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: scale(0.3); }
+      50% { transform: scale(1.1); }
+      70% { transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    /* Continuous Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes wobble {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+    
+    @keyframes swing {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+    
+    @keyframes jello {
+      0%, 100% { transform: skewX(0deg) skewY(0deg); }
+      25% { transform: skewX(-5deg) skewY(-5deg); }
+      50% { transform: skewX(4deg) skewY(4deg); }
+      75% { transform: skewX(-2deg) skewY(-2deg); }
+    }
+    
+    @keyframes glowPulse {
+      0%, 100% { 
+        box-shadow: 0 0 20px var(--accent-primary), 0 0 40px var(--accent-primary), 0 0 60px var(--accent-primary);
+      }
+      50% { 
+        box-shadow: 0 0 30px var(--accent-secondary), 0 0 60px var(--accent-secondary), 0 0 90px var(--accent-secondary);
+      }
+    }
+    
+    @keyframes morph {
+      0%, 100% { border-radius: 20px 60px 20px 60px; }
+      25% { border-radius: 60px 20px 60px 20px; }
+      50% { border-radius: 20px 60px 20px 60px; }
+      75% { border-radius: 60px 20px 60px 20px; }
+    }
+    
+    @keyframes borderDance {
+      0% { border-color: var(--accent-primary); }
+      33% { border-color: var(--accent-secondary); }
+      66% { border-color: #ffff00; }
+      100% { border-color: var(--accent-primary); }
+    }
+    
+    @keyframes wave {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-5px) rotate(2deg); }
+      75% { transform: translateY(5px) rotate(-2deg); }
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    @keyframes hueRotate {
+      from { filter: hue-rotate(0deg); }
+      to { filter: hue-rotate(360deg); }
+    }
+    
+    /* Typewriter Effect */
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+    
+    /* Text Glow */
+    @keyframes textGlow {
+      0%, 100% { text-shadow: 0 0 10px var(--accent-primary), 0 0 20px var(--accent-primary); }
+      50% { text-shadow: 0 0 20px var(--accent-secondary), 0 0 40px var(--accent-secondary); }
+    }
+    
+    /* Shake Animation */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    /* Rubber Band */
+    @keyframes rubberBand {
+      0% { transform: scale(1); }
+      30% { transform: scaleX(1.25) scaleY(0.75); }
+      40% { transform: scaleX(0.75) scaleY(1.25); }
+      50% { transform: scaleX(1.15) scaleY(0.85); }
+      65% { transform: scaleX(0.95) scaleY(1.05); }
+      75% { transform: scaleX(1.05) scaleY(0.95); }
+      100% { transform: scale(1); }
+    }
+    
+    /* 3D Flip */
+    @keyframes flip3D {
+      0% { transform: perspective(400px) rotateY(0); }
+      100% { transform: perspective(400px) rotateY(360deg); }
+    }
+    
+    /* Cube Rotation */
+    @keyframes cube {
+      0% { transform: perspective(1000px) rotateY(0) rotateX(0); }
+      25% { transform: perspective(1000px) rotateY(90deg) rotateX(0); }
+      50% { transform: perspective(1000px) rotateY(180deg) rotateX(90deg); }
+      75% { transform: perspective(1000px) rotateY(270deg) rotateX(0); }
+      100% { transform: perspective(1000px) rotateY(360deg) rotateX(0); }
+    }
+    
+    /* Letter Spacing Animation */
+    @keyframes letterSpacing {
+      0%, 100% { letter-spacing: 0.05em; }
+      50% { letter-spacing: 0.2em; }
+    }
+    
+    /* Ripple Effect */
+    @keyframes ripple {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(4); opacity: 0; }
+    }
+    
+    /* Progress Ring */
+    @keyframes progressRing {
+      from { stroke-dashoffset: 283; }
+      to { stroke-dashoffset: 0; }
+    }
+    
+    /* Classes */
+    .fade-up { animation: fadeUp 0.8s ease-out forwards; }
+    .scale-in { animation: scaleIn 0.6s ease-out forwards; }
+    .rotate-in { animation: rotateIn 0.8s ease-out forwards; }
+    .flip-in { animation: flipIn 0.8s ease-out forwards; }
+    .bounce-in { animation: bounceIn 0.8s ease-out forwards; }
+    
+    .float { animation: float 3s ease-in-out infinite; }
+    .pulse { animation: pulse 2s ease-in-out infinite; }
+    .spin { animation: spin 4s linear infinite; }
+    .wobble { animation: wobble 1s ease-in-out infinite; }
+    .swing { animation: swing 1.5s ease-in-out infinite; }
+    .jello { animation: jello 1s ease-in-out infinite; }
+    .glow-pulse { animation: glowPulse 2s ease-in-out infinite; }
+    .morph { animation: morph 8s ease-in-out infinite; }
+    .wave { animation: wave 2s ease-in-out infinite; }
+    .border-dance { animation: borderDance 2s linear infinite; }
+    .hue-rotate { animation: hueRotate 5s linear infinite; }
+    
+    .text-glow { animation: textGlow 2s ease-in-out infinite; }
+    .letter-spacing-anim { animation: letterSpacing 2s ease-in-out infinite; }
+    
+    .shake { animation: shake 0.5s ease-in-out; }
+    .rubber-band { animation: rubberBand 0.8s ease-in-out; }
+    .flip-3d { animation: flip3D 1s ease-in-out; }
+    .cube-anim { animation: cube 2s ease-in-out; }
+    
+    /* Gradient Text */
+    .gradient-text {
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), #ffff00, var(--accent-primary));
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 3s ease infinite;
+    }
+    
+    /* Button Effects */
+    .btn-ripple {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+    }
+    
+    .btn-ripple:active::after {
+      animation: ripple 0.6s ease-out;
+    }
+    
+    .btn-shine {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-shine::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn-shine:hover::before {
+      left: 100%;
+    }
+    
+    /* Hover Effects */
+    .hover-lift {
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .hover-lift:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(0,255,213,0.3);
+    }
+    
+    .hover-scale {
+      transition: transform 0.3s;
+    }
+    
+    .hover-scale:hover {
+      transform: scale(1.1);
+    }
+    
+    .hover-glow {
+      transition: box-shadow 0.3s, border-color 0.3s;
+    }
+    
+    .hover-glow:hover {
+      box-shadow: 0 0 30px var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+    
+    .hover-rotate {
+      transition: transform 0.3s;
+    }
+    
+    .hover-rotate:hover {
+      transform: rotate(10deg);
+    }
+    
+    /* Character Styles */
+    .character {
+      position: relative;
+    }
+    
+    .speech-bubble {
+      position: relative;
+      background: var(--card-color);
+      border: 2px solid var(--accent-primary);
+      border-radius: 20px;
+      padding: 15px 20px;
+      margin-top: 10px;
+    }
+    
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 30px;
+      border-width: 0 10px 10px 10px;
+      border-style: solid;
+      border-color: transparent transparent var(--accent-primary) transparent;
+    }
+    
+    /* Evidence Items */
+    .evidence-item {
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+    
+    .evidence-item:active {
+      cursor: grabbing;
+    }
+    
+    .evidence-item.dragging {
+      opacity: 0.7;
+      animation: rubberBand 0.3s ease-in-out;
+    }
+    
+    /* Drop Zone */
+    .drop-zone {
+      border: 3px dashed rgba(0,255,213,0.5);
+      transition: all 0.3s;
+    }
+    
+    .drop-zone.drag-over {
+      border-color: var(--accent-primary);
+      background: rgba(0,255,213,0.1);
+      animation: glowPulse 1s ease-in-out infinite, borderDance 1s linear infinite;
+    }
+    
+    /* Scenario Card */
+    .scenario-card {
+      transform-style: preserve-3d;
+      transition: transform 0.8s;
+    }
+    
+    .scenario-card.flip {
+      transform: perspective(1000px) rotateY(180deg);
+    }
+    
+    /* Progress Ring */
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+    
+    .progress-ring circle {
+      fill: none;
+      stroke-width: 8;
+    }
+    
+    .progress-ring .bg {
+      stroke: var(--card-color);
+    }
+    
+    .progress-ring .progress {
+      stroke: var(--accent-primary);
+      stroke-linecap: round;
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 1s ease-out;
+    }
+    
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+    }
+    
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      background: var(--card-color);
+      border: 1px solid var(--accent-primary);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    
+    .tooltip:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    
+    /* Screens */
+    .screen {
+      display: none;
+      opacity: 0;
+    }
+    
+    .screen.active {
+      display: block;
+      animation: fadeUp 0.8s ease-out forwards;
+    }
+    
+    /* Response Options */
+    .response-option {
+      background: linear-gradient(135deg, var(--card-color), #252540);
+      border: 2px solid transparent;
+      transition: all 0.3s;
+    }
+    
+    .response-option:hover {
+      border-color: var(--accent-primary);
+      background: linear-gradient(135deg, #252540, var(--card-color));
+    }
+    
+    .response-option.correct {
+      border-color: #00ff00;
+      box-shadow: 0 0 20px rgba(0,255,0,0.5);
+    }
+    
+    .response-option.incorrect {
+      border-color: #ff0000;
+      animation: shake 0.5s ease-in-out;
+    }
+    
+    /* Win Screen */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confettiFall 3s ease-out forwards;
+    }
+    
+    @keyframes confettiFall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+    }
+    
+    .game-wrapper {
+      min-height: 100%;
+      position: relative;
+      z-index: 1;
+      padding: 20px;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full"><!-- Animated Stars Background -->
+  <div class="stars-container" id="starsContainer"></div>
+  <div class="game-wrapper h-full overflow-auto"><!-- INTRO SCREEN -->
+   <div id="introScreen" class="screen active max-w-4xl mx-auto"><!-- Animated Title -->
+    <div class="text-center mb-8 fade-up" style="animation-delay: 0.2s;">
+     <h1 id="gameTitle" class="text-4xl md:text-6xl font-extrabold gradient-text text-glow letter-spacing-anim mb-4">AUDIT DEFENSE SHOWDOWN</h1>
+     <p class="text-xl text-gray-300 wave">Can you defend the taxpayer and win the audit?</p>
+    </div><!-- Morphing Scenario Box -->
+    <div class="glow-pulse morph p-8 mb-8 scale-in" style="animation-delay: 0.4s; background: linear-gradient(135deg, #1a1a2e, #2a2a4e);">
+     <div class="flex flex-col md:flex-row items-center gap-6"><!-- IRS Auditor Character -->
+      <div class="character bounce-in" style="animation-delay: 0.6s;">
+       <div class="w-32 h-32 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center pulse border-4 border-red-400">
+        <svg class="w-20 h-20" viewbox="0 0 100 100"><circle cx="50" cy="35" r="20" fill="#ffdbac" /> <rect x="30" y="55" width="40" height="35" rx="5" fill="#1a365d" /> <circle cx="42" cy="32" r="3" fill="#333" /> <circle cx="58" cy="32" r="3" fill="#333" /> <path d="M45 42 Q50 47 55 42" stroke="#333" stroke-width="2" fill="none" /> <rect x="35" y="20" width="30" height="8" fill="#333" rx="2" />
+        </svg>
+       </div>
+       <p class="text-center mt-2 font-bold text-red-400">IRS Auditor</p>
+      </div>
+      <div class="text-center flex-1">
+       <p class="text-2xl font-bold mb-2 flip-in" style="animation-delay: 0.8s;">VS</p>
+      </div><!-- Taxpayer Character -->
+      <div class="character bounce-in" style="animation-delay: 1s;">
+       <div class="w-32 h-32 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center pulse border-4 border-teal-300">
+        <svg class="w-20 h-20" viewbox="0 0 100 100"><circle cx="50" cy="35" r="20" fill="#ffdbac" /> <rect x="30" y="55" width="40" height="35" rx="5" fill="#2d3748" /> <circle cx="42" cy="32" r="3" fill="#333" /> <circle cx="58" cy="32" r="3" fill="#333" /> <path d="M42 44 Q50 48 58 44" stroke="#333" stroke-width="2" fill="none" /> <path d="M35 22 Q50 15 65 22" stroke="#4a5568" stroke-width="4" fill="none" />
+        </svg>
+       </div>
+       <p id="taxpayerName" class="text-center mt-2 font-bold text-teal-300">Alex Johnson</p>
+      </div>
+     </div>
+     <div class="speech-bubble swing mt-6 flip-in" style="animation-delay: 1.2s;">
+      <p class="text-lg typewriter-text">"Good morning. I'm Agent Smith from the IRS. We have some questions about your 2023 tax return..."</p>
+     </div>
+    </div><!-- Start Button -->
+    <div class="text-center scale-in" style="animation-delay: 1.4s;"><button onclick="startGame()" class="btn-ripple btn-shine hover-lift px-12 py-4 text-2xl font-bold rounded-xl bg-gradient-to-r from-teal-500 to-pink-500 text-white border-2 border-transparent hover:border-white transition-all tooltip" data-tooltip="Begin your defense!"> <span class="gradient-text">⚔️ BEGIN DEFENSE ⚔️</span> </button>
+    </div>
+   </div><!-- GAME SCREEN -->
+   <div id="gameScreen" class="screen max-w-5xl mx-auto"><!-- Score Bar -->
+    <div class="flex justify-between items-center mb-6 fade-up">
+     <div class="flex items-center gap-4">
+      <div class="relative">
+       <svg class="progress-ring w-16 h-16"><circle class="bg" cx="32" cy="32" r="28" /> <circle id="progressCircle" class="progress" cx="32" cy="32" r="28" />
+       </svg><span id="scoreDisplay" class="absolute inset-0 flex items-center justify-center text-lg font-bold text-glow">0</span>
+      </div><span class="text-gray-400">Score</span>
+     </div>
+     <div class="flex items-center gap-2"><span class="text-gray-400">Round:</span> <span id="roundDisplay" class="text-2xl font-bold text-teal-400">1/3</span>
+     </div>
+    </div><!-- Scenario Card -->
+    <div id="scenarioCard" class="scenario-card glow-pulse rounded-3xl p-6 mb-6" style="background: linear-gradient(135deg, #1a1a2e, #2a2a4e);"><!-- Auditor Question -->
+     <div class="flex items-start gap-4 mb-6">
+      <div class="w-16 h-16 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center pulse flex-shrink-0"><span class="text-2xl">👔</span>
+      </div>
+      <div class="speech-bubble wobble flex-1">
+       <p id="questionText" class="text-lg font-medium">Loading question...</p>
+      </div>
+     </div><!-- Response Options -->
+     <div id="responseOptions" class="grid gap-4 mb-6"><!-- Options will be inserted here -->
+     </div><!-- Evidence Drop Zone -->
+     <div class="border-t border-gray-700 pt-6">
+      <h3 class="text-lg font-bold mb-4 text-glow">📁 Submit Evidence</h3>
+      <div class="flex flex-wrap gap-4 mb-4">
+       <div id="dropZone" class="drop-zone flex-1 min-h-24 rounded-xl flex items-center justify-center text-gray-400 p-4"><span class="wave">Drop evidence here to support your defense</span>
+       </div>
+      </div><!-- Evidence Items -->
+      <div class="flex flex-wrap gap-3" id="evidenceContainer">
+       <div class="evidence-item float hover-scale hover-glow p-3 rounded-lg bg-gradient-to-br from-yellow-600 to-yellow-800 cursor-grab tooltip" data-evidence="receipt" data-tooltip="Business receipt"><span class="text-2xl">🧾</span>
+        <p class="text-xs mt-1">Receipt</p>
+       </div>
+       <div class="evidence-item pulse hover-scale hover-glow p-3 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 cursor-grab tooltip" data-evidence="w2" data-tooltip="W-2 Form" style="animation-delay: 0.2s;"><span class="text-2xl">📄</span>
+        <p class="text-xs mt-1">W-2</p>
+       </div>
+       <div class="evidence-item spin hover-scale hover-glow p-3 rounded-lg bg-gradient-to-br from-green-600 to-green-800 cursor-grab tooltip" data-evidence="bank" data-tooltip="Bank statement" style="animation: spin 8s linear infinite;"><span class="text-2xl">🏦</span>
+        <p class="text-xs mt-1">Bank</p>
+       </div>
+       <div class="evidence-item wobble hover-scale hover-glow p-3 rounded-lg bg-gradient-to-br from-purple-600 to-purple-800 cursor-grab tooltip" data-evidence="contract" data-tooltip="Contract document"><span class="text-2xl">📝</span>
+        <p class="text-xs mt-1">Contract</p>
+       </div>
+       <div class="evidence-item jello hover-scale hover-glow p-3 rounded-lg bg-gradient-to-br from-pink-600 to-pink-800 cursor-grab tooltip" data-evidence="mileage" data-tooltip="Mileage log"><span class="text-2xl">🚗</span>
+        <p class="text-xs mt-1">Mileage</p>
+       </div>
+      </div>
+     </div>
+    </div><!-- Feedback Area -->
+    <div id="feedbackArea" class="hidden rounded-xl p-6 text-center" style="background: linear-gradient(135deg, #1a1a2e, #2a2a4e);">
+     <p id="feedbackText" class="text-xl font-bold mb-4"></p><button id="nextBtn" onclick="nextRound()" class="btn-ripple btn-shine hover-lift px-8 py-3 text-lg font-bold rounded-lg bg-gradient-to-r from-teal-500 to-teal-700 text-white"> Next Question → </button>
+    </div>
+   </div><!-- WIN SCREEN -->
+   <div id="winScreen" class="screen max-w-4xl mx-auto text-center">
+    <div id="confettiContainer" class="fixed inset-0 pointer-events-none overflow-hidden"></div>
+    <div class="flip-3d mb-8">
+     <div class="glow-pulse morph p-12 rounded-3xl" style="background: linear-gradient(135deg, #1a1a2e, #2a2a4e);">
+      <h1 class="text-5xl md:text-7xl font-extrabold gradient-text text-glow letter-spacing-anim mb-6">🎉 YOU WON THE AUDIT! 🎉</h1>
+      <p class="text-2xl text-teal-300 wave mb-4">Congratulations, Tax Defender!</p>
+      <p class="text-gray-300 mb-6">You successfully defended the taxpayer against the IRS audit.</p>
+      <div class="flex justify-center gap-8 mb-8">
+       <div class="text-center bounce-in" style="animation-delay: 0.5s;">
+        <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center pulse"><span class="text-4xl">🏆</span>
+        </div>
+        <p class="mt-2 font-bold">Victory!</p>
+       </div>
+       <div class="text-center bounce-in" style="animation-delay: 0.7s;">
+        <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center pulse"><span id="finalScore" class="text-3xl font-bold">0</span>
+        </div>
+        <p class="mt-2 font-bold">Final Score</p>
+       </div>
+      </div><button onclick="restartGame()" class="btn-ripple btn-shine hover-lift px-12 py-4 text-2xl font-bold rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white"> 🔄 Play Again </button>
+     </div>
+    </div>
+   </div><!-- LOSE SCREEN -->
+   <div id="loseScreen" class="screen max-w-4xl mx-auto text-center">
+    <div class="shake mb-8">
+     <div class="p-12 rounded-3xl border-4 border-red-500" style="background: linear-gradient(135deg, #1a1a2e, #2a2a4e); box-shadow: 0 0 30px rgba(255,0,0,0.3);">
+      <h1 class="text-5xl md:text-7xl font-extrabold text-red-500 mb-6">⚠️ AUDIT FAILED ⚠️</h1>
+      <p class="text-2xl text-red-300 mb-4">The IRS won this round...</p>
+      <p class="text-gray-300 mb-6">Don't worry! Every tax defender faces setbacks. Try again!</p>
+      <div class="flex justify-center mb-8">
+       <div class="w-24 h-24 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center pulse"><span class="text-4xl">📉</span>
+       </div>
+      </div><button onclick="restartGame()" class="btn-ripple btn-shine hover-lift px-12 py-4 text-2xl font-bold rounded-xl bg-gradient-to-r from-teal-500 to-teal-700 text-white"> 🔄 Try Again </button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      game_title: 'AUDIT DEFENSE SHOWDOWN',
+      taxpayer_name: 'Alex Johnson',
+      background_color: '#0a0a1a',
+      card_color: '#1a1a2e',
+      text_color: '#e0e0ff',
+      accent_primary: '#00ffd5',
+      accent_secondary: '#ff00aa'
+    };
+    
+    let config = { ...defaultConfig };
+    
+    // Game State
+    let currentRound = 0;
+    let score = 0;
+    let submittedEvidence = null;
+    
+    // Game Scenarios
+    const scenarios = [
+      {
+        question: "I see you claimed $15,000 in business expenses. Can you explain the nature of these deductions?",
+        options: [
+          { text: "Those are legitimate home office and equipment expenses for my freelance work.", correct: true },
+          { text: "I don't remember what those were for.", correct: false },
+          { text: "My accountant said to put that number.", correct: false },
+          { text: "I'd rather not discuss that.", correct: false }
+        ],
+        requiredEvidence: "receipt",
+        feedback: {
+          correct: "Excellent! Your clear explanation and documentation of business expenses is exactly what we need.",
+          incorrect: "That response raised red flags. The auditor is now more suspicious."
+        }
+      },
+      {
+        question: "Your reported income seems lower than industry averages. Can you explain the discrepancy?",
+        options: [
+          { text: "I had fewer clients this year and can provide contracts showing my actual work.", correct: true },
+          { text: "I only report what I feel like reporting.", correct: false },
+          { text: "The government doesn't need to know everything.", correct: false },
+          { text: "I think my income is fine.", correct: false }
+        ],
+        requiredEvidence: "contract",
+        feedback: {
+          correct: "Good answer! Providing contracts and documentation supports your income claims.",
+          incorrect: "Your evasive answer has made the auditor more suspicious."
+        }
+      },
+      {
+        question: "You claimed significant vehicle expenses. How did you track your business mileage?",
+        options: [
+          { text: "I maintained a detailed mileage log with dates, destinations, and business purposes.", correct: true },
+          { text: "I estimated based on how much I thought I drove.", correct: false },
+          { text: "I just used the standard deduction amount.", correct: false },
+          { text: "My car is mostly for business, so I claimed everything.", correct: false }
+        ],
+        requiredEvidence: "mileage",
+        feedback: {
+          correct: "Perfect! A detailed mileage log is exactly what the IRS wants to see.",
+          incorrect: "Without proper documentation, vehicle expense claims are often disallowed."
+        }
+      }
+    ];
+    
+    // Initialize stars
+    function createStars() {
+      const container = document.getElementById('starsContainer');
+      container.innerHTML = '';
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        star.style.width = (Math.random() * 3 + 2) + 'px';
+        star.style.height = star.style.width;
+        container.appendChild(star);
+      }
+    }
+    
+    // Show screen
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      document.getElementById(screenId).classList.add('active');
+    }
+    
+    // Start game
+    function startGame() {
+      currentRound = 0;
+      score = 0;
+      updateScore();
+      showScreen('gameScreen');
+      loadRound();
+    }
+    
+    // Load round
+    function loadRound() {
+      const scenario = scenarios[currentRound];
+      document.getElementById('roundDisplay').textContent = `${currentRound + 1}/${scenarios.length}`;
+      document.getElementById('questionText').textContent = scenario.question;
+      
+      const optionsContainer = document.getElementById('responseOptions');
+      optionsContainer.innerHTML = '';
+      
+      scenario.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'response-option btn-ripple hover-lift p-4 rounded-xl text-left transition-all';
+        btn.style.animationDelay = (index * 0.1) + 's';
+        btn.innerHTML = `<span class="font-bold mr-2">${String.fromCharCode(65 + index)}.</span> ${option.text}`;
+        btn.onclick = () => selectAnswer(index, option.correct);
+        optionsContainer.appendChild(btn);
+      });
+      
+      document.getElementById('feedbackArea').classList.add('hidden');
+      submittedEvidence = null;
+      
+      // Reset evidence items
+      document.querySelectorAll('.evidence-item').forEach(item => {
+        item.style.opacity = '1';
+        item.style.pointerEvents = 'auto';
+      });
+      
+      // Clear drop zone
+      const dropZone = document.getElementById('dropZone');
+      dropZone.innerHTML = '<span class="wave">Drop evidence here to support your defense</span>';
+      dropZone.classList.remove('drag-over');
+    }
+    
+    // Select answer
+    function selectAnswer(index, isCorrect) {
+      const options = document.querySelectorAll('.response-option');
+      const scenario = scenarios[currentRound];
+      
+      options.forEach((opt, i) => {
+        opt.disabled = true;
+        if (i === index) {
+          if (isCorrect) {
+            opt.classList.add('correct');
+            opt.classList.add('pulse');
+          } else {
+            opt.classList.add('incorrect');
+          }
+        }
+      });
+      
+      // Check evidence bonus
+      let evidenceBonus = false;
+      if (submittedEvidence === scenario.requiredEvidence) {
+        evidenceBonus = true;
+      }
+      
+      // Calculate score
+      if (isCorrect) {
+        score += evidenceBonus ? 150 : 100;
+      } else {
+        score = Math.max(0, score - 50);
+      }
+      
+      updateScore();
+      showFeedback(isCorrect, evidenceBonus, scenario);
+    }
+    
+    // Show feedback
+    function showFeedback(isCorrect, evidenceBonus, scenario) {
+      const feedbackArea = document.getElementById('feedbackArea');
+      const feedbackText = document.getElementById('feedbackText');
+      
+      feedbackArea.classList.remove('hidden');
+      feedbackArea.classList.add('fade-up');
+      
+      let message = isCorrect ? scenario.feedback.correct : scenario.feedback.incorrect;
+      if (evidenceBonus) {
+        message += ' +50 BONUS for submitting the right evidence!';
+      }
+      
+      feedbackText.textContent = message;
+      feedbackText.className = `text-xl font-bold mb-4 ${isCorrect ? 'text-teal-400' : 'text-red-400'}`;
+      
+      const nextBtn = document.getElementById('nextBtn');
+      if (currentRound >= scenarios.length - 1) {
+        nextBtn.textContent = 'See Results →';
+      } else {
+        nextBtn.textContent = 'Next Question →';
+      }
+    }
+    
+    // Next round
+    function nextRound() {
+      currentRound++;
+      
+      if (currentRound >= scenarios.length) {
+        endGame();
+      } else {
+        const card = document.getElementById('scenarioCard');
+        card.classList.add('flip');
+        setTimeout(() => {
+          card.classList.remove('flip');
+          loadRound();
+        }, 400);
+      }
+    }
+    
+    // End game
+    function endGame() {
+      if (score >= 200) {
+        document.getElementById('finalScore').textContent = score;
+        showScreen('winScreen');
+        createConfetti();
+      } else {
+        showScreen('loseScreen');
+      }
+    }
+    
+    // Create confetti
+    function createConfetti() {
+      const container = document.getElementById('confettiContainer');
+      container.innerHTML = '';
+      const colors = ['#00ffd5', '#ff00aa', '#ffff00', '#00ff00', '#ff6600'];
+      
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.style.width = (Math.random() * 10 + 5) + 'px';
+        confetti.style.height = confetti.style.width;
+        container.appendChild(confetti);
+      }
+    }
+    
+    // Restart game
+    function restartGame() {
+      showScreen('introScreen');
+    }
+    
+    // Update score
+    function updateScore() {
+      document.getElementById('scoreDisplay').textContent = score;
+      const progress = Math.min(score / 300, 1);
+      const circumference = 2 * Math.PI * 28;
+      document.getElementById('progressCircle').style.strokeDashoffset = circumference * (1 - progress);
+    }
+    
+    // Drag and Drop
+    function initDragAndDrop() {
+      const evidenceItems = document.querySelectorAll('.evidence-item');
+      const dropZone = document.getElementById('dropZone');
+      
+      evidenceItems.forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', item.dataset.evidence);
+          item.classList.add('dragging');
+          item.classList.add('rubber-band');
+        });
+        
+        item.addEventListener('dragend', () => {
+          item.classList.remove('dragging');
+          item.classList.remove('rubber-band');
+        });
+        
+        item.setAttribute('draggable', 'true');
+      });
+      
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+      });
+      
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('drag-over');
+      });
+      
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const evidenceType = e.dataTransfer.getData('text/plain');
+        dropZone.classList.remove('drag-over');
+        
+        submittedEvidence = evidenceType;
+        
+        const evidenceNames = {
+          receipt: '🧾 Receipt',
+          w2: '📄 W-2 Form',
+          bank: '🏦 Bank Statement',
+          contract: '📝 Contract',
+          mileage: '🚗 Mileage Log'
+        };
+        
+        dropZone.innerHTML = `<div class="text-center bounce-in"><span class="text-3xl">${evidenceNames[evidenceType].split(' ')[0]}</span><p class="text-teal-400 font-bold mt-2">Evidence Submitted!</p></div>`;
+        dropZone.classList.add('glow-pulse');
+        
+        // Disable the dropped evidence
+        document.querySelector(`[data-evidence="${evidenceType}"]`).style.opacity = '0.3';
+        document.querySelector(`[data-evidence="${evidenceType}"]`).style.pointerEvents = 'none';
+      });
+    }
+    
+    // Apply config
+    function applyConfig() {
+      document.documentElement.style.setProperty('--bg-color', config.background_color);
+      document.documentElement.style.setProperty('--card-color', config.card_color);
+      document.documentElement.style.setProperty('--text-color', config.text_color);
+      document.documentElement.style.setProperty('--accent-primary', config.accent_primary);
+      document.documentElement.style.setProperty('--accent-secondary', config.accent_secondary);
+      
+      document.getElementById('gameTitle').textContent = config.game_title;
+      document.getElementById('taxpayerName').textContent = config.taxpayer_name;
+    }
+    
+    // Element SDK Integration
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (newConfig) => {
+          config = { ...defaultConfig, ...newConfig };
+          applyConfig();
+        },
+        mapToCapabilities: (cfg) => ({
+          recolorables: [
+            {
+              get: () => cfg.background_color || defaultConfig.background_color,
+              set: (v) => { cfg.background_color = v; window.elementSdk.setConfig({ background_color: v }); }
+            },
+            {
+              get: () => cfg.card_color || defaultConfig.card_color,
+              set: (v) => { cfg.card_color = v; window.elementSdk.setConfig({ card_color: v }); }
+            },
+            {
+              get: () => cfg.text_color || defaultConfig.text_color,
+              set: (v) => { cfg.text_color = v; window.elementSdk.setConfig({ text_color: v }); }
+            },
+            {
+              get: () => cfg.accent_primary || defaultConfig.accent_primary,
+              set: (v) => { cfg.accent_primary = v; window.elementSdk.setConfig({ accent_primary: v }); }
+            },
+            {
+              get: () => cfg.accent_secondary || defaultConfig.accent_secondary,
+              set: (v) => { cfg.accent_secondary = v; window.elementSdk.setConfig({ accent_secondary: v }); }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (cfg) => new Map([
+          ['game_title', cfg.game_title || defaultConfig.game_title],
+          ['taxpayer_name', cfg.taxpayer_name || defaultConfig.taxpayer_name]
+        ])
+      });
+    }
+    
+    // Initialize
+    createStars();
+    initDragAndDrop();
+    applyConfig();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8cd9bbf0f127c5',t:'MTc3NTYwNDk0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

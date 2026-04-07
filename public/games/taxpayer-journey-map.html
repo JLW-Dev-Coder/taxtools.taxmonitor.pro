@@ -1,1 +1,820 @@
 <!-- PASTE HTML FROM CANVA: https://www.canva.com/ai/code/thread/b35841b5-b852-4b85-9524-47edb3d54e3f -->
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taxpayer Journey Map</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Syne:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body { font-family: 'Syne', sans-serif; }
+    .mono { font-family: 'Space Mono', monospace; }
+    
+    /* Animated Background Stars */
+    .stars-container {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    
+    /* Entry Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.5); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes rotateIn {
+      from { opacity: 0; transform: rotate(-180deg) scale(0.5); }
+      to { opacity: 1; transform: rotate(0) scale(1); }
+    }
+    @keyframes flipIn {
+      from { opacity: 0; transform: perspective(400px) rotateY(-90deg); }
+      to { opacity: 1; transform: perspective(400px) rotateY(0); }
+    }
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: scale(0.3); }
+      50% { transform: scale(1.1); }
+      70% { transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    .fade-up { animation: fadeUp 0.8s ease-out forwards; }
+    .scale-in { animation: scaleIn 0.6s ease-out forwards; }
+    .rotate-in { animation: rotateIn 0.8s ease-out forwards; }
+    .flip-in { animation: flipIn 0.7s ease-out forwards; }
+    .bounce-in { animation: bounceIn 0.8s ease-out forwards; }
+    
+    /* Continuous Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+    }
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px currentColor, 0 0 40px currentColor; }
+      50% { box-shadow: 0 0 30px currentColor, 0 0 60px currentColor; }
+    }
+    @keyframes morph {
+      0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+      50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+    }
+    @keyframes wobble {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+    @keyframes swing {
+      20% { transform: rotate(15deg); }
+      40% { transform: rotate(-10deg); }
+      60% { transform: rotate(5deg); }
+      80% { transform: rotate(-5deg); }
+      100% { transform: rotate(0deg); }
+    }
+    @keyframes jello {
+      0%, 100% { transform: scale(1, 1); }
+      25% { transform: scale(0.9, 1.1); }
+      50% { transform: scale(1.1, 0.9); }
+      75% { transform: scale(0.95, 1.05); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes hueRotate {
+      from { filter: hue-rotate(0deg); }
+      to { filter: hue-rotate(360deg); }
+    }
+    
+    .float { animation: float 3s ease-in-out infinite; }
+    .pulse { animation: pulse 2s ease-in-out infinite; }
+    .glow-pulse { animation: glow 2s ease-in-out infinite; }
+    .morph { animation: morph 8s ease-in-out infinite; }
+    .wobble { animation: wobble 1s ease-in-out infinite; }
+    .swing { animation: swing 1s ease-in-out; }
+    .jello { animation: jello 0.9s ease-in-out; }
+    .bounce-cont { animation: bounce 1.5s ease-in-out infinite; }
+    .spin { animation: spin 10s linear infinite; }
+    .gradient-shift { 
+      background-size: 200% 200%;
+      animation: gradientShift 3s ease infinite;
+    }
+    .hue-rotate { animation: hueRotate 5s linear infinite; }
+    
+    /* Glow Border */
+    .glow-border {
+      position: relative;
+    }
+    .glow-border::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      background: linear-gradient(45deg, #00f5d4, #ff006e, #ffbe0b, #00f5d4);
+      background-size: 400% 400%;
+      border-radius: 24px;
+      z-index: -1;
+      animation: gradientShift 4s ease infinite, glow 2s ease-in-out infinite;
+      filter: blur(8px);
+    }
+    
+    /* Path Animations */
+    @keyframes drawLine {
+      from { stroke-dashoffset: 1000; }
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes pathGlow {
+      0%, 100% { stroke-opacity: 0.6; }
+      50% { stroke-opacity: 1; }
+    }
+    .draw-line {
+      stroke-dasharray: 1000;
+      animation: drawLine 2s ease-out forwards, pathGlow 2s ease-in-out infinite;
+    }
+    
+    /* Progress Ring */
+    @keyframes progressFill {
+      from { stroke-dashoffset: 283; }
+    }
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+    
+    /* Button Effects */
+    @keyframes ripple {
+      to { transform: scale(4); opacity: 0; }
+    }
+    @keyframes shine {
+      from { left: -100%; }
+      to { left: 100%; }
+    }
+    .btn-ripple {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-ripple::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+      transform: scale(0);
+      opacity: 0;
+    }
+    .btn-ripple:active::after {
+      animation: ripple 0.6s ease-out;
+    }
+    .btn-shine {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-shine::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    }
+    .btn-shine:hover::before {
+      animation: shine 0.6s ease-out;
+    }
+    
+    /* Hover Effects */
+    .hover-lift { transition: transform 0.3s, box-shadow 0.3s; }
+    .hover-lift:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .hover-scale { transition: transform 0.3s; }
+    .hover-scale:hover { transform: scale(1.05); }
+    .hover-glow { transition: box-shadow 0.3s, filter 0.3s; }
+    .hover-glow:hover { box-shadow: 0 0 30px currentColor; filter: brightness(1.2); }
+    .hover-shake:hover { animation: jello 0.5s ease-in-out; }
+    
+    /* Text Animations */
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    @keyframes textGlow {
+      0%, 100% { text-shadow: 0 0 10px currentColor, 0 0 20px currentColor; }
+      50% { text-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor; }
+    }
+    @keyframes letterSpacing {
+      0%, 100% { letter-spacing: 0; }
+      50% { letter-spacing: 0.1em; }
+    }
+    .text-glow { animation: textGlow 2s ease-in-out infinite; }
+    .letter-space-anim { animation: letterSpacing 3s ease-in-out infinite; }
+    .gradient-text {
+      background: linear-gradient(90deg, #00f5d4, #ff006e, #ffbe0b);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 3s ease infinite;
+    }
+    
+    /* Feedback Animations */
+    @keyframes badgePulse {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    .badge-pulse { animation: badgePulse 0.5s ease-out forwards; }
+    .shake { animation: shake 0.6s ease-in-out; }
+    
+    /* 3D Flip */
+    @keyframes flip3D {
+      0% { transform: perspective(400px) rotateY(0); }
+      100% { transform: perspective(400px) rotateY(360deg); }
+    }
+    @keyframes cubeRotate {
+      0% { transform: perspective(800px) rotateX(0) rotateY(0); }
+      25% { transform: perspective(800px) rotateX(90deg) rotateY(0); }
+      50% { transform: perspective(800px) rotateX(90deg) rotateY(90deg); }
+      75% { transform: perspective(800px) rotateX(0) rotateY(90deg); }
+      100% { transform: perspective(800px) rotateX(0) rotateY(0); }
+    }
+    .flip-3d { animation: flip3D 1s ease-in-out; }
+    .cube-rotate { animation: cubeRotate 2s ease-in-out; }
+    
+    /* Node Styles */
+    .event-node {
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .event-node:hover {
+      transform: scale(1.1);
+      z-index: 10;
+    }
+    
+    /* Scenario Card */
+    .scenario-card {
+      backdrop-filter: blur(10px);
+      background: rgba(30, 30, 50, 0.9);
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+    
+    /* Progress Dots */
+    @keyframes bouncingDots {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+    }
+    .bouncing-dot {
+      animation: bouncingDots 1.4s ease-in-out infinite;
+    }
+    .bouncing-dot:nth-child(1) { animation-delay: 0s; }
+    .bouncing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .bouncing-dot:nth-child(3) { animation-delay: 0.4s; }
+    
+    /* Equalizer */
+    @keyframes equalizer {
+      0%, 100% { height: 10px; }
+      50% { height: 30px; }
+    }
+    .equalizer-bar {
+      animation: equalizer 1s ease-in-out infinite;
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #1a1a2e; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(#00f5d4, #ff006e); border-radius: 4px; }
+    
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+    }
+    .tooltip::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-5px);
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      font-size: 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .tooltip:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-10px);
+    }
+    
+    /* Delayed animations */
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
+    .delay-6 { animation-delay: 0.6s; }
+    .delay-7 { animation-delay: 0.7s; }
+    .delay-8 { animation-delay: 0.8s; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-auto"><!-- Animated Stars Background -->
+  <div class="stars-container" id="stars"></div><!-- Morphing Background Shapes -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+   <div class="absolute top-20 left-10 w-64 h-64 bg-gradient-to-br from-teal-500/20 to-pink-500/20 morph hue-rotate"></div>
+   <div class="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-br from-yellow-500/20 to-purple-500/20 morph hue-rotate" style="animation-delay: -4s;"></div>
+   <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-pink-500/10 to-teal-500/10 morph spin" style="animation-duration: 20s;"></div>
+  </div>
+  <div class="relative z-10 min-h-full p-4 md:p-8"><!-- Header -->
+   <header class="text-center mb-8 fade-up">
+    <h1 id="main-title" class="text-4xl md:text-6xl font-extrabold gradient-text letter-space-anim mb-4">Taxpayer Journey Map</h1>
+    <p class="text-lg md:text-xl text-gray-300 mono fade-up delay-2" style="opacity: 0; animation-fill-mode: forwards;">Navigate your tax decisions through life's milestones</p>
+   </header><!-- Progress Bar -->
+   <div class="max-w-4xl mx-auto mb-8 fade-up delay-3" style="opacity: 0; animation-fill-mode: forwards;">
+    <div class="flex items-center justify-between mb-2"><span class="mono text-sm text-teal-400">Progress</span> <span id="progress-text" class="mono text-sm text-pink-400">0 / 6 Events</span>
+    </div>
+    <div class="h-3 bg-slate-800 rounded-full overflow-hidden">
+     <div id="progress-bar" class="h-full bg-gradient-to-r from-teal-400 via-pink-500 to-yellow-400 gradient-shift rounded-full transition-all duration-500" style="width: 0%;"></div>
+    </div><!-- Bouncing Progress Dots -->
+    <div class="flex justify-center gap-2 mt-4">
+     <div class="bouncing-dot w-3 h-3 rounded-full bg-teal-400"></div>
+     <div class="bouncing-dot w-3 h-3 rounded-full bg-pink-400"></div>
+     <div class="bouncing-dot w-3 h-3 rounded-full bg-yellow-400"></div>
+    </div>
+   </div><!-- Character Introduction -->
+   <div id="character-section" class="max-w-md mx-auto mb-8 bounce-in delay-4" style="opacity: 0; animation-fill-mode: forwards;">
+    <div class="glow-border p-6 rounded-2xl bg-slate-800/80 backdrop-blur-sm text-center hover-lift">
+     <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-teal-400 to-pink-500 flex items-center justify-center text-5xl pulse">
+      👤
+     </div>
+     <h2 id="character-name" class="text-2xl font-bold text-glow text-teal-400 mb-2">Alex Taylor</h2>
+     <p class="text-gray-300 mono text-sm">Your tax journey guide</p>
+     <div class="mt-4 flex justify-center gap-2"><span class="px-3 py-1 bg-teal-500/20 rounded-full text-teal-400 text-xs mono float">W-2 Employee</span> <span class="px-3 py-1 bg-pink-500/20 rounded-full text-pink-400 text-xs mono float delay-2">Single</span>
+     </div>
+    </div>
+   </div><!-- Journey Map Container -->
+   <div class="max-w-6xl mx-auto">
+    <div class="glow-border rounded-3xl p-4 md:p-8 bg-slate-900/80 backdrop-blur-sm scale-in delay-5" style="opacity: 0; animation-fill-mode: forwards;"><!-- SVG Path Connections -->
+     <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 0;"><defs>
+       <lineargradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#00f5d4">
+         <animate attributename="stop-color" values="#00f5d4;#ff006e;#ffbe0b;#00f5d4" dur="3s" repeatcount="indefinite" />
+        </stop>
+        <stop offset="100%" style="stop-color:#ff006e">
+         <animate attributename="stop-color" values="#ff006e;#ffbe0b;#00f5d4;#ff006e" dur="3s" repeatcount="indefinite" />
+        </stop>
+       </lineargradient>
+      </defs>
+     </svg><!-- Event Nodes Grid -->
+     <div class="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 relative z-10"><!-- Event 1: New Job -->
+      <div class="event-node flip-in delay-1 tooltip" data-tip="Click to explore!" data-event="0" onclick="openScenario(0)" style="opacity: 0; animation-fill-mode: forwards;">
+       <div class="p-4 md:p-6 rounded-2xl bg-gradient-to-br from-teal-500/30 to-teal-500/10 border-2 border-teal-500/50 hover-glow float" style="color: #00f5d4;">
+        <div class="text-4xl md:text-5xl mb-3 bounce-cont">
+         💼
+        </div>
+        <h3 class="font-bold text-lg md:text-xl text-teal-400">New Job</h3>
+        <p class="text-sm text-gray-400 mono mt-2">January</p>
+        <div class="mt-3 w-full h-1 bg-slate-700 rounded-full overflow-hidden">
+         <div class="h-full bg-teal-400 gradient-shift" style="width: 0%;" id="event-progress-0"></div>
+        </div>
+       </div>
+      </div><!-- Event 2: Side Business -->
+      <div class="event-node flip-in delay-2 tooltip" data-tip="Click to explore!" data-event="1" onclick="openScenario(1)" style="opacity: 0; animation-fill-mode: forwards;">
+       <div class="p-4 md:p-6 rounded-2xl bg-gradient-to-br from-pink-500/30 to-pink-500/10 border-2 border-pink-500/50 hover-glow float delay-1" style="color: #ff006e;">
+        <div class="text-4xl md:text-5xl mb-3 wobble">
+         🏪
+        </div>
+        <h3 class="font-bold text-lg md:text-xl text-pink-400">Side Business</h3>
+        <p class="text-sm text-gray-400 mono mt-2">March</p>
+        <div class="mt-3 w-full h-1 bg-slate-700 rounded-full overflow-hidden">
+         <div class="h-full bg-pink-400 gradient-shift" style="width: 0%;" id="event-progress-1"></div>
+        </div>
+       </div>
+      </div><!-- Event 3: Marriage -->
+      <div class="event-node flip-in delay-3 tooltip" data-tip="Click to explore!" data-event="2" onclick="openScenario(2)" style="opacity: 0; animation-fill-mode: forwards;">
+       <div class="p-4 md:p-6 rounded-2xl bg-gradient-to-br from-yellow-500/30 to-yellow-500/10 border-2 border-yellow-500/50 hover-glow float delay-2" style="color: #ffbe0b;">
+        <div class="text-4xl md:text-5xl mb-3 pulse">
+         💒
+        </div>
+        <h3 class="font-bold text-lg md:text-xl text-yellow-400">Marriage</h3>
+        <p class="text-sm text-gray-400 mono mt-2">June</p>
+        <div class="mt-3 w-full h-1 bg-slate-700 rounded-full overflow-hidden">
+         <div class="h-full bg-yellow-400 gradient-shift" style="width: 0%;" id="event-progress-2"></div>
+        </div>
+       </div>
+      </div><!-- Event 4: Home Purchase -->
+      <div class="event-node flip-in delay-4 tooltip" data-tip="Click to explore!" data-event="3" onclick="openScenario(3)" style="opacity: 0; animation-fill-mode: forwards;">
+       <div class="p-4 md:p-6 rounded-2xl bg-gradient-to-br from-purple-500/30 to-purple-500/10 border-2 border-purple-500/50 hover-glow float delay-3" style="color: #a855f7;">
+        <div class="text-4xl md:text-5xl mb-3 float">
+         🏠
+        </div>
+        <h3 class="font-bold text-lg md:text-xl text-purple-400">Home Purchase</h3>
+        <p class="text-sm text-gray-400 mono mt-2">August</p>
+        <div class="mt-3 w-full h-1 bg-slate-700 rounded-full overflow-hidden">
+         <div class="h-full bg-purple-400 gradient-shift" style="width: 0%;" id="event-progress-3"></div>
+        </div>
+       </div>
+      </div><!-- Event 5: Investment -->
+      <div class="event-node flip-in delay-5 tooltip" data-tip="Click to explore!" data-event="4" onclick="openScenario(4)" style="opacity: 0; animation-fill-mode: forwards;">
+       <div class="p-4 md:p-6 rounded-2xl bg-gradient-to-br from-emerald-500/30 to-emerald-500/10 border-2 border-emerald-500/50 hover-glow float delay-4" style="color: #10b981;">
+        <div class="text-4xl md:text-5xl mb-3 bounce-cont delay-2">
+         📈
+        </div>
+        <h3 class="font-bold text-lg md:text-xl text-emerald-400">Investments</h3>
+        <p class="text-sm text-gray-400 mono mt-2">October</p>
+        <div class="mt-3 w-full h-1 bg-slate-700 rounded-full overflow-hidden">
+         <div class="h-full bg-emerald-400 gradient-shift" style="width: 0%;" id="event-progress-4"></div>
+        </div>
+       </div>
+      </div><!-- Event 6: Year End -->
+      <div class="event-node flip-in delay-6 tooltip" data-tip="Click to explore!" data-event="5" onclick="openScenario(5)" style="opacity: 0; animation-fill-mode: forwards;">
+       <div class="p-4 md:p-6 rounded-2xl bg-gradient-to-br from-rose-500/30 to-rose-500/10 border-2 border-rose-500/50 hover-glow float delay-5" style="color: #f43f5e;">
+        <div class="text-4xl md:text-5xl mb-3 spin" style="animation-duration: 5s;">
+         🎯
+        </div>
+        <h3 class="font-bold text-lg md:text-xl text-rose-400">Year End</h3>
+        <p class="text-sm text-gray-400 mono mt-2">December</p>
+        <div class="mt-3 w-full h-1 bg-slate-700 rounded-full overflow-hidden">
+         <div class="h-full bg-rose-400 gradient-shift" style="width: 0%;" id="event-progress-5"></div>
+        </div>
+       </div>
+      </div>
+     </div><!-- Equalizer Progress Indicator -->
+     <div class="flex justify-center gap-1 mt-8">
+      <div class="equalizer-bar w-2 bg-teal-400 rounded-full" style="animation-delay: 0s;"></div>
+      <div class="equalizer-bar w-2 bg-pink-400 rounded-full" style="animation-delay: 0.2s;"></div>
+      <div class="equalizer-bar w-2 bg-yellow-400 rounded-full" style="animation-delay: 0.4s;"></div>
+      <div class="equalizer-bar w-2 bg-purple-400 rounded-full" style="animation-delay: 0.6s;"></div>
+      <div class="equalizer-bar w-2 bg-emerald-400 rounded-full" style="animation-delay: 0.8s;"></div>
+     </div>
+    </div>
+   </div><!-- Navigation Buttons -->
+   <div class="flex justify-center gap-4 mt-8 fade-up delay-7" style="opacity: 0; animation-fill-mode: forwards;"><button onclick="resetJourney()" class="btn-ripple btn-shine px-6 py-3 rounded-xl bg-slate-800 border-2 border-pink-500/50 text-pink-400 font-bold hover-lift hover-shake transition-all"> 🔄 Restart Journey </button> <button onclick="completeJourney()" class="btn-ripple btn-shine px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-pink-500 text-white font-bold hover-lift gradient-shift"> ✨ Complete Journey </button>
+   </div><!-- Progress Ring -->
+   <div class="fixed bottom-4 right-4 md:bottom-8 md:right-8">
+    <svg class="w-16 h-16 progress-ring" viewbox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="#334155" stroke-width="8" /> <circle id="progress-ring-circle" cx="50" cy="50" r="45" fill="none" stroke="url(#ringGradient)" stroke-width="8" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" style="transition: stroke-dashoffset 0.5s;" /> <defs>
+      <lineargradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+       <stop offset="0%" style="stop-color:#00f5d4" />
+       <stop offset="50%" style="stop-color:#ff006e" />
+       <stop offset="100%" style="stop-color:#ffbe0b" />
+      </lineargradient>
+     </defs>
+    </svg>
+    <div id="progress-percent" class="absolute inset-0 flex items-center justify-center text-white font-bold text-sm">
+     0%
+    </div>
+   </div>
+  </div><!-- Scenario Modal -->
+  <div id="scenario-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+   <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeScenario()"></div>
+   <div id="scenario-card" class="relative scenario-card rounded-3xl p-6 md:p-8 max-w-lg w-full max-h-[80%] overflow-y-auto"><button onclick="closeScenario()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white hover-scale hover-glow" style="color: #ff006e;"> ✕ </button>
+    <div id="scenario-content"></div>
+   </div>
+  </div><!-- Success Modal -->
+  <div id="success-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+   <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+   <div id="success-card" class="relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-8 md:p-12 max-w-md w-full text-center border-2 border-teal-500/50">
+    <div class="text-6xl md:text-8xl mb-6">
+     🎉
+    </div>
+    <h2 class="text-3xl md:text-4xl font-extrabold gradient-text letter-space-anim mb-4">Journey Complete!</h2>
+    <p class="text-gray-300 mono mb-6">You've successfully navigated all tax decisions through Alex's year!</p>
+    <div class="flex flex-wrap justify-center gap-3 mb-6"><span class="badge-pulse px-4 py-2 bg-teal-500/20 rounded-full text-teal-400 mono">💼 Career Pro</span> <span class="badge-pulse px-4 py-2 bg-pink-500/20 rounded-full text-pink-400 mono" style="animation-delay: 0.2s;">💒 Tax Optimizer</span> <span class="badge-pulse px-4 py-2 bg-yellow-500/20 rounded-full text-yellow-400 mono" style="animation-delay: 0.4s;">🏠 Smart Investor</span>
+    </div><button onclick="closeSuccess()" class="btn-ripple btn-shine px-8 py-4 rounded-xl bg-gradient-to-r from-teal-500 via-pink-500 to-yellow-500 text-white font-bold text-lg hover-lift gradient-shift"> Start New Journey </button>
+   </div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      main_title: 'Taxpayer Journey Map',
+      character_name: 'Alex Taylor',
+      background_color: '#0f172a',
+      accent_color: '#00f5d4',
+      text_color: '#ffffff',
+      font_family: 'Syne'
+    };
+
+    // Scenario data
+    const scenarios = [
+      {
+        title: '💼 New Job Offer',
+        month: 'January',
+        color: '#00f5d4',
+        description: 'Alex receives a job offer with a higher salary and different benefits package.',
+        question: 'How should Alex handle the W-4 form for the new job?',
+        options: [
+          { text: 'Claim maximum allowances to get more take-home pay', correct: false, feedback: 'This could lead to a big tax bill at year end!' },
+          { text: 'Use the IRS withholding calculator for accuracy', correct: true, feedback: 'Smart choice! This helps avoid surprises at tax time.' },
+          { text: 'Just copy the old W-4 settings', correct: false, feedback: 'With a new salary, old settings may not be optimal.' }
+        ]
+      },
+      {
+        title: '🏪 Side Business Launch',
+        month: 'March',
+        color: '#ff006e',
+        description: 'Alex starts a small online business selling handmade crafts on weekends.',
+        question: 'What tax action should Alex take first?',
+        options: [
+          { text: 'Wait until year end to figure it out', correct: false, feedback: 'Missing quarterly estimated payments can result in penalties!' },
+          { text: 'Set aside 25-30% of profits for estimated taxes', correct: true, feedback: 'Excellent! Self-employment tax planning is crucial.' },
+          { text: 'Ignore it since it\'s just a hobby', correct: false, feedback: 'If you\'re making consistent profit, it\'s taxable income.' }
+        ]
+      },
+      {
+        title: '💒 Getting Married',
+        month: 'June',
+        color: '#ffbe0b',
+        description: 'Alex and their partner tie the knot in a beautiful summer wedding.',
+        question: 'What filing status should they choose?',
+        options: [
+          { text: 'Always file Married Filing Jointly', correct: false, feedback: 'Joint filing isn\'t always best—compare both options!' },
+          { text: 'Compare MFJ and MFS to find the lowest tax', correct: true, feedback: 'Perfect! Running the numbers both ways is the smart move.' },
+          { text: 'File separately to keep things simple', correct: false, feedback: 'You might miss valuable credits and deductions!' }
+        ]
+      },
+      {
+        title: '🏠 Buying a Home',
+        month: 'August',
+        color: '#a855f7',
+        description: 'The newlyweds purchase their first home together.',
+        question: 'How can Alex maximize tax benefits from homeownership?',
+        options: [
+          { text: 'Only track mortgage interest', correct: false, feedback: 'Property taxes and points may also be deductible!' },
+          { text: 'Track all deductible expenses and compare to standard deduction', correct: true, feedback: 'Great! Itemizing might save more than the standard deduction.' },
+          { text: 'Assume standard deduction is always better', correct: false, feedback: 'With a mortgage, itemizing often wins.' }
+        ]
+      },
+      {
+        title: '📈 Investment Gains',
+        month: 'October',
+        color: '#10b981',
+        description: 'Alex\'s investment portfolio has grown significantly this year.',
+        question: 'What strategy should Alex consider for investment taxes?',
+        options: [
+          { text: 'Sell everything to lock in gains before year end', correct: false, feedback: 'This could push you into a higher tax bracket!' },
+          { text: 'Consider tax-loss harvesting to offset gains', correct: true, feedback: 'Smart! Offsetting gains with losses reduces your tax bill.' },
+          { text: 'Ignore until you receive tax forms', correct: false, feedback: 'Proactive planning can save thousands in taxes.' }
+        ]
+      },
+      {
+        title: '🎯 Year-End Planning',
+        month: 'December',
+        color: '#f43f5e',
+        description: 'The year is ending—time for final tax optimization moves.',
+        question: 'What\'s the best year-end tax strategy?',
+        options: [
+          { text: 'Rush to spend money on deductible expenses', correct: false, feedback: 'Spending just for deductions often costs more than it saves.' },
+          { text: 'Max out 401(k) and review all deductions', correct: true, feedback: 'Excellent! Retirement contributions and strategic deductions are key.' },
+          { text: 'Wait until January to think about taxes', correct: false, feedback: 'By January, many tax-saving opportunities have passed!' }
+        ]
+      }
+    ];
+
+    // Game state
+    let completedEvents = new Set();
+    let currentScenario = null;
+
+    // Generate stars
+    function generateStars() {
+      const container = document.getElementById('stars');
+      container.innerHTML = '';
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        star.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+        container.appendChild(star);
+      }
+    }
+
+    // Update progress
+    function updateProgress() {
+      const total = scenarios.length;
+      const completed = completedEvents.size;
+      const percent = Math.round((completed / total) * 100);
+      
+      document.getElementById('progress-bar').style.width = percent + '%';
+      document.getElementById('progress-text').textContent = `${completed} / ${total} Events`;
+      document.getElementById('progress-percent').textContent = percent + '%';
+      
+      const ringCircle = document.getElementById('progress-ring-circle');
+      const circumference = 283;
+      ringCircle.style.strokeDashoffset = circumference - (percent / 100) * circumference;
+    }
+
+    // Open scenario
+    function openScenario(index) {
+      currentScenario = index;
+      const scenario = scenarios[index];
+      const modal = document.getElementById('scenario-modal');
+      const card = document.getElementById('scenario-card');
+      const content = document.getElementById('scenario-content');
+      
+      content.innerHTML = `
+        <div class="swing">
+          <div class="text-5xl mb-4 pulse">${scenario.title.split(' ')[0]}</div>
+          <h3 class="text-2xl font-bold mb-2" style="color: ${scenario.color};">${scenario.title}</h3>
+          <p class="text-sm mono text-gray-400 mb-4">${scenario.month}</p>
+          <p class="text-gray-300 mb-6">${scenario.description}</p>
+          <div class="bg-slate-800/50 rounded-xl p-4 mb-6">
+            <p class="font-bold text-white text-lg mb-4">${scenario.question}</p>
+            <div class="space-y-3" id="options-container">
+              ${scenario.options.map((opt, i) => `
+                <button onclick="selectOption(${i})" class="w-full text-left p-4 rounded-xl bg-slate-700/50 border-2 border-slate-600 hover:border-teal-400 transition-all btn-ripple hover-scale" data-option="${i}">
+                  <span class="text-white">${opt.text}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+          <div id="feedback-area" class="hidden"></div>
+        </div>
+      `;
+      
+      modal.classList.remove('hidden');
+      card.classList.add('swing');
+      setTimeout(() => card.classList.remove('swing'), 1000);
+    }
+
+    // Select option
+    function selectOption(optionIndex) {
+      const scenario = scenarios[currentScenario];
+      const option = scenario.options[optionIndex];
+      const feedbackArea = document.getElementById('feedback-area');
+      const buttons = document.querySelectorAll('#options-container button');
+      
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === optionIndex) {
+          if (option.correct) {
+            btn.classList.add('border-emerald-400', 'bg-emerald-500/20');
+          } else {
+            btn.classList.add('border-rose-400', 'bg-rose-500/20', 'shake');
+          }
+        }
+        if (scenario.options[i].correct && i !== optionIndex) {
+          btn.classList.add('border-emerald-400/50');
+        }
+      });
+      
+      feedbackArea.innerHTML = `
+        <div class="${option.correct ? 'badge-pulse' : 'shake'} p-4 rounded-xl ${option.correct ? 'bg-emerald-500/20 border-2 border-emerald-400' : 'bg-rose-500/20 border-2 border-rose-400'}">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">${option.correct ? '✅' : '❌'}</span>
+            <div>
+              <p class="font-bold ${option.correct ? 'text-emerald-400' : 'text-rose-400'}">${option.correct ? 'Correct!' : 'Not quite!'}</p>
+              <p class="text-gray-300 text-sm">${option.feedback}</p>
+            </div>
+          </div>
+        </div>
+        <button onclick="closeScenarioAndMark()" class="mt-4 w-full btn-ripple btn-shine py-3 rounded-xl bg-gradient-to-r from-teal-500 to-pink-500 text-white font-bold hover-lift">
+          Continue Journey →
+        </button>
+      `;
+      feedbackArea.classList.remove('hidden');
+      
+      if (option.correct) {
+        completedEvents.add(currentScenario);
+        document.getElementById(`event-progress-${currentScenario}`).style.width = '100%';
+        updateProgress();
+      }
+    }
+
+    // Close scenario and mark complete
+    function closeScenarioAndMark() {
+      closeScenario();
+      const node = document.querySelector(`[data-event="${currentScenario}"]`);
+      if (node && completedEvents.has(currentScenario)) {
+        node.querySelector('div').classList.add('opacity-75');
+      }
+      
+      if (completedEvents.size === scenarios.length) {
+        setTimeout(() => completeJourney(), 500);
+      }
+    }
+
+    // Close scenario
+    function closeScenario() {
+      document.getElementById('scenario-modal').classList.add('hidden');
+    }
+
+    // Complete journey
+    function completeJourney() {
+      const modal = document.getElementById('success-modal');
+      const card = document.getElementById('success-card');
+      modal.classList.remove('hidden');
+      card.classList.add('flip-3d');
+      setTimeout(() => card.classList.remove('flip-3d'), 1000);
+    }
+
+    // Close success
+    function closeSuccess() {
+      document.getElementById('success-modal').classList.add('hidden');
+      resetJourney();
+    }
+
+    // Reset journey
+    function resetJourney() {
+      completedEvents.clear();
+      scenarios.forEach((_, i) => {
+        document.getElementById(`event-progress-${i}`).style.width = '0%';
+        const node = document.querySelector(`[data-event="${i}"]`);
+        if (node) {
+          node.querySelector('div').classList.remove('opacity-75');
+        }
+      });
+      updateProgress();
+    }
+
+    // Element SDK integration
+    async function onConfigChange(config) {
+      const mainTitle = document.getElementById('main-title');
+      const characterName = document.getElementById('character-name');
+      
+      if (mainTitle) {
+        mainTitle.textContent = config.main_title || defaultConfig.main_title;
+      }
+      if (characterName) {
+        characterName.textContent = config.character_name || defaultConfig.character_name;
+      }
+      
+      if (config.font_family) {
+        document.body.style.fontFamily = `${config.font_family}, Syne, sans-serif`;
+      }
+    }
+
+    // Initialize
+    generateStars();
+    updateProgress();
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => window.elementSdk.setConfig({ background_color: value })
+            },
+            {
+              get: () => config.accent_color || defaultConfig.accent_color,
+              set: (value) => window.elementSdk.setConfig({ accent_color: value })
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => window.elementSdk.setConfig({ text_color: value })
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => window.elementSdk.setConfig({ font_family: value })
+          },
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['main_title', config.main_title || defaultConfig.main_title],
+          ['character_name', config.character_name || defaultConfig.character_name]
+        ])
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8cdd5d527827c5',t:'MTc3NTYwNTA5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

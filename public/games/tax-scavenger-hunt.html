@@ -1,1 +1,694 @@
 <!-- PASTE HTML FROM CANVA: https://www.canva.com/ai/code/thread/2ebf904f-bd32-44d0-b2e8-b5eb340e3cbd -->
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Scavenger Hunt</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=Syne:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body { font-family: 'Syne', sans-serif; }
+    .mono { font-family: 'Space Mono', monospace; }
+    
+    /* Entry Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.7); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes rotateIn {
+      from { opacity: 0; transform: rotate(-15deg) scale(0.8); }
+      to { opacity: 1; transform: rotate(0) scale(1); }
+    }
+    @keyframes flipIn {
+      from { opacity: 0; transform: perspective(400px) rotateY(-90deg); }
+      to { opacity: 1; transform: perspective(400px) rotateY(0); }
+    }
+    
+    /* Continuous Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.85; }
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+    }
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 15px currentColor, 0 0 30px currentColor; }
+      50% { box-shadow: 0 0 25px currentColor, 0 0 50px currentColor; }
+    }
+    @keyframes wobble {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+    @keyframes swing {
+      0%, 100% { transform: rotate(-8deg); }
+      50% { transform: rotate(8deg); }
+    }
+    @keyframes jello {
+      0%, 100% { transform: skewX(0deg) skewY(0deg); }
+      25% { transform: skewX(-5deg) skewY(-2deg); }
+      50% { transform: skewX(4deg) skewY(1deg); }
+      75% { transform: skewX(-2deg) skewY(-1deg); }
+    }
+    @keyframes orbit {
+      from { transform: rotate(0deg) translateX(20px) rotate(0deg); }
+      to { transform: rotate(360deg) translateX(20px) rotate(-360deg); }
+    }
+    @keyframes wave {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      25% { transform: translateY(-5px) rotate(5deg); }
+      75% { transform: translateY(5px) rotate(-5deg); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes morph {
+      0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+      50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+    }
+    @keyframes glowPulse {
+      0%, 100% { filter: drop-shadow(0 0 10px #00ffc8) drop-shadow(0 0 20px #00ffc8); }
+      50% { filter: drop-shadow(0 0 20px #ff00ff) drop-shadow(0 0 40px #ff00ff); }
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes hueRotate {
+      from { filter: hue-rotate(0deg); }
+      to { filter: hue-rotate(360deg); }
+    }
+    @keyframes rubberBand {
+      0% { transform: scale(1); }
+      30% { transform: scaleX(1.25) scaleY(0.75); }
+      40% { transform: scaleX(0.75) scaleY(1.25); }
+      50% { transform: scaleX(1.15) scaleY(0.85); }
+      65% { transform: scaleX(0.95) scaleY(1.05); }
+      75% { transform: scaleX(1.05) scaleY(0.95); }
+      100% { transform: scale(1); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+      20%, 40%, 60%, 80% { transform: translateX(8px); }
+    }
+    @keyframes badgePulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 200, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(0, 255, 200, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 200, 0); }
+    }
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    @keyframes textGlow {
+      0%, 100% { text-shadow: 0 0 10px currentColor, 0 0 20px currentColor; }
+      50% { text-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor; }
+    }
+    @keyframes letterSpace {
+      0%, 100% { letter-spacing: 0.05em; }
+      50% { letter-spacing: 0.15em; }
+    }
+    @keyframes ripple {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+    @keyframes shine {
+      0% { left: -100%; }
+      100% { left: 200%; }
+    }
+    @keyframes progressRing {
+      0% { stroke-dashoffset: 283; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes equalizer {
+      0%, 100% { height: 20%; }
+      50% { height: 100%; }
+    }
+    @keyframes bounceDots {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes cubeFlip {
+      0% { transform: perspective(1000px) rotateY(0); }
+      100% { transform: perspective(1000px) rotateY(360deg); }
+    }
+    @keyframes starFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
+      50% { transform: translateY(-30px) rotate(180deg); opacity: 1; }
+    }
+    
+    /* Animation Classes */
+    .animate-fade-up { animation: fadeUp 0.8s ease-out forwards; }
+    .animate-scale-in { animation: scaleIn 0.6s ease-out forwards; }
+    .animate-rotate-in { animation: rotateIn 0.7s ease-out forwards; }
+    .animate-flip-in { animation: flipIn 0.6s ease-out forwards; }
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    .animate-pulse { animation: pulse 2s ease-in-out infinite; }
+    .animate-twinkle { animation: twinkle 1.5s ease-in-out infinite; }
+    .animate-glow { animation: glow 2s ease-in-out infinite; }
+    .animate-wobble { animation: wobble 2s ease-in-out infinite; }
+    .animate-swing { animation: swing 2.5s ease-in-out infinite; }
+    .animate-jello { animation: jello 1s ease-in-out; }
+    .animate-orbit { animation: orbit 4s linear infinite; }
+    .animate-wave { animation: wave 2s ease-in-out infinite; }
+    .animate-bounce { animation: bounce 1s ease-in-out infinite; }
+    .animate-spin { animation: spin 3s linear infinite; }
+    .animate-morph { animation: morph 8s ease-in-out infinite; }
+    .animate-glow-pulse { animation: glowPulse 3s ease-in-out infinite; }
+    .animate-gradient { animation: gradientShift 4s ease infinite; background-size: 200% 200%; }
+    .animate-hue { animation: hueRotate 10s linear infinite; }
+    .animate-rubber { animation: rubberBand 0.8s ease-out; }
+    .animate-shake { animation: shake 0.6s ease-out; }
+    .animate-badge { animation: badgePulse 1.5s ease-out infinite; }
+    .animate-text-glow { animation: textGlow 2s ease-in-out infinite; }
+    .animate-letter { animation: letterSpace 3s ease-in-out infinite; }
+    .animate-star { animation: starFloat 4s ease-in-out infinite; }
+    
+    /* Hover Effects */
+    .hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .hover-lift:hover { transform: translateY(-8px) scale(1.05); box-shadow: 0 15px 40px rgba(0, 255, 200, 0.3); }
+    .hover-glow:hover { box-shadow: 0 0 30px currentColor; }
+    .hover-scale:hover { transform: scale(1.15); }
+    .hover-rotate:hover { transform: rotate(10deg); }
+    
+    /* Special Effects */
+    .gradient-text {
+      background: linear-gradient(90deg, #00ffc8, #ff00ff, #ffff00, #00ffc8);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 4s ease infinite;
+    }
+    .neon-border {
+      border: 3px solid transparent;
+      background: linear-gradient(#0a0a1a, #0a0a1a) padding-box,
+                  linear-gradient(90deg, #00ffc8, #ff00ff, #ffff00) border-box;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Button Shine Effect */
+    .btn-shine { position: relative; overflow: hidden; }
+    .btn-shine::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shine 3s infinite;
+    }
+    
+    /* Document Hotspots */
+    .hotspot {
+      position: absolute;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .hotspot:not(.found) { animation: float 3s ease-in-out infinite, pulse 2s ease-in-out infinite; }
+    .hotspot.hint-active { animation: swing 0.5s ease-in-out infinite, glow 1s ease-in-out infinite !important; }
+    .hotspot.found { animation: rubberBand 0.8s ease-out, badgePulse 2s ease-out infinite; }
+    .hotspot.wrong { animation: shake 0.6s ease-out, jello 0.8s ease-out; }
+    
+    /* Progress Elements */
+    .progress-dot { animation: bounceDots 0.6s ease-in-out infinite; }
+    .progress-dot:nth-child(2) { animation-delay: 0.1s; }
+    .progress-dot:nth-child(3) { animation-delay: 0.2s; }
+    .eq-bar { animation: equalizer 0.8s ease-in-out infinite; }
+    .eq-bar:nth-child(2) { animation-delay: 0.1s; }
+    .eq-bar:nth-child(3) { animation-delay: 0.2s; }
+    .eq-bar:nth-child(4) { animation-delay: 0.3s; }
+    
+    /* Stars Background */
+    .star {
+      position: absolute;
+      color: #ffff00;
+      animation: starFloat 4s ease-in-out infinite, twinkle 2s ease-in-out infinite;
+    }
+    
+    /* Success Screen */
+    .success-container { animation: cubeFlip 1s ease-out; }
+    
+    /* Tooltip */
+    .tooltip {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+    .tooltip.show {
+      opacity: 1;
+      transform: translateY(0);
+      animation: textGlow 2s ease-in-out infinite;
+    }
+    
+    /* Timer */
+    .timer-urgent { animation: pulse 0.5s ease-in-out infinite, textGlow 1s ease-in-out infinite; }
+    
+    /* Ripple Effect */
+    .ripple-container { position: relative; overflow: hidden; }
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      animation: ripple 0.6s ease-out;
+      pointer-events: none;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full overflow-auto bg-[#0a0a1a]">
+  <div id="app" class="min-h-full w-full relative overflow-hidden"><!-- Animated Stars Background -->
+   <div id="stars-container" class="fixed inset-0 pointer-events-none overflow-hidden"></div><!-- Morphing Glow Border -->
+   <div class="fixed inset-4 rounded-3xl animate-morph animate-glow-pulse pointer-events-none" style="border: 2px solid rgba(0, 255, 200, 0.3);"></div><!-- Main Content -->
+   <div class="relative z-10 p-6 md:p-10 min-h-full flex flex-col"><!-- Header -->
+    <header class="text-center mb-6 animate-fade-up">
+     <h1 id="game-title" class="text-4xl md:text-6xl font-extrabold gradient-text animate-letter mb-3">Tax Scavenger Hunt</h1>
+     <p class="text-gray-400 mono text-sm md:text-base animate-scale-in" style="animation-delay: 0.2s;">Find all the hidden tax documents in the office!</p>
+    </header><!-- Stats Bar -->
+    <div class="flex flex-wrap justify-center gap-4 mb-6 animate-rotate-in" style="animation-delay: 0.3s;"><!-- Progress -->
+     <div class="glass rounded-xl px-5 py-3 flex items-center gap-3">
+      <div class="flex gap-1">
+       <div class="progress-dot w-2 h-2 rounded-full bg-[#00ffc8]"></div>
+       <div class="progress-dot w-2 h-2 rounded-full bg-[#ff00ff]"></div>
+       <div class="progress-dot w-2 h-2 rounded-full bg-[#ffff00]"></div>
+      </div><span class="text-white mono text-sm">Found: <span id="found-count" class="text-[#00ffc8] font-bold">0</span>/<span id="total-count">6</span></span> <!-- Progress Ring -->
+      <svg class="w-10 h-10 -rotate-90" viewbox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8" /> <circle id="progress-ring" cx="50" cy="50" r="45" fill="none" stroke="url(#progressGradient)" stroke-width="8" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" style="transition: stroke-dashoffset 0.5s ease;" /> <defs>
+        <lineargradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+         <stop offset="0%" stop-color="#00ffc8" />
+         <stop offset="50%" stop-color="#ff00ff" />
+         <stop offset="100%" stop-color="#ffff00" />
+        </lineargradient>
+       </defs>
+      </svg>
+     </div><!-- Timer -->
+     <div class="glass rounded-xl px-5 py-3 flex items-center gap-3">
+      <svg class="w-5 h-5 text-[#ff00ff] animate-wave" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg><span id="timer" class="text-white mono text-lg font-bold">02:00</span>
+     </div><!-- Equalizer Animation -->
+     <div class="glass rounded-xl px-5 py-3 flex items-center gap-1">
+      <div class="eq-bar w-1 bg-[#00ffc8] rounded" style="height: 20px;"></div>
+      <div class="eq-bar w-1 bg-[#ff00ff] rounded" style="height: 20px;"></div>
+      <div class="eq-bar w-1 bg-[#ffff00] rounded" style="height: 20px;"></div>
+      <div class="eq-bar w-1 bg-[#00ffc8] rounded" style="height: 20px;"></div>
+     </div>
+    </div><!-- Game Scene - Office/Shoebox -->
+    <div id="game-scene" class="flex-1 relative neon-border rounded-3xl min-h-[400px] md:min-h-[500px] animate-scale-in overflow-hidden" style="animation-delay: 0.4s; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);"><!-- Office Background Elements -->
+     <div class="absolute inset-0 opacity-20"><!-- Desk -->
+      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-1/3 bg-gradient-to-t from-amber-900/50 to-amber-800/30 rounded-t-lg"></div><!-- Monitor -->
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-32 h-24 bg-gray-800 rounded-lg border-2 border-gray-600"></div><!-- Lamp -->
+      <div class="absolute top-1/3 right-1/4 w-8 h-20 bg-gradient-to-b from-yellow-400/30 to-transparent animate-glow" style="clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);"></div>
+     </div><!-- Floating Hint Arrow -->
+     <div id="hint-arrow" class="absolute top-4 right-4 text-[#ffff00] opacity-0 transition-opacity duration-300">
+      <svg class="w-10 h-10 animate-bounce" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2L8 8h3v8h2V8h3L12 2z" />
+      </svg>
+     </div><!-- Orbiting Sparkle -->
+     <div class="absolute top-1/2 left-1/2 w-1 h-1">
+      <div class="animate-orbit"><span class="text-2xl animate-twinkle">✨</span>
+      </div>
+     </div><!-- Hidden Documents (Hotspots) -->
+     <div id="hotspots-container"><!-- W-2 Form -->
+      <div class="hotspot" id="doc-w2" data-doc="W-2 Form" style="top: 15%; left: 10%;" onclick="revealDocument(this)">
+       <div class="w-14 h-16 md:w-16 md:h-20 glass rounded-lg flex flex-col items-center justify-center text-[#00ffc8] hover-lift animate-float" style="animation-delay: 0s;">
+        <svg class="w-8 h-8 animate-pulse" fill="currentColor" viewbox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8 11h8v2H8v-2zm0 4h8v2H8v-2z" />
+        </svg><span class="text-xs mt-1 mono animate-twinkle">W-2</span>
+       </div>
+      </div><!-- 1099 Form -->
+      <div class="hotspot" id="doc-1099" data-doc="1099 Form" style="top: 60%; left: 75%;" onclick="revealDocument(this)">
+       <div class="w-14 h-16 md:w-16 md:h-20 glass rounded-lg flex flex-col items-center justify-center text-[#ff00ff] hover-lift animate-float" style="animation-delay: 0.5s;">
+        <svg class="w-8 h-8 animate-wobble" fill="currentColor" viewbox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM9 15h6v2H9v-2zm0-4h6v2H9v-2zm4-5.5V9h4.5L13 5.5z" />
+        </svg><span class="text-xs mt-1 mono animate-twinkle">1099</span>
+       </div>
+      </div><!-- Receipt -->
+      <div class="hotspot" id="doc-receipt" data-doc="Business Receipt" style="top: 40%; left: 50%;" onclick="revealDocument(this)">
+       <div class="w-14 h-16 md:w-16 md:h-20 glass rounded-lg flex flex-col items-center justify-center text-[#ffff00] hover-lift animate-float" style="animation-delay: 1s;">
+        <svg class="w-8 h-8 animate-swing" fill="currentColor" viewbox="0 0 24 24"><path d="M20 4H4v2h16V4zm0 4H4v12l2-2 2 2 2-2 2 2 2-2 2 2 2-2 2 2V8zM6 12h12v2H6v-2z" />
+        </svg><span class="text-xs mt-1 mono animate-twinkle">Receipt</span>
+       </div>
+      </div><!-- Bank Statement -->
+      <div class="hotspot" id="doc-bank" data-doc="Bank Statement" style="top: 70%; left: 20%;" onclick="revealDocument(this)">
+       <div class="w-14 h-16 md:w-16 md:h-20 glass rounded-lg flex flex-col items-center justify-center text-[#00ffc8] hover-lift animate-float" style="animation-delay: 1.5s;">
+        <svg class="w-8 h-8 animate-pulse" fill="currentColor" viewbox="0 0 24 24"><path d="M4 10h16v10H4V10zm2 2v6h12v-6H6zm1-6l5-4 5 4H7zm5 8a2 2 0 100-4 2 2 0 000 4z" />
+        </svg><span class="text-xs mt-1 mono animate-twinkle">Bank</span>
+       </div>
+      </div><!-- Insurance Form -->
+      <div class="hotspot" id="doc-insurance" data-doc="Insurance Form" style="top: 25%; left: 80%;" onclick="revealDocument(this)">
+       <div class="w-14 h-16 md:w-16 md:h-20 glass rounded-lg flex flex-col items-center justify-center text-[#ff00ff] hover-lift animate-float" style="animation-delay: 2s;">
+        <svg class="w-8 h-8 animate-wave" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1 14.5l-4-4 1.41-1.41L11 13.67l5.59-5.59L18 9.5l-7 7z" />
+        </svg><span class="text-xs mt-1 mono animate-twinkle">Health</span>
+       </div>
+      </div><!-- Tax Return -->
+      <div class="hotspot" id="doc-return" data-doc="Previous Tax Return" style="top: 50%; left: 30%;" onclick="revealDocument(this)">
+       <div class="w-14 h-16 md:w-16 md:h-20 glass rounded-lg flex flex-col items-center justify-center text-[#ffff00] hover-lift animate-float" style="animation-delay: 2.5s;">
+        <svg class="w-8 h-8 animate-spin" style="animation-duration: 8s;" fill="currentColor" viewbox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l4.59-4.58L18 11l-6 6z" />
+        </svg><span class="text-xs mt-1 mono animate-twinkle">Return</span>
+       </div>
+      </div>
+     </div><!-- Animated Tooltip -->
+     <div id="tooltip" class="tooltip absolute bottom-4 left-1/2 -translate-x-1/2 glass rounded-xl px-6 py-3 text-white mono text-sm z-20"><span id="tooltip-text">Click on documents to collect them!</span>
+     </div>
+    </div><!-- Action Buttons -->
+    <div class="flex flex-wrap justify-center gap-4 mt-6 animate-fade-up" style="animation-delay: 0.6s;"><!-- Hint Button --> <button id="hint-btn" onclick="showHint()" class="btn-shine ripple-container neon-border rounded-xl px-6 py-3 text-white font-semibold hover-lift transition-all flex items-center gap-2 group"> <span class="animate-orbit inline-block">
+       <svg class="w-5 h-5 text-[#ffff00]" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" />
+       </svg></span> <span id="hint-text" class="gradient-text">Need a Hint?</span> </button> <!-- Restart Button --> <button onclick="restartGame()" class="btn-shine ripple-container glass rounded-xl px-6 py-3 text-white font-semibold hover-lift transition-all flex items-center gap-2">
+      <svg class="w-5 h-5 text-[#00ffc8] animate-spin" style="animation-duration: 3s;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg><span>Restart</span> </button>
+    </div>
+   </div><!-- Success Overlay -->
+   <div id="success-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-500">
+    <div class="success-container text-center p-10 neon-border rounded-3xl glass max-w-md mx-4">
+     <div class="text-6xl mb-4 animate-bounce">
+      🎉
+     </div>
+     <h2 id="success-title" class="text-3xl md:text-4xl font-extrabold gradient-text animate-letter animate-text-glow mb-4">You Found Everything!</h2>
+     <p class="text-gray-300 mono mb-6">All tax documents have been collected!</p>
+     <div class="flex justify-center gap-2 mb-6"><span class="text-4xl animate-float" style="animation-delay: 0s;">📄</span> <span class="text-4xl animate-float" style="animation-delay: 0.2s;">💰</span> <span class="text-4xl animate-float" style="animation-delay: 0.4s;">✅</span>
+     </div><button onclick="restartGame()" class="btn-shine neon-border rounded-xl px-8 py-4 text-white font-bold text-lg hover-lift animate-badge"> <span class="gradient-text">Play Again</span> </button>
+    </div>
+   </div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      game_title: 'Tax Scavenger Hunt',
+      success_message: 'You Found Everything!',
+      hint_text: 'Need a Hint?',
+      background_color: '#0a0a1a',
+      accent_color: '#00ffc8',
+      secondary_color: '#ff00ff',
+      highlight_color: '#ffff00',
+      text_color: '#ffffff',
+      font_family: 'Syne'
+    };
+
+    // Game State
+    let foundDocuments = [];
+    let totalDocuments = 6;
+    let timerInterval = null;
+    let timeLeft = 120;
+    let gameActive = true;
+    let hintIndex = 0;
+
+    // Initialize SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          // Update title
+          const titleEl = document.getElementById('game-title');
+          if (titleEl) titleEl.textContent = config.game_title || defaultConfig.game_title;
+          
+          // Update success message
+          const successEl = document.getElementById('success-title');
+          if (successEl) successEl.textContent = config.success_message || defaultConfig.success_message;
+          
+          // Update hint text
+          const hintEl = document.getElementById('hint-text');
+          if (hintEl) hintEl.textContent = config.hint_text || defaultConfig.hint_text;
+          
+          // Update colors
+          const bgColor = config.background_color || defaultConfig.background_color;
+          const accentColor = config.accent_color || defaultConfig.accent_color;
+          const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+          const highlightColor = config.highlight_color || defaultConfig.highlight_color;
+          const textColor = config.text_color || defaultConfig.text_color;
+          
+          document.body.style.backgroundColor = bgColor;
+          document.documentElement.style.setProperty('--accent', accentColor);
+          document.documentElement.style.setProperty('--secondary', secondaryColor);
+          document.documentElement.style.setProperty('--highlight', highlightColor);
+          
+          // Update font
+          const fontFamily = config.font_family || defaultConfig.font_family;
+          document.body.style.fontFamily = `${fontFamily}, Syne, sans-serif`;
+        },
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+            },
+            {
+              get: () => config.accent_color || defaultConfig.accent_color,
+              set: (value) => { config.accent_color = value; window.elementSdk.setConfig({ accent_color: value }); }
+            },
+            {
+              get: () => config.secondary_color || defaultConfig.secondary_color,
+              set: (value) => { config.secondary_color = value; window.elementSdk.setConfig({ secondary_color: value }); }
+            },
+            {
+              get: () => config.highlight_color || defaultConfig.highlight_color,
+              set: (value) => { config.highlight_color = value; window.elementSdk.setConfig({ highlight_color: value }); }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => { config.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
+          },
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['game_title', config.game_title || defaultConfig.game_title],
+          ['success_message', config.success_message || defaultConfig.success_message],
+          ['hint_text', config.hint_text || defaultConfig.hint_text]
+        ])
+      });
+    }
+
+    // Create floating stars
+    function createStars() {
+      const container = document.getElementById('stars-container');
+      for (let i = 0; i < 20; i++) {
+        const star = document.createElement('span');
+        star.className = 'star';
+        star.textContent = '✦';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.fontSize = (Math.random() * 12 + 8) + 'px';
+        star.style.animationDelay = (Math.random() * 4) + 's';
+        star.style.animationDuration = (3 + Math.random() * 3) + 's';
+        container.appendChild(star);
+      }
+    }
+
+    // Timer functions
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        if (!gameActive) return;
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+          gameActive = false;
+          clearInterval(timerInterval);
+          showTimeUp();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const timerEl = document.getElementById('timer');
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      timerEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      
+      if (timeLeft <= 30) {
+        timerEl.classList.add('timer-urgent', 'text-red-500');
+      } else {
+        timerEl.classList.remove('timer-urgent', 'text-red-500');
+      }
+    }
+
+    function showTimeUp() {
+      showTooltip("⏰ Time's up! Click Restart to try again.", 5000);
+    }
+
+    // Document reveal
+    function revealDocument(element) {
+      if (!gameActive) return;
+      
+      const docId = element.id;
+      const docName = element.dataset.doc;
+      
+      if (foundDocuments.includes(docId)) {
+        element.classList.add('wrong');
+        setTimeout(() => element.classList.remove('wrong'), 600);
+        showTooltip("You already found this one! 📋", 2000);
+        return;
+      }
+      
+      // Mark as found
+      foundDocuments.push(docId);
+      element.classList.add('found');
+      element.querySelector('div').style.borderColor = '#00ffc8';
+      element.querySelector('div').style.boxShadow = '0 0 30px #00ffc8';
+      
+      // Update progress
+      updateProgress();
+      
+      // Show feedback
+      showTooltip(`🎉 Found: ${docName}!`, 2000);
+      
+      // Check win condition
+      if (foundDocuments.length === totalDocuments) {
+        setTimeout(showSuccess, 500);
+      }
+    }
+
+    // Update progress display
+    function updateProgress() {
+      document.getElementById('found-count').textContent = foundDocuments.length;
+      
+      // Update progress ring
+      const ring = document.getElementById('progress-ring');
+      const circumference = 283;
+      const progress = foundDocuments.length / totalDocuments;
+      ring.style.strokeDashoffset = circumference - (progress * circumference);
+    }
+
+    // Show hint
+    function showHint() {
+      const unfound = document.querySelectorAll('.hotspot:not(.found)');
+      if (unfound.length === 0) {
+        showTooltip("All documents found! 🎉", 2000);
+        return;
+      }
+      
+      // Remove previous hints
+      document.querySelectorAll('.hotspot').forEach(h => h.classList.remove('hint-active'));
+      
+      // Show hint for next unfound document
+      const target = unfound[hintIndex % unfound.length];
+      target.classList.add('hint-active');
+      
+      // Show arrow
+      const arrow = document.getElementById('hint-arrow');
+      arrow.style.opacity = '1';
+      setTimeout(() => arrow.style.opacity = '0', 2000);
+      
+      showTooltip(`💡 Look for the ${target.dataset.doc}!`, 3000);
+      hintIndex++;
+      
+      // Remove hint animation after delay
+      setTimeout(() => target.classList.remove('hint-active'), 3000);
+    }
+
+    // Show tooltip
+    function showTooltip(text, duration = 3000) {
+      const tooltip = document.getElementById('tooltip');
+      const tooltipText = document.getElementById('tooltip-text');
+      tooltipText.textContent = text;
+      tooltip.classList.add('show');
+      
+      setTimeout(() => tooltip.classList.remove('show'), duration);
+    }
+
+    // Show success screen
+    function showSuccess() {
+      gameActive = false;
+      clearInterval(timerInterval);
+      
+      const overlay = document.getElementById('success-overlay');
+      overlay.classList.remove('opacity-0', 'pointer-events-none');
+      overlay.classList.add('opacity-100');
+    }
+
+    // Restart game
+    function restartGame() {
+      // Reset state
+      foundDocuments = [];
+      timeLeft = 120;
+      gameActive = true;
+      hintIndex = 0;
+      
+      // Clear intervals
+      if (timerInterval) clearInterval(timerInterval);
+      
+      // Reset UI
+      document.querySelectorAll('.hotspot').forEach(h => {
+        h.classList.remove('found', 'hint-active', 'wrong');
+        const inner = h.querySelector('div');
+        if (inner) {
+          inner.style.borderColor = '';
+          inner.style.boxShadow = '';
+        }
+      });
+      
+      updateProgress();
+      updateTimerDisplay();
+      
+      // Hide success overlay
+      const overlay = document.getElementById('success-overlay');
+      overlay.classList.add('opacity-0', 'pointer-events-none');
+      overlay.classList.remove('opacity-100');
+      
+      // Restart timer
+      startTimer();
+      
+      showTooltip("🔍 Game restarted! Find all documents!", 2000);
+    }
+
+    // Ripple effect for buttons
+    document.querySelectorAll('.ripple-container').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const rect = this.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.left = (e.clientX - rect.left) + 'px';
+        ripple.style.top = (e.clientY - rect.top) + 'px';
+        ripple.style.width = ripple.style.height = Math.max(rect.width, rect.height) + 'px';
+        this.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+
+    // Initialize game
+    function initGame() {
+      createStars();
+      updateProgress();
+      updateTimerDisplay();
+      startTimer();
+      
+      setTimeout(() => {
+        showTooltip("🔍 Click on glowing documents to collect them!", 4000);
+      }, 1000);
+    }
+
+    // Start when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initGame);
+    } else {
+      initGame();
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8cdc88648727c5',t:'MTc3NTYwNTA2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
