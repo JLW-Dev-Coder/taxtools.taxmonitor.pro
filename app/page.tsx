@@ -4,11 +4,11 @@ import styles from './page.module.css'
 
 const tools = [
   {
-    title: 'IRS Notice Game',
-    description: 'Test your knowledge of IRS notices and learn the correct response for each one.',
+    title: 'IRS Notice Showdown',
+    description: 'A 10-round drag-and-drop showdown where you match notice excerpts to the correct IRS notice.',
     color: 'amber',
-    demo: '/games/irs-notices',
-    play: '/games/irs-notices',
+    demo: '/games/irs-notice-showdown',
+    play: '/games/irs-notice-showdown',
     playLabel: 'Play Now',
     icon: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -20,16 +20,31 @@ const tools = [
     ),
   },
   {
-    title: 'Transaction Code Game',
-    description: 'Match IRS transaction codes to their meanings. Race the clock, build your accuracy.',
+    title: 'IRS Tax Detective',
+    description: 'Decode IRS transaction codes and solve the mystery of a refund offset in a fast matching game.',
     color: 'amber',
-    demo: '/games/transaction-codes',
-    play: '/games/transaction-codes',
+    demo: '/games/irs-tax-detective',
+    play: '/games/irs-tax-detective',
     playLabel: 'Play Now',
     icon: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="16 18 22 12 16 6" />
         <polyline points="8 6 2 12 8 18" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Circular 230 Quest',
+    description: 'A zone-based quest through the Treasury rules governing practice before the IRS.',
+    color: 'amber',
+    demo: '/games/circular-230-quest',
+    play: '/games/circular-230-quest',
+    playLabel: 'Play Now',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+        <path d="M2 17l10 5 10-5" />
+        <path d="M2 12l10 5 10-5" />
       </svg>
     ),
   },
