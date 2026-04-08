@@ -29,92 +29,142 @@ async function apiFetch<T>(
   return res.json()
 }
 
+// VLP response shapes
+export interface SessionResponse {
+  ok: boolean
+  session: { account_id: string; email: string }
+}
+
+export interface BalanceResponse {
+  ok: boolean
+  balance: { tax_game_tokens: number; transcript_tokens: number }
+}
+
+export interface SpendResponse {
+  ok: boolean
+  grantId: string
+  slug: string
+}
+
+export interface AccessResponse {
+  ok: boolean
+  allowed: boolean
+  grantId?: string
+}
+
+export type TokenPackSku =
+  | 'token_pack_small_30'
+  | 'token_pack_medium_80'
+  | 'token_pack_large_200'
+
+export interface TokenPackage {
+  sku: TokenPackSku
+  tokens: number
+  amount: number // cents
+  currency: string
+  label: string
+  recommended: boolean
+  badge?: string
+}
+
+// Static token pack catalog — VLP checkout accepts these SKUs.
+const TOKEN_PACKAGES: TokenPackage[] = [
+  {
+    sku: 'token_pack_small_30',
+    tokens: 30,
+    amount: 999,
+    currency: 'usd',
+    label: 'Starter',
+    recommended: false,
+  },
+  {
+    sku: 'token_pack_medium_80',
+    tokens: 80,
+    amount: 1999,
+    currency: 'usd',
+    label: 'Popular',
+    recommended: true,
+    badge: 'Popular',
+  },
+  {
+    sku: 'token_pack_large_200',
+    tokens: 200,
+    amount: 3999,
+    currency: 'usd',
+    label: 'Best Value',
+    recommended: false,
+    badge: 'Best Value',
+  },
+]
+
 export const api = {
   // Auth
   requestMagicLink: (email: string, redirect?: string) =>
-    apiFetch('/v1/tttmp/auth/magic-link/request', {
+    apiFetch('/v1/auth/magic-link/request', {
       method: 'POST',
       auth: false,
       body: JSON.stringify({ email, redirect }),
     }),
 
-  getSession: () =>
-    apiFetch<{
-      ok: boolean
-      user: { account_id: string; email: string; balance: number; membership?: string }
-    }>('/v1/tttmp/auth/session'),
+  verifyMagicLink: (token: string) =>
+    apiFetch('/v1/auth/magic-link/verify', {
+      method: 'POST',
+      auth: false,
+      body: JSON.stringify({ token }),
+    }),
 
-  logout: () =>
-    apiFetch('/v1/tttmp/auth/logout', { method: 'POST' }),
+  getSession: () => apiFetch<SessionResponse>('/v1/auth/session'),
+
+  logout: () => apiFetch('/v1/auth/logout', { method: 'POST' }),
 
   // Tokens
-  getBalance: () =>
-    apiFetch<{ ok: boolean; balance: number; account_id: string }>(
-      '/v1/tttmp/tokens/balance'
-    ),
-
   getTokenBalance: (account_id: string) =>
-    apiFetch<{ ok: boolean; balance: number; account_id: string }>(
-      `/v1/tokens/balance/${account_id}`
-    ),
+    apiFetch<BalanceResponse>(`/v1/tokens/balance/${account_id}`),
 
-  getTokenPricing: () =>
-    apiFetch<{
-      ok: boolean
-      prices: Array<{
-        price_id: string
-        amount: number
-        currency: string
-        tokens: number
-        recommended: boolean
-        label: string
-        type?: string
-        badge?: string
-      }>
-    }>('/v1/tokens/pricing', { auth: false }),
+  spendTokens: (params: {
+    amount: number
+    slug: string
+    reason?: string
+    idempotencyKey?: string
+  }) =>
+    apiFetch<SpendResponse>('/v1/tokens/spend', {
+      method: 'POST',
+      body: JSON.stringify({
+        amount: params.amount,
+        idempotencyKey: params.idempotencyKey || crypto.randomUUID(),
+        reason: params.reason || 'arcade_play',
+        slug: params.slug,
+      }),
+    }),
 
-  purchaseTokens: (price_id: string) =>
-    apiFetch<{ ok: boolean; session_url: string }>(
-      '/v1/tokens/purchase',
-      { method: 'POST', body: JSON.stringify({ price_id }) }
-    ),
+  getTokenPackages: (): Promise<{ ok: true; packages: TokenPackage[] }> =>
+    Promise.resolve({ ok: true, packages: TOKEN_PACKAGES }),
 
   // Checkout
-  createCheckoutSession: (price_id: string) =>
+  createCheckoutSession: (item: TokenPackSku) =>
     apiFetch<{ ok: boolean; checkout_url: string; session_id: string }>(
-      '/v1/tttmp/checkout/sessions',
-      { method: 'POST', body: JSON.stringify({ price_id }) }
+      '/v1/checkout/sessions',
+      { method: 'POST', body: JSON.stringify({ item }) }
     ),
 
   getCheckoutStatus: (session_id: string) =>
     apiFetch<{
       ok: boolean
       status: string
-      credits_added: number
-      balance: number
-    }>(`/v1/tttmp/checkout/status?session_id=${session_id}`),
+      credits_added?: number
+      balance?: number
+    }>(`/v1/checkout/status?session_id=${encodeURIComponent(session_id)}`),
 
   // Games
-  grantAccess: (game_slug: string) =>
-    apiFetch<{
-      ok: boolean
-      grant_id: string
-      expires_at: string
-      balance_after: number
-    }>('/v1/tttmp/games/access', {
-      method: 'POST',
-      body: JSON.stringify({ game_slug }),
-    }),
-
-  verifyAccess: (game_slug: string, grant_id: string) =>
-    apiFetch<{ ok: boolean; valid: boolean; expires_at: string }>(
-      `/v1/tttmp/games/access?game_slug=${game_slug}&grant_id=${grant_id}`
+  checkAccess: (slug: string) =>
+    apiFetch<AccessResponse>(
+      `/v1/games/access?slug=${encodeURIComponent(slug)}`
     ),
 
-  endGame: (grant_id: string, score?: number, completed?: boolean) =>
-    apiFetch('/v1/tttmp/games/end', {
+  endGame: (grantId: string, score?: number, completed?: boolean) =>
+    apiFetch('/v1/games/end', {
       method: 'POST',
-      body: JSON.stringify({ grant_id, score, completed }),
+      body: JSON.stringify({ grantId, score, completed }),
     }),
 
   // Support
@@ -124,27 +174,13 @@ export const api = {
     priority?: string
     category?: string
   }) =>
-    apiFetch('/v1/tttmp/support/tickets', {
+    apiFetch('/v1/support/tickets', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
 
   getTicket: (ticket_id: string) =>
-    apiFetch(`/v1/tttmp/support/tickets/${ticket_id}`),
-
-  // Pricing
-  getPricing: () =>
-    apiFetch<{
-      ok: boolean
-      prices: Array<{
-        price_id: string
-        amount: number
-        currency: string
-        tokens: number
-        recommended: boolean
-        label: string
-      }>
-    }>('/v1/pricing/transcripts', { auth: false }),
+    apiFetch(`/v1/support/tickets/${ticket_id}`),
 
   // Affiliates
   getAffiliate: (account_id: string) =>

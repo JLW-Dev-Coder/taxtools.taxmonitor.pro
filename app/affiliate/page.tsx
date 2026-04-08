@@ -64,7 +64,7 @@ export default function AffiliatePage() {
   useEffect(() => {
     api.getSession()
       .then((data) => {
-        const id = data.user.account_id
+        const id = data.session.account_id
         setAccountId(id)
         return Promise.all([
           api.getAffiliate(id),

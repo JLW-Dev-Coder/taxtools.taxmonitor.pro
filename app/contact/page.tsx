@@ -19,7 +19,7 @@ export default function ContactPage() {
   useEffect(() => {
     api.getSession()
       .then((data) => {
-        setEmail(data.user.email)
+        setEmail(data.session.email)
         setEmailReadOnly(true)
       })
       .catch(() => {})

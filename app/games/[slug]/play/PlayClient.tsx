@@ -20,20 +20,17 @@ export default function PlayClient({ slug, title }: { slug: string; title: strin
       return
     }
 
-    const grantId =
-      typeof window !== 'undefined'
-        ? window.localStorage.getItem(GRANT_KEY(slug))
-        : null
-    if (!grantId) {
-      router.replace(`/games/${slug}`)
-      return
-    }
     try {
-      const res = await api.verifyAccess(slug, grantId)
-      if (res.valid) {
+      const res = await api.checkAccess(slug)
+      if (res.allowed) {
+        if (res.grantId && typeof window !== 'undefined') {
+          window.localStorage.setItem(GRANT_KEY(slug), res.grantId)
+        }
         setState('ready')
       } else {
-        window.localStorage.removeItem(GRANT_KEY(slug))
+        if (typeof window !== 'undefined') {
+          window.localStorage.removeItem(GRANT_KEY(slug))
+        }
         router.replace(`/games/${slug}`)
       }
     } catch {
@@ -47,6 +44,17 @@ export default function PlayClient({ slug, title }: { slug: string; title: strin
     window.addEventListener('pageshow', onShow)
     return () => window.removeEventListener('pageshow', onShow)
   }, [verify])
+
+  // Warn the user that leaving/refreshing may cost them their game credit.
+  useEffect(() => {
+    if (state !== 'ready') return
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [state])
 
   if (state !== 'ready') {
     return (

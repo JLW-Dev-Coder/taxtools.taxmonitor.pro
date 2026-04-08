@@ -3,21 +3,12 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Header from '@/components/Header'
-import { api } from '@/lib/api'
+import { api, type TokenPackage, type TokenPackSku } from '@/lib/api'
 import styles from './page.module.css'
-
-interface PriceOption {
-  price_id: string
-  amount: number
-  currency: string
-  tokens: number
-  recommended: boolean
-  label: string
-}
 
 export default function PricingPage() {
   const router = useRouter()
-  const [prices, setPrices] = useState<PriceOption[]>([])
+  const [prices, setPrices] = useState<TokenPackage[]>([])
   const [balance, setBalance] = useState<number | null>(null)
   const [loggedIn, setLoggedIn] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -25,27 +16,30 @@ export default function PricingPage() {
   const [buyingId, setBuyingId] = useState<string | null>(null)
 
   useEffect(() => {
-    api.getPricing()
-      .then((data) => setPrices(data.prices))
+    api.getTokenPackages()
+      .then((data) => setPrices(data.packages))
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load pricing'))
       .finally(() => setLoading(false))
 
     api.getSession()
-      .then((data) => {
+      .then(async (data) => {
         setLoggedIn(true)
-        setBalance(data.user.balance)
+        try {
+          const bal = await api.getTokenBalance(data.session.account_id)
+          setBalance(bal.balance.tax_game_tokens)
+        } catch {}
       })
       .catch(() => {})
   }, [])
 
-  async function handleBuy(price_id: string) {
+  async function handleBuy(sku: TokenPackSku) {
     if (!loggedIn) {
       router.push('/login?redirect=/pricing')
       return
     }
-    setBuyingId(price_id)
+    setBuyingId(sku)
     try {
-      const data = await api.createCheckoutSession(price_id)
+      const data = await api.createCheckoutSession(sku)
       window.location.href = data.checkout_url
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Checkout failed')
@@ -84,7 +78,7 @@ export default function PricingPage() {
             <div className={styles.grid}>
               {prices.map((price) => (
                 <div
-                  key={price.price_id}
+                  key={price.sku}
                   className={`${styles.card} ${price.recommended ? styles.recommended : ''}`}
                 >
                   {price.recommended && (
@@ -96,10 +90,10 @@ export default function PricingPage() {
                   <p className={styles.plays}>Play {price.tokens} games</p>
                   <button
                     className={styles.buyButton}
-                    onClick={() => handleBuy(price.price_id)}
-                    disabled={buyingId === price.price_id}
+                    onClick={() => handleBuy(price.sku)}
+                    disabled={buyingId === price.sku}
                   >
-                    {buyingId === price.price_id ? 'Redirecting…' : price.label || 'Buy'}
+                    {buyingId === price.sku ? 'Redirecting…' : price.label || 'Buy'}
                   </button>
                 </div>
               ))}

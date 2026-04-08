@@ -6,20 +6,9 @@ import { useRouter } from 'next/navigation'
 import Header from '@/components/Header'
 import SiteFooter from '@/components/SiteFooter'
 import FaqItem from '@/components/FaqItem'
-import { api } from '@/lib/api'
+import { api, type TokenPackage, type TokenPackSku } from '@/lib/api'
 import type { Game } from '@/lib/games'
 import styles from './page.module.css'
-
-interface TokenPackage {
-  price_id: string
-  amount: number
-  currency: string
-  tokens: number
-  recommended: boolean
-  label: string
-  badge?: string
-  type?: string
-}
 
 const GRANT_KEY = (slug: string) => `tttmp_grant_${slug}`
 
@@ -82,7 +71,8 @@ export default function GameDetailClient({ game }: { game: Game }) {
     try {
       const data = await api.getSession()
       setLoggedIn(true)
-      setBalance(data.user.balance)
+      const bal = await api.getTokenBalance(data.session.account_id)
+      setBalance(bal.balance.tax_game_tokens)
     } catch {
       setLoggedIn(false)
       setBalance(null)
@@ -91,15 +81,14 @@ export default function GameDetailClient({ game }: { game: Game }) {
 
   const checkGrant = useCallback(async () => {
     if (typeof window === 'undefined') return
-    const grantId = window.localStorage.getItem(GRANT_KEY(game.slug))
-    if (!grantId) {
-      setHasGrant(false)
-      return
-    }
     try {
-      const res = await api.verifyAccess(game.slug, grantId)
-      setHasGrant(!!res.valid)
-      if (!res.valid) window.localStorage.removeItem(GRANT_KEY(game.slug))
+      const res = await api.checkAccess(game.slug)
+      setHasGrant(!!res.allowed)
+      if (res.allowed && res.grantId) {
+        window.localStorage.setItem(GRANT_KEY(game.slug), res.grantId)
+      } else {
+        window.localStorage.removeItem(GRANT_KEY(game.slug))
+      }
     } catch {
       setHasGrant(false)
     }
@@ -133,9 +122,8 @@ export default function GameDetailClient({ game }: { game: Game }) {
     if (buyPackages.length > 0) return
     setBuyLoading(true)
     try {
-      const data = await api.getTokenPricing()
-      const pkgs = data.prices.filter((p) => !p.type || p.type === 'tax_game')
-      setBuyPackages(pkgs)
+      const data = await api.getTokenPackages()
+      setBuyPackages(data.packages)
     } catch {
       setBuyPackages([])
     } finally {
@@ -165,12 +153,16 @@ export default function GameDetailClient({ game }: { game: Game }) {
     setBusy(true)
     setError('')
     try {
-      const data = await api.grantAccess(game.slug)
+      const data = await api.spendTokens({
+        amount: game.tokenCost,
+        slug: game.slug,
+        reason: 'arcade_play',
+      })
       if (typeof window !== 'undefined') {
-        window.localStorage.setItem(GRANT_KEY(game.slug), data.grant_id)
+        window.localStorage.setItem(GRANT_KEY(game.slug), data.grantId)
       }
       setHasGrant(true)
-      setBalance(data.balance_after)
+      if (balance !== null) setBalance(balance - game.tokenCost)
       setShowConfirm(false)
       router.push(`/games/${game.slug}/play`)
     } catch (err) {
@@ -187,11 +179,11 @@ export default function GameDetailClient({ game }: { game: Game }) {
     }
   }
 
-  async function handleBuy(priceId: string) {
-    setBuyingId(priceId)
+  async function handleBuy(sku: TokenPackSku) {
+    setBuyingId(sku)
     try {
-      const data = await api.purchaseTokens(priceId)
-      window.location.href = data.session_url
+      const data = await api.createCheckoutSession(sku)
+      window.location.href = data.checkout_url
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Checkout failed')
       setBuyingId(null)
@@ -425,7 +417,7 @@ export default function GameDetailClient({ game }: { game: Game }) {
               <div className={styles.packageGrid}>
                 {buyPackages.map((pkg) => (
                   <div
-                    key={pkg.price_id}
+                    key={pkg.sku}
                     className={`${styles.packageCard} ${pkg.recommended ? styles.packageRecommended : ''}`}
                   >
                     {pkg.badge && <span className={styles.packageBadge}>{pkg.badge}</span>}
@@ -439,10 +431,10 @@ export default function GameDetailClient({ game }: { game: Game }) {
                     </div>
                     <button
                       className={styles.primaryBtn}
-                      onClick={() => handleBuy(pkg.price_id)}
-                      disabled={buyingId === pkg.price_id}
+                      onClick={() => handleBuy(pkg.sku)}
+                      disabled={buyingId === pkg.sku}
                     >
-                      {buyingId === pkg.price_id ? 'Redirecting…' : 'Buy'}
+                      {buyingId === pkg.sku ? 'Redirecting…' : 'Buy'}
                     </button>
                   </div>
                 ))}

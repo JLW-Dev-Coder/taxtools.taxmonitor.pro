@@ -17,9 +17,14 @@ function AccountContent() {
 
   useEffect(() => {
     api.getSession()
-      .then((data) => {
-        setEmail(data.user.email)
-        setBalance(data.user.balance)
+      .then(async (data) => {
+        setEmail(data.session.email)
+        try {
+          const bal = await api.getTokenBalance(data.session.account_id)
+          setBalance(bal.balance.tax_game_tokens)
+        } catch {
+          setBalance(0)
+        }
         setLoading(false)
       })
       .catch(() => {
@@ -31,10 +36,17 @@ function AccountContent() {
     const sessionId = searchParams.get('session_id')
     if (!sessionId) return
     api.getCheckoutStatus(sessionId)
-      .then((data) => {
+      .then(async (data) => {
         if (data.status === 'complete' || data.status === 'paid') {
-          setPaymentMessage(`Payment successful! ${data.credits_added} tokens added to your account.`)
-          setBalance(data.balance)
+          const added = data.credits_added ?? 0
+          setPaymentMessage(
+            `Payment successful!${added ? ` ${added} tokens added to your account.` : ''}`
+          )
+          try {
+            const session = await api.getSession()
+            const bal = await api.getTokenBalance(session.session.account_id)
+            setBalance(bal.balance.tax_game_tokens)
+          } catch {}
         }
       })
       .catch(() => {})

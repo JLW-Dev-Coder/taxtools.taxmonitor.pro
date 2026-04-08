@@ -11,9 +11,14 @@ export default function Header() {
 
   useEffect(() => {
     api.getSession()
-      .then((data) => {
+      .then(async (data) => {
         setLoggedIn(true)
-        setBalance(data.user.balance)
+        try {
+          const bal = await api.getTokenBalance(data.session.account_id)
+          setBalance(bal.balance.tax_game_tokens)
+        } catch {
+          setBalance(null)
+        }
       })
       .catch(() => {
         setLoggedIn(false)
